@@ -18,6 +18,8 @@ import { WorkforceAnalyticsPanel } from '@/components/dashboard/owner/WorkforceA
 import { WorkforceAnalyticsService } from '@/lib/services/WorkforceAnalyticsService';
 import { RecentInteractionsHub } from '@/components/dashboard/owner/RecentInteractionsHub';
 
+export const dynamic = 'force-dynamic';
+
 export default async function OwnerDashboardPage() {
     const service = new OwnerService();
     const synergyService = new ProcurementSynergyService();
