@@ -9,6 +9,15 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ['imapflow', 'pino'],
   experimental: {
   },
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/rasa-ibu',
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
