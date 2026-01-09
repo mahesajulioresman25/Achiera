@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { Mail, MessageSquare, MapPin, Clock, ArrowLeft, Send, Sparkles, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
-import { getPlatformSettingsAction } from '../../../../lib/actions/rasa-ibu/finance';
-import { sendContactMessageAction } from '../../../../lib/actions/rasa-ibu/contact';
+import { getPlatformSettingsAction } from '@/lib/actions/rasa-ibu/finance';
+import { sendContactMessageAction } from '@/lib/actions/rasa-ibu/contact';
 import { toast } from 'sonner';
 
 /**
