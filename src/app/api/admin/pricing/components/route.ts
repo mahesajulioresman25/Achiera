@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { PriceComponentType } from '@prisma/client';
 
 // GET /api/admin/pricing/components - List all components
+export const dynamic = 'force-dynamic';
 export async function GET(req: NextRequest) {
     try {
         const components = await prisma.priceComponent.findMany({
@@ -64,7 +65,7 @@ export async function POST(req: NextRequest) {
                 description,
                 type,
 
-export const dynamic = 'force-dynamic';
+
                 isActive: true
             }
         });

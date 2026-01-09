@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { PriceScope } from '@prisma/client';
 
 // GET /api/admin/pricing/rules - List all rules with filters
+export const dynamic = 'force-dynamic';
 export async function GET(req: NextRequest) {
     try {
         const { searchParams } = new URL(req.url);
@@ -33,7 +34,7 @@ export async function GET(req: NextRequest) {
                         name: true,
                         type: true
 
-export const dynamic = 'force-dynamic';
+
                     }
                 }
             },
