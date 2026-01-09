@@ -21,9 +21,9 @@ export default async function LabelPrintingPage({ searchParams }: { searchParams
     // 1. Regular Merch Products
     const regularVariants = await prisma.mockupVariant.findMany({
         where: {
+            isActive: true,
             template: {
-                brandId: brand.id,
-                isActive: true
+                brandId: brand.id
             }
         },
         include: {
