@@ -21,15 +21,15 @@ export default async function LabelPrintingPage({ searchParams }: { searchParams
     // 1. Regular Merch Products
     const regularVariants = await prisma.mockupVariant.findMany({
         where: {
-            product: {
-                collection: { brandId: brand.id },
-                status: 'active'
+            template: {
+                brandId: brand.id,
+                isActive: true
             }
         },
         include: {
-            product: true
+            template: true
         },
-        orderBy: { product: { name: 'asc' } },
+        orderBy: { template: { displayName: 'asc' } },
         take: 50 // Limit for performance, search will be client-side filtered on this batch
     });
 
@@ -51,10 +51,10 @@ export default async function LabelPrintingPage({ searchParams }: { searchParams
     const products = [
         ...regularVariants.map(v => ({
             id: v.id,
-            name: `${v.product.name} - ${v.name}`,
-            sku: v.sku,
+            name: `${v.template.displayName} - ${v.name}`,
+            sku: v.sku || `MERCH-${v.id.slice(-6)}`,
             price: Number(v.price),
-            slug: v.product.slug, // Added Slug
+            slug: v.template.slug, // Added Slug
             type: 'MERCH'
         })),
         ...frozenVariants.map(v => ({
