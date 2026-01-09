@@ -63,6 +63,8 @@ export async function POST(req: NextRequest) {
                 name,
                 description,
                 type,
+
+export const dynamic = 'force-dynamic';
                 isActive: true
             }
         });

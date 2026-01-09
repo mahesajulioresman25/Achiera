@@ -32,6 +32,8 @@ export async function GET(req: NextRequest) {
                         code: true,
                         name: true,
                         type: true
+
+export const dynamic = 'force-dynamic';
                     }
                 }
             },

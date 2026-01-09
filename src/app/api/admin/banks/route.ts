@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+
+export const dynamic = 'force-dynamic';
 // Note: If using a different auth system, adapt accordingly. The prompt implies "super admin".
 // For simplicity in this codebase context where auth might be custom or stubbed:
 // I will check for a predefined admin header or assume the route is protected by middleware.
