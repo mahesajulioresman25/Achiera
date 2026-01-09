@@ -12,8 +12,9 @@ export const metadata: Metadata = {
 };
 
 // Force dynamic rendering for all routes to prevent build-time errors
-export const dynamic = 'force-dynamic';
-export const dynamicParams = true;
+// Force dynamic rendering removed to allow static optimization
+// export const dynamic = 'force-dynamic';
+// export const dynamicParams = true;
 
 export default function RootLayout({
   children,
