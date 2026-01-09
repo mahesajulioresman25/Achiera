@@ -13,6 +13,18 @@ import { ApprovalModal } from '@/components/autonomous/modals/ApprovalModal';
 import { useSearchParams } from 'next/navigation';
 
 export default function ApprovalsPage() {
+    return (
+        <React.Suspense fallback={
+            <div className="flex justify-center items-center h-screen bg-gray-50">
+                <LoadingSpinner size="lg" />
+            </div>
+        }>
+            <ApprovalsContent />
+        </React.Suspense>
+    );
+}
+
+function ApprovalsContent() {
     const searchParams = useSearchParams();
     const brandId = searchParams.get('brandId') || '';
     const [selectedApprovalId, setSelectedApprovalId] = useState<string | null>(null);

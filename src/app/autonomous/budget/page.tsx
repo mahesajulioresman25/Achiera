@@ -10,6 +10,18 @@ import { LoadingSpinner, ProgressBar } from '@/components/autonomous/ui/CoreComp
 import { useSearchParams } from 'next/navigation';
 
 export default function BudgetPage() {
+    return (
+        <React.Suspense fallback={
+            <div className="flex justify-center items-center h-screen bg-gray-50">
+                <LoadingSpinner size="lg" />
+            </div>
+        }>
+            <BudgetContent />
+        </React.Suspense>
+    );
+}
+
+function BudgetContent() {
     const searchParams = useSearchParams();
     const brandId = searchParams.get('brandId') || '';
     // Fetch daily budget

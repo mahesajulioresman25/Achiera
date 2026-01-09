@@ -10,6 +10,18 @@ import { LoadingSpinner, EmptyState } from '@/components/autonomous/ui/CoreCompo
 import { useSearchParams } from 'next/navigation';
 
 export default function AuditPage() {
+    return (
+        <React.Suspense fallback={
+            <div className="flex justify-center items-center h-screen bg-gray-50">
+                <LoadingSpinner size="lg" />
+            </div>
+        }>
+            <AuditContent />
+        </React.Suspense>
+    );
+}
+
+function AuditContent() {
     const searchParams = useSearchParams();
     const brandId = searchParams.get('brandId') || '';
     const [dateRange, setDateRange] = useState<'7days' | '30days' | 'custom'>('7days');

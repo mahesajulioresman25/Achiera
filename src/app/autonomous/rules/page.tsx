@@ -12,6 +12,18 @@ import { RuleDetailsPanel } from '@/components/autonomous/panels/RuleDetailsPane
 import { useSearchParams } from 'next/navigation';
 
 export default function RulesPage() {
+    return (
+        <React.Suspense fallback={
+            <div className="flex justify-center items-center h-screen bg-gray-50">
+                <LoadingSpinner size="lg" />
+            </div>
+        }>
+            <RulesContent />
+        </React.Suspense>
+    );
+}
+
+function RulesContent() {
     const searchParams = useSearchParams();
     const brandId = searchParams.get('brandId') || '';
     const [selectedRuleId, setSelectedRuleId] = useState<string | null>(null);

@@ -8,12 +8,25 @@ import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { getAutonomousBrandAction } from '@/lib/actions/rasa-ibu/businessIntelligence';
+import { LoadingSpinner } from '@/components/autonomous/ui/CoreComponents';
 
 interface AutonomousLayoutProps {
     children: React.ReactNode;
 }
 
 export default function AutonomousLayout({ children }: AutonomousLayoutProps) {
+    return (
+        <React.Suspense fallback={
+            <div className="flex justify-center items-center h-screen bg-gray-50">
+                <LoadingSpinner size="lg" />
+            </div>
+        }>
+            <AutonomousLayoutContent children={children} />
+        </React.Suspense>
+    );
+}
+
+function AutonomousLayoutContent({ children }: AutonomousLayoutProps) {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const brandId = searchParams.get('brandId') || '';

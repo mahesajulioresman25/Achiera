@@ -11,6 +11,18 @@ import { toast } from 'sonner';
 import { useSearchParams } from 'next/navigation';
 
 export default function SettingsPage() {
+    return (
+        <React.Suspense fallback={
+            <div className="flex justify-center items-center h-screen bg-gray-50">
+                <LoadingSpinner size="lg" />
+            </div>
+        }>
+            <SettingsContent />
+        </React.Suspense>
+    );
+}
+
+function SettingsContent() {
     const searchParams = useSearchParams();
     const brandId = searchParams.get('brandId') || '';
     const userRole = 'CFO'; // Mock role for now, should come from auth context

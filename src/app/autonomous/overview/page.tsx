@@ -18,6 +18,18 @@ import { useSearchParams } from 'next/navigation';
 import { getAutonomousBrandAction } from '@/lib/actions/rasa-ibu/businessIntelligence';
 
 export default function OverviewPage() {
+    return (
+        <React.Suspense fallback={
+            <div className="flex justify-center items-center h-screen bg-gray-50">
+                <LoadingSpinner size="lg" />
+            </div>
+        }>
+            <OverviewContent />
+        </React.Suspense>
+    );
+}
+
+function OverviewContent() {
     const searchParams = useSearchParams();
     const brandId = searchParams.get('brandId') || '';
 

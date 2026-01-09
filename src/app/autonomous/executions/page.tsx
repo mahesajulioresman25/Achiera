@@ -12,6 +12,18 @@ import { ExecutionDetailsModal } from '@/components/autonomous/modals/ExecutionD
 import { useSearchParams } from 'next/navigation';
 
 export default function ExecutionsPage() {
+    return (
+        <React.Suspense fallback={
+            <div className="flex justify-center items-center h-screen bg-gray-50">
+                <LoadingSpinner size="lg" />
+            </div>
+        }>
+            <ExecutionsContent />
+        </React.Suspense>
+    );
+}
+
+function ExecutionsContent() {
     const searchParams = useSearchParams();
     const brandId = searchParams.get('brandId') || '';
     const [selectedExecutionId, setSelectedExecutionId] = useState<string | null>(null);

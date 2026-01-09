@@ -8,6 +8,18 @@ import { AssistedFailureLab } from '@/components/autonomous/simulations/Assisted
 import { GovernanceReadinessGate } from '@/components/autonomous/governance/GovernanceReadinessGate';
 
 export default function GovernancePage() {
+    return (
+        <React.Suspense fallback={
+            <div className="flex justify-center items-center h-screen bg-gray-50">
+                <LoadingSpinner size="lg" />
+            </div>
+        }>
+            <GovernanceContent />
+        </React.Suspense>
+    );
+}
+
+function GovernanceContent() {
     const searchParams = useSearchParams();
     const brandId = searchParams.get('brandId') || '';
 

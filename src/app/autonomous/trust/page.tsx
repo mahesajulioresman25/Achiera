@@ -16,6 +16,18 @@ import { ExecutiveConfidenceDashboard } from '@/components/autonomous/trust/Exec
 import { GovernanceSignOffPanel } from '@/components/autonomous/trust/GovernanceSignOffPanel';
 
 export default function TrustPage() {
+    return (
+        <React.Suspense fallback={
+            <div className="flex justify-center items-center h-screen bg-gray-50">
+                <LoadingSpinner size="lg" />
+            </div>
+        }>
+            <TrustContent />
+        </React.Suspense>
+    );
+}
+
+function TrustContent() {
     const searchParams = useSearchParams();
     const brandId = searchParams.get('brandId') || '';
 
