@@ -1,0 +1,1108 @@
+﻿Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+node.exe : 
+At C:\Program 
+Files\nodejs\npx.ps1:29 char:3
++   & $NODE_EXE $NPX_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : No 
+   tSpecified: (:String) [], Re  
+  moteException
+    + FullyQualifiedErrorId : Na 
+   tiveCommandError
+ 
+Error: Prisma schema validation 
+- (validate wasm)
+Error code: P1012
+[1;91merror[0m: [1mError 
+parsing attribute "@@index": The 
+given constraint name 
+`idx_brand_date` has to be 
+unique in the following 
+namespace: global for primary 
+key, indexes and unique 
+constraints. Please provide a 
+different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:3339[0m
+[1;94m   | [0m
+[1;94m3338 | [0m  
+[1;94m3339 | [0m  
+@@index([brandId, 
+transactionDate], [1;91mmap: 
+"idx_brand_date"[0m)
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@@index": The 
+given constraint name 
+`idx_raw_lineage` has to be 
+unique in the following 
+namespace: global for primary 
+key, indexes and unique 
+constraints. Please provide a 
+different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:3340[0m
+[1;94m   | [0m
+[1;94m3339 | [0m  
+@@index([brandId, 
+transactionDate], map: 
+"idx_brand_date")
+[1;94m3340 | [0m  
+@@index([rawRowId], [1;91mmap: 
+"idx_raw_lineage"[0m)
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@@index": The 
+given constraint name 
+`idx_brand_date` has to be 
+unique in the following 
+namespace: global for primary 
+key, indexes and unique 
+constraints. Please provide a 
+different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:3389[0m
+[1;94m   | [0m
+[1;94m3388 | [0m  
+[1;94m3389 | [0m  
+@@index([brandId, date], 
+[1;91mmap: "idx_brand_date"[0m)
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@@index": The 
+given constraint name 
+`idx_raw_lineage` has to be 
+unique in the following 
+namespace: global for primary 
+key, indexes and unique 
+constraints. Please provide a 
+different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:3390[0m
+[1;94m   | [0m
+[1;94m3389 | [0m  
+@@index([brandId, date], map: 
+"idx_brand_date")
+[1;94m3390 | [0m  
+@@index([rawRowId], [1;91mmap: 
+"idx_raw_lineage"[0m)
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@@index": The 
+given constraint name 
+`idx_platform_date` has to be 
+unique in the following 
+namespace: global for primary 
+key, indexes and unique 
+constraints. Please provide a 
+different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:3391[0m
+[1;94m   | [0m
+[1;94m3390 | [0m  
+@@index([rawRowId], map: 
+"idx_raw_lineage")
+[1;94m3391 | [0m  
+@@index([platform, date], 
+[1;91mmap: 
+"idx_platform_date"[0m)
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@@index": The 
+given constraint name 
+`idx_brand_date` has to be 
+unique in the following 
+namespace: global for primary 
+key, indexes and unique 
+constraints. Please provide a 
+different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:3461[0m
+[1;94m   | [0m
+[1;94m3460 | [0m  
+[1;94m3461 | [0m  
+@@index([brandId, dateKey], 
+[1;91mmap: "idx_brand_date"[0m)
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@@index": The 
+given constraint name 
+`idx_platform_date` has to be 
+unique in the following 
+namespace: global for primary 
+key, indexes and unique 
+constraints. Please provide a 
+different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:3463[0m
+[1;94m   | [0m
+[1;94m3462 | [0m  
+@@index([sku, dateKey], map: 
+"idx_sku_date")
+[1;94m3463 | [0m  
+@@index([platform, dateKey], 
+[1;91mmap: 
+"idx_platform_date"[0m)
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@@index": The 
+given constraint name 
+`idx_canonical_lineage` has to 
+be unique in the following 
+namespace: global for primary 
+key, indexes and unique 
+constraints. Please provide a 
+different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:3464[0m
+[1;94m   | [0m
+[1;94m3463 | [0m  
+@@index([platform, dateKey], 
+map: "idx_platform_date")
+[1;94m3464 | [0m  
+@@index([canonicalRecordId], 
+[1;91mmap: 
+"idx_canonical_lineage"[0m)
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@@index": The 
+given constraint name 
+`idx_brand_date` has to be 
+unique in the following 
+namespace: global for primary 
+key, indexes and unique 
+constraints. Please provide a 
+different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:3500[0m
+[1;94m   | [0m
+[1;94m3499 | [0m  
+[1;94m3500 | [0m  
+@@index([brandId, dateKey], 
+[1;91mmap: "idx_brand_date"[0m)
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@@index": The 
+given constraint name 
+`idx_platform_date` has to be 
+unique in the following 
+namespace: global for primary 
+key, indexes and unique 
+constraints. Please provide a 
+different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:3502[0m
+[1;94m   | [0m
+[1;94m3501 | [0m  
+@@index([campaignId, dateKey], 
+map: "idx_campaign_date")
+[1;94m3502 | [0m  
+@@index([platform, dateKey], 
+[1;91mmap: 
+"idx_platform_date"[0m)
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@@index": The 
+given constraint name 
+`idx_canonical_lineage` has to 
+be unique in the following 
+namespace: global for primary 
+key, indexes and unique 
+constraints. Please provide a 
+different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:3503[0m
+[1;94m   | [0m
+[1;94m3502 | [0m  
+@@index([platform, dateKey], 
+map: "idx_platform_date")
+[1;94m3503 | [0m  
+@@index([canonicalRecordId], 
+[1;91mmap: 
+"idx_canonical_lineage"[0m)
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@@index": The 
+given constraint name 
+`idx_brand_date` has to be 
+unique in the following 
+namespace: global for primary 
+key, indexes and unique 
+constraints. Please provide a 
+different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:3540[0m
+[1;94m   | [0m
+[1;94m3539 | [0m  
+@@unique([brandId, 
+snapshotDate], map: 
+"unique_brand_date")
+[1;94m3540 | [0m  
+@@index([brandId, snapshotDate], 
+[1;91mmap: "idx_brand_date"[0m)
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@@index": The 
+given constraint name 
+`idx_brand_date` has to be 
+unique in the following 
+namespace: global for primary 
+key, indexes and unique 
+constraints. Please provide a 
+different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:3574[0m
+[1;94m   | [0m
+[1;94m3573 | [0m  
+@@unique([brandId, snapshotDate, 
+platform], map: 
+"unique_brand_date_platform")
+[1;94m3574 | [0m  
+@@index([brandId, snapshotDate], 
+[1;91mmap: "idx_brand_date"[0m)
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@@index": The 
+given constraint name 
+`idx_brand_date_analytics` has 
+to be unique in the following 
+namespace: global for primary 
+key, indexes and unique 
+constraints. Please provide a 
+different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:3649[0m
+[1;94m   | [0m
+[1;94m3648 | [0m  
+@@unique([brandId, 
+snapshotDate], map: 
+"unique_brand_date_analytics")
+[1;94m3649 | [0m  
+@@index([brandId, snapshotDate], 
+[1;91mmap: 
+"idx_brand_date_analytics"[0m)
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@@index": The 
+given constraint name 
+`idx_brand_date_analytics` has 
+to be unique in the following 
+namespace: global for primary 
+key, indexes and unique 
+constraints. Please provide a 
+different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:3681[0m
+[1;94m   | [0m
+[1;94m3680 | [0m  
+@@unique([brandId, snapshotDate, 
+platform], map: "unique_brand_dat
+e_platform_analytics")
+[1;94m3681 | [0m  
+@@index([brandId, snapshotDate], 
+[1;91mmap: 
+"idx_brand_date_analytics"[0m)
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@relation": 
+The given constraint name 
+`user_brand_roles_brandId_fkey` 
+has to be unique in the 
+following namespace: on model 
+`UserBrandRole` for primary key, 
+indexes, unique constraints and 
+foreign keys. Please provide a 
+different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:138[0m
+[1;94m   | [0m
+[1;94m137 | [0m  createdAt 
+DateTime  @default(now())
+[1;94m138 | [0m  [1;91mbrand  
+   Brand     @relation(fields: 
+[brandId], references: [id], 
+onDelete: Cascade)
+[0m
+[1;94m139 | [0m  user      
+User      @relation(fields: 
+[userId], references: [id], 
+onDelete: Cascade)
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@relation": 
+The given constraint name 
+`hero_slides_brandId_fkey` has 
+to be unique in the following 
+namespace: on model `HeroSlide` 
+for primary key, indexes, unique 
+constraints and foreign keys. 
+Please provide a different name 
+using the `map` argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:161[0m
+[1;94m   | [0m
+[1;94m160 | [0m  updatedAt 
+DateTime  @updatedAt
+[1;94m161 | [0m  [1;91mbrand  
+   Brand     @relation(fields: 
+[brandId], references: [id], 
+onDelete: Cascade)
+[0m
+[1;94m162 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@relation": 
+The given constraint name `mockup
+_templates_productId_fkey` has 
+to be unique in the following 
+namespace: on model 
+`MockupTemplate` for primary 
+key, indexes, unique constraints 
+and foreign keys. Please provide 
+a different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:416[0m
+[1;94m   | [0m
+[1;94m415 | [0m  updatedAt     
+      DateTime        @updatedAt
+[1;94m416 | [0m  
+[1;91mproduct             
+MockupProductTemplate 
+@relation(fields: [productId], 
+references: [id], onDelete: 
+Cascade)
+[0m
+[1;94m417 | [0m  variant       
+      MockupVariant?        
+@relation(fields: [variantId], 
+references: [id])
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+validating field `product` in 
+model `MockupTemplate`: The 
+relation field `product` on 
+model `MockupTemplate` is 
+missing an opposite relation 
+field on the model 
+`MockupProductTemplate`. Either 
+run `prisma format` or add it 
+manually.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:416[0m
+[1;94m   | [0m
+[1;94m415 | [0m  updatedAt     
+      DateTime        @updatedAt
+[1;94m416 | [0m  
+[1;91mproduct             
+MockupProductTemplate 
+@relation(fields: [productId], 
+references: [id], onDelete: 
+Cascade)
+[0m
+[1;94m417 | [0m  variant       
+      MockupVariant?        
+@relation(fields: [variantId], 
+references: [id])
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@relation": 
+The given constraint name `mockup
+_templates_variantId_fkey` has 
+to be unique in the following 
+namespace: on model 
+`MockupTemplate` for primary 
+key, indexes, unique constraints 
+and foreign keys. Please provide 
+a different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:417[0m
+[1;94m   | [0m
+[1;94m416 | [0m  product       
+      MockupProductTemplate 
+@relation(fields: [productId], 
+references: [id], onDelete: 
+Cascade)
+[1;94m417 | [0m  
+[1;91mvariant             
+MockupVariant?        
+@relation(fields: [variantId], 
+references: [id])
+[0m
+[1;94m418 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+validating field `variant` in 
+model `MockupTemplate`: The 
+relation field `variant` on 
+model `MockupTemplate` is 
+missing an opposite relation 
+field on the model 
+`MockupVariant`. Either run 
+`prisma format` or add it 
+manually.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:417[0m
+[1;94m   | [0m
+[1;94m416 | [0m  product       
+      MockupProductTemplate 
+@relation(fields: [productId], 
+references: [id], onDelete: 
+Cascade)
+[1;94m417 | [0m  
+[1;91mvariant             
+MockupVariant?        
+@relation(fields: [variantId], 
+references: [id])
+[0m
+[1;94m418 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@relation": 
+The given constraint name `catalo
+gue_requests_brandId_fkey` has 
+to be unique in the following 
+namespace: on model 
+`CatalogueRequest` for primary 
+key, indexes, unique constraints 
+and foreign keys. Please provide 
+a different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:435[0m
+[1;94m   | [0m
+[1;94m434 | [0m  brandId     
+String
+[1;94m435 | [0m  [1;91mbrand  
+     Brand    @relation(fields: 
+[brandId], references: [id], 
+onDelete: Cascade)
+[0m
+[1;94m436 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@relation": 
+The given constraint name `develo
+pment_lifecycle_steps_brandId_fke
+y` has to be unique in the 
+following namespace: on model 
+`DevelopmentLifecycleStep` for 
+primary key, indexes, unique 
+constraints and foreign keys. 
+Please provide a different name 
+using the `map` argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:513[0m
+[1;94m   | [0m
+[1;94m512 | [0m  updatedAt   
+DateTime @updatedAt
+[1;94m513 | [0m  [1;91mbrand  
+     Brand    @relation(fields: 
+[brandId], references: [id], 
+onDelete: Cascade)
+[0m
+[1;94m514 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@relation": 
+The given constraint name `frozen
+_products_categoryId_fkey` has 
+to be unique in the following 
+namespace: on model 
+`FrozenProduct` for primary key, 
+indexes, unique constraints and 
+foreign keys. Please provide a 
+different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:583[0m
+[1;94m   | [0m
+[1;94m582 | [0m  updatedAt     
+      DateTime           
+@updatedAt
+[1;94m583 | [0m  
+[1;91mcategory            
+FrozenCategory?    
+@relation(fields: [categoryId], 
+references: [id])
+[0m
+[1;94m584 | [0m  
+inventoryCategory   
+InventoryCategory? 
+@relation(fields: 
+[inventoryCategoryId], 
+references: [id])
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@relation": 
+The given constraint name 
+`frozen_variants_productId_fkey` 
+has to be unique in the 
+following namespace: on model 
+`FrozenVariant` for primary key, 
+indexes, unique constraints and 
+foreign keys. Please provide a 
+different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:613[0m
+[1;94m   | [0m
+[1;94m612 | [0m  
+demandForecasts        
+DemandForecast[]
+[1;94m613 | [0m  
+[1;91mproduct                
+FrozenProduct      
+@relation(fields: [productId], 
+references: [id], onDelete: 
+Cascade)
+[0m
+[1;94m614 | [0m  batches       
+         InventoryBatch[]
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@relation": 
+The given constraint name 
+`subscriptions_brandId_fkey` has 
+to be unique in the following 
+namespace: on model 
+`Subscription` for primary key, 
+indexes, unique constraints and 
+foreign keys. Please provide a 
+different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:671[0m
+[1;94m   | [0m
+[1;94m670 | [0m  deliveries    
+  SubscriptionDelivery[]
+[1;94m671 | [0m  [1;91mbrand  
+         Brand              
+@relation(fields: [brandId], 
+references: [id])
+[0m
+[1;94m672 | [0m  user          
+  User               
+@relation(fields: [userId], 
+references: [id])
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@relation": 
+The given constraint name 
+`subscriptions_userId_fkey` has 
+to be unique in the following 
+namespace: on model 
+`Subscription` for primary key, 
+indexes, unique constraints and 
+foreign keys. Please provide a 
+different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:672[0m
+[1;94m   | [0m
+[1;94m671 | [0m  brand         
+  Brand              
+@relation(fields: [brandId], 
+references: [id])
+[1;94m672 | [0m  [1;91muser   
+         User               
+@relation(fields: [userId], 
+references: [id])
+[0m
+[1;94m673 | [0m  planId        
+  String?            
+@map("plan_id")
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@relation": 
+The given constraint name `subscr
+iption_items_subscriptionId_fkey`
+ has to be unique in the 
+following namespace: on model 
+`SubscriptionItem` for primary 
+key, indexes, unique constraints 
+and foreign keys. Please provide 
+a different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:690[0m
+[1;94m   | [0m
+[1;94m689 | [0m  updatedAt     
+ DateTime      @updatedAt
+[1;94m690 | [0m  
+[1;91msubscription   
+Subscription  @relation(fields: 
+[subscriptionId], references: 
+[id], onDelete: Cascade)
+[0m
+[1;94m691 | [0m  variant       
+ FrozenVariant @relation(fields: 
+[variantId], references: [id])
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@relation": 
+The given constraint name `subscr
+iption_items_variantId_fkey` has 
+to be unique in the following 
+namespace: on model 
+`SubscriptionItem` for primary 
+key, indexes, unique constraints 
+and foreign keys. Please provide 
+a different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:691[0m
+[1;94m   | [0m
+[1;94m690 | [0m  subscription  
+ Subscription  @relation(fields: 
+[subscriptionId], references: 
+[id], onDelete: Cascade)
+[1;94m691 | [0m  
+[1;91mvariant        
+FrozenVariant @relation(fields: 
+[variantId], references: [id])
+[0m
+[1;94m692 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@relation": 
+The given constraint name 
+`orders_brand_id_fkey` has to be 
+unique in the following 
+namespace: on model `Order` for 
+primary key, indexes, unique 
+constraints and foreign keys. 
+Please provide a different name 
+using the `map` argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:767[0m
+[1;94m   | [0m
+[1;94m766 | [0m  statusLogs    
+         OrderStatusLog[]
+[1;94m767 | [0m  [1;91mbrand  
+                Brand?           
+       @relation(fields: 
+[brandId], references: [id], 
+onDelete: Cascade)
+[0m
+[1;94m768 | [0m  warehouse     
+         Warehouse?              
+@relation(fields: [warehouseId], 
+references: [id])
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@relation": 
+The given constraint name 
+`order_status_logs_orderId_fkey` 
+has to be unique in the 
+following namespace: on model 
+`OrderStatusLog` for primary 
+key, indexes, unique constraints 
+and foreign keys. Please provide 
+a different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:788[0m
+[1;94m   | [0m
+[1;94m787 | [0m  createdAt 
+DateTime                 
+@default(now())
+[1;94m788 | [0m  [1;91morder  
+   Order                    
+@relation(fields: [orderId], 
+references: [id], onDelete: 
+Cascade)
+[0m
+[1;94m789 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@relation": 
+The given constraint name `paymen
+ts_destinationBankId_fkey` has 
+to be unique in the following 
+namespace: on model `Payment` 
+for primary key, indexes, unique 
+constraints and foreign keys. 
+Please provide a different name 
+using the `map` argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:807[0m
+[1;94m   | [0m
+[1;94m806 | [0m  
+sourceBankName    String?
+[1;94m807 | [0m  
+[1;91mdestinationBank   
+BankAccount? @relation(fields: 
+[destinationBankId], references: 
+[id])
+[0m
+[1;94m808 | [0m  order         
+    Order        
+@relation(fields: [orderId], 
+references: [id], onDelete: 
+Cascade)
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@relation": 
+The given constraint name 
+`payments_orderId_fkey` has to 
+be unique in the following 
+namespace: on model `Payment` 
+for primary key, indexes, unique 
+constraints and foreign keys. 
+Please provide a different name 
+using the `map` argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:808[0m
+[1;94m   | [0m
+[1;94m807 | [0m  
+destinationBank   BankAccount? 
+@relation(fields: 
+[destinationBankId], references: 
+[id])
+[1;94m808 | [0m  [1;91morder  
+           Order        
+@relation(fields: [orderId], 
+references: [id], onDelete: 
+Cascade)
+[0m
+[1;94m809 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@relation": 
+The given constraint name `order_
+items_frozenVariantId_fkey` has 
+to be unique in the following 
+namespace: on model `OrderItem` 
+for primary key, indexes, unique 
+constraints and foreign keys. 
+Please provide a different name 
+using the `map` argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:914[0m
+[1;94m   | [0m
+[1;94m913 | [0m  
+frozenVariantId  String?
+[1;94m914 | [0m  
+[1;91mfrozenVariant    
+FrozenVariant?  
+@relation(fields: 
+[frozenVariantId], references: 
+[id])
+[0m
+[1;94m915 | [0m  order         
+   Order           
+@relation(fields: [orderId], 
+references: [id], onDelete: 
+Cascade)
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@relation": 
+The given constraint name 
+`order_items_orderId_fkey` has 
+to be unique in the following 
+namespace: on model `OrderItem` 
+for primary key, indexes, unique 
+constraints and foreign keys. 
+Please provide a different name 
+using the `map` argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:915[0m
+[1;94m   | [0m
+[1;94m914 | [0m  frozenVariant 
+   FrozenVariant?  
+@relation(fields: 
+[frozenVariantId], references: 
+[id])
+[1;94m915 | [0m  [1;91morder  
+          Order           
+@relation(fields: [orderId], 
+references: [id], onDelete: 
+Cascade)
+[0m
+[1;94m916 | [0m  variant       
+   MockupVariant? 
+@relation(fields: [variantId], 
+references: [id])
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@relation": 
+The given constraint name 
+`order_items_variantId_fkey` has 
+to be unique in the following 
+namespace: on model `OrderItem` 
+for primary key, indexes, unique 
+constraints and foreign keys. 
+Please provide a different name 
+using the `map` argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:916[0m
+[1;94m   | [0m
+[1;94m915 | [0m  order         
+   Order           
+@relation(fields: [orderId], 
+references: [id], onDelete: 
+Cascade)
+[1;94m916 | [0m  
+[1;91mvariant          
+MockupVariant? @relation(fields: 
+[variantId], references: [id])
+[0m
+[1;94m917 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@relation": 
+The given constraint name 
+`ad_campaigns_brandId_fkey` has 
+to be unique in the following 
+namespace: on model `AdCampaign` 
+for primary key, indexes, unique 
+constraints and foreign keys. 
+Please provide a different name 
+using the `map` argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:943[0m
+[1;94m   | [0m
+[1;94m942 | [0m  updatedAt 
+DateTime @updatedAt
+[1;94m943 | [0m  [1;91mbrand  
+   Brand    @relation(fields: 
+[brandId], references: [id], 
+onDelete: Cascade)
+[0m
+[1;94m944 | [0m  adGroups  
+AdGroup[]
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@relation": 
+The given constraint name 
+`loyalty_accounts_brandId_fkey` 
+has to be unique in the 
+following namespace: on model 
+`LoyaltyAccount` for primary 
+key, indexes, unique constraints 
+and foreign keys. Please provide 
+a different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:962[0m
+[1;94m   | [0m
+[1;94m961 | [0m  updatedAt     
+   DateTime @updatedAt
+[1;94m962 | [0m  [1;91mbrand  
+          Brand    
+@relation(fields: [brandId], 
+references: [id])
+[0m
+[1;94m963 | [0m  user          
+   User?    @relation(fields: 
+[userId], references: [id])
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@relation": 
+The given constraint name `approv
+al_requests_decisionRuleId_fkey` 
+has to be unique in the 
+following namespace: on model 
+`ApprovalRequest` for primary 
+key, indexes, unique constraints 
+and foreign keys. Please provide 
+a different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:1131[0m
+[1;94m   | [0m
+[1;94m1130 | [0m  brand        
+    Brand                
+@relation(fields: [brandId], 
+references: [id], onDelete: 
+Cascade)
+[1;94m1131 | [0m  
+[1;91mdecisionRule     
+DecisionRule?        
+@relation(fields: 
+[decisionRuleId], references: 
+[id])
+[0m
+[1;94m1132 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@relation": 
+The given constraint name `approv
+al_escalations_brandId_fkey` has 
+to be unique in the following 
+namespace: on model 
+`ApprovalEscalation` for primary 
+key, indexes, unique constraints 
+and foreign keys. Please provide 
+a different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:1224[0m
+[1;94m   | [0m
+[1;94m1223 | [0m  
+approvalRequest   
+ApprovalRequest 
+@relation(fields: 
+[approvalRequestId], references: 
+[id], onDelete: Cascade)
+[1;94m1224 | [0m  [1;91mbrand 
+            Brand           
+@relation(fields: [brandId], 
+references: [id], onDelete: 
+Cascade)
+[0m
+[1;94m1225 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@relation": 
+The given constraint name 
+`stock_mutations_variantId_fkey` 
+has to be unique in the 
+following namespace: on model 
+`StockMutation` for primary key, 
+indexes, unique constraints and 
+foreign keys. Please provide a 
+different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:1597[0m
+[1;94m   | [0m
+[1;94m1596 | [0m  createdAt   
+DateTime          @default(now())
+[1;94m1597 | [0m  
+[1;91mvariant     FrozenVariant 
+    @relation(fields: 
+[variantId], references: [id])
+[0m
+[1;94m1598 | [0m  warehouse   
+Warehouse         
+@relation(fields: [warehouseId], 
+references: [id])
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@relation": 
+The given constraint name `produc
+t_mappings_variantId_fkey` has 
+to be unique in the following 
+namespace: on model 
+`ProductMapping` for primary 
+key, indexes, unique constraints 
+and foreign keys. Please provide 
+a different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:1777[0m
+[1;94m   | [0m
+[1;94m1776 | [0m  brand        
+    Brand         
+@relation(fields: [brandId], 
+references: [id], onDelete: 
+Cascade)
+[1;94m1777 | [0m  
+[1;91mvariant          
+FrozenVariant @relation(fields: 
+[variantId], references: [id], 
+onDelete: Cascade)
+[0m
+[1;94m1778 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@relation": 
+The given constraint name `demand
+_forecasts_variantId_fkey` has 
+to be unique in the following 
+namespace: on model 
+`DemandForecast` for primary 
+key, indexes, unique constraints 
+and foreign keys. Please provide 
+a different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:1889[0m
+[1;94m   | [0m
+[1;94m1888 | [0m  brand        
+   Brand         
+@relation(fields: [brandId], 
+references: [id], onDelete: 
+Cascade)
+[1;94m1889 | [0m  
+[1;91mvariant         
+FrozenVariant @relation(fields: 
+[variantId], references: [id], 
+onDelete: Cascade)
+[0m
+[1;94m1890 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+parsing attribute "@relation": 
+The given constraint name 
+`stock_alerts_variantId_fkey` 
+has to be unique in the 
+following namespace: on model 
+`StockAlert` for primary key, 
+indexes, unique constraints and 
+foreign keys. Please provide a 
+different name using the `map` 
+argument.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:1912[0m
+[1;94m   | [0m
+[1;94m1911 | [0m  brand        
+     Brand         
+@relation(fields: [brandId], 
+references: [id], onDelete: 
+Cascade)
+[1;94m1912 | [0m  
+[1;91mvariant           
+FrozenVariant @relation(fields: 
+[variantId], references: [id], 
+onDelete: Cascade)
+[0m
+[1;94m1913 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+validating field `orders` in 
+model `FlashSaleConfig`: The 
+relation field `orders` on model 
+`FlashSaleConfig` is missing an 
+opposite relation field on the 
+model `Order`. Either run 
+`prisma format` or add it 
+manually.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:2937[0m
+[1;94m   | [0m
+[1;94m2936 | [0m  brand        
+      Brand    @relation(fields: 
+[brandId], references: [id])
+[1;94m2937 | [0m  
+[1;91morders             
+Order[] // Relation to track 
+sales
+[0m
+[1;94m2938 | [0m  
+[1;94m   | [0m
+
+Validation Error Count: 45
+[Context: validate]
+
+Prisma CLI Version : 5.22.0

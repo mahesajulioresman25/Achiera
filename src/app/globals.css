@@ -1,26 +1,351 @@
 @import "tailwindcss";
 
+/* 
+  THEME 1: ACHIERA HOLDING (Default/Root)
+  Mood: Professional, Warm, Human-centered
+*/
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Base */
+  --background: #FFF8F2;
+  /* Off-white */
+  --foreground: #1F2933;
+  /* Dark Grey */
+
+  /* Primary (Caramel Brown) */
+  --primary: #B87435;
+  --primary-foreground: #FFFFFF;
+  --primary-hover: #9A602A;
+
+  /* Secondary (Olive Muted) */
+  --secondary: #7C7458;
+  --secondary-foreground: #FFFFFF;
+
+  /* Accents */
+  --accent: #F2E0CF;
+  /* Cream */
+  --accent-foreground: #1F2933;
+
+  /* Muted */
+  --muted: #E9E1D5;
+  --muted-foreground: #7C7458;
+
+  /* Borders */
+  --border: #E3D0BF;
+
+  /* Font Settings */
+  --font-sans: var(--font-geist-sans);
+}
+
+/* 
+  THEME 2: ACHIERA KONVEKSI (Merchandise)
+  Mood: Craft, Lifestyle, Warm
+*/
+[data-theme='merchandise'] {
+  /* Base */
+  --background: #F5EFE8;
+  /* Tote bag cream */
+  --foreground: #3B2E25;
+  /* Deep brown */
+
+  /* Primary (Clay Brown) */
+  --primary: #C48A4A;
+  --primary-foreground: #FFFFFF;
+  --primary-hover: #A6753D;
+
+  /* Secondary (Soft Khaki) */
+  --secondary: #A69F8C;
+  --secondary-foreground: #FFFFFF;
+
+  /* Accents */
+  --accent: #E9E1D5;
+  /* Linen neutral */
+  --accent-foreground: #3B2E25;
+
+  /* Muted */
+  --muted: #DBCAB6;
+  --muted-foreground: #6B5D52;
+
+  /* Borders */
+  --border: #D6C4B0;
+}
+
+/* 
+  THEME 3: RASA IBU (Home-cooked Food)
+  Mood: Warm, Maternal, Calm, Premium
+  Identity: Kejujuran dari Dapur
+*/
+[data-theme='rasa-ibu'] {
+  /* Base - Warm Cream */
+  --background: #FDFBF7;
+  /* Represents home warmth, premium but not stiff */
+  --foreground: #2D3A2D;
+  /* Deep sage green, freshness and calm */
+
+  /* Primary (Deep Sage) */
+  --primary: #2D3A2D;
+  --primary-foreground: #FDFBF7;
+  --primary-hover: #1A241A;
+
+  /* Secondary (Terracotta/Bronze) */
+  --secondary: #8B7E66;
+  /* Earth elements and traditional spices */
+  --secondary-foreground: #FDFBF7;
+
+  /* Accents */
+  --accent: #E5E1D8;
+  --accent-foreground: #2D3A2D;
+
+  /* Muted */
+  --muted: #E5E1D8;
+  --muted-foreground: #8B7E66;
+
+  /* Borders */
+  --border: #E5E1D8;
+
+  /* Brand-specific colors */
+  --sage-light: #B2BCA2;
+  --bronze-warm: #8B7E66;
+  --cream-soft: #FDFBF7;
+  --green-deep: #1A241A;
+
+  /* Typography DNA */
+  --font-heading: 'Playfair Display', serif;
+  /* Elegant, heritage */
+  --font-body: var(--font-sans);
+  /* Modern, clean */
+}
+
+/* 
+  THEME 4: ACHIERA IT SOLUTIONS (IT)
+  Mood: Modern, Futuristic, Neon
+*/
+[data-theme='it'] {
+  /* Base */
+  --background: #020617;
+  /* bg-deeper */
+  --foreground: #E5E7EB;
+  /* text-primary */
+
+  /* Primary (Accent Blue) */
+  --primary: #1F74FF;
+  --primary-foreground: #FFFFFF;
+  --primary-hover: #175CD3;
+
+  /* Secondary (Cyan Accent) */
+  --secondary: #3BC7FF;
+  --secondary-foreground: #020617;
+
+  /* Accents & Muted */
+  --accent: #0B1120;
+  /* bg-dark */
+  --accent-foreground: #E5E7EB;
+
+  /* Muted (Card Backgrounds) */
+  --muted: #0B1120;
+  /* bg-dark */
+  --muted-foreground: #94A3B8;
+  /* text-secondary */
+
+  /* Borders */
+  --border: rgba(255, 255, 255, 0.12);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-border: var(--border);
+
+  --font-sans: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+/* Utilities */
+@utility glow-text {
+  text-shadow: 0 0 10px var(--glow-secondary, transparent), 0 0 20px var(--glow-primary, transparent);
+}
+
+@utility glow-box {
+  box-shadow: 0 0 15px rgba(31, 116, 255, 0.3), 0 0 30px rgba(0, 169, 255, 0.1);
+}
+
+@utility glow-border {
+  border: 1px solid var(--primary);
+  box-shadow: 0 0 10px var(--primary);
+}
+
+/* Fade-in animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+@utility delay-100 {
+  animation-delay: 0.1s;
+}
+
+@utility delay-200 {
+  animation-delay: 0.2s;
+}
+
+@utility delay-300 {
+  animation-delay: 0.3s;
+}
+
+@keyframes line-flow {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Gallery Enhancements */
+/* Smooth column transitions for masonry layout */
+@media (min-width: 640px) {
+  .columns-2 {
+    column-gap: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .columns-3 {
+    column-gap: 1rem;
+  }
+}
+
+/* Prevent image flickering on hover */
+.group img {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+/* Smooth masonry item appearance */
+.break-inside-avoid {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Toast notification animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+@utility animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+@utility animate-fade-out {
+  animation: fadeOut 0.3s ease-out forwards;
+}
+
+/* Rasa Ibu Premium Animations */
+@keyframes gentleFloat {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes smoothScale {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+@utility animate-gentle-float {
+  animation: gentleFloat 3s ease-in-out infinite;
+}
+
+@utility animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+}
+
+@utility animate-smooth-scale {
+  animation: smoothScale 2s ease-in-out infinite;
+}
+
+/* Glassmorphism utility for Rasa Ibu */
+@utility glass-effect {
+  background: rgba(253, 251, 247, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(229, 225, 216, 0.3);
 }

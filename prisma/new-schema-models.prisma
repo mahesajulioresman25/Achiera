@@ -1,0 +1,185 @@
+// ============================================
+// PROFESSIONAL MERCHANDISE SCHEMA
+// Collection → Product → ProductVariant → MockupTemplate
+// ============================================
+
+// 1. COLLECTION (Etalase & Kurasi)
+model MerchCollection {
+  id          String  @id @default(cuid())
+  brandId     String
+  slug        String
+  name        String
+  description String? @db.Text
+  coverImage  String? @db.Text
+  
+  // Visibility & Status
+  visibility  String  @default("draft") // draft | published
+  status      String  @default("active") // active | inactive | archived
+  
+  // Content Sections (JSON) - Keep for rich content
+  heroTitle        String @db.Text
+  heroSubtitle     String @db.Text
+  highlights       Json? // array of strings
+  whatsInside      Json? // array of strings
+  designOptions    Json? // array of strings
+  materialPoints   Json? // array of strings
+  useCases         Json? // array of { title, description }
+  packagingOptions Json? // array of strings
+  faq              Json? // array of { question, answer }
+  galleryImages    Json? // array of image URLs
+  
+  // SEO
+  metaTitle       String? @db.Text
+  metaDescription String? @db.Text
+  
+  // Sorting
+  displayOrder Int @default(0)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  brand    Brand     @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  products Product[]
+  
+  @@unique([brandId, slug])
+  @@map("collections")
+}
+
+// 2. PRODUCT (Entitas Bisnis Utama - SKU)
+model Product {
+  id           String  @id @default(cuid())
+  collectionId String
+  slug         String  @unique
+  sku          String? @unique // Optional SKU for inventory
+  
+  // Basic Info
+  name         String
+  productType  String // tote-bag | t-shirt | tumbler | hoodie | etc
+  baseImage    String? @db.Text // Product image without design
+  description  String? @db.Text
+  
+  // Features
+  isCustomizable Boolean @default(true)
+  isFeatured     Boolean @default(false)
+  
+  // Status
+  status String @default("active") // active | inactive | archived
+  
+  // Display
+  displayOrder Int @default(0)
+  
+  // SEO
+  metaTitle       String? @db.Text
+  metaDescription String? @db.Text
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  collection      MerchCollection  @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  variants        ProductVariant[]
+  mockupTemplates MockupTemplate[]
+  
+  @@map("products")
+}
+
+// 3. PRODUCT VARIANT (Opsi Produksi)
+model ProductVariant {
+  id        String @id @default(cuid())
+  productId String
+  name      String // "A4 Canvas DTF" | "Large Cotton DTG"
+  sku       String @unique
+  
+  // Attributes (Flexible JSON for any product type)
+  attributes Json // { size: "A4", material: "Canvas", printing: "DTF", color: "Natural" }
+  
+  // Pricing
+  basePrice      Decimal @db.Decimal(12, 2)
+  compareAtPrice Decimal? @db.Decimal(12, 2) // For showing discounts
+  
+  // Stock & Production
+  stockStatus    String  @default("in-stock") // in-stock | made-to-order | out-of-stock
+  stockQuantity  Int?    // Null = unlimited
+  lowStockAlert  Int?    // Alert when stock below this
+  
+  // Production Details
+  productionTime String? // "3-5 days" | "1 week"
+  weight         Decimal? @db.Decimal(10, 2) // in grams
+  dimensions     Json? // { length, width, height } in cm
+  
+  // Display
+  displayOrder Int     @default(0)
+  isActive     Boolean @default(true)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  product         Product          @relation(fields: [productId], references: [id], onDelete: Cascade)
+  mockupTemplates MockupTemplate[]
+  orderItems      OrderItem[]
+  
+  @@map("product_variants")
+}
+
+// 4. MOCKUP TEMPLATE (Alat Produksi - Subordinate to Product)
+model MockupTemplate {
+  id        String  @id @default(cuid())
+  productId String
+  variantId String? // Optional - can be general or variant-specific
+  
+  // Canvas Configuration
+  canvasWidth  Int
+  canvasHeight Int
+  aspectRatio  String? // "1:1" | "4:3" | "16:9"
+  
+  // Print Area (Front)
+  printAreaX      Float
+  printAreaY      Float
+  printAreaWidth  Float
+  printAreaHeight Float
+  
+  // Safe Area (Front)
+  safeAreaX      Float
+  safeAreaY      Float
+  safeAreaWidth  Float
+  safeAreaHeight Float
+  
+  // Back View (Optional)
+  hasBackView         Boolean @default(false)
+  backPrintAreaX      Float?
+  backPrintAreaY      Float?
+  backPrintAreaWidth  Float?
+  backPrintAreaHeight Float?
+  backSafeAreaX       Float?
+  backSafeAreaY       Float?
+  backSafeAreaWidth   Float?
+  backSafeAreaHeight  Float?
+  
+  // Mockup Images
+  frontMockupImage String? @db.Text // Base mockup image (front)
+  backMockupImage  String? @db.Text // Base mockup image (back)
+  tintMaskUrl      String? @db.Text // For color tinting
+  
+  // Design Rules
+  maxColors       Int? // Maximum colors allowed
+  allowedFormats  Json? // ["PNG", "SVG", "AI", "PDF"]
+  minResolution   Int? // Minimum DPI
+  maxFileSize     Int? // In MB
+  
+  // Layer Configuration
+  layersConfig Json? // Advanced layer rules
+  
+  // Status
+  isActive Boolean @default(true)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  product Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variant ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+  
+  @@map("mockup_templates")
+}

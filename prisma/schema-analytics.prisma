@@ -1,0 +1,314 @@
+// ACHIERA Platform - Analytics Schema Extension
+// Append-only analytics tables with brand isolation
+
+// ============================================
+// ANALYTICS EVENTS (Immutable Event Log)
+// ============================================
+
+model AnalyticsEvent {
+  id              String   @id @default(uuid())
+  brandId         String   @map("brand_id")
+  eventType       String   @map("event_type") @db.VarChar(100)
+  eventTimestamp  DateTime @map("event_timestamp")
+  recordedAt      DateTime @default(now()) @map("recorded_at")
+  correlationId   String?  @map("correlation_id") @db.VarChar(100)
+  
+  // Event payload (JSON)
+  payload         Json
+  
+  // Metadata
+  source          String   @db.VarChar(50) // 'system' | 'import' | 'api' | 'manual'
+  sourceId        String?  @map("source_id") @db.VarChar(100)
+  createdBy       String?  @map("created_by")
+  
+  brand           Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  
+  @@index([brandId, eventType, eventTimestamp], name: "idx_brand_event_time")
+  @@index([correlationId], name: "idx_correlation")
+  @@index([eventTimestamp], name: "idx_event_time")
+  @@map("analytics_events")
+}
+
+// ============================================
+// DAILY SALES SNAPSHOT (Pre-aggregated)
+// ============================================
+
+model AnalyticsDailySales {
+  id                    String   @id @default(uuid())
+  brandId               String   @map("brand_id")
+  snapshotDate          DateTime @map("snapshot_date") @db.Date
+  
+  // Revenue metrics
+  grossRevenue          Decimal  @default(0) @map("gross_revenue") @db.Decimal(15, 2)
+  netRevenue            Decimal  @default(0) @map("net_revenue") @db.Decimal(15, 2)
+  discountAmount        Decimal  @default(0) @map("discount_amount") @db.Decimal(15, 2)
+  refundAmount          Decimal  @default(0) @map("refund_amount") @db.Decimal(15, 2)
+  
+  // Order metrics
+  orderCount            Int      @default(0) @map("order_count")
+  avgOrderValue         Decimal  @default(0) @map("avg_order_value") @db.Decimal(15, 2)
+  
+  // Product metrics
+  unitsSold             Int      @default(0) @map("units_sold")
+  uniqueProductsSold    Int      @default(0) @map("unique_products_sold")
+  
+  // Customer metrics
+  newCustomers          Int      @default(0) @map("new_customers")
+  returningCustomers    Int      @default(0) @map("returning_customers")
+  uniqueCustomers       Int      @default(0) @map("unique_customers")
+  
+  // Channel breakdown (JSON)
+  revenueByChannel      Json?    @map("revenue_by_channel")
+  ordersByChannel       Json?    @map("orders_by_channel")
+  
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+  
+  brand                 Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  
+  @@unique([brandId, snapshotDate], name: "unique_brand_date")
+  @@index([brandId, snapshotDate], name: "idx_brand_date")
+  @@map("analytics_daily_sales")
+}
+
+// ============================================
+// DAILY ADS SNAPSHOT (Pre-aggregated)
+// ============================================
+
+model AnalyticsDailyAds {
+  id              String   @id @default(uuid())
+  brandId         String   @map("brand_id")
+  snapshotDate    DateTime @map("snapshot_date") @db.Date
+  platform        String   @db.VarChar(50) // 'meta' | 'google' | 'shopee' | 'tiktok'
+  
+  // Metrics
+  impressions     BigInt   @default(0)
+  clicks          Int      @default(0)
+  spend           Decimal  @default(0) @db.Decimal(15, 2)
+  conversions     Int      @default(0)
+  revenue         Decimal  @default(0) @db.Decimal(15, 2)
+  
+  // Calculated metrics
+  ctr             Decimal  @default(0) @db.Decimal(5, 4)
+  cpc             Decimal  @default(0) @db.Decimal(10, 2)
+  cpa             Decimal  @default(0) @db.Decimal(10, 2)
+  roas            Decimal  @default(0) @db.Decimal(10, 2)
+  
+  // Campaign breakdown (JSON)
+  campaigns       Json?
+  
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+  
+  brand           Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  
+  @@unique([brandId, snapshotDate, platform], name: "unique_brand_date_platform")
+  @@index([brandId, snapshotDate], name: "idx_brand_date")
+  @@map("analytics_daily_ads")
+}
+
+// ============================================
+// WEEKLY TRENDS (Aggregated Insights)
+// ============================================
+
+model AnalyticsWeeklyTrends {
+  id                      String   @id @default(uuid())
+  brandId                 String   @map("brand_id")
+  weekStartDate           DateTime @map("week_start_date") @db.Date
+  weekEndDate             DateTime @map("week_end_date") @db.Date
+  
+  // Revenue trends
+  revenueTotal            Decimal  @default(0) @map("revenue_total") @db.Decimal(15, 2)
+  revenueGrowthPct        Decimal  @default(0) @map("revenue_growth_pct") @db.Decimal(5, 2)
+  revenueTrend            String   @default("stable") @map("revenue_trend") @db.VarChar(20) // 'up' | 'down' | 'stable'
+  
+  // Customer trends
+  customerAcquisition     Int      @default(0) @map("customer_acquisition")
+  customerRetentionRate   Decimal  @default(0) @map("customer_retention_rate") @db.Decimal(5, 2)
+  customerChurnRate       Decimal  @default(0) @map("customer_churn_rate") @db.Decimal(5, 2)
+  
+  // Product trends (JSON)
+  topProducts             Json?    @map("top_products")
+  trendingProducts        Json?    @map("trending_products")
+  decliningProducts       Json?    @map("declining_products")
+  
+  // Ads trends
+  totalAdSpend            Decimal  @default(0) @map("total_ad_spend") @db.Decimal(15, 2)
+  avgRoas                 Decimal  @default(0) @map("avg_roas") @db.Decimal(10, 2)
+  bestPerformingPlatform  String?  @map("best_performing_platform") @db.VarChar(50)
+  
+  createdAt               DateTime @default(now()) @map("created_at")
+  updatedAt               DateTime @updatedAt @map("updated_at")
+  
+  brand                   Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  
+  @@unique([brandId, weekStartDate], name: "unique_brand_week")
+  @@index([brandId, weekStartDate], name: "idx_brand_week")
+  @@map("analytics_weekly_trends")
+}
+
+// ============================================
+// RECOMMENDATIONS (AI-Generated Insights)
+// ============================================
+
+model Recommendation {
+  id                  String    @id @default(uuid())
+  brandId             String    @map("brand_id")
+  
+  // Classification
+  category            String    @db.VarChar(100)
+  priority            String    @db.VarChar(20) // 'critical' | 'high' | 'medium' | 'low'
+  confidenceScore     Decimal   @map("confidence_score") @db.Decimal(3, 2)
+  
+  // Content
+  title               String    @db.VarChar(255)
+  description         String    @db.Text
+  reasoning           String    @db.Text
+  
+  // Action
+  recommendedAction   String?   @map("recommended_action") @db.Text
+  expectedImpact      String?   @map("expected_impact") @db.Text
+  estimatedValue      Decimal?  @map("estimated_value") @db.Decimal(15, 2)
+  
+  // Supporting data (JSON)
+  supportingMetrics   Json?     @map("supporting_metrics")
+  dataSources         Json?     @map("data_sources")
+  
+  // Status
+  status              String    @default("active") @db.VarChar(20) // 'active' | 'acted_upon' | 'dismissed' | 'expired'
+  expiresAt           DateTime? @map("expires_at")
+  
+  // Interaction tracking
+  viewedAt            DateTime? @map("viewed_at")
+  viewedBy            String?   @map("viewed_by")
+  actedUponAt         DateTime? @map("acted_upon_at")
+  actedUponBy         String?   @map("acted_upon_by")
+  actionTaken         String?   @map("action_taken") @db.Text
+  dismissedAt         DateTime? @map("dismissed_at")
+  dismissedBy         String?   @map("dismissed_by")
+  dismissalReason     String?   @map("dismissal_reason") @db.Text
+  
+  createdAt           DateTime  @default(now()) @map("created_at")
+  updatedAt           DateTime  @updatedAt @map("updated_at")
+  
+  brand               Brand     @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  
+  @@index([brandId, status], name: "idx_brand_status")
+  @@index([brandId, priority], name: "idx_brand_priority")
+  @@index([createdAt], name: "idx_created")
+  @@map("recommendations")
+}
+
+// ============================================
+// SALES IMPORT RAW (Excel Upload Storage)
+// ============================================
+
+model SalesImportRaw {
+  id                    String    @id @default(uuid())
+  importId              String    @map("import_id") @db.VarChar(100)
+  brandId               String    @map("brand_id")
+  rowNumber             Int       @map("row_number")
+  
+  // Transaction data
+  transactionDate       String    @map("transaction_date") @db.VarChar(50)
+  orderId               String?   @map("order_id") @db.VarChar(100)
+  productName           String    @map("product_name") @db.VarChar(255)
+  productSku            String?   @map("product_sku") @db.VarChar(100)
+  quantity              Decimal   @db.Decimal(10, 2)
+  unitPrice             Decimal   @map("unit_price") @db.Decimal(15, 2)
+  totalAmount           Decimal   @map("total_amount") @db.Decimal(15, 2)
+  discount              Decimal?  @db.Decimal(15, 2)
+  
+  // Customer data
+  customerName          String?   @map("customer_name") @db.VarChar(255)
+  customerPhone         String?   @map("customer_phone") @db.VarChar(50)
+  customerEmail         String?   @map("customer_email") @db.VarChar(255)
+  
+  // Channel data
+  salesChannel          String?   @map("sales_channel") @db.VarChar(50)
+  platform              String?   @db.VarChar(50)
+  
+  // Metadata
+  notes                 String?   @db.Text
+  importedAt            DateTime  @default(now()) @map("imported_at")
+  importedBy            String    @map("imported_by")
+  
+  // Validation
+  validationStatus      String    @default("pending") @map("validation_status") @db.VarChar(20)
+  validationErrors      Json?     @map("validation_errors")
+  validationWarnings    Json?     @map("validation_warnings")
+  
+  // Normalization
+  normalizedProductId   String?   @map("normalized_product_id")
+  normalizedVariantId   String?   @map("normalized_variant_id")
+  normalizedCustomerId  String?   @map("normalized_customer_id")
+  
+  brand                 Brand     @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  
+  @@index([importId], name: "idx_import_id")
+  @@index([brandId, importId], name: "idx_brand_import")
+  @@index([validationStatus], name: "idx_validation_status")
+  @@map("sales_import_raw")
+}
+
+// ============================================
+// ADS IMPORT RAW (Excel Upload Storage)
+// ============================================
+
+model AdsImportRaw {
+  id                  String    @id @default(uuid())
+  importId            String    @map("import_id") @db.VarChar(100)
+  brandId             String    @map("brand_id")
+  rowNumber           Int       @map("row_number")
+  
+  // Platform data
+  platform            String    @db.VarChar(50)
+  campaignId          String?   @map("campaign_id") @db.VarChar(100)
+  campaignName        String    @map("campaign_name") @db.VarChar(255)
+  adSetId             String?   @map("ad_set_id") @db.VarChar(100)
+  adSetName           String?   @map("ad_set_name") @db.VarChar(255)
+  adId                String?   @map("ad_id") @db.VarChar(100)
+  adName              String?   @map("ad_name") @db.VarChar(255)
+  
+  // Date
+  date                String    @db.VarChar(50)
+  
+  // Metrics
+  impressions         BigInt    @default(0)
+  clicks              Int       @default(0)
+  spend               Decimal   @db.Decimal(15, 2)
+  conversions         Int?
+  revenue             Decimal?  @db.Decimal(15, 2)
+  
+  // Optional metrics
+  videoViews          Int?      @map("video_views")
+  engagement          Int?
+  reach               BigInt?
+  frequency           Decimal?  @db.Decimal(5, 2)
+  
+  // Metadata
+  importedAt          DateTime  @default(now()) @map("imported_at")
+  importedBy          String    @map("imported_by")
+  validationStatus    String    @default("pending") @map("validation_status") @db.VarChar(20)
+  validationErrors    Json?     @map("validation_errors")
+  
+  brand               Brand     @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  
+  @@index([importId], name: "idx_import_id")
+  @@index([brandId, importId], name: "idx_brand_import")
+  @@index([validationStatus], name: "idx_validation_status")
+  @@map("ads_import_raw")
+}
+
+// ============================================
+// UPDATE BRAND MODEL (Add Relations)
+// ============================================
+
+// Add these relations to existing Brand model:
+// analyticsEvents      AnalyticsEvent[]
+// dailySalesSnapshots  AnalyticsDailySales[]
+// dailyAdsSnapshots    AnalyticsDailyAds[]
+// weeklyTrends         AnalyticsWeeklyTrends[]
+// recommendations      Recommendation[]
+// salesImports         SalesImportRaw[]
+// adsImports           AdsImportRaw[]

@@ -1,0 +1,46 @@
+[
+  {
+    "id": "cmjcr0f320004xwmn1g24s5bg",
+    "name": "Rendang Daging Mande",
+    "slug": "rendang-daging-mande",
+    "category": {
+      "name": "Lauk Matang",
+      "brand": {
+        "slug": "rasa-ibu"
+      }
+    }
+  },
+  {
+    "id": "cmjcr0f4r0009xwmnomk7k35a",
+    "name": "Ayam Goreng Lengkuas",
+    "slug": "ayam-goreng-lengkuas",
+    "category": {
+      "name": "Lauk Matang",
+      "brand": {
+        "slug": "rasa-ibu"
+      }
+    }
+  },
+  {
+    "id": "cmjcr0f5m000jxwmn9nscarrb",
+    "name": "Gulai Daun Singkong",
+    "slug": "gulai-daun-singkong",
+    "category": {
+      "name": "Sayuran",
+      "brand": {
+        "slug": "rasa-ibu"
+      }
+    }
+  },
+  {
+    "id": "cmjdnk3ck000uircj650iu5b0",
+    "name": "test",
+    "slug": "test",
+    "category": {
+      "name": "Lauk Matang",
+      "brand": {
+        "slug": "rasa-ibu"
+      }
+    }
+  }
+]

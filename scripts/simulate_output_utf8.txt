@@ -1,0 +1,38 @@
+﻿--- Simulating Auth for mahesajulioresman@achier.com ---
+prisma:info Starting a mysql pool with 9 connections.
+prisma:query SELECT `achiera_db_master`.`users`.`id`, `achiera_db_master`.`users`.`name`, `achiera_db_master`.`users`.`email`, `achiera_db_master`.`users`.`passwordHash`, `achiera_db_master`.`users`.`createdAt`, `achiera_db_master`.`users`.`updatedAt`, `achiera_db_master`.`users`.`globalRole` FROM `achiera_db_master`.`users` WHERE (`achiera_db_master`.`users`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `achiera_db_master`.`user_brand_roles`.`id`, `achiera_db_master`.`user_brand_roles`.`userId`, `achiera_db_master`.`user_brand_roles`.`brandId`, `achiera_db_master`.`user_brand_roles`.`role`, `achiera_db_master`.`user_brand_roles`.`createdAt` FROM `achiera_db_master`.`user_brand_roles` WHERE `achiera_db_master`.`user_brand_roles`.`userId` IN (?)
+prisma:query SELECT `achiera_db_master`.`brands`.`id`, `achiera_db_master`.`brands`.`name`, `achiera_db_master`.`brands`.`slug` FROM `achiera_db_master`.`brands` WHERE `achiera_db_master`.`brands`.`id` IN (?,?,?,?)
+Simulated Authorize result:
+{
+  "id": "cmjcx7bo40000112evzqp4lyn",
+  "name": "Mahesa Julio Resman",
+  "email": "mahesajulioresman@achier.com",
+  "globalRole": "USER",
+  "brandRoles": [
+    {
+      "brandId": "cmjcr0f1c0000xwmnewfozt0n",
+      "brandSlug": "rasa-ibu",
+      "brandName": "RASA IBU",
+      "role": "BRAND_ADMIN"
+    },
+    {
+      "brandId": "cmjcxqzpi0000z1dh5757irjo",
+      "brandSlug": "achiera",
+      "brandName": "Achiera",
+      "role": "BRAND_ADMIN"
+    },
+    {
+      "brandId": "cmjcxqzr10006z1dh9wxkilmb",
+      "brandSlug": "achiera-merch",
+      "brandName": "Achiera Merch",
+      "role": "BRAND_ADMIN"
+    },
+    {
+      "brandId": "cmjcxqzre0009z1dhrvpx2ig2",
+      "brandSlug": "achiera-it-solution",
+      "brandName": "Achiera IT Solution",
+      "role": "BRAND_ADMIN"
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+﻿
+> achiera-web@0.1.0 build
+> next build
+
+node.exe : 
+[baseline-browser-mapping] The 
+data in this module is over two 
+months old.  To ensure accurate 
+Baseline data, please update: 
+`npm i 
+baseline-browser-mapping@latest 
+-D`
+At C:\Program 
+Files\nodejs\npm.ps1:29 char:3
++   & $NODE_EXE $NPM_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : No 
+   tSpecified: ([baseline-brows  
+  ...ping@latest -D`:String) [   
+ ], RemoteException
+    + FullyQualifiedErrorId : Na 
+   tiveCommandError
+ 
+   Γû▓ Next.js 16.0.5 (Turbopack)
+   - Environments: .env
+
+ ΓÜá The "middleware" file 
+convention is deprecated. Please 
+use "proxy" instead. Learn more: 
+https://nextjs.org/docs/messages/
+middleware-to-proxy
+   Creating an optimized production build ...
+[baseline-browser-mapping] The 
+data in this module is over two 
+months old.  To ensure accurate 
+Baseline data, please update: 
+`npm i 
+baseline-browser-mapping@latest 
+-D`
+ Γ£ô Compiled successfully in 50s
+   Running TypeScript ...
+Failed to compile.
+
+./prisma/seed-collection-first.ts
+:116:36
+Type error: Property 'product' 
+does not exist on type 'PrismaCli
+ent<PrismaClientOptions, never, 
+DefaultArgs>'.
+
+[0m [90m 114 |[39m
+ [90m 115 |[39m     [90m// 
+Tote Bag Products[39m
+[31m[1m>[22m[39m[90m 116 
+|[39m     [36mconst[39m 
+toteBagA4 [33m=[39m 
+[36mawait[39m prisma[33m.[39m
+product[33m.[39mcreate({
+ [90m     |[39m                
+                    
+[31m[1m^[22m[39m
+ [90m 117 |[39m         
+data[33m:[39m {
+ [90m 118 |[39m             
+collectionId[33m:[39m toteBagCo
+llection[33m.[39mid[33m,[39m
+ [90m 119 |[39m             
+slug[33m:[39m [32m'canvas-tote
+-bag-a4'[39m[33m,[39m[0m
+Next.js build worker exited with 
+code: 1 and signal: null

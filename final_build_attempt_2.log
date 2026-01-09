@@ -1,0 +1,26 @@
+
+> achiera-web@0.1.0 build
+> next build
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+   ▲ Next.js 16.0.5 (Turbopack)
+   - Environments: .env
+
+ ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+   Creating an optimized production build ...
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+ ✓ Compiled successfully in 42s
+   Running TypeScript ...
+Failed to compile.
+
+./scripts/comprehensive-audit.ts:82:53
+Type error: Cannot find name 'warehouses'.
+
+[0m [90m 80 |[39m             { name[33m:[39m [32m'Achiera Dashboard'[39m[33m,[39m route[33m:[39m [32m'/dashboard/achiera'[39m[33m,[39m status[33m:[39m [32m'✅ Fixed'[39m }[33m,[39m
+ [90m 81 |[39m             { name[33m:[39m [32m'Rasa Ibu Dashboard'[39m[33m,[39m route[33m:[39m [32m'/dashboard/rasa-ibu'[39m[33m,[39m status[33m:[39m [32m'✅ Working'[39m }[33m,[39m
+[31m[1m>[22m[39m[90m 82 |[39m             { name[33m:[39m [32m'Warehouse Management'[39m[33m,[39m status[33m:[39m warehouses [33m>[39m [35m0[39m [33m?[39m [32m'✅ Available'[39m [33m:[39m [32m'⚠️  No warehouses'[39m }[33m,[39m
+ [90m    |[39m                                                     [31m[1m^[22m[39m
+ [90m 83 |[39m             { name[33m:[39m [32m'Intelligence Hub'[39m[33m,[39m status[33m:[39m ledgerAccounts [33m>[39m [35m0[39m [33m?[39m [32m'✅ Available'[39m [33m:[39m [32m'⚠️  No ledger data'[39m }[33m,[39m
+ [90m 84 |[39m             { name[33m:[39m [32m'Financial Reports'[39m[33m,[39m status[33m:[39m ledgerAccounts [33m>[39m [35m0[39m [33m?[39m [32m'✅ Available'[39m [33m:[39m [32m'⚠️  No ledger data'[39m }[33m,[39m
+ [90m 85 |[39m             { name[33m:[39m [32m'Order Management'[39m[33m,[39m status[33m:[39m orders [33m>[39m [35m0[39m [33m?[39m [32m'✅ Has data'[39m [33m:[39m [32m'⚠️  No orders'[39m }[33m,[39m[0m
+Next.js build worker exited with code: 1 and signal: null

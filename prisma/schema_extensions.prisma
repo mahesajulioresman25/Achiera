@@ -1,0 +1,58 @@
+// Phase 1 Free Features: Email Integration & WhatsApp Broadcast
+// Added: 2025-12-21
+
+model EmailIntegration {
+  id            String    @id @default(cuid())
+  brandId       String
+  brand         Brand     @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  
+  platform      String    // "SHOPEE", "TOKOPEDIA", "GRAB"
+  emailAddress  String    // Email yang terima notifikasi
+  isActive      Boolean   @default(true)
+  
+  lastSyncAt    DateTime?
+  totalSynced   Int       @default(0)
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  @@index([brandId])
+  @@map("email_integrations")
+}
+
+model WhatsAppCampaign {
+  id              String              @id @default(cuid())
+  brandId         String
+  brand           Brand               @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  
+  name            String
+  targetSegment   String              // "AT_RISK", "VIP", "NEW_CUSTOMER", "ALL"
+  messageTemplate String              @db.Text
+  
+  status          String              @default("DRAFT") // "DRAFT", "READY", "COMPLETED"
+  totalRecipients Int                 @default(0)
+  sentCount       Int                 @default(0)
+  
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  recipients      WhatsAppRecipient[]
+  
+  @@index([brandId])
+  @@map("whatsapp_campaigns")
+}
+
+model WhatsAppRecipient {
+  id         String           @id @default(cuid())
+  campaignId String
+  campaign   WhatsAppCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  
+  phone      String
+  name       String
+  message    String           @db.Text // Personalized message
+  isSent     Boolean          @default(false)
+  
+  createdAt  DateTime         @default(now())
+  
+  @@index([campaignId])
+  @@map("whatsapp_recipients")
+}

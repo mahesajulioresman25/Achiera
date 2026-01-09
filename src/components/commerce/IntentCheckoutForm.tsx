@@ -1,0 +1,490 @@
+'use client';
+
+import React, { useState } from 'react';
+import { useCart } from '@/lib/contexts/CartContext';
+import { getPublicBrandConfigAction } from '@/lib/actions/rasa-ibu/intelligence';
+
+import { createWebsiteOrderAction } from '@/lib/actions/commerce/orders';
+import { getMemberInfoAction } from '@/lib/actions/commerce/loyalty';
+import { getCustomerProfileByPhoneAction } from '@/lib/actions/commerce/customers';
+import { Check, Coins, Loader2, Sparkles, UserCheck } from 'lucide-react';
+
+import { toast } from 'sonner';
+
+export default function IntentCheckoutForm() {
+    const { items, cartTotal, clearCart, addToCart: addItem } = useCart();
+    const [customerName, setCustomerName] = useState('');
+    const [customerPhone, setCustomerPhone] = useState('');
+    const [customerEmail, setCustomerEmail] = useState('');
+    const [customerAddress, setCustomerAddress] = useState('');
+    const [delivery, setDelivery] = useState('Ambil di Dapur');
+    const [isRedirecting, setIsRedirecting] = useState(false);
+    const [whatsapp, setWhatsapp] = useState('628123456789');
+    const [error, setError] = useState<string | null>(null);
+    const [memberInfo, setMemberInfo] = useState<any>(null);
+    const [isLoadingPoints, setIsLoadingPoints] = useState(false);
+    const [isAutofilling, setIsAutofilling] = useState(false);
+    const [showAutofillBadge, setShowAutofillBadge] = useState(false);
+    const [usePoints, setUsePoints] = useState(false);
+    const [paymentMethod, setPaymentMethod] = useState<'TRANSFER' | 'QRIS'>('TRANSFER');
+    const [courierType, setCourierType] = useState<'GrabExpress' | 'GoSend'>('GrabExpress');
+    const [isGift, setIsGift] = useState(false);
+    const [giftMessage, setGiftMessage] = useState('');
+    const [recipientName, setRecipientName] = useState('');
+    const [recipientEmail, setRecipientEmail] = useState('');
+    const [brandConfig, setBrandConfig] = useState<any>(null);
+    const [isMarketingAllowed, setIsMarketingAllowed] = useState(true);
+
+    // ---------------------------------------------------------
+    // Note: Bundle logic is now handled by Cart Sidebar flow
+    // ---------------------------------------------------------
+
+    React.useEffect(() => {
+        async function load() {
+            const res = await getPublicBrandConfigAction('rasa-ibu');
+            if (res.success) {
+                if (res.data?.whatsapp) setWhatsapp(res.data.whatsapp);
+                setBrandConfig(res.data);
+            }
+        }
+        load();
+    }, []);
+
+    // AUTOFILL Logic
+    const handlePhoneBlur = async () => {
+        if (customerPhone.length >= 10 && !customerName) {
+            setIsAutofilling(true);
+            const res = await getCustomerProfileByPhoneAction(brandConfig?.id || 'rasa-ibu', customerPhone);
+            setIsAutofilling(false);
+
+            if (res.success && res.data?.isRepeatCustomer) {
+                if (!customerName) setCustomerName(res.data.name);
+                if (!customerAddress) setCustomerAddress(res.data.address);
+                setShowAutofillBadge(true);
+                // Also auto-load member/points info if available
+                if (res.data.loyalty) {
+                    setMemberInfo({
+                        ...res.data.loyalty,
+                        customerName: res.data.name
+                    });
+                }
+                setTimeout(() => setShowAutofillBadge(false), 3000);
+            }
+        }
+    };
+
+    const checkPoints = async () => {
+        if (!customerPhone) {
+            setError('Masukkan nomor telpon untuk cek poin.');
+            return;
+        }
+        setError(null);
+        setIsLoadingPoints(true);
+        const res = await getMemberInfoAction('rasa-ibu', customerPhone);
+        setIsLoadingPoints(false);
+
+        if (res.success && res.data) {
+            setMemberInfo(res.data);
+            if ((res.data.availablePoints || 0) > 0) {
+                setUsePoints(true);
+            }
+        } else {
+            setError(res.error || 'Gagal mengecek poin.');
+            setMemberInfo(null);
+        }
+    };
+
+    if (items.length === 0) return null;
+
+    // Calculate points to use (Strictly Brand Specific)
+    const availableToUse = memberInfo?.availablePoints || 0;
+    const isUsingGlobal = false; // Isolated loyalty for Rasa Ibu
+
+    const pointMultiplier = brandConfig?.loyalty?.pointValueInRupiah || 100;
+    const discountValue = usePoints && memberInfo ? availableToUse * pointMultiplier : 0;
+    const finalTotal = Math.max(0, cartTotal - discountValue);
+
+    const handleHandoff = async () => {
+        setError(null);
+        setIsRedirecting(true);
+
+        // 1. Persist to Database First
+        const orderResult = await createWebsiteOrderAction({
+            brandId: brandConfig?.id || 'rasa-ibu',
+            customerName,
+            customerPhone,
+            customerEmail,
+            customerAddress,
+            items: items.map(i => ({
+                productId: i.productId,
+                variantId: i.variantId,
+                name: i.name,
+                quantity: i.quantity,
+                price: i.price,
+                variantName: i.variantName,
+                note: i.note // Include customer notes
+            })),
+            totalAmount: cartTotal,
+            redeemedPoints: usePoints ? availableToUse : 0,
+            deliveryOption: delivery,
+            courierType: delivery === 'Kurir Instan' ? courierType : undefined,
+            paymentMethod: paymentMethod, // Pass the selected payment method
+            isGift,
+            giftMessage,
+            recipientName,
+            recipientEmail,
+            isMarketingAllowed
+        });
+        // ... (remaining checkout logic handled by existing code)
+
+        if (!orderResult.success) {
+            setError(orderResult.error || 'Gagal menyimpan pesanan.');
+            setIsRedirecting(false);
+            return;
+        }
+
+        if (orderResult.orderId) {
+            clearCart();
+            window.location.href = `/order/track/${orderResult.orderId}`;
+            return;
+        }
+
+        setIsRedirecting(false);
+    };
+
+    return (
+        <div className="bg-white border border-[#E5E1D8] rounded-[2rem] p-6 md:p-10 shadow-sm space-y-10 animate-in slide-in-from-bottom duration-500 max-w-2xl mx-auto">
+            <div className="space-y-3">
+                <div className="flex justify-between items-start">
+                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#8B7E66]">Satu Langkah Lagi</span>
+                    {showAutofillBadge && (
+                        <span className="flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-600 text-[9px] font-bold rounded-full border border-emerald-100 animate-bounce">
+                            <UserCheck className="w-3 h-3" /> Data Otomatis Terisi
+                        </span>
+                    )}
+                </div>
+                <h2 className="text-3xl font-black text-[#2D3A2D] tracking-tight">Kirim Pesanan Bunda</h2>
+            </div>
+
+            {error && (
+                <div className="p-4 bg-red-50 border border-red-100 rounded-xl text-xs text-red-600 font-bold">
+                    ⚠️ {error}
+                </div>
+            )}
+
+            <div className="space-y-8">
+                {/* 1. Informasi Kontak */}
+                <div className="space-y-4">
+                    <h3 className="text-[10px] font-black uppercase tracking-widest text-[#B2BCA2] border-b border-[#F0EEE9] pb-2">1. Informasi Kontak</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <label className="text-[9px] font-black uppercase tracking-widest text-[#8B7E66]">Siapa Nama Bunda?</label>
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    value={customerName}
+                                    onChange={(e) => setCustomerName(e.target.value)}
+                                    className="w-full bg-[#FDFBF7] border border-[#E5E1D8] rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#B2BCA2] transition-all"
+                                    placeholder="Nama Bunda..."
+                                />
+                                {isAutofilling && (
+                                    <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                                        <Loader2 className="w-4 h-4 animate-spin text-slate-400" />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-[9px] font-black uppercase tracking-widest text-[#8B7E66]">Alamat Email Bunda</label>
+                            <input
+                                required
+                                type="email"
+                                value={customerEmail}
+                                onChange={(e) => setCustomerEmail(e.target.value)}
+                                className="w-full bg-[#FDFBF7] border border-[#E5E1D8] rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#B2BCA2] transition-all"
+                                placeholder="bunda@email.com"
+                            />
+                        </div>
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-[9px] font-black uppercase tracking-widest text-[#8B7E66]">Nomor WhatsApp</label>
+                        <div className="relative">
+                            <input
+                                type="tel"
+                                value={customerPhone}
+                                onBlur={handlePhoneBlur}
+                                onChange={(e) => {
+                                    setCustomerPhone(e.target.value);
+                                    if (memberInfo) setMemberInfo(null);
+                                }}
+                                className="w-full bg-[#FDFBF7] border border-[#E5E1D8] rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#B2BCA2] transition-all"
+                                placeholder="0812..."
+                                autoComplete="tel"
+                            />
+                            <button
+                                onClick={checkPoints}
+                                disabled={isLoadingPoints || !customerPhone}
+                                className="absolute right-2 top-1.5 bottom-1.5 px-4 bg-[#2D3A2D] text-[#FDFBF7] text-[9px] font-black uppercase rounded-lg hover:bg-[#3d4d3d] disabled:opacity-50 transition-all flex items-center gap-2"
+                            >
+                                {isLoadingPoints ? <Loader2 className="w-3 h-3 animate-spin" /> : <Coins className="w-3 h-3" />}
+                                {memberInfo ? 'Cek Lagi' : 'Cek Poin'}
+                            </button>
+                        </div>
+
+                        {/* WhatsApp Marketing Opt-In */}
+                        <div className={`flex items-center gap-3 p-4 border rounded-2xl transition-all duration-300 ${isMarketingAllowed ? 'bg-amber-50 border-amber-200' : 'bg-[#FDFBF7] border-[#E5E1D8]'}`}>
+                            <label className="relative inline-flex items-center cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    checked={isMarketingAllowed}
+                                    onChange={(e) => setIsMarketingAllowed(e.target.checked)}
+                                    className="sr-only peer"
+                                />
+                                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-600"></div>
+                            </label>
+                            <div className="flex-1">
+                                <div className="flex items-center gap-2">
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-[#2D3A2D]">WhatsApp Notifikasi & Promo</p>
+                                    <span className="px-1.5 py-0.5 bg-amber-200 text-amber-800 text-[8px] font-black rounded">DOUBLE POINTS ⚡</span>
+                                </div>
+                                <p className="text-[9px] text-[#8B7E66]">Dapatkan 2x Poin Loyalty untuk setiap pesanan & info promo spesial.</p>
+                            </div>
+                        </div>
+
+                        {/* Point Check Feedback */}
+                        {memberInfo && (
+                            <div className="mt-3 p-4 bg-emerald-50 border-2 border-emerald-200 rounded-xl animate-in slide-in-from-top-2 duration-200">
+                                <div className="flex items-start gap-3">
+                                    <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <Check className="w-6 h-6 text-white" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-emerald-700 mb-1">✨ Poin Ditemukan!</p>
+                                        <p className="text-sm font-black text-emerald-900">
+                                            {memberInfo.customerName || customerName || 'Bunda'} punya <span className="text-lg">{availableToUse.toLocaleString()}</span> poin
+                                        </p>
+                                        <p className="text-[10px] text-emerald-600 mt-1">
+                                            {isUsingGlobal ? '🌍 Poin Global (bisa dipakai di semua brand)' : '🏠 Poin Rasa Ibu'}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* 2. Pengiriman */}
+                {/* 2. Gifting Section (Optional) */}
+                <div className="space-y-4">
+                    <h3 className="text-[10px] font-black uppercase tracking-widest text-[#B2BCA2] border-b border-[#F0EEE9] pb-2">2. Pilihan Hadiah</h3>
+                    <div className="bg-[#FDFBF7] border border-[#E5E1D8] rounded-2xl p-5 space-y-4">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${isGift ? 'bg-pink-100 text-pink-600' : 'bg-slate-100 text-slate-400'}`}>
+                                    <Sparkles className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-[#2D3A2D]">Kirim sebagai Hadiah?</p>
+                                    <p className="text-[9px] text-[#8B7E66]">Sertakan kartu ucapan digital spesial.</p>
+                                </div>
+                            </div>
+                            <label className="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" checked={isGift} onChange={(e) => setIsGift(e.target.checked)} className="sr-only peer" />
+                                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-500"></div>
+                            </label>
+                        </div>
+
+                        {isGift && (
+                            <div className="space-y-3 pt-4 border-t border-[#E5E1D8] animate-in slide-in-from-top-2">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    <div className="space-y-1">
+                                        <label className="text-[9px] font-black uppercase tracking-widest text-pink-800">Nama Penerima</label>
+                                        <input
+                                            type="text"
+                                            value={recipientName}
+                                            onChange={(e) => setRecipientName(e.target.value)}
+                                            className="w-full bg-white border border-[#E5E1D8] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-pink-200"
+                                            placeholder="Nama Penerima..."
+                                        />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="text-[9px] font-black uppercase tracking-widest text-pink-800">Email Penerima (Opsional)</label>
+                                        <input
+                                            type="email"
+                                            value={recipientEmail}
+                                            onChange={(e) => setRecipientEmail(e.target.value)}
+                                            className="w-full bg-white border border-[#E5E1D8] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-pink-200"
+                                            placeholder="email@penerima.com"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-[9px] font-black uppercase tracking-widest text-pink-800">Pesan Spesial</label>
+                                    <textarea
+                                        value={giftMessage}
+                                        onChange={(e) => setGiftMessage(e.target.value)}
+                                        className="w-full bg-white border border-[#E5E1D8] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-pink-200 min-h-[80px]"
+                                        placeholder="Tulis ucapan hangat untuk mereka..."
+                                    />
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* 3. Pengiriman */}
+                {/* 3. Pengiriman */}
+                <div className="space-y-4">
+                    <h3 className="text-[10px] font-black uppercase tracking-widest text-[#B2BCA2] border-b border-[#F0EEE9] pb-2">3. Pengiriman</h3>
+                    <div className="space-y-2">
+                        <label className="text-[9px] font-black uppercase tracking-widest text-[#8B7E66]">Metode Pengiriman</label>
+                        <div className="flex flex-col sm:flex-row gap-3">
+                            {['Ambil di Dapur', 'Kurir Instan'].map((pref) => (
+                                <button
+                                    key={pref}
+                                    type="button"
+                                    onClick={() => setDelivery(pref)}
+                                    className={`flex-1 px-6 py-4 rounded-xl text-[10px] font-black uppercase tracking-[0.1em] border transition-all ${delivery === pref
+                                        ? 'bg-[#2D3A2D] text-[#FDFBF7] border-[#2D3A2D] shadow-lg shadow-green-950/20'
+                                        : 'bg-white text-[#8B7E66] border-[#E5E1D8] hover:bg-slate-50'
+                                        }`}
+                                >
+                                    {pref}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {delivery === 'Kurir Instan' && (
+                        <div className="space-y-3 p-5 bg-[#FDFBF7] rounded-2xl border border-[#E5E1D8] animate-in fade-in slide-in-from-top-2">
+                            <label className="text-[9px] font-black uppercase tracking-widest text-[#8B7E66]">Pilih Kurir Instan Favorit Bunda</label>
+                            <div className="grid grid-cols-2 gap-3">
+                                {['GrabExpress', 'GoSend'].map((c) => (
+                                    <button
+                                        key={c}
+                                        type="button"
+                                        onClick={() => setCourierType(c as any)}
+                                        className={`px-4 py-4 rounded-xl text-[10px] font-black uppercase border transition-all ${courierType === c
+                                            ? 'bg-[#2D3A2D] text-[#FDFBF7] border-[#2D3A2D]'
+                                            : 'bg-white text-[#8B7E66] border-[#E5E1D8]'
+                                            }`}
+                                    >
+                                        {c}
+                                    </button>
+                                ))}
+                            </div>
+                            <p className="text-[9px] text-[#8B7E66] italic leading-tight">*Ongkir dibayar saat serah terima oleh Bunda.</p>
+                        </div>
+                    )}
+
+                    <div className="space-y-2">
+                        <label className="text-[9px] font-black uppercase tracking-widest text-[#8B7E66]">Alamat Lengkap</label>
+                        <textarea
+                            value={customerAddress}
+                            onChange={(e) => setCustomerAddress(e.target.value)}
+                            className="w-full bg-[#FDFBF7] border border-[#E5E1D8] rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#B2BCA2] transition-all min-h-[80px]"
+                            placeholder="Tuliskan alamat lengkap pengiriman Bunda di sini..."
+                        />
+                    </div>
+                </div>
+
+                {/* 4. Pembayaran */}
+                <div className="space-y-4">
+                    <h3 className="text-[10px] font-black uppercase tracking-widest text-[#B2BCA2] border-b border-[#F0EEE9] pb-2">4. Pembayaran</h3>
+                    <div className="grid grid-cols-1 gap-3">
+                        <button
+                            type="button"
+                            onClick={() => setPaymentMethod('TRANSFER')}
+                            className={`p-5 rounded-2xl border text-left transition-all relative ${paymentMethod === 'TRANSFER'
+                                ? 'bg-[#2D3A2D] text-[#FDFBF7] border-[#2D3A2D] shadow-lg shadow-green-950/20'
+                                : 'bg-white text-[#8B7E66] border-[#E5E1D8] hover:bg-slate-50'
+                                }`}
+                        >
+                            <p className="text-[10px] font-black uppercase tracking-widest">Transfer Bank</p>
+                            <p className="text-[9px] opacity-70 mt-1.5 font-medium leading-relaxed">Konfirmasi & pelacakan pesanan via Email & Web.</p>
+                        </button>
+
+                        {brandConfig?.qrisEnabled && (
+                            <button
+                                type="button"
+                                onClick={() => setPaymentMethod('QRIS')}
+                                className={`p-5 rounded-2xl border text-left transition-all relative overflow-hidden ${paymentMethod === 'QRIS'
+                                    ? 'bg-emerald-800 text-[#FDFBF7] border-emerald-800 shadow-lg shadow-emerald-950/20'
+                                    : 'bg-white text-emerald-800 border-[#E5E1D8] hover:bg-emerald-50'
+                                    }`}
+                            >
+                                <div className="flex justify-between items-start">
+                                    <p className="text-[10px] font-black uppercase tracking-widest">Bayar Instan (QRIS)</p>
+                                    <span className="bg-emerald-100 text-emerald-700 text-[8px] px-2 py-0.5 rounded font-black">REKOMENDASI</span>
+                                </div>
+                                <p className="text-[9px] opacity-70 mt-1.5 font-medium leading-relaxed">Scan kode QRIS & pesanan Bunda langsung diproses otomatis.</p>
+                            </button>
+                        )}
+                    </div>
+                </div>
+
+                {/* Loyalty & Summary Section */}
+                <div className="space-y-6 pt-6 border-t border-[#F0EEE9]">
+                    {memberInfo && (
+                        <div className={`p-6 rounded-2xl border transition-all duration-300 ${usePoints ? 'bg-indigo-50 border-indigo-100' : 'bg-slate-50 border-slate-100'}`}>
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className={`p-2 rounded-xl ${usePoints ? 'bg-indigo-500 text-white' : 'bg-slate-200 text-slate-500'}`}>
+                                        <Sparkles className="w-4 h-4" />
+                                    </div>
+                                    <div>
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Loyalty Poin</p>
+                                        <p className="text-sm font-bold text-slate-900">Bunda punya <span className="text-indigo-600 font-black">{availableToUse} Poin</span></p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => setUsePoints(!usePoints)}
+                                    className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${usePoints
+                                        ? 'bg-indigo-600 text-white'
+                                        : 'bg-white border text-slate-500 hover:bg-slate-100'
+                                        }`}
+                                >
+                                    {usePoints ? 'Dipakai' : 'Gunakan'}
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="p-6 bg-[#FDFBF7] rounded-[1.5rem] border border-dashed border-[#E5E1D8] space-y-4">
+                        <div className="flex justify-between items-baseline">
+                            <p className="text-[10px] font-black text-[#8B7E66] uppercase">Subtotal {items.length} Menu</p>
+                            <p className="text-lg font-black text-[#2D3A2D]">Rp {cartTotal.toLocaleString('id-ID')}</p>
+                        </div>
+
+                        {usePoints && discountValue > 0 && (
+                            <div className="flex justify-between items-baseline text-indigo-600">
+                                <p className="text-[10px] font-black uppercase">Potongan Poin</p>
+                                <p className="text-lg font-black">- Rp {discountValue.toLocaleString('id-ID')}</p>
+                            </div>
+                        )}
+
+                        <div className="pt-3 border-t border-[#E5E1D8] flex justify-between items-baseline">
+                            <p className="text-[11px] font-black text-[#2D3A2D] uppercase tracking-wider">Total Akhir</p>
+                            <p className="text-2xl font-black text-[#2D3A2D]">Rp {finalTotal.toLocaleString('id-ID')}</p>
+                        </div>
+                    </div>
+
+                    <button
+                        onClick={handleHandoff}
+                        disabled={!customerName || !customerPhone || !customerEmail || !customerAddress || isRedirecting}
+                        className={`w-full py-5 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] shadow-xl transition-all ${!customerName || !customerPhone || !customerEmail || !customerAddress || isRedirecting
+                            ? 'bg-slate-100 text-slate-400'
+                            : 'bg-[#2D3A2D] text-[#FDFBF7] hover:scale-[1.01] active:scale-[0.99] shadow-green-950/20'
+                            }`}
+                    >
+                        {isRedirecting ? 'Memproses...' : paymentMethod === 'QRIS' ? 'Bayar Sekarang ⚡' : 'Selesaikan Pesanan 🥘'}
+                    </button>
+
+                    <p className="text-[9px] text-center text-slate-400 italic leading-relaxed">
+                        Pesanan Bunda akan langsung dicatat asisten Dapur Rasa Ibu.<br />Konfirmasi & detail akan dikirimkan ke Email Bunda secara instan.
+                    </p>
+                </div>
+            </div>
+        </div>
+    );
+}

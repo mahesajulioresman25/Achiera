@@ -1,0 +1,26 @@
+
+> achiera-web@0.1.0 build
+> next build
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+   ▲ Next.js 16.0.5 (Turbopack)
+   - Environments: .env
+
+ ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+   Creating an optimized production build ...
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+ ✓ Compiled successfully in 43s
+   Running TypeScript ...
+Failed to compile.
+
+./scripts/create-sample-products.ts:22:47
+Type error: Property 'mockupProductTemplate' does not exist on type 'PrismaClient<PrismaClientOptions, never, DefaultArgs>'. Did you mean 'mockupTemplate'?
+
+[0m [90m 20 |[39m
+ [90m 21 |[39m         [90m// Check existing products[39m
+[31m[1m>[22m[39m[90m 22 |[39m         [36mconst[39m existingProducts [33m=[39m [36mawait[39m prisma[33m.[39mmockupProductTemplate[33m.[39mfindMany({
+ [90m    |[39m                                               [31m[1m^[22m[39m
+ [90m 23 |[39m             where[33m:[39m { brandId[33m:[39m brand[33m.[39mid }
+ [90m 24 |[39m         })[33m;[39m
+ [90m 25 |[39m[0m
+Next.js build worker exited with code: 1 and signal: null

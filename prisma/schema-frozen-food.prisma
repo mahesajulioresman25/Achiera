@@ -1,0 +1,622 @@
+// ACHIERA Platform - Complete Prisma Schema
+// Multi-Brand Frozen Food Platform
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum GlobalRole {
+  OWNER              // Full system access
+  PLATFORM_ADMIN     // Platform management
+  PLATFORM_FINANCE   // Cross-brand financial reports
+  PLATFORM_ANALYST   // Cross-brand analytics
+  USER               // Standard user
+}
+
+enum BrandRole {
+  BRAND_ADMIN        // Full brand management
+  FINANCE            // Financial operations
+  ADMIN_WAREHOUSE    // Warehouse management
+  WAREHOUSE          // Stock operations
+  MARKETING          // Ads and campaigns
+  CUSTOMER_SUPPORT   // Order management
+  RESELLER           // B2B customer
+  CONSUMER           // B2C customer
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  REFUNDED
+  FAILED
+}
+
+enum PaymentMethod {
+  BANK_TRANSFER
+  E_WALLET
+  COD
+  CREDIT_CARD
+}
+
+enum StockMutationType {
+  IN              // Stock received
+  OUT             // Stock sold
+  TRANSFER        // Inter-warehouse transfer
+  ADJUSTMENT      // Manual adjustment
+  EXPIRED         // Expired stock removal
+}
+
+enum LoyaltyTransactionType {
+  PURCHASE_REWARD
+  REDEMPTION
+  ADJUSTMENT
+  EXPIRY
+  BONUS
+}
+
+enum LoyaltyTier {
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+}
+
+enum AdsCampaignStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  COMPLETED
+}
+
+enum AdsEventType {
+  IMPRESSION
+  CLICK
+  CONVERSION
+}
+
+enum LedgerAccountType {
+  ASSET
+  LIABILITY
+  EQUITY
+  REVENUE
+  EXPENSE
+}
+
+// ============================================
+// CORE PLATFORM
+// ============================================
+
+model User {
+  id            String      @id @default(cuid())
+  email         String      @unique
+  name          String
+  phone         String?
+  passwordHash  String
+  globalRole    GlobalRole  @default(USER)
+  
+  isActive      Boolean     @default(true)
+  emailVerified Boolean     @default(false)
+  
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  deletedAt     DateTime?   // Soft delete
+  
+  // Relations
+  brandRoles       UserBrandRole[]
+  orders           Order[]
+  loyaltyAccounts  LoyaltyAccount[]
+  auditLogs        AuditLog[]
+  createdPayments  Payment[]       @relation("PaymentVerifier")
+  
+  @@index([email])
+  @@index([globalRole])
+  @@map("users")
+}
+
+model Brand {
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  name            String
+  description     String?  @db.Text
+  logo            String?
+  
+  // Business info
+  legalEntityName String?
+  taxId           String?  @unique
+  
+  isActive        Boolean  @default(true)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  userRoles          UserBrandRole[]
+  products           Product[]
+  warehouses         Warehouse[]
+  orders             Order[]
+  ledgerAccounts     LedgerAccount[]
+  ledgerTransactions LedgerTransaction[]
+  loyaltyAccounts    LoyaltyAccount[]
+  adsCampaigns       AdsCampaign[]
+  auditLogs          AuditLog[]
+  
+  @@index([slug])
+  @@index([isActive])
+  @@map("brands")
+}
+
+model UserBrandRole {
+  id        String    @id @default(cuid())
+  userId    String
+  brandId   String
+  role      BrandRole
+  
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  brand     Brand     @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, brandId])
+  @@index([brandId, role])
+  @@map("user_brand_roles")
+}
+
+// ============================================
+// PRODUCT CATALOG
+// ============================================
+
+model Product {
+  id            String   @id @default(cuid())
+  brandId       String
+  sku           String   @unique
+  name          String
+  description   String?  @db.Text
+  category      String
+  images        Json     // ["url1", "url2"]
+  
+  // Frozen-specific
+  shelfLifeDays Int      // Days until expiry
+  storageTemp   Decimal  @default(-18) @db.Decimal(5,2) // Celsius
+  
+  isActive      Boolean  @default(true)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  deletedAt     DateTime?
+  
+  brand         Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  variants      ProductVariant[]
+  
+  @@index([brandId, isActive])
+  @@index([category])
+  @@index([sku])
+  @@map("products")
+}
+
+model ProductVariant {
+  id            String   @id @default(cuid())
+  productId     String
+  sku           String   @unique
+  name          String   // "500g Pack", "1kg Pack"
+  weight        Decimal  @db.Decimal(10,2) // Grams
+  
+  // Pricing
+  priceB2C      Decimal  @db.Decimal(12,2)
+  priceReseller Decimal  @db.Decimal(12,2)
+  costPrice     Decimal  @db.Decimal(12,2) // For margin calculation
+  
+  // Inventory (aggregate)
+  stockOnHand   Int      @default(0)
+  
+  isActive      Boolean  @default(true)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  product          Product          @relation(fields: [productId], references: [id], onDelete: Cascade)
+  inventoryBatches InventoryBatch[]
+  orderItems       OrderItem[]
+  
+  @@index([productId])
+  @@index([sku])
+  @@map("product_variants")
+}
+
+// ============================================
+// WAREHOUSE & INVENTORY
+// ============================================
+
+model Warehouse {
+  id          String   @id @default(cuid())
+  brandId     String
+  code        String   // "WH-JKT-01"
+  name        String
+  address     String?  @db.Text
+  
+  isActive    Boolean  @default(true)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  brand              Brand            @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  inventoryBatches   InventoryBatch[]
+  stockMutations     StockMutation[]
+  
+  @@unique([brandId, code])
+  @@index([brandId, isActive])
+  @@map("warehouses")
+}
+
+model InventoryBatch {
+  id            String   @id @default(cuid())
+  warehouseId   String
+  variantId     String
+  batchCode     String   // "BATCH-2025-001"
+  quantity      Int
+  
+  receivedAt    DateTime @default(now())
+  expiryDate    DateTime
+  
+  isExpired     Boolean  @default(false)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  warehouse     Warehouse       @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  variant       ProductVariant  @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  
+  @@index([warehouseId, variantId, expiryDate]) // FIFO optimization
+  @@index([expiryDate]) // Expiry alerts
+  @@map("inventory_batches")
+}
+
+model StockMutation {
+  id            String             @id @default(cuid())
+  warehouseId   String
+  variantId     String
+  type          StockMutationType
+  quantity      Int                // Positive for IN, negative for OUT
+  batchCode     String?
+  referenceId   String?            // Order ID, Transfer ID
+  notes         String?            @db.Text
+  
+  createdBy     String
+  createdAt     DateTime           @default(now())
+  
+  warehouse     Warehouse          @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  
+  @@index([warehouseId, createdAt])
+  @@index([variantId, createdAt])
+  @@index([referenceId])
+  @@map("stock_mutations")
+}
+
+// ============================================
+// ORDERS & PAYMENTS
+// ============================================
+
+model Order {
+  id              String        @id @default(cuid())
+  brandId         String
+  userId          String
+  orderNumber     String        @unique
+  
+  // Customer info
+  customerName    String
+  customerEmail   String
+  customerPhone   String
+  shippingAddress String        @db.Text
+  
+  // Pricing
+  subtotal        Decimal       @db.Decimal(12,2)
+  shippingCost    Decimal       @db.Decimal(12,2) @default(0)
+  tax             Decimal       @db.Decimal(12,2) @default(0)
+  discount        Decimal       @db.Decimal(12,2) @default(0)
+  loyaltyDiscount Decimal       @db.Decimal(12,2) @default(0)
+  total           Decimal       @db.Decimal(12,2)
+  
+  // Status
+  status          OrderStatus   @default(PENDING)
+  paymentStatus   PaymentStatus @default(UNPAID)
+  
+  // Timestamps
+  paidAt          DateTime?
+  shippedAt       DateTime?
+  deliveredAt     DateTime?
+  cancelledAt     DateTime?
+  
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  
+  brand           Brand         @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items           OrderItem[]
+  payments        Payment[]
+  
+  @@index([brandId, status])
+  @@index([userId, createdAt])
+  @@index([orderNumber])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String
+  variantId   String
+  
+  productName String
+  variantName String
+  quantity    Int
+  unitPrice   Decimal  @db.Decimal(12,2)
+  subtotal    Decimal  @db.Decimal(12,2)
+  
+  createdAt   DateTime @default(now())
+  
+  order       Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  variant     ProductVariant @relation(fields: [variantId], references: [id], onDelete: Restrict)
+  
+  @@index([orderId])
+  @@index([variantId])
+  @@map("order_items")
+}
+
+model Payment {
+  id              String        @id @default(cuid())
+  orderId         String
+  amount          Decimal       @db.Decimal(12,2)
+  method          PaymentMethod
+  status          PaymentStatus @default(UNPAID)
+  
+  transactionId   String?       // Payment gateway reference
+  proofImage      String?
+  
+  paidAt          DateTime?
+  verifiedAt      DateTime?
+  verifiedBy      String?
+  
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  
+  order           Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  verifier        User?         @relation("PaymentVerifier", fields: [verifiedBy], references: [id], onDelete: SetNull)
+  
+  @@index([orderId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("payments")
+}
+
+// ============================================
+// FINANCE (DOUBLE-ENTRY LEDGER)
+// ============================================
+
+model LedgerAccount {
+  id          String            @id @default(cuid())
+  brandId     String
+  code        String            // "1000-CASH", "4000-REVENUE"
+  name        String
+  type        LedgerAccountType
+  
+  isActive    Boolean           @default(true)
+  
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  
+  brand       Brand             @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  entries     LedgerEntry[]
+  
+  @@unique([brandId, code])
+  @@index([brandId, type])
+  @@map("ledger_accounts")
+}
+
+model LedgerTransaction {
+  id          String   @id @default(cuid())
+  brandId     String
+  date        DateTime @default(now())
+  description String   @db.Text
+  referenceId String?  // Order ID, Payment ID
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  brand       Brand          @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  entries     LedgerEntry[]
+  
+  @@index([brandId, date])
+  @@index([referenceId])
+  @@map("ledger_transactions")
+}
+
+model LedgerEntry {
+  id              String   @id @default(cuid())
+  transactionId   String
+  accountId       String
+  
+  debit           Decimal  @default(0) @db.Decimal(20,2)
+  credit          Decimal  @default(0) @db.Decimal(20,2)
+  
+  transaction     LedgerTransaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  account         LedgerAccount     @relation(fields: [accountId], references: [id], onDelete: Restrict)
+  
+  @@index([transactionId])
+  @@index([accountId])
+  @@map("ledger_entries")
+}
+
+// ============================================
+// LOYALTY SYSTEM
+// ============================================
+
+model LoyaltyAccount {
+  id               String   @id @default(cuid())
+  userId           String
+  brandId          String
+  
+  balance          Int      @default(0) // Points balance
+  lifetimeEarned   Int      @default(0)
+  lifetimeRedeemed Int      @default(0)
+  tier             LoyaltyTier @default(BRONZE)
+  
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  
+  user             User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  brand            Brand                @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  transactions     LoyaltyTransaction[]
+  
+  @@unique([userId, brandId])
+  @@index([brandId, tier])
+  @@map("loyalty_accounts")
+}
+
+model LoyaltyTransaction {
+  id          String                  @id @default(cuid())
+  accountId   String
+  amount      Int                     // +Earned or -Spent
+  type        LoyaltyTransactionType
+  referenceId String?                 // Order ID
+  description String?                 @db.Text
+  
+  expiresAt   DateTime?
+  isExpired   Boolean                 @default(false)
+  
+  createdAt   DateTime                @default(now())
+  
+  account     LoyaltyAccount          @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  
+  @@index([accountId, createdAt])
+  @@index([expiresAt])
+  @@map("loyalty_transactions")
+}
+
+// ============================================
+// ADS & ANALYTICS
+// ============================================
+
+model AdsCampaign {
+  id          String            @id @default(cuid())
+  brandId     String
+  name        String
+  budget      Decimal           @db.Decimal(12,2)
+  startDate   DateTime
+  endDate     DateTime?
+  status      AdsCampaignStatus @default(DRAFT)
+  
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  
+  brand       Brand             @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  adGroups    AdsGroup[]
+  
+  @@index([brandId, status])
+  @@index([startDate, endDate])
+  @@map("ads_campaigns")
+}
+
+model AdsGroup {
+  id          String   @id @default(cuid())
+  campaignId  String
+  name        String
+  bidAmount   Decimal  @db.Decimal(8,2) // CPC bid
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  campaign    AdsCampaign   @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  creatives   AdsCreative[]
+  
+  @@index([campaignId])
+  @@map("ads_groups")
+}
+
+model AdsCreative {
+  id          String   @id @default(cuid())
+  groupId     String
+  headline    String
+  description String?  @db.Text
+  imageUrl    String
+  targetUrl   String
+  
+  // Cached metrics (updated periodically)
+  cachedCtr   Decimal  @default(0) @db.Decimal(5,4) // Click-through rate
+  cachedCvr   Decimal  @default(0) @db.Decimal(5,4) // Conversion rate
+  
+  isActive    Boolean  @default(true)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  group       AdsGroup   @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  events      AdsEvent[]
+  
+  @@index([groupId])
+  @@map("ads_creatives")
+}
+
+model AdsEvent {
+  id          String       @id @default(cuid())
+  creativeId  String
+  type        AdsEventType
+  userId      String?
+  cost        Decimal      @default(0) @db.Decimal(8,2)
+  revenue     Decimal      @default(0) @db.Decimal(12,2)
+  
+  createdAt   DateTime     @default(now())
+  
+  creative    AdsCreative  @relation(fields: [creativeId], references: [id], onDelete: Cascade)
+  
+  @@index([creativeId, type, createdAt])
+  @@index([createdAt])
+  @@map("ads_events")
+}
+
+// ============================================
+// AUDIT & LOGGING
+// ============================================
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  brandId     String?  // Nullable for platform-level actions
+  userId      String?  // Nullable for system actions
+  
+  action      String   // ORDER_CREATE, PRICE_UPDATE, USER_BAN
+  entityType  String   // ORDER, PRODUCT, USER
+  entityId    String
+  
+  metadata    Json?    // { old: {...}, new: {...} }
+  ipAddress   String?
+  userAgent   String?  @db.Text
+  
+  createdAt   DateTime @default(now())
+  
+  brand       Brand?   @relation(fields: [brandId], references: [id], onDelete: SetNull)
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  @@index([brandId, createdAt])
+  @@index([entityType, entityId])
+  @@index([userId, createdAt])
+  @@index([createdAt])
+  @@map("audit_logs")
+}

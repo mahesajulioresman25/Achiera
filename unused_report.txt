@@ -1,0 +1,585 @@
+Found 584 unused items in src/
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\merchandise\page.tsx:9:74: 'Sparkles' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\merchandise\page.tsx:54:12: 'isLoadingCollections' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\merchandise\page.tsx:55:12: 'isLoadingSettings' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\merchandise\request-catalogue\page.tsx:5:19: 'Send' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\campaign\[slug]\page.tsx:3:10: 'Button' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\campaign\[slug]\page.tsx:4:20: 'Clock' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\campaign\[slug]\page.tsx:4:27: 'ShoppingBag' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\campaign\[slug]\page.tsx:5:8: 'AddToCartButton' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\contact\page.tsx:4:31: 'Phone' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\contact\page.tsx:15:12: 'isLoading' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\contact\page.tsx:74:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\how-to-order\page.tsx:4:10: 'Image' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\loyalty\page.tsx:6:101: 'HelpCircle' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\loyalty\page.tsx:45:18: 'err' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\loyalty\page.tsx:65:18: 'err' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\p\[slug]\page.tsx:4:8: 'ProductCard' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\p\[slug]\page.tsx:11:11: 'fetchCampaign' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\page.tsx:14:8: 'FlashSaleBanner' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\page.tsx:55:11: 'featuredSubtitle' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\profile\edit\page.tsx:34:12: 'otpSent' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\profile\edit\page.tsx:36:12: 'otpToken' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\profile\edit\page.tsx:61:18: 'err' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\profile\edit\page.tsx:95:22: 'err' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\profile\edit\page.tsx:119:18: 'err' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\profile\edit\page.tsx:148:18: 'err' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\profile\edit\page.tsx:181:18: 'err' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\profile\edit\page.tsx:243:22: 'err' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\recipes\page.tsx:5:43: 'Share2' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\recipes\page.tsx:112:43: 'idx' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\subscribe\SubscribeAuthWrapper.tsx:4:8: 'Link' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\subscribe\SubscribeAuthWrapper.tsx:7:10: 'Lock' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\subscribe\SubscribeContent.tsx:3:27: 'useEffect' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\subscribe\SubscribeContent.tsx:7:94: 'Lock' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\subscribe\SubscribeContent.tsx:22:27: 'setPaymentMethod' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\subscribe\SubscribeContent.tsx:28:12: 'otpSent' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\subscribe\SubscribeContent.tsx:116:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\(public)\rasa-ibu\subscribe\SubscribeContent.tsx:153:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\actions\rbac-demo.ts:5:10: 'BrandRole' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\admin\[brandSlug]\catalogue-requests\route.ts:46:7: 'params' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\admin\[brandSlug]\orders\route.ts:48:7: 'params' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\admin\banks\route.ts:3:10: 'getServerSession' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\admin\banks\route.ts:28:14: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\admin\banks\route.ts:45:14: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\admin\mockup-config\route.ts:7:27: 'req' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\admin\pricing\components\route.ts:6:27: 'req' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\admin\pricing\rules\[id]\route.ts:45:13: 'currency' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\admin\pricing\rules\[id]\route.ts:49:13: 'minOrderMeter' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\admin\pricing\rules\[id]\route.ts:52:13: 'startAt' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\admin\pricing\rules\[id]\route.ts:53:13: 'endAt' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\admin\requests\[id]\route.ts:20:14: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\admin\requests\[id]\route.ts:45:14: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\admin\upload\route.ts:28:18: 'e' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\analytics\import\sales\route.ts:8:10: 'importAdsData' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\autonomous-analytics\ai\explain\route.ts:5:27: 'generateExecutiveSummary' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\autonomous-analytics\simulations\failure\route.ts:2:32: 'SimulationInput' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\brands\[brandId]\campaigns\[campaignId]\bundles\route.ts:37:7: 'params' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\cron\daily-insight\route.ts:10:27: 'request' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\cron\emergency-alerts\route.ts:7:27: 'req' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\cron\monthly-report\route.ts:10:27: 'request' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\cron\subscription-billing\route.ts:12:27: 'req' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\cron\weekly-trend\route.ts:7:27: 'req' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\invoice\create\route.ts:41:15: 'trackingUrl' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\public\banks\route.ts:27:14: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\public\merch-settings\route.ts:8:14: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\public\merch\collections\route.ts:5:27: 'req' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\public\merch\mockup-config\route.ts:5:27: 'req' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\public\mockup-config\route.ts:12:14: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\public\upload\route.ts:23:18: 'e' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\refunds\route.ts:10:10: 'auditRefund' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\refunds\route.ts:28:45: 'reason' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\api\user\profile\route.ts:12:27: 'request' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\auth\forgot-password\page.tsx:6:42: 'ShieldCheck' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\auth\forgot-password\page.tsx:36:18: 'err' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\auth\forgot-password\page.tsx:61:18: 'err' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\auth\forgot-password\page.tsx:94:18: 'err' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\auth\register\page.tsx:7:37: 'ShieldCheck' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\auth\register\page.tsx:7:50: 'ArrowRight' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\auth\signin\page.tsx:4:8: 'Link' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\auth\signin\page.tsx:8:44: 'ArrowRight' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\auth\signin\page.tsx:8:63: 'Star' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\auth\signin\page.tsx:54:18: 'err' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\auth\signin\page.tsx:88:18: 'err' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\autonomous\budget\page.tsx:8:10: 'MetricCard' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\autonomous\overview\page.tsx:41:19: 'budgetData' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\autonomous\overview\page.tsx:41:42: 'loadingBudget' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\autonomous\rules\page.tsx:8:10: 'StatusBadge' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\collections\[id]\page.tsx:15:11: 'router' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\collections\[id]\page.tsx:20:12: 'showProductModal' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\collections\[id]\page.tsx:20:30: 'setShowProductModal' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\collections\page.tsx:15:11: 'router' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\content\hero-slides\page.tsx:22:11: 'router' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\content\hero-slides\page.tsx:25:12: 'showAddModal' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\content\hero-slides\page.tsx:53:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\content\hero-slides\page.tsx:66:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\content\hero\page.tsx:81:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\content\mockup\page.tsx:63:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\marketing\page.tsx:6:23: 'Megaphone' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\mockup\[productId]\pricing\page.tsx:5:36: 'DollarSign' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\mockup\page.tsx:16:11: 'router' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\mockup\page.tsx:89:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\mockup\variant\[variantId]\pricing\page.tsx:6:8: 'Link' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\mockup\variant\[variantId]\pricing\page.tsx:10:13: 'brandSlug' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\mockup\variant\[variantId]\pricing\page.tsx:11:11: 'router' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\orders\[id]\page.tsx:7:43: 'XCircle' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\orders\[id]\page.tsx:7:65: 'Clock' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\orders\[id]\page.tsx:13:11: 'router' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\orders\[id]\page.tsx:20:12: 'paymentAmount' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\orders\[id]\page.tsx:20:27: 'setPaymentAmount' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\orders\[id]\page.tsx:64:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\orders\[id]\page.tsx:109:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\orders\page.tsx:6:27: 'Filter' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\page.tsx:4:10: 'Package' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\page.tsx:4:19: 'FileText' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\page.tsx:4:39: 'Mail' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\page.tsx:104:11: 'isMerch' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\page.tsx:105:11: 'isIT' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\pricing\page.tsx:7:5: 'Edit' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\pricing\page.tsx:8:5: 'Trash2' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\pricing\rules\page.tsx:5:37: 'Filter' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\pricing\test\page.tsx:8:13: 'brandSlug' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\products\[id]\page.tsx:19:11: 'router' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\requests\page.tsx:3:16: 'Calendar' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\requests\page.tsx:3:26: 'User' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\[brandSlug]\settings\page.tsx:45:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\collections\[slug]\page.tsx:131:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\content\hero\page.tsx:63:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\content\mockup\page.tsx:63:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\merch\content\collections\[id]\edit\page.tsx:64:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\merch\content\collections\page.tsx:65:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\merch\content\collections\page.tsx:86:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\mockup\page.tsx:2:8: 'Link' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\owner\layout.tsx:1:10: 'auth' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\owner\layout.tsx:2:10: 'redirect' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\owner\layout.tsx:3:10: 'prism' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\owner\layout.tsx:4:10: 'requireAccess' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\owner\layout.tsx:20:11: 'userId' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\rasa-ibu\finance\reconciliation\page.tsx:11:46: 'params' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\rasa-ibu\inventory\labels\page.tsx:10:51: 'searchParams' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\requests\[id]\page.tsx:56:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\requests\page.tsx:3:16: 'Calendar' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\dashboard\requests\page.tsx:3:26: 'User' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\login\page.tsx:31:18: 'err' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\order\track\[...id]\page.tsx:10:7: 'STATUS_STEPS' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\order\track\[...id]\page.tsx:51:18: 'e' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\order\track\[...id]\page.tsx:66:18: 'err' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\order\track\[...id]\page.tsx:266:47: 'isCurrent' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\order\track\[id]\page.tsx:10:7: 'STATUS_STEPS_ID' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\order\track\[id]\page.tsx:58:18: 'e' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\app\order\track\[id]\page.tsx:77:18: 'err' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\CaseStudyLayout.tsx:5:55: 'Cpu' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\CollectionLayout.tsx:5:21: 'ArrowRight' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\CollectionLayout.tsx:37:5: 'useCases' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\CollectionLayout.tsx:38:5: 'faq' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\CollectionLayout.tsx:40:5: 'cta' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\HeroSlider.tsx:71:11: 'mediaUrl' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\ItSolutionsHero.tsx:3:35: 'useEffect' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\ProductCard.tsx:3:10: 'useState' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\ProductCard.tsx:5:8: 'Link' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\ProductCard.tsx:13:48: 'collectionSlug' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\PublicMockupModal.tsx:4:44: 'RefreshCcw' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\PublicMockupModal.tsx:4:56: 'ZoomIn' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\PublicMockupModal.tsx:246:27: 'renderedWidth' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\PublicMockupModal.tsx:247:27: 'renderedHeight' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\PublicMockupModal.tsx:266:27: 'centerX' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\PublicMockupModal.tsx:267:27: 'centerY' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\admin\ColorOptionsField.tsx:4:24: 'GripVertical' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\admin\ColorVariantsField.tsx:24:46: 'templateId' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\admin\MockupTemplateEditor.tsx:16:5: 'brandSlug' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\admin\MockupTemplateEditor.tsx:21:12: 'template' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\admin\MockupTemplateList.tsx:4:10: 'useState' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\admin\MockupTemplateList.tsx:6:10: 'useRouter' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\admin\MockupVariantManager.tsx:5:70: 'Layers' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\admin\MockupVariantManager.tsx:5:78: 'AlertTriangle' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\admin\Sidebar.tsx:36:11: 'isIT' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\admin\pricing\ComponentForm.tsx:5:19: 'Save' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\admin\pricing\ComponentForm.tsx:52:18: 'err' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\admin\pricing\RuleForm.tsx:6:10: 'PriceScope' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\autonomous\actions\ActionStagingArea.tsx:16:37: 'brandId' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\autonomous\panels\SimulationPanel.tsx:2:26: 'RiskBadge' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\autonomous\trust\TrustVerdictPanel.tsx:109:11: 'bgClass' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\autonomous\widgets\RecentExecutionsWidget.tsx:8:10: 'StatusBadge' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\cart\CartDrawer.tsx:7:8: 'Image' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\commerce\BundleCard.tsx:4:38: 'ShoppingCart' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\commerce\BundleCard.tsx:4:52: 'Package' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\commerce\BundleCard.tsx:4:61: 'Info' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\commerce\IntentCheckoutForm.tsx:12:10: 'toast' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\commerce\IntentCheckoutForm.tsx:15:53: 'addItem' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\commerce\IntentCheckoutForm.tsx:22:12: 'whatsapp' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\commerce\PlatformLinks.tsx:4:8: 'Image' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\commerce\PublicNav.tsx:6:45: 'Send' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\commerce\SubscriptionList.tsx:2:29: 'AlertCircle' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\commerce\SubscriptionList.tsx:2:50: 'CheckCircle2' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\commerce\SubscriptionList.tsx:18:29: 'info' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\commerce\SubscriptionList.tsx:76:18: 'err' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\BudgetTracker.tsx:6:22: 'TrendingDown' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\CashflowSimulator.tsx:5:5: 'LineChart' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\CashflowSimulator.tsx:5:16: 'Line' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\CashflowSimulator.tsx:9:5: 'ArrowRightLeft' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\CashflowSimulator.tsx:12:5: 'CheckCircle2' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\CashflowSimulator.tsx:14:5: 'TrendingDown' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\CashflowSimulator.tsx:16:5: 'DollarSign' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\CashflowSimulator.tsx:32:11: 'currency' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\GlobalLoyaltyAnalytics.tsx:11:5: 'ChevronRight' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingAuditLog.tsx:10:5: 'Calendar' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingAuditLog.tsx:11:5: 'User' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingAuditLog.tsx:12:5: 'Shield' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingAuditLog.tsx:17:5: 'Eye' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingAuditLog.tsx:47:27: 'setSelectedBrand' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingExecutiveView.tsx:18:5: 'ArrowRight' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingExecutiveView.tsx:19:5: 'ShieldAlert' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingFinanceHub.tsx:5:5: 'LineChart' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingFinanceHub.tsx:5:16: 'Line' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingFinanceHub.tsx:6:56: 'Legend' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingFinanceHub.tsx:6:64: 'BarChart' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingFinanceHub.tsx:6:74: 'Bar' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingFinanceHub.tsx:9:17: 'TrendingDown' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingFinanceHub.tsx:9:31: 'DollarSign' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingFinanceHub.tsx:9:55: 'PieIcon' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingFinanceHub.tsx:10:5: 'ShieldCheck' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingFinanceHub.tsx:10:34: 'Info' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingFinanceHub.tsx:10:50: 'ExternalLink' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingFinanceHub.tsx:10:64: 'Receipt' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingFinanceHub.tsx:10:83: 'BrainCircuit' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingFinanceHub.tsx:10:97: 'Landmark' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingIntelligenceHub.tsx:7:5: 'Users' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingIntelligenceHub.tsx:9:5: 'TrendingDown' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingIntelligenceHub.tsx:10:5: 'AlertCircle' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingIntelligenceHub.tsx:11:5: 'ShoppingCart' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingIntelligenceHub.tsx:12:5: 'ArrowUpRight' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingTalentHub.tsx:8:5: 'TrendingUp' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingTalentHub.tsx:10:5: 'ShoppingBag' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingTalentHub.tsx:11:5: 'Box' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingTalentHub.tsx:14:5: 'Filter' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\HoldingTalentHub.tsx:199:58: 'i' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\ResourceTransferModal.tsx:6:5: 'ArrowRight' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\UserManagement.tsx:11:5: 'Key' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\UserManagement.tsx:12:5: 'ChevronRight' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\UserManagement.tsx:17:5: 'Plus' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\holding\UserManagement.tsx:18:5: 'CheckCircle2' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\merch\CatalogueRequestList.tsx:75:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\merch\MerchDashboard.tsx:20:10: 'ICTracker' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\merch\MerchDashboard.tsx:21:10: 'BudgetTracker' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\merch\MerchDashboard.tsx:29:64: 'brandId' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\merch\MerchOrderList.tsx:9:5: 'CheckCircle2' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\merch\MerchOrderList.tsx:11:5: 'DollarSign' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\merch\MerchOrderList.tsx:13:5: 'Truck' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\merch\MerchOrderList.tsx:84:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\merch\MerchProductList.tsx:6:5: 'Table' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\merch\MerchProductList.tsx:7:5: 'TableBody' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\merch\MerchProductList.tsx:8:5: 'TableCell' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\merch\MerchProductList.tsx:9:5: 'TableHead' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\merch\MerchProductList.tsx:10:5: 'TableHeader' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\merch\MerchProductList.tsx:11:5: 'TableRow' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\merch\MerchProductList.tsx:16:5: 'MoreHorizontal' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\merch\MerchProductList.tsx:18:5: 'Trash2' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\merch\MerchProductList.tsx:21:5: 'AlertCircle' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\merch\MerchProductList.tsx:47:11: 'router' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\merch\MerchProductList.tsx:67:11: 'handleDelete' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\merch\MerchProductList.tsx:81:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\owner\ActivityMonitor.tsx:3:27: 'useEffect' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\owner\ActivityMonitor.tsx:8:28: 'Filter' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\owner\ActivityMonitor.tsx:26:29: 'refetch' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\owner\BudgetManagementHub.tsx:197:68: 'isRevenue' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\owner\CapitalAllocationDashboard.tsx:13:5: 'RefreshCw' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\owner\CapitalAllocationDashboard.tsx:18:12: 'selectedAllocation' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\owner\CapitalAllocationDashboard.tsx:18:32: 'setSelectedAllocation' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\owner\CashFlowForecastDashboard.tsx:12:5: 'LineChart' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\owner\CashFlowForecastDashboard.tsx:40:70: 'forecastsError' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\owner\CashFlowForecastPanel.tsx:6:51: 'DollarSign' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\owner\CashFlowForecastPanel.tsx:6:63: 'Calendar' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\owner\ProcurementSynergyPanel.tsx:4:17: 'useEffect' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\owner\ProcurementSynergyPanel.tsx:4:28: 'useState' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\owner\ProcurementSynergyPanel.tsx:5:23: 'TrendingUp' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\owner\ProcurementSynergyPanel.tsx:5:47: 'Loader2' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\owner\ProcurementSynergyPanel.tsx:6:10: 'ProcurementSynergyService' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\owner\StrategicKPIDashboard.tsx:28:11: 'getStatusColor' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\owner\WorkforceAnalyticsPanel.tsx:5:17: 'TrendingUp' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\AccountManagerModal.tsx:25:12: 'success' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\AssetManagementHub.tsx:11:5: 'MoreVertical' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\AssetManagementHub.tsx:13:5: 'Wrench' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\BankSettingsPanel.tsx:4:47: 'X' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\BarcodeStockAudit.tsx:4:78: 'Check' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\BarcodeStockAudit.tsx:18:12: 'isLoading' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\CMSForm.tsx:6:42: 'ShieldCheck' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\CRMIntelligence.tsx:4:17: 'Search' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\CRMIntelligence.tsx:4:58: 'Clock' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\CRMIntelligence.tsx:4:65: 'AlertCircle' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\CRMIntelligence.tsx:4:78: 'ExternalLink' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\CRMIntelligence.tsx:4:92: 'RefreshCcw' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\CatalogManager.tsx:7:34: 'Percent' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\DashboardClientWrapper.tsx:235:11: 'canAccessWarehouse' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\DigitalReceipt.tsx:3:17: 'useEffect' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\DigitalReceipt.tsx:3:28: 'useState' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\DigitalReceipt.tsx:6:11: 'ReceiptItem' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\ExpenseEntryModal.tsx:14:7: 'EXPENSE_TYPES' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\ExpenseEntryModal.tsx:121:18: 'err' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\FinanceHub.tsx:5:5: 'LineChart' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\FinanceHub.tsx:5:16: 'Line' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\FinanceHub.tsx:6:56: 'Legend' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\FinanceHub.tsx:9:17: 'TrendingDown' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\FinanceHub.tsx:10:50: 'ExternalLink' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\FinanceHub.tsx:19:27: 'ArrowRight' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\FinancialInsight.tsx:5:10: 'DollarSign' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\FinancialInsight.tsx:5:22: 'PieChart' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\FinancialInsight.tsx:5:57: 'Info' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\FinancialReportsModal.tsx:6:80: 'Legend' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\IntelligenceHub.tsx:6:10: 'BrainCircuit' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\IntelligenceHub.tsx:13:8: 'LTVForecast' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\IntelligenceHub.tsx:30:11: 'currency' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\LoyaltySettingsPanel.tsx:4:28: 'Calendar' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\OrderEntryModal.tsx:8:22: 'UserCheck' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\PaymentReconciliationModal.tsx:5:25: 'AlertCircle' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\PaymentReconciliationModal.tsx:8:8: 'Image' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\PaymentVerificationPanel.tsx:4:54: 'DollarSign' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\PaymentVerificationPanel.tsx:56:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\PaymentVerificationPanel.tsx:87:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\PlatformSettingsModal.tsx:4:29: 'Info' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\ProcurementAdvisor.tsx:4:27: 'AlertTriangle' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\ProcurementAdvisor.tsx:4:54: 'Copy' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\QRISPaymentModal.tsx:4:52: 'DollarSign' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\QRISPaymentModal.tsx:62:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\QRISSettingsPanel.tsx:4:26: 'Trash2' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\QRISSettingsPanel.tsx:48:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\QRISSettingsPanel.tsx:68:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\SecurityPulse.tsx:4:18: 'Activity' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\SecurityPulse.tsx:4:33: 'AlertTriangle' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\SecurityPulse.tsx:11:41: 'brandId' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\SecurityPulse.tsx:32:22: 'prev' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\SmartIngestionPanel.tsx:8:12: 'file' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\TaxCompliancePanel.tsx:11:46: 'brandId' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\WarehouseManager.tsx:6:5: 'Truck' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\WarehouseManager.tsx:12:20: 'StockMutationData' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\WarehouseManager.tsx:24:12: 'inventory' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\finance\SettlementParserModal.tsx:116:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\finance\SettlementParserModal.tsx:134:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\AutomationHub.tsx:8:5: 'History' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\AutomationHub.tsx:23:10: 'createProductMapping' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\AutomationHub.tsx:30:50: 'onClose' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\BIPulseWidget.tsx:5:5: 'Zap' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\BIPulseWidget.tsx:11:5: 'Activity' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\BundleAdvisor.tsx:4:37: 'ChevronRight' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\CustomerSegmentation.tsx:4:29: 'UserCheck' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\CustomerSegmentation.tsx:4:55: 'Clock' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\CustomerSegmentation.tsx:4:62: 'DollarSign' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\DemandForecastDashboard.tsx:14:5: 'X' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\DemandForecastDashboard.tsx:31:60: 'onClose' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\DemandForecastDashboard.tsx:32:12: 'isLoading' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\DynamicPricingManager.tsx:4:52: 'ArrowUpRight' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\DynamicPricingManager.tsx:4:66: 'ArrowDownRight' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\EmailIntelligenceHub.tsx:13:5: 'Filter' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\EmailIntelligenceHub.tsx:14:5: 'Calendar' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\EmailIntelligenceHub.tsx:17:5: 'AlertCircle' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\EmailIntelligenceHub.tsx:18:5: 'CheckCircle2' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\EmailIntelligenceHub.tsx:23:5: 'getDailySalesReports' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\EmailIntelligenceHub.tsx:37:57: 'onClose' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\IntelligenceConfig.tsx:4:62: 'Info' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\KitchenRhythm.tsx:5:11: 'isNormal' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\LTVForecast.tsx:4:10: 'Zap' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\LTVForecast.tsx:4:15: 'TrendingUp' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\LTVForecast.tsx:4:27: 'AlertTriangle' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\LTVForecast.tsx:4:42: 'UserCheck' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\LTVForecast.tsx:4:53: 'DollarSign' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\LTVForecast.tsx:4:84: 'ArrowRight' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\LoyaltyPanel.tsx:5:47: 'ArrowRight' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\LoyaltyProgramDashboard.tsx:12:5: 'Crown' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\LoyaltyProgramDashboard.tsx:14:10: 'toast' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\LoyaltyProgramDashboard.tsx:19:5: 'createLoyaltyReward' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\LoyaltyProgramDashboard.tsx:27:60: 'onClose' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\MarketplaceTracker.tsx:5:23: 'TrendingUp' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\PromoPerformance.tsx:6:26: 'Cell' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\PromoPerformance.tsx:6:32: 'ComposedChart' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\PromoPerformance.tsx:6:47: 'Line' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\PromoPerformance.tsx:8:22: 'Package' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\PromoPerformance.tsx:8:31: 'Percent' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\PromoPerformance.tsx:37:11: 'currency' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\SmartPricingDashboard.tsx:27:58: 'onClose' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\WasteAnalysis.tsx:6:32: 'ReferenceLine' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\WasteAnalysis.tsx:8:25: 'Droplets' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\intelligence\WhatsAppBroadcast.tsx:5:57: 'CheckCircle2' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\inventory\CMSLivePreview.tsx:4:8: 'Link' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\inventory\CMSLivePreview.tsx:5:10: 'Layout' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\inventory\CMSLivePreview.tsx:5:18: 'Info' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\inventory\CMSLivePreview.tsx:5:24: 'ListOrdered' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\inventory\CMSLivePreview.tsx:5:37: 'Home' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\inventory\CMSLivePreview.tsx:5:43: 'Smartphone' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\inventory\InventoryBalancingHub.tsx:6:5: 'Warehouse' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\inventory\InventoryBalancingHub.tsx:6:25: 'History' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\inventory\InventoryBalancingHub.tsx:7:5: 'ArrowDown' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\inventory\InventoryBalancingHub.tsx:7:16: 'ArrowUp' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\inventory\LabelPrinter.tsx:5:27: 'Settings2' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\inventory\LabelPrinter.tsx:5:43: 'ArrowRight' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\inventory\LabelPrinter.tsx:5:55: 'RefreshCw' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\inventory\LabelPrinter.tsx:5:66: 'Barcode' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\inventory\LabelPrinter.tsx:5:88: 'Square' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\inventory\LabelPrinter.tsx:8:10: 'generateSkuAction' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\inventory\LabelPrinter.tsx:25:40: 'brandId' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\inventory\LabelPrinter.tsx:31:12: 'isGenerating' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\inventory\LabelPrinter.tsx:31:26: 'setIsGenerating' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\inventory\RawMaterialHub.tsx:49:27: 'setRestockReason' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\production\CookingList.tsx:4:30: 'AlertCircle' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\production\CookingList.tsx:4:66: 'ChevronRight' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\production\CookingList.tsx:4:80: 'User' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\production\CookingList.tsx:4:94: 'Save' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\production\IngredientForecaster.tsx:4:21: 'Search' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\production\IngredientForecaster.tsx:4:44: 'ArrowRight' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\production\IngredientForecaster.tsx:12:48: 'brandId' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\production\KitchenDisplay.tsx:4:59: 'ChevronRight' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\production\KitchenDisplay.tsx:4:76: 'Volume2' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\production\KitchenDisplay.tsx:13:42: 'brandId' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\production\MenuCreationHub.tsx:4:29: 'DollarSign' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\production\ProductionHub.tsx:4:43: 'Plus' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\production\ProductionHub.tsx:4:49: 'Search' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\production\ProductionHub.tsx:4:57: 'ChevronRight' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\production\ProductionHub.tsx:4:77: 'CheckCircle2' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\production\ProductionHub.tsx:4:91: 'AlertCircle' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\production\RecipeManager.tsx:2:76: 'Pencil' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\reconciliation\SettlementUploader.tsx:4:18: 'FileText' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\reconciliation\SettlementUploader.tsx:4:37: 'AlertCircle' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\reconciliation\SettlementUploader.tsx:4:50: 'CheckCircle2' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\dashboard\rasa-ibu\reconciliation\SettlementUploader.tsx:37:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\marketing\BundleForm.tsx:3:20: 'useEffect' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\marketing\BundleForm.tsx:9:10: 'Plus' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\marketing\BundleManager.tsx:58:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\marketing\CampaignManager.tsx:6:29: 'Plus' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\marketing\CampaignManager.tsx:9:8: 'Link' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\marketing\FlashSaleBanner.tsx:14:11: 'router' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\marketing\FlashSaleForm.tsx:1:20: 'useEffect' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\marketing\FlashSaleForm.tsx:8:26: 'Plus' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\marketing\FlashSaleManager.tsx:26:19: 'res' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\marketing\ProductSelector.tsx:3:10: 'Input' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\marketing\ProductSelector.tsx:4:40: 'X' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\marketing\SubscriptionDataManager.tsx:7:5: 'MoreVertical' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\marketing\SubscriptionDataManager.tsx:109:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\marketing\SubscriptionDataManager.tsx:130:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\marketing\SubscriptionDataManager.tsx:171:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\marketing\SubscriptionPlanManager.tsx:104:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\ui\ImageUpload.tsx:4:39: 'ImageIcon' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\ui\SeasonalDecorations.tsx:4:28: 'SeasonType' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\ui\SeasonalDecorations.tsx:5:22: 'Sun' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\ui\SeasonalDecorations.tsx:5:27: 'Cloud' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\ui\SeasonalDecorations.tsx:5:34: 'Flame' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\components\ui\button.tsx:29:58: 'asChild' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\actions\cashFlow.ts:4:10: 'revalidatePath' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\actions\commerce\bundles.ts:4:10: 'revalidatePath' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\actions\commerce\flashSale.ts:5:44: 'brandId' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\actions\commerce\flashSale.ts:45:33: 'description' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\actions\commerce\subscriptions.ts:10:50: 'userId' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\actions\commerce\subscriptions.ts:47:14: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\actions\kpi.ts:4:10: 'revalidatePath' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\actions\rasa-ibu\assets.ts:98:59: 'reason' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\actions\rasa-ibu\biPulse.ts:3:10: 'prisma' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\actions\rasa-ibu\ingestion.ts:4:24: 'InferenceResult' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\actions\rasa-ibu\ingestion.ts:108:21: 'items' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\actions\rasa-ibu\intelligence.ts:19:10: 'LoyaltyService' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\actions\rasa-ibu\inventory.ts:3:10: 'prisma' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\actions\rasa-ibu\orders.ts:300:21: 'netReceived' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\actions\rasa-ibu\reconciliation.ts:53:13: 'totalGross' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\actions\rasa-ibu\reconciliation.ts:54:13: 'totalFees' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\actions\rasa-ibu\settlement.ts:183:14: 'e' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\analytics.ts:37:18: 'e' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\analytics\recommendation-engine.ts:146:7: 'ALL_RULES' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\actions\assistedActionService.ts:101:43: 'operatorId' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\actions\assistedActionService.ts:139:42: 'operatorId' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\actions\assistedActionService.ts:152:18: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\ai\cfo-explainer.ts:91:5: 'history' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\ai\context-assembler.ts:224:29: 'brand' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\budget\budget-engine.ts:292:40: 'brandId' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\dashboard\dashboard-contracts.ts:136:5: 'brandId' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\dashboard\dashboard-contracts.ts:147:5: 'brandId' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\dashboard\dashboard-contracts.ts:156:5: 'brandId' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\dashboard\dashboard-contracts.ts:157:5: 'startDate' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\dashboard\dashboard-contracts.ts:158:5: 'endDate' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\dashboard\dashboard-contracts.ts:167:5: 'brandId' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\dashboard\dashboard-contracts.ts:176:5: 'brandId' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\dashboard\dashboard-contracts.ts:177:5: 'level' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\dashboard\dashboard-contracts.ts:178:5: 'performedBy' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\dashboard\dashboard-contracts.ts:179:5: 'reason' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\decision-engine.ts:360:5: 'exclusions' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\decision-engine.ts:361:5: 'metrics' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\decision-engine.ts:423:25: 'rule' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\decision-engine.ts:423:47: 'metrics' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\decision-engine.ts:446:5: 'policy' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\explanations\deterministic-explainer.ts:16:5: 'generateRiskFactors' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\header-inference.ts:182:15: 'avg' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\level3\autonomy-gate.ts:61:59: '_' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\level3\executive-override.ts:121:15: 'rule' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\level3\guarded-executor.ts:48:15: 'executionResult' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\level3\guarded-executor.ts:299:5: 'brandId' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\level3\guarded-executor.ts:300:5: 'actionId' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\level3\guarded-executor.ts:301:5: 'snapshotData' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\rollback-manager.ts:236:5: 'brandId' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\safety-gates.ts:240:5: 'actionId' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\simulation-engine.ts:267:5: 'exclusions' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\simulation-engine.ts:268:5: 'metrics' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\simulation-engine.ts:337:5: 'rule' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\simulation-engine.ts:338:5: 'metrics' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\simulation-engine.ts:369:5: 'policy' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\simulations\failureEngine.ts:2:8: 'crypto' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\suggestions\engine.ts:24:59: 'context' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\trust\hardening.ts:2:33: 'TrustMetrics' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\autonomous-analytics\trust\hardening.ts:3:10: 'RiskLevel' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\hardening\errors.ts:50:26: 'variantId' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\hardening\errors.ts:71:20: 'brandId' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\hardening\examples\order-creation.ts:102:23: 'payment' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\hardening\health-checks.ts:51:14: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\hardening\health-checks.ts:67:14: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\hardening\health-checks.ts:83:14: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\hardening\idempotency.ts:18:6: 'IdempotencyStatus' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\hardening\ledger-integrity.ts:4:10: 'Prisma' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\hardening\stock-safety.ts:27:5: 'orderId' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\hardening\stock-safety.ts:86:5: 'batchCode' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\hardening\tests\integration.test.ts:5:18: 'PrismaClient' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\hardening\tests\integration.test.ts:151:15: 'total' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\hardening\tests\integration.test.ts:208:15: 'context' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\integrity\payment-idempotency.ts:251:9: 'orderId' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\integrity\stock-enforcement.ts:234:9: 'orderId' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\intelligence\assetEngine.ts:3:10: 'AssetCategory' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\intelligence\financeEngine.ts:114:11: 'dailyOrders' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\intelligence\financeEngine.ts:1211:36: '_' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\intelligence\financeEngine.ts:1445:32: '_' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\intelligence\financeEngine.ts:1528:36: '_' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\intelligence\financeEngine.ts:1634:15: 'brand' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\intelligence\financialReports.ts:3:10: 'getAccountByCode' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\intelligence\intelligenceService.ts:2:31: 'endOfDay' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\intelligence\intelligenceService.ts:129:20: 'date' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\intelligence\inventoryEngine.ts:2:10: 'Decimal' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\intelligence\journalService.ts:2:10: 'AccountType' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\intelligence\journalService.ts:3:10: 'getAccountByCode' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\intelligence\productionEngine.ts:2:10: 'Decimal' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\intelligence\reconciliationService.ts:2:10: 'ReconciliationStatus' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\intelligence\simulatorService.ts:2:21: 'startOfMonth' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\intelligence\simulatorService.ts:2:35: 'endOfMonth' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\mockupCanvas.ts:103:18: 'e' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\notifications\ReportNotificationService.ts:2:10: 'sendWhatsAppMessageAction' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\notifications\ReportNotificationService.ts:8:8: 'React' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\notifications\ReportNotificationService.ts:76:62: 'i' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\observability\correlation.ts:32:53: 'args' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\observability\logger.ts:203:9: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\observability\logger.ts:204:9: 'metadata' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\observability\monitoring.ts:4:10: 'logger' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\orderLogic.ts:4:7: 'prisma' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\orderLogic.ts:18:5: 'additionalConfig' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\pdf\DailyInsightPDF.tsx:3:50: 'Font' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\pdf\MonthlyReportPDF.tsx:3:50: 'Image' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\pricing\PriceCalculator.ts:2:10: 'PriceComponentType' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\pricing\engine.ts:38:11: 'basePrice' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\security\data-protection.ts:9:7: 'AUTH_TAG_LENGTH' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\security\role-escalation-prevention.ts:21:7: 'GLOBAL_ROLE_HIERARCHY' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\security\secure-api-pattern.ts:56:26: 'error' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\AdsService.ts:96:38: 'placement' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\BudgetService.ts:156:19: 'yearStart' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\BudgetService.ts:157:19: 'yearEnd' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\BudgetService.ts:227:19: 'threeMonthsAgo' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\BudgetService.ts:240:19: 'avgMonthlyProfit' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\CapitalAllocationEngine.ts:2:10: 'AllocationStatus' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\CapitalAllocationEngine.ts:74:35: 'userId' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\CapitalAllocationEngine.ts:155:15: 'expenses' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\CapitalAllocationEngine.ts:295:9: 'amount' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\CapitalAllocationEngine.ts:296:9: 'purpose' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\CapitalAllocationEngine.ts:331:42: 'brandId' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\ComplianceService.ts:243:15: 'violations' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\ConsolidationEngine.ts:2:31: 'ConsolidationStatus' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\DailyInsightsService.ts:139:18: 'e' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\EmailParserService.ts:179:48: 'brandId' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\EmailParserService.ts:179:65: 'platform' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\EmailParserService.ts:235:19: 'result' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\EmailParserService.ts:410:40: 'platform' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\EmailService.ts:601:30: 'e' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\FinanceService.ts:6:10: 'Decimal' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\FrozenService.ts:2:10: 'AccessControlError' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\FrozenService.ts:105:15: 'orderItemsData' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\GlobalStrategyService.ts:2:10: 'prisma' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\InterCompanyService.ts:278:15: 'journalService' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\InvoiceService.ts:4:19: 'format' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\KPIService.ts:224:15: 'currentMonth' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\MonthlyReportService.ts:149:18: 'e' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\OnboardingService.ts:2:10: 'BrandRole' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\PolicyService.ts:90:27: 'role' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\PolicyService.ts:90:44: 'permissions' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\ReportService.ts:92:13: 'previousPeriodRevenue' is assigned a value but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\services\UserService.ts:3:8: 'bcrypt' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\lib\whatsapp\engine.ts:29:22: 'e' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\middleware-security.ts:8:22: 'BrandRole' is defined but never used.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\src\utils\image-analysis.ts:6:34: 'reject' is defined but never used.

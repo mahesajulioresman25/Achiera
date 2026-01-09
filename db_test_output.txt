@@ -1,0 +1,54 @@
+﻿Γ£à Loaded .env file
+
+≡ƒôï Environment Check:
+   DATABASE_URL: Γ£à Set
+   Type: ≡ƒîÉ Supabase/Cloud
+   URL: postgresql://***:***@db.gmqxytwltfgjtjltjkhv.supabase.co:5432/postgres
+
+≡ƒöì Testing Database Connection...
+
+1∩╕ÅΓâú Attempting to connect...
+node.exe : 
+At C:\Program Files\nodejs\npx.ps1:29 
+char:3
++   & $NODE_EXE $NPX_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpec 
+   ified: (:String) [], RemoteExcept  
+  ion
+    + FullyQualifiedErrorId : NativeC 
+   ommandError
+ 
+Γ¥î CONNECTION FAILED!
+
+Full Error: 
+PrismaClientInitializationError: 
+Can't reach database server at `db.gmq
+xytwltfgjtjltjkhv.supabase.co:5432`
+
+Please make sure your database server 
+is running at `db.gmqxytwltfgjtjltjkhv
+.supabase.co:5432`.
+    at t (D:\PROJECT IOT\Automation 
+Smart Lighting System\smart-billiard-m
+ain\achiera-web\node_modules\@prisma\c
+lient\runtime\library.js:112:2488)
+    at async testConnection 
+(D:\PROJECT IOT\Automation Smart 
+Lighting System\smart-billiard-main\ac
+hiera-web\test-db-connection.ts:60:9) 
+{
+  clientVersion: '5.22.0',
+  errorCode: 'P1001'
+}
+
+Error Code: undefined
+Error Message: Can't reach database 
+server at `db.gmqxytwltfgjtjltjkhv.sup
+abase.co:5432`
+
+Please make sure your database server 
+is running at `db.gmqxytwltfgjtjltjkhv
+.supabase.co:5432`.
+≡ƒöî Disconnected
+

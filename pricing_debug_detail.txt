@@ -1,0 +1,4990 @@
+﻿  console.log
+    Checking models:
+
+      at Object.<anonymous> (__tests__/pricing.test.ts:27:17)
+
+  console.log
+    Brand: true
+
+      at Object.<anonymous> (__tests__/pricing.test.ts:28:17)
+
+  console.log
+    FrozenVariant: true
+
+      at Object.<anonymous> (__tests__/pricing.test.ts:29:17)
+
+  console.log
+    AuditLog: true
+
+      at Object.<anonymous> (__tests__/pricing.test.ts:30:17)
+
+  console.log
+    PriceComponent: true
+
+      at Object.<anonymous> (__tests__/pricing.test.ts:31:17)
+
+  console.log
+    PriceRule: true
+
+      at Object.<anonymous> (__tests__/pricing.test.ts:32:17)
+
+  console.log
+    prisma:query BEGIN
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query INSERT INTO `achiera_db_master`.`brands` (`id`,`slug`,`name`,`isActive`,`createdAt`,`updatedAt`) VALUES (?,?,?,?,?,?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`brands`.`id`, `achiera_db_master`.`brands`.`slug`, `achiera_db_master`.`brands`.`name`, `achiera_db_master`.`brands`.`isActive`, `achiera_db_master`.`brands`.`createdAt`, `achiera_db_master`.`brands`.`updatedAt`, `achiera_db_master`.`brands`.`paymentSettings` FROM `achiera_db_master`.`brands` WHERE `achiera_db_master`.`brands`.`id` = ? LIMIT ? OFFSET ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query COMMIT
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query BEGIN
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query INSERT INTO `achiera_db_master`.`frozen_categories` (`id`,`brandId`,`name`,`slug`,`createdAt`,`updatedAt`) VALUES (?,?,?,?,?,?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`frozen_categories`.`id`, `achiera_db_master`.`frozen_categories`.`brandId`, `achiera_db_master`.`frozen_categories`.`name`, `achiera_db_master`.`frozen_categories`.`slug`, `achiera_db_master`.`frozen_categories`.`image`, `achiera_db_master`.`frozen_categories`.`createdAt`, `achiera_db_master`.`frozen_categories`.`updatedAt` FROM `achiera_db_master`.`frozen_categories` WHERE `achiera_db_master`.`frozen_categories`.`id` = ? LIMIT ? OFFSET ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query COMMIT
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query BEGIN
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query INSERT INTO `achiera_db_master`.`frozen_products` (`id`,`categoryId`,`name`,`slug`,`storageType`,`createdAt`,`updatedAt`) VALUES (?,?,?,?,?,?,?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`frozen_products`.`id`, `achiera_db_master`.`frozen_products`.`categoryId`, `achiera_db_master`.`frozen_products`.`name`, `achiera_db_master`.`frozen_products`.`slug`, `achiera_db_master`.`frozen_products`.`description`, `achiera_db_master`.`frozen_products`.`image`, `achiera_db_master`.`frozen_products`.`ingredients`, `achiera_db_master`.`frozen_products`.`nutrition`, `achiera_db_master`.`frozen_products`.`storageType`, `achiera_db_master`.`frozen_products`.`shelfLife`, `achiera_db_master`.`frozen_products`.`createdAt`, `achiera_db_master`.`frozen_products`.`updatedAt` FROM `achiera_db_master`.`frozen_products` WHERE `achiera_db_master`.`frozen_products`.`id` = ? LIMIT ? OFFSET ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query COMMIT
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query BEGIN
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query INSERT INTO `achiera_db_master`.`frozen_variants` (`id`,`productId`,`name`,`sku`,`price`,`weight`,`stockOnHand`,`createdAt`,`updatedAt`) VALUES (?,?,?,?,?,?,?,?,?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`frozen_variants`.`id`, `achiera_db_master`.`frozen_variants`.`productId`, `achiera_db_master`.`frozen_variants`.`name`, `achiera_db_master`.`frozen_variants`.`sku`, `achiera_db_master`.`frozen_variants`.`price`, `achiera_db_master`.`frozen_variants`.`weight`, `achiera_db_master`.`frozen_variants`.`stockOnHand`, `achiera_db_master`.`frozen_variants`.`createdAt`, `achiera_db_master`.`frozen_variants`.`updatedAt` FROM `achiera_db_master`.`frozen_variants` WHERE `achiera_db_master`.`frozen_variants`.`id` = ? LIMIT ? OFFSET ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query COMMIT
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`price_components`.`id`, `achiera_db_master`.`price_components`.`code`, `achiera_db_master`.`price_components`.`name`, `achiera_db_master`.`price_components`.`description`, `achiera_db_master`.`price_components`.`type`, `achiera_db_master`.`price_components`.`isActive`, `achiera_db_master`.`price_components`.`createdAt`, `achiera_db_master`.`price_components`.`updatedAt` FROM `achiera_db_master`.`price_components` WHERE (`achiera_db_master`.`price_components`.`code` = ? AND 1=1) LIMIT ? OFFSET ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`price_components`.`id`, `achiera_db_master`.`price_components`.`code`, `achiera_db_master`.`price_components`.`name`, `achiera_db_master`.`price_components`.`description`, `achiera_db_master`.`price_components`.`type`, `achiera_db_master`.`price_components`.`isActive`, `achiera_db_master`.`price_components`.`createdAt`, `achiera_db_master`.`price_components`.`updatedAt` FROM `achiera_db_master`.`price_components` WHERE (`achiera_db_master`.`price_components`.`code` = ? AND 1=1) LIMIT ? OFFSET ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`price_components`.`id`, `achiera_db_master`.`price_components`.`code`, `achiera_db_master`.`price_components`.`name`, `achiera_db_master`.`price_components`.`description`, `achiera_db_master`.`price_components`.`type`, `achiera_db_master`.`price_components`.`isActive`, `achiera_db_master`.`price_components`.`createdAt`, `achiera_db_master`.`price_components`.`updatedAt` FROM `achiera_db_master`.`price_components` WHERE (`achiera_db_master`.`price_components`.`code` = ? AND 1=1) LIMIT ? OFFSET ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`price_components`.`id`, `achiera_db_master`.`price_components`.`code`, `achiera_db_master`.`price_components`.`name`, `achiera_db_master`.`price_components`.`description`, `achiera_db_master`.`price_components`.`type`, `achiera_db_master`.`price_components`.`isActive`, `achiera_db_master`.`price_components`.`createdAt`, `achiera_db_master`.`price_components`.`updatedAt` FROM `achiera_db_master`.`price_components` WHERE (`achiera_db_master`.`price_components`.`code` = ? AND 1=1) LIMIT ? OFFSET ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`price_components`.`id`, `achiera_db_master`.`price_components`.`code`, `achiera_db_master`.`price_components`.`name`, `achiera_db_master`.`price_components`.`description`, `achiera_db_master`.`price_components`.`type`, `achiera_db_master`.`price_components`.`isActive`, `achiera_db_master`.`price_components`.`createdAt`, `achiera_db_master`.`price_components`.`updatedAt` FROM `achiera_db_master`.`price_components` WHERE (`achiera_db_master`.`price_components`.`code` = ? AND 1=1) LIMIT ? OFFSET ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`price_components`.`id`, `achiera_db_master`.`price_components`.`code`, `achiera_db_master`.`price_components`.`name`, `achiera_db_master`.`price_components`.`description`, `achiera_db_master`.`price_components`.`type`, `achiera_db_master`.`price_components`.`isActive`, `achiera_db_master`.`price_components`.`createdAt`, `achiera_db_master`.`price_components`.`updatedAt` FROM `achiera_db_master`.`price_components` WHERE (`achiera_db_master`.`price_components`.`code` = ? AND 1=1) LIMIT ? OFFSET ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query BEGIN
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query INSERT INTO `achiera_db_master`.`price_rules` (`id`,`componentId`,`scope`,`scopeId`,`priority`,`currency`,`amount`,`isActive`,`createdAt`,`updatedAt`) VALUES (?,?,?,?,?,?,?,?,?,?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`price_rules`.`id`, `achiera_db_master`.`price_rules`.`componentId`, `achiera_db_master`.`price_rules`.`scope`, `achiera_db_master`.`price_rules`.`scopeId`, `achiera_db_master`.`price_rules`.`priority`, `achiera_db_master`.`price_rules`.`currency`, `achiera_db_master`.`price_rules`.`amount`, `achiera_db_master`.`price_rules`.`minQty`, `achiera_db_master`.`price_rules`.`maxQty`, `achiera_db_master`.`price_rules`.`minOrderMeter`, `achiera_db_master`.`price_rules`.`metadata`, `achiera_db_master`.`price_rules`.`isActive`, `achiera_db_master`.`price_rules`.`startAt`, `achiera_db_master`.`price_rules`.`endAt`, `achiera_db_master`.`price_rules`.`createdAt`, `achiera_db_master`.`price_rules`.`updatedAt` FROM `achiera_db_master`.`price_rules` WHERE `achiera_db_master`.`price_rules`.`id` = ? LIMIT ? OFFSET ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query COMMIT
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query BEGIN
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query INSERT INTO `achiera_db_master`.`price_rules` (`id`,`componentId`,`scope`,`scopeId`,`priority`,`currency`,`amount`,`minQty`,`maxQty`,`isActive`,`createdAt`,`updatedAt`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`price_rules`.`id`, `achiera_db_master`.`price_rules`.`componentId`, `achiera_db_master`.`price_rules`.`scope`, `achiera_db_master`.`price_rules`.`scopeId`, `achiera_db_master`.`price_rules`.`priority`, `achiera_db_master`.`price_rules`.`currency`, `achiera_db_master`.`price_rules`.`amount`, `achiera_db_master`.`price_rules`.`minQty`, `achiera_db_master`.`price_rules`.`maxQty`, `achiera_db_master`.`price_rules`.`minOrderMeter`, `achiera_db_master`.`price_rules`.`metadata`, `achiera_db_master`.`price_rules`.`isActive`, `achiera_db_master`.`price_rules`.`startAt`, `achiera_db_master`.`price_rules`.`endAt`, `achiera_db_master`.`price_rules`.`createdAt`, `achiera_db_master`.`price_rules`.`updatedAt` FROM `achiera_db_master`.`price_rules` WHERE `achiera_db_master`.`price_rules`.`id` = ? LIMIT ? OFFSET ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query COMMIT
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query BEGIN
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query INSERT INTO `achiera_db_master`.`price_rules` (`id`,`componentId`,`scope`,`scopeId`,`priority`,`currency`,`amount`,`minQty`,`isActive`,`createdAt`,`updatedAt`) VALUES (?,?,?,?,?,?,?,?,?,?,?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`price_rules`.`id`, `achiera_db_master`.`price_rules`.`componentId`, `achiera_db_master`.`price_rules`.`scope`, `achiera_db_master`.`price_rules`.`scopeId`, `achiera_db_master`.`price_rules`.`priority`, `achiera_db_master`.`price_rules`.`currency`, `achiera_db_master`.`price_rules`.`amount`, `achiera_db_master`.`price_rules`.`minQty`, `achiera_db_master`.`price_rules`.`maxQty`, `achiera_db_master`.`price_rules`.`minOrderMeter`, `achiera_db_master`.`price_rules`.`metadata`, `achiera_db_master`.`price_rules`.`isActive`, `achiera_db_master`.`price_rules`.`startAt`, `achiera_db_master`.`price_rules`.`endAt`, `achiera_db_master`.`price_rules`.`createdAt`, `achiera_db_master`.`price_rules`.`updatedAt` FROM `achiera_db_master`.`price_rules` WHERE `achiera_db_master`.`price_rules`.`id` = ? LIMIT ? OFFSET ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query COMMIT
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query BEGIN
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query INSERT INTO `achiera_db_master`.`price_rules` (`id`,`componentId`,`scope`,`priority`,`currency`,`amount`,`metadata`,`isActive`,`createdAt`,`updatedAt`) VALUES (?,?,?,?,?,?,?,?,?,?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`price_rules`.`id`, `achiera_db_master`.`price_rules`.`componentId`, `achiera_db_master`.`price_rules`.`scope`, `achiera_db_master`.`price_rules`.`scopeId`, `achiera_db_master`.`price_rules`.`priority`, `achiera_db_master`.`price_rules`.`currency`, `achiera_db_master`.`price_rules`.`amount`, `achiera_db_master`.`price_rules`.`minQty`, `achiera_db_master`.`price_rules`.`maxQty`, `achiera_db_master`.`price_rules`.`minOrderMeter`, `achiera_db_master`.`price_rules`.`metadata`, `achiera_db_master`.`price_rules`.`isActive`, `achiera_db_master`.`price_rules`.`startAt`, `achiera_db_master`.`price_rules`.`endAt`, `achiera_db_master`.`price_rules`.`createdAt`, `achiera_db_master`.`price_rules`.`updatedAt` FROM `achiera_db_master`.`price_rules` WHERE `achiera_db_master`.`price_rules`.`id` = ? LIMIT ? OFFSET ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query COMMIT
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query BEGIN
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query INSERT INTO `achiera_db_master`.`price_rules` (`id`,`componentId`,`scope`,`priority`,`currency`,`amount`,`metadata`,`isActive`,`createdAt`,`updatedAt`) VALUES (?,?,?,?,?,?,?,?,?,?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`price_rules`.`id`, `achiera_db_master`.`price_rules`.`componentId`, `achiera_db_master`.`price_rules`.`scope`, `achiera_db_master`.`price_rules`.`scopeId`, `achiera_db_master`.`price_rules`.`priority`, `achiera_db_master`.`price_rules`.`currency`, `achiera_db_master`.`price_rules`.`amount`, `achiera_db_master`.`price_rules`.`minQty`, `achiera_db_master`.`price_rules`.`maxQty`, `achiera_db_master`.`price_rules`.`minOrderMeter`, `achiera_db_master`.`price_rules`.`metadata`, `achiera_db_master`.`price_rules`.`isActive`, `achiera_db_master`.`price_rules`.`startAt`, `achiera_db_master`.`price_rules`.`endAt`, `achiera_db_master`.`price_rules`.`createdAt`, `achiera_db_master`.`price_rules`.`updatedAt` FROM `achiera_db_master`.`price_rules` WHERE `achiera_db_master`.`price_rules`.`id` = ? LIMIT ? OFFSET ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query COMMIT
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query BEGIN
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query INSERT INTO `achiera_db_master`.`price_rules` (`id`,`componentId`,`scope`,`priority`,`currency`,`amount`,`metadata`,`isActive`,`createdAt`,`updatedAt`) VALUES (?,?,?,?,?,?,?,?,?,?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`price_rules`.`id`, `achiera_db_master`.`price_rules`.`componentId`, `achiera_db_master`.`price_rules`.`scope`, `achiera_db_master`.`price_rules`.`scopeId`, `achiera_db_master`.`price_rules`.`priority`, `achiera_db_master`.`price_rules`.`currency`, `achiera_db_master`.`price_rules`.`amount`, `achiera_db_master`.`price_rules`.`minQty`, `achiera_db_master`.`price_rules`.`maxQty`, `achiera_db_master`.`price_rules`.`minOrderMeter`, `achiera_db_master`.`price_rules`.`metadata`, `achiera_db_master`.`price_rules`.`isActive`, `achiera_db_master`.`price_rules`.`startAt`, `achiera_db_master`.`price_rules`.`endAt`, `achiera_db_master`.`price_rules`.`createdAt`, `achiera_db_master`.`price_rules`.`updatedAt` FROM `achiera_db_master`.`price_rules` WHERE `achiera_db_master`.`price_rules`.`id` = ? LIMIT ? OFFSET ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query COMMIT
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query BEGIN
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query INSERT INTO `achiera_db_master`.`price_rules` (`id`,`componentId`,`scope`,`priority`,`currency`,`amount`,`metadata`,`isActive`,`createdAt`,`updatedAt`) VALUES (?,?,?,?,?,?,?,?,?,?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`price_rules`.`id`, `achiera_db_master`.`price_rules`.`componentId`, `achiera_db_master`.`price_rules`.`scope`, `achiera_db_master`.`price_rules`.`scopeId`, `achiera_db_master`.`price_rules`.`priority`, `achiera_db_master`.`price_rules`.`currency`, `achiera_db_master`.`price_rules`.`amount`, `achiera_db_master`.`price_rules`.`minQty`, `achiera_db_master`.`price_rules`.`maxQty`, `achiera_db_master`.`price_rules`.`minOrderMeter`, `achiera_db_master`.`price_rules`.`metadata`, `achiera_db_master`.`price_rules`.`isActive`, `achiera_db_master`.`price_rules`.`startAt`, `achiera_db_master`.`price_rules`.`endAt`, `achiera_db_master`.`price_rules`.`createdAt`, `achiera_db_master`.`price_rules`.`updatedAt` FROM `achiera_db_master`.`price_rules` WHERE `achiera_db_master`.`price_rules`.`id` = ? LIMIT ? OFFSET ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query COMMIT
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    DEBUG: calculatePrice called with qty=1 variantId=cmj8p67c900063xsxyk3vu423 printing=undefined
+
+      at calculatePrice (src/lib/pricing/engine.ts:19:13)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`frozen_variants`.`id`, `achiera_db_master`.`frozen_variants`.`price`, `achiera_db_master`.`frozen_variants`.`productId` FROM `achiera_db_master`.`frozen_variants` WHERE (`achiera_db_master`.`frozen_variants`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`frozen_products`.`id`, `achiera_db_master`.`frozen_products`.`categoryId` FROM `achiera_db_master`.`frozen_products` WHERE `achiera_db_master`.`frozen_products`.`id` IN (?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`frozen_categories`.`id`, `achiera_db_master`.`frozen_categories`.`brandId` FROM `achiera_db_master`.`frozen_categories` WHERE `achiera_db_master`.`frozen_categories`.`id` IN (?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`price_rules`.`id`, `achiera_db_master`.`price_rules`.`componentId`, `achiera_db_master`.`price_rules`.`scope`, `achiera_db_master`.`price_rules`.`scopeId`, `achiera_db_master`.`price_rules`.`priority`, `achiera_db_master`.`price_rules`.`currency`, `achiera_db_master`.`price_rules`.`amount`, `achiera_db_master`.`price_rules`.`minQty`, `achiera_db_master`.`price_rules`.`maxQty`, `achiera_db_master`.`price_rules`.`minOrderMeter`, `achiera_db_master`.`price_rules`.`metadata`, `achiera_db_master`.`price_rules`.`isActive`, `achiera_db_master`.`price_rules`.`startAt`, `achiera_db_master`.`price_rules`.`endAt`, `achiera_db_master`.`price_rules`.`createdAt`, `achiera_db_master`.`price_rules`.`updatedAt` FROM `achiera_db_master`.`price_rules` WHERE (`achiera_db_master`.`price_rules`.`isActive` = ? AND `achiera_db_master`.`price_rules`.`currency` = ? AND ((`achiera_db_master`.`price_rules`.`scope` = ? AND `achiera_db_master`.`price_rules`.`scopeId` IS NULL) OR (`achiera_db_master`.`price_rules`.`scope` = ? AND `achiera_db_master`.`price_rules`.`scopeId` = ?) OR (`achiera_db_master`.`price_rules`.`scope` = ? AND `achiera_db_master`.`price_rules`.`scopeId` = ?) OR (`achiera_db_master`.`price_rules`.`scope` = ? AND `achiera_db_master`.`price_rules`.`scopeId` = ?)) AND (`achiera_db_master`.`price_rules`.`startAt` IS NULL OR `achiera_db_master`.`price_rules`.`startAt` <= ?) AND (`achiera_db_master`.`price_rules`.`endAt` IS NULL OR `achiera_db_master`.`price_rules`.`endAt` >= ?)) ORDER BY `achiera_db_master`.`price_rules`.`priority` DESC
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`price_components`.`id`, `achiera_db_master`.`price_components`.`code`, `achiera_db_master`.`price_components`.`name`, `achiera_db_master`.`price_components`.`type` FROM `achiera_db_master`.`price_components` WHERE `achiera_db_master`.`price_components`.`id` IN (?,?,?,?,?,?,?,?,?,?,?,?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    DEBUG: loadActivePricingRules for Variant cmj8p67c900063xsxyk3vu423, Brand cmj8p67bm00003xsxpwgd82x5
+
+      at loadActivePricingRules (src/lib/pricing/engine.ts:135:13)
+
+  console.log
+    DEBUG: Found 118 rules.
+
+      at loadActivePricingRules (src/lib/pricing/engine.ts:136:13)
+
+  console.log
+    DEBUG: Rule cmj6wl9mz0012no7kj52hhpaz Code=BULK_TIER_50 Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9mv0010no7khaujxtrm Code=BULK_TIER_12 Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9mr000yno7khv8yrblj Code=SIZE_A3 Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9mi000uno7kxqyferdi Code=COLOR_ADDON Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9mm000wno7kl65o5qxn Code=COLOR_ADDON Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67d5000a3xsxawt5c2ec Code=BULK_TIER Scope=VARIANT
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67dc000c3xsxi1kafl4p Code=BULK_TIER Scope=VARIANT
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9m9000qno7k9tix0skq Code=PRINT_DTF Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9me000sno7k7phwjqc3 Code=PRINT_PLASTISOL Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67cy00083xsxhi0f3kki Code=BASE_UNIT Scope=VARIANT
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m0547000ko48pe2xnmr71 Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m054e000mo48pxarf5j42 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m054i000oo48pvmuto0yf Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m054n000qo48pmwf21u61 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m17of000e40k6mmgqh06r Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m17ol000g40k6mryucwgy Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m17oq000i40k6scssg2la Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m17ou000k40k6kmksl1xy Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m6y5q000et6jyjud9wc9m Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m6y5y000gt6jyay37serd Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m6y64000it6jy0vc43bxu Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m6y6b000kt6jy83m7fnwc Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m7iqq000e11s62l2j0aek Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m7iqw000g11s6tueq1gh0 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m7ir2000i11s66ce6x6zc Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m7ir8000k11s6rzmmzn53 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ma82z000ecbde6nyo97ng Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ma837000gcbdekukyjyfl Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ma83d000icbde3wkn56z3 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ma83k000kcbde9vd7ja86 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mcsa4000eo3r3rpxqzy17 Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mcsae000go3r3oh6xu3wb Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mcsaq000io3r33obl422y Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mcsb2000ko3r3hh0k0wlq Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8md5c9000ewvs3tihej10r Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8md5cg000gwvs3al74ligr Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8md5cn000iwvs3mg5jjts6 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8md5ct000kwvs3v8u4p9w0 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mdibd000ennpj1ziboryt Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mdibk000gnnpjojlusn3a Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mdibq000innpj1f8qebg4 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mdibx000knnpjh4wfj5w9 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mh1yd000ek4gsy8sec8lj Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mh1yl000gk4gsqolu1wf2 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mh1ys000ik4gsufs2sgdi Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mh1yz000kk4gs3n33ul1m Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8miim3000eunk3p1ditbxh Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8miimf000gunk3t488vnfr Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8miimo000iunk3o0wdo72b Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8miimx000kunk33u4iqcik Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mit3n000ekki89r4rnki4 Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mit3v000gkki8i7ex3yo4 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mit42000ikki8edalqisx Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mit49000kkki876zsjxpw Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mw0c6000e29zpx6xkovzd Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mw0ch000g29zphoilziit Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mw0cp000i29zpr4m352lh Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mw0cw000k29zpdlp21nr9 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mwb68000enya8vvzt9rbb Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mwb6e000gnya8zexiqsc4 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mwb6k000inya81hsrnf62 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mwb6q000knya8ifjzq38v Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o1dvd000e3tag4rnapm9q Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o1dw0000g3tage19itfjj Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o1dx3000i3tagd5aouptu Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o1dxh000k3taggrbqf4rf Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o29dp000ee27wsbzva3hy Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o29dw000ge27wgrwgo9fr Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o29e1000ie27w7mvc92d0 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o29e6000ke27wjyga8bzf Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o51t1000egfwnu7xtkkqy Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o51t8000ggfwnqy0qcozv Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o51tg000igfwnrkn1n6hq Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o51tm000kgfwnt92ucxty Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o9uot000e8cg0s6el60mg Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o9up0000g8cg01sn3zy8w Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o9up7000i8cg01p133q6k Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o9upe000k8cg0y7o6t93x Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ocjqg000ep1qbhllp4n3y Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ocjqo000gp1qbn4x4q1gn Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ocjqx000ip1qb8nxxyx6z Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ocjra000kp1qbgyw6lp6a Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oeqfr000ejt6jb96u890g Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oeqfy000gjt6j75fd76t1 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oeqg5000ijt6jrlatqs6u Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oeqgb000kjt6jwjjcql10 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ofgss000emh6lf0za894u Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ofgsy000gmh6l4e3gqvc9 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ofgt2000imh6l2gexk413 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ofgt7000kmh6l0t261nn6 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8okts1000ew75jyoq5w1yn Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oktsa000gw75jimops3o2 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oktsi000iw75j2324oke9 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oktso000kw75jkepp3dod Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8olv03000eyb44ab0uq5ru Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8olv0a000gyb441u0ckycz Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8olv0f000iyb44hmr0eipg Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8olv0k000kyb44rgnk3n1r Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8om2ke000emd3v8jxjdriw Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8om2kk000gmd3vh9vwz300 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8om2kq000imd3v493o9ptu Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8om2kx000kmd3v1o8mcjs7 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oyue6000e14bc673zuc3d Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oyueh000g14bchsbd4ib7 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oyueq000i14bcvzipzc5s Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oyuez000k14bcqrdvu1vx Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p0c4r000e7noqv6jinxxf Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p0c4x000g7noqhok7m1dl Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p0c53000i7noq3tkf7bb7 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p0c58000k7noqcz7xngf3 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p32wh000ey35y6vvwh4rv Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p32wr000gy35y4yl0rbu9 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p32wx000iy35ycd8me72t Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p32x5000ky35y9dnhvy2u Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67di000e3xsxbhegjjsu Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67dp000g3xsxiiphnddh Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67du000i3xsx46d6n8hv Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67e0000k3xsxcv9hvr2v Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: calculateBasePrice Qty=1. BulkTierRules count=2
+
+      at calculateBasePrice (src/lib/pricing/engine.ts:177:13)
+
+  console.log
+    DEBUG: BulkRule cmj8p67d5000a3xsxawt5c2ec min=10 max=49
+
+      at src/lib/pricing/engine.ts:178:40
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: BulkRule cmj8p67dc000c3xsxi1kafl4p min=50 max=null
+
+      at src/lib/pricing/engine.ts:178:40
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Selected Bulk Rule: undefined
+
+      at calculateBasePrice (src/lib/pricing/engine.ts:180:13)
+
+  console.log
+    DEBUG: calculatePrice called with qty=20 variantId=cmj8p67c900063xsxyk3vu423 printing=undefined
+
+      at calculatePrice (src/lib/pricing/engine.ts:19:13)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`frozen_variants`.`id`, `achiera_db_master`.`frozen_variants`.`price`, `achiera_db_master`.`frozen_variants`.`productId` FROM `achiera_db_master`.`frozen_variants` WHERE (`achiera_db_master`.`frozen_variants`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`frozen_products`.`id`, `achiera_db_master`.`frozen_products`.`categoryId` FROM `achiera_db_master`.`frozen_products` WHERE `achiera_db_master`.`frozen_products`.`id` IN (?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`frozen_categories`.`id`, `achiera_db_master`.`frozen_categories`.`brandId` FROM `achiera_db_master`.`frozen_categories` WHERE `achiera_db_master`.`frozen_categories`.`id` IN (?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`price_rules`.`id`, `achiera_db_master`.`price_rules`.`componentId`, `achiera_db_master`.`price_rules`.`scope`, `achiera_db_master`.`price_rules`.`scopeId`, `achiera_db_master`.`price_rules`.`priority`, `achiera_db_master`.`price_rules`.`currency`, `achiera_db_master`.`price_rules`.`amount`, `achiera_db_master`.`price_rules`.`minQty`, `achiera_db_master`.`price_rules`.`maxQty`, `achiera_db_master`.`price_rules`.`minOrderMeter`, `achiera_db_master`.`price_rules`.`metadata`, `achiera_db_master`.`price_rules`.`isActive`, `achiera_db_master`.`price_rules`.`startAt`, `achiera_db_master`.`price_rules`.`endAt`, `achiera_db_master`.`price_rules`.`createdAt`, `achiera_db_master`.`price_rules`.`updatedAt` FROM `achiera_db_master`.`price_rules` WHERE (`achiera_db_master`.`price_rules`.`isActive` = ? AND `achiera_db_master`.`price_rules`.`currency` = ? AND ((`achiera_db_master`.`price_rules`.`scope` = ? AND `achiera_db_master`.`price_rules`.`scopeId` IS NULL) OR (`achiera_db_master`.`price_rules`.`scope` = ? AND `achiera_db_master`.`price_rules`.`scopeId` = ?) OR (`achiera_db_master`.`price_rules`.`scope` = ? AND `achiera_db_master`.`price_rules`.`scopeId` = ?) OR (`achiera_db_master`.`price_rules`.`scope` = ? AND `achiera_db_master`.`price_rules`.`scopeId` = ?)) AND (`achiera_db_master`.`price_rules`.`startAt` IS NULL OR `achiera_db_master`.`price_rules`.`startAt` <= ?) AND (`achiera_db_master`.`price_rules`.`endAt` IS NULL OR `achiera_db_master`.`price_rules`.`endAt` >= ?)) ORDER BY `achiera_db_master`.`price_rules`.`priority` DESC
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`price_components`.`id`, `achiera_db_master`.`price_components`.`code`, `achiera_db_master`.`price_components`.`name`, `achiera_db_master`.`price_components`.`type` FROM `achiera_db_master`.`price_components` WHERE `achiera_db_master`.`price_components`.`id` IN (?,?,?,?,?,?,?,?,?,?,?,?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    DEBUG: loadActivePricingRules for Variant cmj8p67c900063xsxyk3vu423, Brand cmj8p67bm00003xsxpwgd82x5
+
+      at loadActivePricingRules (src/lib/pricing/engine.ts:135:13)
+
+  console.log
+    DEBUG: Found 118 rules.
+
+      at loadActivePricingRules (src/lib/pricing/engine.ts:136:13)
+
+  console.log
+    DEBUG: Rule cmj6wl9mz0012no7kj52hhpaz Code=BULK_TIER_50 Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9mv0010no7khaujxtrm Code=BULK_TIER_12 Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9mr000yno7khv8yrblj Code=SIZE_A3 Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9mi000uno7kxqyferdi Code=COLOR_ADDON Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9mm000wno7kl65o5qxn Code=COLOR_ADDON Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67d5000a3xsxawt5c2ec Code=BULK_TIER Scope=VARIANT
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67dc000c3xsxi1kafl4p Code=BULK_TIER Scope=VARIANT
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9m9000qno7k9tix0skq Code=PRINT_DTF Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9me000sno7k7phwjqc3 Code=PRINT_PLASTISOL Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67cy00083xsxhi0f3kki Code=BASE_UNIT Scope=VARIANT
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m0547000ko48pe2xnmr71 Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m054e000mo48pxarf5j42 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m054i000oo48pvmuto0yf Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m054n000qo48pmwf21u61 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m17of000e40k6mmgqh06r Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m17ol000g40k6mryucwgy Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m17oq000i40k6scssg2la Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m17ou000k40k6kmksl1xy Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m6y5q000et6jyjud9wc9m Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m6y5y000gt6jyay37serd Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m6y64000it6jy0vc43bxu Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m6y6b000kt6jy83m7fnwc Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m7iqq000e11s62l2j0aek Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m7iqw000g11s6tueq1gh0 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m7ir2000i11s66ce6x6zc Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m7ir8000k11s6rzmmzn53 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ma82z000ecbde6nyo97ng Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ma837000gcbdekukyjyfl Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ma83d000icbde3wkn56z3 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ma83k000kcbde9vd7ja86 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mcsa4000eo3r3rpxqzy17 Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mcsae000go3r3oh6xu3wb Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mcsaq000io3r33obl422y Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mcsb2000ko3r3hh0k0wlq Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8md5c9000ewvs3tihej10r Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8md5cg000gwvs3al74ligr Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8md5cn000iwvs3mg5jjts6 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8md5ct000kwvs3v8u4p9w0 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mdibd000ennpj1ziboryt Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mdibk000gnnpjojlusn3a Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mdibq000innpj1f8qebg4 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mdibx000knnpjh4wfj5w9 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mh1yd000ek4gsy8sec8lj Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mh1yl000gk4gsqolu1wf2 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mh1ys000ik4gsufs2sgdi Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mh1yz000kk4gs3n33ul1m Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8miim3000eunk3p1ditbxh Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8miimf000gunk3t488vnfr Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8miimo000iunk3o0wdo72b Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8miimx000kunk33u4iqcik Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mit3n000ekki89r4rnki4 Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mit3v000gkki8i7ex3yo4 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mit42000ikki8edalqisx Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mit49000kkki876zsjxpw Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mw0c6000e29zpx6xkovzd Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mw0ch000g29zphoilziit Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mw0cp000i29zpr4m352lh Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mw0cw000k29zpdlp21nr9 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mwb68000enya8vvzt9rbb Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mwb6e000gnya8zexiqsc4 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mwb6k000inya81hsrnf62 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mwb6q000knya8ifjzq38v Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o1dvd000e3tag4rnapm9q Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o1dw0000g3tage19itfjj Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o1dx3000i3tagd5aouptu Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o1dxh000k3taggrbqf4rf Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o29dp000ee27wsbzva3hy Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o29dw000ge27wgrwgo9fr Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o29e1000ie27w7mvc92d0 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o29e6000ke27wjyga8bzf Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o51t1000egfwnu7xtkkqy Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o51t8000ggfwnqy0qcozv Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o51tg000igfwnrkn1n6hq Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o51tm000kgfwnt92ucxty Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o9uot000e8cg0s6el60mg Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o9up0000g8cg01sn3zy8w Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o9up7000i8cg01p133q6k Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o9upe000k8cg0y7o6t93x Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ocjqg000ep1qbhllp4n3y Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ocjqo000gp1qbn4x4q1gn Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ocjqx000ip1qb8nxxyx6z Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ocjra000kp1qbgyw6lp6a Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oeqfr000ejt6jb96u890g Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oeqfy000gjt6j75fd76t1 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oeqg5000ijt6jrlatqs6u Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oeqgb000kjt6jwjjcql10 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ofgss000emh6lf0za894u Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ofgsy000gmh6l4e3gqvc9 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ofgt2000imh6l2gexk413 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ofgt7000kmh6l0t261nn6 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8okts1000ew75jyoq5w1yn Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oktsa000gw75jimops3o2 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oktsi000iw75j2324oke9 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oktso000kw75jkepp3dod Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8olv03000eyb44ab0uq5ru Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8olv0a000gyb441u0ckycz Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8olv0f000iyb44hmr0eipg Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8olv0k000kyb44rgnk3n1r Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8om2ke000emd3v8jxjdriw Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8om2kk000gmd3vh9vwz300 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8om2kq000imd3v493o9ptu Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8om2kx000kmd3v1o8mcjs7 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oyue6000e14bc673zuc3d Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oyueh000g14bchsbd4ib7 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oyueq000i14bcvzipzc5s Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oyuez000k14bcqrdvu1vx Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p0c4r000e7noqv6jinxxf Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p0c4x000g7noqhok7m1dl Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p0c53000i7noq3tkf7bb7 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p0c58000k7noqcz7xngf3 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p32wh000ey35y6vvwh4rv Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p32wr000gy35y4yl0rbu9 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p32wx000iy35ycd8me72t Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p32x5000ky35y9dnhvy2u Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67di000e3xsxbhegjjsu Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67dp000g3xsxiiphnddh Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67du000i3xsx46d6n8hv Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67e0000k3xsxcv9hvr2v Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: calculateBasePrice Qty=20. BulkTierRules count=2
+
+      at calculateBasePrice (src/lib/pricing/engine.ts:177:13)
+
+  console.log
+    DEBUG: BulkRule cmj8p67d5000a3xsxawt5c2ec min=10 max=49
+
+      at src/lib/pricing/engine.ts:178:40
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: BulkRule cmj8p67dc000c3xsxi1kafl4p min=50 max=null
+
+      at src/lib/pricing/engine.ts:178:40
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Selected Bulk Rule: cmj8p67d5000a3xsxawt5c2ec
+
+      at calculateBasePrice (src/lib/pricing/engine.ts:180:13)
+
+  console.log
+    DEBUG: calculatePrice called with qty=10 variantId=cmj8p67c900063xsxyk3vu423 printing={"method":"plastisol","colors":2}
+
+      at calculatePrice (src/lib/pricing/engine.ts:19:13)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`frozen_variants`.`id`, `achiera_db_master`.`frozen_variants`.`price`, `achiera_db_master`.`frozen_variants`.`productId` FROM `achiera_db_master`.`frozen_variants` WHERE (`achiera_db_master`.`frozen_variants`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`frozen_products`.`id`, `achiera_db_master`.`frozen_products`.`categoryId` FROM `achiera_db_master`.`frozen_products` WHERE `achiera_db_master`.`frozen_products`.`id` IN (?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`frozen_categories`.`id`, `achiera_db_master`.`frozen_categories`.`brandId` FROM `achiera_db_master`.`frozen_categories` WHERE `achiera_db_master`.`frozen_categories`.`id` IN (?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`price_rules`.`id`, `achiera_db_master`.`price_rules`.`componentId`, `achiera_db_master`.`price_rules`.`scope`, `achiera_db_master`.`price_rules`.`scopeId`, `achiera_db_master`.`price_rules`.`priority`, `achiera_db_master`.`price_rules`.`currency`, `achiera_db_master`.`price_rules`.`amount`, `achiera_db_master`.`price_rules`.`minQty`, `achiera_db_master`.`price_rules`.`maxQty`, `achiera_db_master`.`price_rules`.`minOrderMeter`, `achiera_db_master`.`price_rules`.`metadata`, `achiera_db_master`.`price_rules`.`isActive`, `achiera_db_master`.`price_rules`.`startAt`, `achiera_db_master`.`price_rules`.`endAt`, `achiera_db_master`.`price_rules`.`createdAt`, `achiera_db_master`.`price_rules`.`updatedAt` FROM `achiera_db_master`.`price_rules` WHERE (`achiera_db_master`.`price_rules`.`isActive` = ? AND `achiera_db_master`.`price_rules`.`currency` = ? AND ((`achiera_db_master`.`price_rules`.`scope` = ? AND `achiera_db_master`.`price_rules`.`scopeId` IS NULL) OR (`achiera_db_master`.`price_rules`.`scope` = ? AND `achiera_db_master`.`price_rules`.`scopeId` = ?) OR (`achiera_db_master`.`price_rules`.`scope` = ? AND `achiera_db_master`.`price_rules`.`scopeId` = ?) OR (`achiera_db_master`.`price_rules`.`scope` = ? AND `achiera_db_master`.`price_rules`.`scopeId` = ?)) AND (`achiera_db_master`.`price_rules`.`startAt` IS NULL OR `achiera_db_master`.`price_rules`.`startAt` <= ?) AND (`achiera_db_master`.`price_rules`.`endAt` IS NULL OR `achiera_db_master`.`price_rules`.`endAt` >= ?)) ORDER BY `achiera_db_master`.`price_rules`.`priority` DESC
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`price_components`.`id`, `achiera_db_master`.`price_components`.`code`, `achiera_db_master`.`price_components`.`name`, `achiera_db_master`.`price_components`.`type` FROM `achiera_db_master`.`price_components` WHERE `achiera_db_master`.`price_components`.`id` IN (?,?,?,?,?,?,?,?,?,?,?,?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    DEBUG: loadActivePricingRules for Variant cmj8p67c900063xsxyk3vu423, Brand cmj8p67bm00003xsxpwgd82x5
+
+      at loadActivePricingRules (src/lib/pricing/engine.ts:135:13)
+
+  console.log
+    DEBUG: Found 118 rules.
+
+      at loadActivePricingRules (src/lib/pricing/engine.ts:136:13)
+
+  console.log
+    DEBUG: Rule cmj6wl9mz0012no7kj52hhpaz Code=BULK_TIER_50 Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9mv0010no7khaujxtrm Code=BULK_TIER_12 Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9mr000yno7khv8yrblj Code=SIZE_A3 Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9mi000uno7kxqyferdi Code=COLOR_ADDON Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9mm000wno7kl65o5qxn Code=COLOR_ADDON Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67d5000a3xsxawt5c2ec Code=BULK_TIER Scope=VARIANT
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67dc000c3xsxi1kafl4p Code=BULK_TIER Scope=VARIANT
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9m9000qno7k9tix0skq Code=PRINT_DTF Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9me000sno7k7phwjqc3 Code=PRINT_PLASTISOL Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67cy00083xsxhi0f3kki Code=BASE_UNIT Scope=VARIANT
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m0547000ko48pe2xnmr71 Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m054e000mo48pxarf5j42 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m054i000oo48pvmuto0yf Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m054n000qo48pmwf21u61 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m17of000e40k6mmgqh06r Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m17ol000g40k6mryucwgy Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m17oq000i40k6scssg2la Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m17ou000k40k6kmksl1xy Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m6y5q000et6jyjud9wc9m Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m6y5y000gt6jyay37serd Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m6y64000it6jy0vc43bxu Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m6y6b000kt6jy83m7fnwc Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m7iqq000e11s62l2j0aek Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m7iqw000g11s6tueq1gh0 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m7ir2000i11s66ce6x6zc Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m7ir8000k11s6rzmmzn53 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ma82z000ecbde6nyo97ng Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ma837000gcbdekukyjyfl Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ma83d000icbde3wkn56z3 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ma83k000kcbde9vd7ja86 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mcsa4000eo3r3rpxqzy17 Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mcsae000go3r3oh6xu3wb Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mcsaq000io3r33obl422y Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mcsb2000ko3r3hh0k0wlq Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8md5c9000ewvs3tihej10r Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8md5cg000gwvs3al74ligr Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8md5cn000iwvs3mg5jjts6 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8md5ct000kwvs3v8u4p9w0 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mdibd000ennpj1ziboryt Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mdibk000gnnpjojlusn3a Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mdibq000innpj1f8qebg4 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mdibx000knnpjh4wfj5w9 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mh1yd000ek4gsy8sec8lj Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mh1yl000gk4gsqolu1wf2 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mh1ys000ik4gsufs2sgdi Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mh1yz000kk4gs3n33ul1m Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8miim3000eunk3p1ditbxh Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8miimf000gunk3t488vnfr Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8miimo000iunk3o0wdo72b Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8miimx000kunk33u4iqcik Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mit3n000ekki89r4rnki4 Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mit3v000gkki8i7ex3yo4 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mit42000ikki8edalqisx Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mit49000kkki876zsjxpw Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mw0c6000e29zpx6xkovzd Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mw0ch000g29zphoilziit Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mw0cp000i29zpr4m352lh Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mw0cw000k29zpdlp21nr9 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mwb68000enya8vvzt9rbb Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mwb6e000gnya8zexiqsc4 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mwb6k000inya81hsrnf62 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mwb6q000knya8ifjzq38v Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o1dvd000e3tag4rnapm9q Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o1dw0000g3tage19itfjj Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o1dx3000i3tagd5aouptu Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o1dxh000k3taggrbqf4rf Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o29dp000ee27wsbzva3hy Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o29dw000ge27wgrwgo9fr Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o29e1000ie27w7mvc92d0 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o29e6000ke27wjyga8bzf Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o51t1000egfwnu7xtkkqy Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o51t8000ggfwnqy0qcozv Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o51tg000igfwnrkn1n6hq Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o51tm000kgfwnt92ucxty Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o9uot000e8cg0s6el60mg Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o9up0000g8cg01sn3zy8w Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o9up7000i8cg01p133q6k Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o9upe000k8cg0y7o6t93x Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ocjqg000ep1qbhllp4n3y Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ocjqo000gp1qbn4x4q1gn Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ocjqx000ip1qb8nxxyx6z Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ocjra000kp1qbgyw6lp6a Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oeqfr000ejt6jb96u890g Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oeqfy000gjt6j75fd76t1 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oeqg5000ijt6jrlatqs6u Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oeqgb000kjt6jwjjcql10 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ofgss000emh6lf0za894u Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ofgsy000gmh6l4e3gqvc9 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ofgt2000imh6l2gexk413 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ofgt7000kmh6l0t261nn6 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8okts1000ew75jyoq5w1yn Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oktsa000gw75jimops3o2 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oktsi000iw75j2324oke9 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oktso000kw75jkepp3dod Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8olv03000eyb44ab0uq5ru Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8olv0a000gyb441u0ckycz Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8olv0f000iyb44hmr0eipg Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8olv0k000kyb44rgnk3n1r Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8om2ke000emd3v8jxjdriw Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8om2kk000gmd3vh9vwz300 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8om2kq000imd3v493o9ptu Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8om2kx000kmd3v1o8mcjs7 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oyue6000e14bc673zuc3d Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oyueh000g14bchsbd4ib7 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oyueq000i14bcvzipzc5s Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oyuez000k14bcqrdvu1vx Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p0c4r000e7noqv6jinxxf Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p0c4x000g7noqhok7m1dl Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p0c53000i7noq3tkf7bb7 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p0c58000k7noqcz7xngf3 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p32wh000ey35y6vvwh4rv Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p32wr000gy35y4yl0rbu9 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p32wx000iy35ycd8me72t Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p32x5000ky35y9dnhvy2u Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67di000e3xsxbhegjjsu Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67dp000g3xsxiiphnddh Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67du000i3xsx46d6n8hv Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67e0000k3xsxcv9hvr2v Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: calculateBasePrice Qty=10. BulkTierRules count=2
+
+      at calculateBasePrice (src/lib/pricing/engine.ts:177:13)
+
+  console.log
+    DEBUG: BulkRule cmj8p67d5000a3xsxawt5c2ec min=10 max=49
+
+      at src/lib/pricing/engine.ts:178:40
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: BulkRule cmj8p67dc000c3xsxi1kafl4p min=50 max=null
+
+      at src/lib/pricing/engine.ts:178:40
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Selected Bulk Rule: cmj8p67d5000a3xsxawt5c2ec
+
+      at calculateBasePrice (src/lib/pricing/engine.ts:180:13)
+
+  console.log
+    DEBUG: calculatePrice called with qty=5 variantId=cmj8p67c900063xsxyk3vu423 printing={"method":"plastisol","size":"XXL"}
+
+      at calculatePrice (src/lib/pricing/engine.ts:19:13)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`frozen_variants`.`id`, `achiera_db_master`.`frozen_variants`.`price`, `achiera_db_master`.`frozen_variants`.`productId` FROM `achiera_db_master`.`frozen_variants` WHERE (`achiera_db_master`.`frozen_variants`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`frozen_products`.`id`, `achiera_db_master`.`frozen_products`.`categoryId` FROM `achiera_db_master`.`frozen_products` WHERE `achiera_db_master`.`frozen_products`.`id` IN (?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`frozen_categories`.`id`, `achiera_db_master`.`frozen_categories`.`brandId` FROM `achiera_db_master`.`frozen_categories` WHERE `achiera_db_master`.`frozen_categories`.`id` IN (?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`price_rules`.`id`, `achiera_db_master`.`price_rules`.`componentId`, `achiera_db_master`.`price_rules`.`scope`, `achiera_db_master`.`price_rules`.`scopeId`, `achiera_db_master`.`price_rules`.`priority`, `achiera_db_master`.`price_rules`.`currency`, `achiera_db_master`.`price_rules`.`amount`, `achiera_db_master`.`price_rules`.`minQty`, `achiera_db_master`.`price_rules`.`maxQty`, `achiera_db_master`.`price_rules`.`minOrderMeter`, `achiera_db_master`.`price_rules`.`metadata`, `achiera_db_master`.`price_rules`.`isActive`, `achiera_db_master`.`price_rules`.`startAt`, `achiera_db_master`.`price_rules`.`endAt`, `achiera_db_master`.`price_rules`.`createdAt`, `achiera_db_master`.`price_rules`.`updatedAt` FROM `achiera_db_master`.`price_rules` WHERE (`achiera_db_master`.`price_rules`.`isActive` = ? AND `achiera_db_master`.`price_rules`.`currency` = ? AND ((`achiera_db_master`.`price_rules`.`scope` = ? AND `achiera_db_master`.`price_rules`.`scopeId` IS NULL) OR (`achiera_db_master`.`price_rules`.`scope` = ? AND `achiera_db_master`.`price_rules`.`scopeId` = ?) OR (`achiera_db_master`.`price_rules`.`scope` = ? AND `achiera_db_master`.`price_rules`.`scopeId` = ?) OR (`achiera_db_master`.`price_rules`.`scope` = ? AND `achiera_db_master`.`price_rules`.`scopeId` = ?)) AND (`achiera_db_master`.`price_rules`.`startAt` IS NULL OR `achiera_db_master`.`price_rules`.`startAt` <= ?) AND (`achiera_db_master`.`price_rules`.`endAt` IS NULL OR `achiera_db_master`.`price_rules`.`endAt` >= ?)) ORDER BY `achiera_db_master`.`price_rules`.`priority` DESC
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`price_components`.`id`, `achiera_db_master`.`price_components`.`code`, `achiera_db_master`.`price_components`.`name`, `achiera_db_master`.`price_components`.`type` FROM `achiera_db_master`.`price_components` WHERE `achiera_db_master`.`price_components`.`id` IN (?,?,?,?,?,?,?,?,?,?,?,?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    DEBUG: loadActivePricingRules for Variant cmj8p67c900063xsxyk3vu423, Brand cmj8p67bm00003xsxpwgd82x5
+
+      at loadActivePricingRules (src/lib/pricing/engine.ts:135:13)
+
+  console.log
+    DEBUG: Found 118 rules.
+
+      at loadActivePricingRules (src/lib/pricing/engine.ts:136:13)
+
+  console.log
+    DEBUG: Rule cmj6wl9mz0012no7kj52hhpaz Code=BULK_TIER_50 Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9mv0010no7khaujxtrm Code=BULK_TIER_12 Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9mr000yno7khv8yrblj Code=SIZE_A3 Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9mi000uno7kxqyferdi Code=COLOR_ADDON Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9mm000wno7kl65o5qxn Code=COLOR_ADDON Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67d5000a3xsxawt5c2ec Code=BULK_TIER Scope=VARIANT
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67dc000c3xsxi1kafl4p Code=BULK_TIER Scope=VARIANT
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9m9000qno7k9tix0skq Code=PRINT_DTF Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9me000sno7k7phwjqc3 Code=PRINT_PLASTISOL Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67cy00083xsxhi0f3kki Code=BASE_UNIT Scope=VARIANT
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m0547000ko48pe2xnmr71 Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m054e000mo48pxarf5j42 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m054i000oo48pvmuto0yf Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m054n000qo48pmwf21u61 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m17of000e40k6mmgqh06r Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m17ol000g40k6mryucwgy Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m17oq000i40k6scssg2la Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m17ou000k40k6kmksl1xy Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m6y5q000et6jyjud9wc9m Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m6y5y000gt6jyay37serd Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m6y64000it6jy0vc43bxu Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m6y6b000kt6jy83m7fnwc Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m7iqq000e11s62l2j0aek Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m7iqw000g11s6tueq1gh0 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m7ir2000i11s66ce6x6zc Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m7ir8000k11s6rzmmzn53 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ma82z000ecbde6nyo97ng Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ma837000gcbdekukyjyfl Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ma83d000icbde3wkn56z3 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ma83k000kcbde9vd7ja86 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mcsa4000eo3r3rpxqzy17 Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mcsae000go3r3oh6xu3wb Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mcsaq000io3r33obl422y Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mcsb2000ko3r3hh0k0wlq Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8md5c9000ewvs3tihej10r Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8md5cg000gwvs3al74ligr Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8md5cn000iwvs3mg5jjts6 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8md5ct000kwvs3v8u4p9w0 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mdibd000ennpj1ziboryt Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mdibk000gnnpjojlusn3a Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mdibq000innpj1f8qebg4 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mdibx000knnpjh4wfj5w9 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mh1yd000ek4gsy8sec8lj Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mh1yl000gk4gsqolu1wf2 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mh1ys000ik4gsufs2sgdi Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mh1yz000kk4gs3n33ul1m Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8miim3000eunk3p1ditbxh Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8miimf000gunk3t488vnfr Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8miimo000iunk3o0wdo72b Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8miimx000kunk33u4iqcik Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mit3n000ekki89r4rnki4 Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mit3v000gkki8i7ex3yo4 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mit42000ikki8edalqisx Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mit49000kkki876zsjxpw Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mw0c6000e29zpx6xkovzd Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mw0ch000g29zphoilziit Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mw0cp000i29zpr4m352lh Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mw0cw000k29zpdlp21nr9 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mwb68000enya8vvzt9rbb Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mwb6e000gnya8zexiqsc4 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mwb6k000inya81hsrnf62 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mwb6q000knya8ifjzq38v Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o1dvd000e3tag4rnapm9q Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o1dw0000g3tage19itfjj Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o1dx3000i3tagd5aouptu Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o1dxh000k3taggrbqf4rf Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o29dp000ee27wsbzva3hy Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o29dw000ge27wgrwgo9fr Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o29e1000ie27w7mvc92d0 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o29e6000ke27wjyga8bzf Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o51t1000egfwnu7xtkkqy Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o51t8000ggfwnqy0qcozv Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o51tg000igfwnrkn1n6hq Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o51tm000kgfwnt92ucxty Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o9uot000e8cg0s6el60mg Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o9up0000g8cg01sn3zy8w Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o9up7000i8cg01p133q6k Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o9upe000k8cg0y7o6t93x Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ocjqg000ep1qbhllp4n3y Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ocjqo000gp1qbn4x4q1gn Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ocjqx000ip1qb8nxxyx6z Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ocjra000kp1qbgyw6lp6a Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oeqfr000ejt6jb96u890g Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oeqfy000gjt6j75fd76t1 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oeqg5000ijt6jrlatqs6u Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oeqgb000kjt6jwjjcql10 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ofgss000emh6lf0za894u Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ofgsy000gmh6l4e3gqvc9 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ofgt2000imh6l2gexk413 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ofgt7000kmh6l0t261nn6 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8okts1000ew75jyoq5w1yn Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oktsa000gw75jimops3o2 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oktsi000iw75j2324oke9 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oktso000kw75jkepp3dod Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8olv03000eyb44ab0uq5ru Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8olv0a000gyb441u0ckycz Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8olv0f000iyb44hmr0eipg Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8olv0k000kyb44rgnk3n1r Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8om2ke000emd3v8jxjdriw Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8om2kk000gmd3vh9vwz300 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8om2kq000imd3v493o9ptu Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8om2kx000kmd3v1o8mcjs7 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oyue6000e14bc673zuc3d Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oyueh000g14bchsbd4ib7 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oyueq000i14bcvzipzc5s Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oyuez000k14bcqrdvu1vx Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p0c4r000e7noqv6jinxxf Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p0c4x000g7noqhok7m1dl Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p0c53000i7noq3tkf7bb7 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p0c58000k7noqcz7xngf3 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p32wh000ey35y6vvwh4rv Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p32wr000gy35y4yl0rbu9 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p32wx000iy35ycd8me72t Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p32x5000ky35y9dnhvy2u Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67di000e3xsxbhegjjsu Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67dp000g3xsxiiphnddh Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67du000i3xsx46d6n8hv Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67e0000k3xsxcv9hvr2v Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: calculateBasePrice Qty=5. BulkTierRules count=2
+
+      at calculateBasePrice (src/lib/pricing/engine.ts:177:13)
+
+  console.log
+    DEBUG: BulkRule cmj8p67d5000a3xsxawt5c2ec min=10 max=49
+
+      at src/lib/pricing/engine.ts:178:40
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: BulkRule cmj8p67dc000c3xsxi1kafl4p min=50 max=null
+
+      at src/lib/pricing/engine.ts:178:40
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Selected Bulk Rule: undefined
+
+      at calculateBasePrice (src/lib/pricing/engine.ts:180:13)
+
+  console.log
+    DEBUG: calculatePrice called with qty=1 variantId=cmj8p67c900063xsxyk3vu423 printing={"method":"dtf","lengthMeter":2.5}
+
+      at calculatePrice (src/lib/pricing/engine.ts:19:13)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`frozen_variants`.`id`, `achiera_db_master`.`frozen_variants`.`price`, `achiera_db_master`.`frozen_variants`.`productId` FROM `achiera_db_master`.`frozen_variants` WHERE (`achiera_db_master`.`frozen_variants`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`frozen_products`.`id`, `achiera_db_master`.`frozen_products`.`categoryId` FROM `achiera_db_master`.`frozen_products` WHERE `achiera_db_master`.`frozen_products`.`id` IN (?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`frozen_categories`.`id`, `achiera_db_master`.`frozen_categories`.`brandId` FROM `achiera_db_master`.`frozen_categories` WHERE `achiera_db_master`.`frozen_categories`.`id` IN (?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`price_rules`.`id`, `achiera_db_master`.`price_rules`.`componentId`, `achiera_db_master`.`price_rules`.`scope`, `achiera_db_master`.`price_rules`.`scopeId`, `achiera_db_master`.`price_rules`.`priority`, `achiera_db_master`.`price_rules`.`currency`, `achiera_db_master`.`price_rules`.`amount`, `achiera_db_master`.`price_rules`.`minQty`, `achiera_db_master`.`price_rules`.`maxQty`, `achiera_db_master`.`price_rules`.`minOrderMeter`, `achiera_db_master`.`price_rules`.`metadata`, `achiera_db_master`.`price_rules`.`isActive`, `achiera_db_master`.`price_rules`.`startAt`, `achiera_db_master`.`price_rules`.`endAt`, `achiera_db_master`.`price_rules`.`createdAt`, `achiera_db_master`.`price_rules`.`updatedAt` FROM `achiera_db_master`.`price_rules` WHERE (`achiera_db_master`.`price_rules`.`isActive` = ? AND `achiera_db_master`.`price_rules`.`currency` = ? AND ((`achiera_db_master`.`price_rules`.`scope` = ? AND `achiera_db_master`.`price_rules`.`scopeId` IS NULL) OR (`achiera_db_master`.`price_rules`.`scope` = ? AND `achiera_db_master`.`price_rules`.`scopeId` = ?) OR (`achiera_db_master`.`price_rules`.`scope` = ? AND `achiera_db_master`.`price_rules`.`scopeId` = ?) OR (`achiera_db_master`.`price_rules`.`scope` = ? AND `achiera_db_master`.`price_rules`.`scopeId` = ?)) AND (`achiera_db_master`.`price_rules`.`startAt` IS NULL OR `achiera_db_master`.`price_rules`.`startAt` <= ?) AND (`achiera_db_master`.`price_rules`.`endAt` IS NULL OR `achiera_db_master`.`price_rules`.`endAt` >= ?)) ORDER BY `achiera_db_master`.`price_rules`.`priority` DESC
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`price_components`.`id`, `achiera_db_master`.`price_components`.`code`, `achiera_db_master`.`price_components`.`name`, `achiera_db_master`.`price_components`.`type` FROM `achiera_db_master`.`price_components` WHERE `achiera_db_master`.`price_components`.`id` IN (?,?,?,?,?,?,?,?,?,?,?,?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    DEBUG: loadActivePricingRules for Variant cmj8p67c900063xsxyk3vu423, Brand cmj8p67bm00003xsxpwgd82x5
+
+      at loadActivePricingRules (src/lib/pricing/engine.ts:135:13)
+
+  console.log
+    DEBUG: Found 118 rules.
+
+      at loadActivePricingRules (src/lib/pricing/engine.ts:136:13)
+
+  console.log
+    DEBUG: Rule cmj6wl9mz0012no7kj52hhpaz Code=BULK_TIER_50 Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9mv0010no7khaujxtrm Code=BULK_TIER_12 Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9mr000yno7khv8yrblj Code=SIZE_A3 Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9mi000uno7kxqyferdi Code=COLOR_ADDON Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9mm000wno7kl65o5qxn Code=COLOR_ADDON Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67d5000a3xsxawt5c2ec Code=BULK_TIER Scope=VARIANT
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67dc000c3xsxi1kafl4p Code=BULK_TIER Scope=VARIANT
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9m9000qno7k9tix0skq Code=PRINT_DTF Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9me000sno7k7phwjqc3 Code=PRINT_PLASTISOL Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67cy00083xsxhi0f3kki Code=BASE_UNIT Scope=VARIANT
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m0547000ko48pe2xnmr71 Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m054e000mo48pxarf5j42 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m054i000oo48pvmuto0yf Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m054n000qo48pmwf21u61 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m17of000e40k6mmgqh06r Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m17ol000g40k6mryucwgy Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m17oq000i40k6scssg2la Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m17ou000k40k6kmksl1xy Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m6y5q000et6jyjud9wc9m Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m6y5y000gt6jyay37serd Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m6y64000it6jy0vc43bxu Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m6y6b000kt6jy83m7fnwc Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m7iqq000e11s62l2j0aek Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m7iqw000g11s6tueq1gh0 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m7ir2000i11s66ce6x6zc Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m7ir8000k11s6rzmmzn53 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ma82z000ecbde6nyo97ng Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ma837000gcbdekukyjyfl Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ma83d000icbde3wkn56z3 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ma83k000kcbde9vd7ja86 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mcsa4000eo3r3rpxqzy17 Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mcsae000go3r3oh6xu3wb Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mcsaq000io3r33obl422y Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mcsb2000ko3r3hh0k0wlq Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8md5c9000ewvs3tihej10r Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8md5cg000gwvs3al74ligr Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8md5cn000iwvs3mg5jjts6 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8md5ct000kwvs3v8u4p9w0 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mdibd000ennpj1ziboryt Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mdibk000gnnpjojlusn3a Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mdibq000innpj1f8qebg4 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mdibx000knnpjh4wfj5w9 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mh1yd000ek4gsy8sec8lj Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mh1yl000gk4gsqolu1wf2 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mh1ys000ik4gsufs2sgdi Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mh1yz000kk4gs3n33ul1m Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8miim3000eunk3p1ditbxh Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8miimf000gunk3t488vnfr Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8miimo000iunk3o0wdo72b Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8miimx000kunk33u4iqcik Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mit3n000ekki89r4rnki4 Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mit3v000gkki8i7ex3yo4 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mit42000ikki8edalqisx Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mit49000kkki876zsjxpw Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mw0c6000e29zpx6xkovzd Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mw0ch000g29zphoilziit Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mw0cp000i29zpr4m352lh Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mw0cw000k29zpdlp21nr9 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mwb68000enya8vvzt9rbb Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mwb6e000gnya8zexiqsc4 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mwb6k000inya81hsrnf62 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mwb6q000knya8ifjzq38v Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o1dvd000e3tag4rnapm9q Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o1dw0000g3tage19itfjj Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o1dx3000i3tagd5aouptu Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o1dxh000k3taggrbqf4rf Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o29dp000ee27wsbzva3hy Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o29dw000ge27wgrwgo9fr Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o29e1000ie27w7mvc92d0 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o29e6000ke27wjyga8bzf Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o51t1000egfwnu7xtkkqy Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o51t8000ggfwnqy0qcozv Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o51tg000igfwnrkn1n6hq Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o51tm000kgfwnt92ucxty Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o9uot000e8cg0s6el60mg Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o9up0000g8cg01sn3zy8w Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o9up7000i8cg01p133q6k Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o9upe000k8cg0y7o6t93x Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ocjqg000ep1qbhllp4n3y Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ocjqo000gp1qbn4x4q1gn Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ocjqx000ip1qb8nxxyx6z Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ocjra000kp1qbgyw6lp6a Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oeqfr000ejt6jb96u890g Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oeqfy000gjt6j75fd76t1 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oeqg5000ijt6jrlatqs6u Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oeqgb000kjt6jwjjcql10 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ofgss000emh6lf0za894u Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ofgsy000gmh6l4e3gqvc9 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ofgt2000imh6l2gexk413 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ofgt7000kmh6l0t261nn6 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8okts1000ew75jyoq5w1yn Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oktsa000gw75jimops3o2 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oktsi000iw75j2324oke9 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oktso000kw75jkepp3dod Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8olv03000eyb44ab0uq5ru Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8olv0a000gyb441u0ckycz Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8olv0f000iyb44hmr0eipg Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8olv0k000kyb44rgnk3n1r Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8om2ke000emd3v8jxjdriw Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8om2kk000gmd3vh9vwz300 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8om2kq000imd3v493o9ptu Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8om2kx000kmd3v1o8mcjs7 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oyue6000e14bc673zuc3d Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oyueh000g14bchsbd4ib7 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oyueq000i14bcvzipzc5s Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oyuez000k14bcqrdvu1vx Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p0c4r000e7noqv6jinxxf Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p0c4x000g7noqhok7m1dl Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p0c53000i7noq3tkf7bb7 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p0c58000k7noqcz7xngf3 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p32wh000ey35y6vvwh4rv Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p32wr000gy35y4yl0rbu9 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p32wx000iy35ycd8me72t Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p32x5000ky35y9dnhvy2u Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67di000e3xsxbhegjjsu Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67dp000g3xsxiiphnddh Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67du000i3xsx46d6n8hv Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67e0000k3xsxcv9hvr2v Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: calculateBasePrice Qty=1. BulkTierRules count=2
+
+      at calculateBasePrice (src/lib/pricing/engine.ts:177:13)
+
+  console.log
+    DEBUG: BulkRule cmj8p67d5000a3xsxawt5c2ec min=10 max=49
+
+      at src/lib/pricing/engine.ts:178:40
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: BulkRule cmj8p67dc000c3xsxi1kafl4p min=50 max=null
+
+      at src/lib/pricing/engine.ts:178:40
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Selected Bulk Rule: undefined
+
+      at calculateBasePrice (src/lib/pricing/engine.ts:180:13)
+
+  console.log
+    DEBUG: calculatePrice called with qty=50 variantId=cmj8p67c900063xsxyk3vu423 printing=undefined
+
+      at calculatePrice (src/lib/pricing/engine.ts:19:13)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`frozen_variants`.`id`, `achiera_db_master`.`frozen_variants`.`price`, `achiera_db_master`.`frozen_variants`.`productId` FROM `achiera_db_master`.`frozen_variants` WHERE (`achiera_db_master`.`frozen_variants`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`frozen_products`.`id`, `achiera_db_master`.`frozen_products`.`categoryId` FROM `achiera_db_master`.`frozen_products` WHERE `achiera_db_master`.`frozen_products`.`id` IN (?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`frozen_categories`.`id`, `achiera_db_master`.`frozen_categories`.`brandId` FROM `achiera_db_master`.`frozen_categories` WHERE `achiera_db_master`.`frozen_categories`.`id` IN (?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`price_rules`.`id`, `achiera_db_master`.`price_rules`.`componentId`, `achiera_db_master`.`price_rules`.`scope`, `achiera_db_master`.`price_rules`.`scopeId`, `achiera_db_master`.`price_rules`.`priority`, `achiera_db_master`.`price_rules`.`currency`, `achiera_db_master`.`price_rules`.`amount`, `achiera_db_master`.`price_rules`.`minQty`, `achiera_db_master`.`price_rules`.`maxQty`, `achiera_db_master`.`price_rules`.`minOrderMeter`, `achiera_db_master`.`price_rules`.`metadata`, `achiera_db_master`.`price_rules`.`isActive`, `achiera_db_master`.`price_rules`.`startAt`, `achiera_db_master`.`price_rules`.`endAt`, `achiera_db_master`.`price_rules`.`createdAt`, `achiera_db_master`.`price_rules`.`updatedAt` FROM `achiera_db_master`.`price_rules` WHERE (`achiera_db_master`.`price_rules`.`isActive` = ? AND `achiera_db_master`.`price_rules`.`currency` = ? AND ((`achiera_db_master`.`price_rules`.`scope` = ? AND `achiera_db_master`.`price_rules`.`scopeId` IS NULL) OR (`achiera_db_master`.`price_rules`.`scope` = ? AND `achiera_db_master`.`price_rules`.`scopeId` = ?) OR (`achiera_db_master`.`price_rules`.`scope` = ? AND `achiera_db_master`.`price_rules`.`scopeId` = ?) OR (`achiera_db_master`.`price_rules`.`scope` = ? AND `achiera_db_master`.`price_rules`.`scopeId` = ?)) AND (`achiera_db_master`.`price_rules`.`startAt` IS NULL OR `achiera_db_master`.`price_rules`.`startAt` <= ?) AND (`achiera_db_master`.`price_rules`.`endAt` IS NULL OR `achiera_db_master`.`price_rules`.`endAt` >= ?)) ORDER BY `achiera_db_master`.`price_rules`.`priority` DESC
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`price_components`.`id`, `achiera_db_master`.`price_components`.`code`, `achiera_db_master`.`price_components`.`name`, `achiera_db_master`.`price_components`.`type` FROM `achiera_db_master`.`price_components` WHERE `achiera_db_master`.`price_components`.`id` IN (?,?,?,?,?,?,?,?,?,?,?,?)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    DEBUG: loadActivePricingRules for Variant cmj8p67c900063xsxyk3vu423, Brand cmj8p67bm00003xsxpwgd82x5
+
+      at loadActivePricingRules (src/lib/pricing/engine.ts:135:13)
+
+  console.log
+    DEBUG: Found 118 rules.
+
+      at loadActivePricingRules (src/lib/pricing/engine.ts:136:13)
+
+  console.log
+    DEBUG: Rule cmj6wl9mz0012no7kj52hhpaz Code=BULK_TIER_50 Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9mv0010no7khaujxtrm Code=BULK_TIER_12 Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9mr000yno7khv8yrblj Code=SIZE_A3 Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9mi000uno7kxqyferdi Code=COLOR_ADDON Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9mm000wno7kl65o5qxn Code=COLOR_ADDON Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67d5000a3xsxawt5c2ec Code=BULK_TIER Scope=VARIANT
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67dc000c3xsxi1kafl4p Code=BULK_TIER Scope=VARIANT
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9m9000qno7k9tix0skq Code=PRINT_DTF Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj6wl9me000sno7k7phwjqc3 Code=PRINT_PLASTISOL Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67cy00083xsxhi0f3kki Code=BASE_UNIT Scope=VARIANT
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m0547000ko48pe2xnmr71 Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m054e000mo48pxarf5j42 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m054i000oo48pvmuto0yf Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m054n000qo48pmwf21u61 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m17of000e40k6mmgqh06r Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m17ol000g40k6mryucwgy Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m17oq000i40k6scssg2la Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m17ou000k40k6kmksl1xy Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m6y5q000et6jyjud9wc9m Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m6y5y000gt6jyay37serd Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m6y64000it6jy0vc43bxu Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m6y6b000kt6jy83m7fnwc Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m7iqq000e11s62l2j0aek Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m7iqw000g11s6tueq1gh0 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m7ir2000i11s66ce6x6zc Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8m7ir8000k11s6rzmmzn53 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ma82z000ecbde6nyo97ng Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ma837000gcbdekukyjyfl Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ma83d000icbde3wkn56z3 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ma83k000kcbde9vd7ja86 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mcsa4000eo3r3rpxqzy17 Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mcsae000go3r3oh6xu3wb Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mcsaq000io3r33obl422y Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mcsb2000ko3r3hh0k0wlq Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8md5c9000ewvs3tihej10r Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8md5cg000gwvs3al74ligr Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8md5cn000iwvs3mg5jjts6 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8md5ct000kwvs3v8u4p9w0 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mdibd000ennpj1ziboryt Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mdibk000gnnpjojlusn3a Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mdibq000innpj1f8qebg4 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mdibx000knnpjh4wfj5w9 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mh1yd000ek4gsy8sec8lj Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mh1yl000gk4gsqolu1wf2 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mh1ys000ik4gsufs2sgdi Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mh1yz000kk4gs3n33ul1m Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8miim3000eunk3p1ditbxh Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8miimf000gunk3t488vnfr Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8miimo000iunk3o0wdo72b Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8miimx000kunk33u4iqcik Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mit3n000ekki89r4rnki4 Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mit3v000gkki8i7ex3yo4 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mit42000ikki8edalqisx Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mit49000kkki876zsjxpw Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mw0c6000e29zpx6xkovzd Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mw0ch000g29zphoilziit Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mw0cp000i29zpr4m352lh Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mw0cw000k29zpdlp21nr9 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mwb68000enya8vvzt9rbb Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mwb6e000gnya8zexiqsc4 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mwb6k000inya81hsrnf62 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8mwb6q000knya8ifjzq38v Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o1dvd000e3tag4rnapm9q Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o1dw0000g3tage19itfjj Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o1dx3000i3tagd5aouptu Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o1dxh000k3taggrbqf4rf Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o29dp000ee27wsbzva3hy Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o29dw000ge27wgrwgo9fr Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o29e1000ie27w7mvc92d0 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o29e6000ke27wjyga8bzf Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o51t1000egfwnu7xtkkqy Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o51t8000ggfwnqy0qcozv Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o51tg000igfwnrkn1n6hq Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o51tm000kgfwnt92ucxty Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o9uot000e8cg0s6el60mg Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o9up0000g8cg01sn3zy8w Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o9up7000i8cg01p133q6k Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8o9upe000k8cg0y7o6t93x Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ocjqg000ep1qbhllp4n3y Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ocjqo000gp1qbn4x4q1gn Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ocjqx000ip1qb8nxxyx6z Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ocjra000kp1qbgyw6lp6a Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oeqfr000ejt6jb96u890g Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oeqfy000gjt6j75fd76t1 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oeqg5000ijt6jrlatqs6u Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oeqgb000kjt6jwjjcql10 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ofgss000emh6lf0za894u Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ofgsy000gmh6l4e3gqvc9 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ofgt2000imh6l2gexk413 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8ofgt7000kmh6l0t261nn6 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8okts1000ew75jyoq5w1yn Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oktsa000gw75jimops3o2 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oktsi000iw75j2324oke9 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oktso000kw75jkepp3dod Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8olv03000eyb44ab0uq5ru Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8olv0a000gyb441u0ckycz Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8olv0f000iyb44hmr0eipg Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8olv0k000kyb44rgnk3n1r Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8om2ke000emd3v8jxjdriw Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8om2kk000gmd3vh9vwz300 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8om2kq000imd3v493o9ptu Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8om2kx000kmd3v1o8mcjs7 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oyue6000e14bc673zuc3d Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oyueh000g14bchsbd4ib7 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oyueq000i14bcvzipzc5s Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8oyuez000k14bcqrdvu1vx Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p0c4r000e7noqv6jinxxf Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p0c4x000g7noqhok7m1dl Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p0c53000i7noq3tkf7bb7 Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p0c58000k7noqcz7xngf3 Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p32wh000ey35y6vvwh4rv Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p32wr000gy35y4yl0rbu9 Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p32wx000iy35ycd8me72t Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p32x5000ky35y9dnhvy2u Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67di000e3xsxbhegjjsu Code=PRINT_SETUP Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67dp000g3xsxiiphnddh Code=PER_COLOR Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67du000i3xsx46d6n8hv Code=SIZE_MULT Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Rule cmj8p67e0000k3xsxcv9hvr2v Code=PER_METER Scope=GLOBAL
+
+      at src/lib/pricing/engine.ts:137:32
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: calculateBasePrice Qty=50. BulkTierRules count=2
+
+      at calculateBasePrice (src/lib/pricing/engine.ts:177:13)
+
+  console.log
+    DEBUG: BulkRule cmj8p67d5000a3xsxawt5c2ec min=10 max=49
+
+      at src/lib/pricing/engine.ts:178:40
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: BulkRule cmj8p67dc000c3xsxi1kafl4p min=50 max=null
+
+      at src/lib/pricing/engine.ts:178:40
+          at Array.forEach (<anonymous>)
+
+  console.log
+    DEBUG: Selected Bulk Rule: cmj8p67dc000c3xsxi1kafl4p
+
+      at calculateBasePrice (src/lib/pricing/engine.ts:180:13)
+
+  console.log
+    prisma:query DELETE FROM `achiera_db_master`.`price_rules` WHERE `achiera_db_master`.`price_rules`.`scopeId` = ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query BEGIN
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`frozen_variants`.`id`, `achiera_db_master`.`frozen_variants`.`productId`, `achiera_db_master`.`frozen_variants`.`name`, `achiera_db_master`.`frozen_variants`.`sku`, `achiera_db_master`.`frozen_variants`.`price`, `achiera_db_master`.`frozen_variants`.`weight`, `achiera_db_master`.`frozen_variants`.`stockOnHand`, `achiera_db_master`.`frozen_variants`.`createdAt`, `achiera_db_master`.`frozen_variants`.`updatedAt` FROM `achiera_db_master`.`frozen_variants` WHERE (`achiera_db_master`.`frozen_variants`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query DELETE FROM `achiera_db_master`.`frozen_variants` WHERE (`achiera_db_master`.`frozen_variants`.`id` = ? AND 1=1)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query COMMIT
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query BEGIN
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`frozen_products`.`id`, `achiera_db_master`.`frozen_products`.`categoryId`, `achiera_db_master`.`frozen_products`.`name`, `achiera_db_master`.`frozen_products`.`slug`, `achiera_db_master`.`frozen_products`.`description`, `achiera_db_master`.`frozen_products`.`image`, `achiera_db_master`.`frozen_products`.`ingredients`, `achiera_db_master`.`frozen_products`.`nutrition`, `achiera_db_master`.`frozen_products`.`storageType`, `achiera_db_master`.`frozen_products`.`shelfLife`, `achiera_db_master`.`frozen_products`.`createdAt`, `achiera_db_master`.`frozen_products`.`updatedAt` FROM `achiera_db_master`.`frozen_products` WHERE (`achiera_db_master`.`frozen_products`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query DELETE FROM `achiera_db_master`.`frozen_products` WHERE (`achiera_db_master`.`frozen_products`.`id` = ? AND 1=1)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query COMMIT
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`frozen_categories`.`id`, `achiera_db_master`.`frozen_categories`.`brandId`, `achiera_db_master`.`frozen_categories`.`name`, `achiera_db_master`.`frozen_categories`.`slug`, `achiera_db_master`.`frozen_categories`.`image`, `achiera_db_master`.`frozen_categories`.`createdAt`, `achiera_db_master`.`frozen_categories`.`updatedAt` FROM `achiera_db_master`.`frozen_categories` WHERE `achiera_db_master`.`frozen_categories`.`slug` LIKE ? LIMIT ? OFFSET ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query BEGIN
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`frozen_categories`.`id`, `achiera_db_master`.`frozen_categories`.`brandId`, `achiera_db_master`.`frozen_categories`.`name`, `achiera_db_master`.`frozen_categories`.`slug`, `achiera_db_master`.`frozen_categories`.`image`, `achiera_db_master`.`frozen_categories`.`createdAt`, `achiera_db_master`.`frozen_categories`.`updatedAt` FROM `achiera_db_master`.`frozen_categories` WHERE (`achiera_db_master`.`frozen_categories`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query DELETE FROM `achiera_db_master`.`frozen_categories` WHERE (`achiera_db_master`.`frozen_categories`.`id` = ? AND 1=1)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query COMMIT
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query BEGIN
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query SELECT `achiera_db_master`.`brands`.`id`, `achiera_db_master`.`brands`.`slug`, `achiera_db_master`.`brands`.`name`, `achiera_db_master`.`brands`.`isActive`, `achiera_db_master`.`brands`.`createdAt`, `achiera_db_master`.`brands`.`updatedAt`, `achiera_db_master`.`brands`.`paymentSettings` FROM `achiera_db_master`.`brands` WHERE (`achiera_db_master`.`brands`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query DELETE FROM `achiera_db_master`.`brands` WHERE (`achiera_db_master`.`brands`.`id` = ? AND 1=1)
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+
+  console.log
+    prisma:query COMMIT
+
+      at Object.mc (node_modules/@prisma/client/runtime/library.js:21:432)
+

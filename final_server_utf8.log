@@ -1,0 +1,1763 @@
+﻿
+> achiera-web@0.1.0 dev
+> next dev
+
+node.exe : [baseline-browser-mapping] The data in this module is 
+over two months old.  To ensure accurate Baseline data, please 
+update: `npm i baseline-browser-mapping@latest -D`
+At C:\Program Files\nodejs\npm.ps1:29 char:3
++   & $NODE_EXE $NPM_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([baseline-brows...ping 
+   @latest -D`:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ ΓÜá Warning: Next.js inferred your workspace root, but it may not 
+be correct.
+ We detected multiple lockfiles and selected the directory of 
+D:\PROJECT IOT\Automation Smart Lighting 
+System\smart-billiard-main\package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js 
+config, or consider removing one of the lockfiles if it's not 
+needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-
+js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * D:\PROJECT IOT\Automation Smart Lighting 
+System\smart-billiard-main\achiera-web\package-lock.json
+
+   Γû▓ Next.js 16.0.5 (Turbopack)
+   - Local:         http://localhost:3002
+   - Network:       http://192.168.40.119:3002
+   - Environments: .env
+
+ Γ£ô Starting...
+ ΓÜá The "middleware" file convention is deprecated. Please use 
+"proxy" instead. Learn more: 
+https://nextjs.org/docs/messages/middleware-to-proxy
+ Γ£ô Ready in 3.9s
+--- GLOBAL PRISMA INIT ---
+Prisma Keys: [
+  '$extends',
+  'brand',
+  'user',
+  'userBrandRole',
+  'heroSlide',
+  'analyticsEvent',
+  'merchSettings',
+  'merchCollection',
+  'product',
+  'productVariant',
+  'mockupTemplate',
+  'catalogueRequest',
+  'itSettings',
+  'itService',
+  'itCaseStudy',
+  'developmentLifecycleStep',
+  'frozenSettings',
+  'frozenCategory',
+  'frozenProduct',
+  'frozenVariant',
+  'inventoryBatch',
+  'subscription',
+  'subscriptionItem',
+  'order',
+  'orderStatusLog',
+  'payment',
+  'invoice',
+  'priceComponent',
+  'priceRule',
+  'priceHistory',
+  'currency',
+  'bankAccount',
+  'orderItem',
+  'adCampaign',
+  'loyaltyAccount',
+  'loyaltyTransaction',
+  'ledgerAccount',
+  'journalTransaction',
+  'journalEntry',
+  'idempotencyKey',
+  'systemLog',
+  'killSwitch',
+  'systemConfig',
+  'auditLog',
+  'decisionRule',
+  'executionLog',
+  'trustMetricsHistory',
+  'aIExplanationLog',
+  'approvalRequest',
+  'approvalAction',
+  'approvalPolicy',
+  'approvalEscalation',
+  'manualOverride',
+  'brandConfig',
+  'budgetPolicy',
+  '$parent'
+]
+---------------------------
+[API] Calling getTrustMetrics for test_brand_001
+[TrustMetrics] Calculating for brand test_brand_001 from Tue Nov 18 2025 21:18:54 GMT+0700 (Indochina Time) to Thu Dec 18 2025 21:18:54 GMT+0700 (Indochina Time)
+[TrustMetrics] Fetching approvalRequests...
+prisma:info Starting a mysql pool with 9 connections.
+prisma:query SELECT `achiera_db_master`.`approval_requests`.`id`, `achiera_db_master`.`approval_requests`.`brandId`, `achiera_db_master`.`approval_requests`.`decisionId`, `achiera_db_master`.`approval_requests`.`ruleId`, `achiera_db_master`.`approval_requests`.`decisionRuleId`, `achiera_db_master`.`approval_requests`.`actionId`, `achiera_db_master`.`approval_requests`.`state`, `achiera_db_master`.`approval_requests`.`riskTier`, `achiera_db_master`.`approval_requests`.`autonomyLevel`, `achiera_db_master`.`approval_requests`.`requiredApprover`, `achiera_db_master`.`approval_requests`.`assignedTo`, `achiera_db_master`.`approval_requests`.`createdAt`, `achiera_db_master`.`approval_requests`.`submittedAt`, `achiera_db_master`.`approval_requests`.`decidedAt`, `achiera_db_master`.`approval_requests`.`expiresAt`, `achiera_db_master`.`approval_requests`.`approvedBy`, `achiera_db_master`.`approval_requests`.`rejectedBy`, `achiera_db_master`.`approval_requests`.`escalatedBy`, `achiera_db_master`.`approval_requests`.`rejectionReason`, `achiera_db_master`.`approval_requests`.`escalationReason`, `achiera_db_master`.`approval_requests`.`decisionContext`, `achiera_db_master`.`approval_requests`.`estimatedImpact`, `achiera_db_master`.`approval_requests`.`correlationId` FROM `achiera_db_master`.`approval_requests` WHERE (`achiera_db_master`.`approval_requests`.`brandId` = ? AND `achiera_db_master`.`approval_requests`.`createdAt` >= ? AND `achiera_db_master`.`approval_requests`.`createdAt` < ?)
+[TrustMetrics] Found 0 approvals
+[TrustMetrics] Fetching aiExplanationLogs...
+prisma:query SELECT `achiera_db_master`.`ai_explanation_logs`.`id`, `achiera_db_master`.`ai_explanation_logs`.`brandId`, `achiera_db_master`.`ai_explanation_logs`.`approvalRequestId`, `achiera_db_master`.`ai_explanation_logs`.`explanation`, `achiera_db_master`.`ai_explanation_logs`.`sentiment`, `achiera_db_master`.`ai_explanation_logs`.`confidenceScore`, `achiera_db_master`.`ai_explanation_logs`.`createdAt` FROM `achiera_db_master`.`ai_explanation_logs` WHERE (`achiera_db_master`.`ai_explanation_logs`.`brandId` = ? AND `achiera_db_master`.`ai_explanation_logs`.`createdAt` >= ? AND `achiera_db_master`.`ai_explanation_logs`.`createdAt` < ?)
+[TrustMetrics] Found 0 AI recommendations
+[TrustMetrics] Fetching executionLogs...
+prisma:query SELECT `achiera_db_master`.`execution_logs`.`id`, `achiera_db_master`.`execution_logs`.`brandId`, `achiera_db_master`.`execution_logs`.`ruleId`, `achiera_db_master`.`execution_logs`.`decisionRuleId`, `achiera_db_master`.`execution_logs`.`action`, `achiera_db_master`.`execution_logs`.`status`, `achiera_db_master`.`execution_logs`.`metadata`, `achiera_db_master`.`execution_logs`.`executedAt` FROM `achiera_db_master`.`execution_logs` WHERE (`achiera_db_master`.`execution_logs`.`brandId` = ? AND `achiera_db_master`.`execution_logs`.`executedAt` >= ? AND `achiera_db_master`.`execution_logs`.`executedAt` < ?)
+[TrustMetrics] Found 0 executions
+[TrustMetrics] Fetching manualOverrides...
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`manual_overrides`.`id` FROM `achiera_db_master`.`manual_overrides` WHERE (`achiera_db_master`.`manual_overrides`.`brandId` = ? AND `achiera_db_master`.`manual_overrides`.`performedAt` >= ? AND `achiera_db_master`.`manual_overrides`.`performedAt` < ?)) AS `sub`
+[TrustMetrics] Found 0 manual overrides
+[API] getTrustMetrics completed
+ GET /api/autonomous-analytics/trust/metrics?brandId=test_brand_001 200 in 865ms (compile: 722ms, render: 143ms)
+prisma:query SELECT 1
+prisma:query SELECT `achiera_db_master`.`brand_configs`.`id`, `achiera_db_master`.`brand_configs`.`brand_id`, `achiera_db_master`.`brand_configs`.`level_1_enabled`, `achiera_db_master`.`brand_configs`.`level_2_enabled`, `achiera_db_master`.`brand_configs`.`level_3_enabled`, `achiera_db_master`.`brand_configs`.`emergency_paused`, `achiera_db_master`.`brand_configs`.`created_at`, `achiera_db_master`.`brand_configs`.`updated_at` FROM `achiera_db_master`.`brand_configs` WHERE (`achiera_db_master`.`brand_configs`.`brand_id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE `achiera_db_master`.`decision_rules`.`brandId` = ?) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`isActive` = ?)) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`status` = ?)) AS `sub`
+prisma:error 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$achiera$2d$web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].executionLog.count()` invocation in
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\.next\dev\server\chunks\[root-of-the-server]__93e63786._.js:123:201
+
+  120     }
+  121 });
+  122 // Get pending executions
+ΓåÆ 123 const pendingExecutions = await __TURBOPACK__imported__module__$5b$project$5d2f$achiera$2d$web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].executionLog.count({
+        select: {
+          _count: {
+            select: {
+              _all: true
+            }
+          }
+        },
+        where: {
+          brandId: "test_brand_001",
+          executionStatus: "pending",
+          ~~~~~~~~~~~~~~~
+      ?   AND?: ExecutionLogWhereInput | ExecutionLogWhereInput[],
+      ?   OR?: ExecutionLogWhereInput[],
+      ?   NOT?: ExecutionLogWhereInput | ExecutionLogWhereInput[],
+      ?   id?: StringFilter | String,
+      ?   ruleId?: StringFilter | String,
+      ?   decisionRuleId?: StringNullableFilter | String | Null,
+      ?   action?: StringFilter | String,
+      ?   status?: StringFilter | String,
+      ?   metadata?: JsonNullableFilter,
+      ?   executedAt?: DateTimeFilter | DateTime,
+      ?   brand?: BrandRelationFilter | BrandWhereInput,
+      ?   decisionRule?: DecisionRuleNullableRelationFilter | DecisionRuleWhereInput | Null
+        }
+      })
+
+Unknown argument `executionStatus`. Available options are marked with ?.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\[root-of-the-server]__93e63786._
+.js: Invalid source map. Only conformant source maps can be used to 
+find the original code. Cause: Error: sourceMapURL could not be 
+parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\@prisma\client\runtime\library.js: Invalid 
+source map. Only conformant source maps can be used to find the 
+original code. Cause: TypeError [ERR_INVALID_ARG_TYPE]: The 
+"payload" argument must be of type object. Received null
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\compiled\next-server\app-route-tu
+rbo.runtime.dev.js: Invalid source map. Only conformant source maps 
+can be used to find the original code. Cause: Error: sourceMapURL 
+could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\234cf_next_957cd7dc._.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\base-server.js: Invalid 
+source map. Only conformant source maps can be used to find the 
+original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\next-server.js: Invalid 
+source map. Only conformant source maps can be used to find the 
+original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\dev\next-dev-server.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\trace\trace.js: Invalid source 
+map. Only conformant source maps can be used to find the original 
+code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\lib\router-server.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\lib\start-server.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+Error fetching settings: Error [PrismaClientValidationError]: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$achiera$2d$
+web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascr
+ipt$29$__["prisma"].executionLog.count()` invocation in
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\[root-of-the-server]__93e63786._
+.js:123:201
+
+  120     }
+  121 });
+  122 // Get pending executions
+ΓåÆ 123 const pendingExecutions = await __TURBOPACK__imported__modul
+e__$5b$project$5d2f$achiera$2d$web$2f$src$2f$lib$2f$prisma$2e$ts__$5
+b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].executionLog.coun
+t({
+        select: {
+          _count: {
+            select: {
+              _all: true
+            }
+          }
+        },
+        where: {
+          brandId: "test_brand_001",
+          executionStatus: "pending",
+          ~~~~~~~~~~~~~~~
+      ?   AND?: ExecutionLogWhereInput | ExecutionLogWhereInput[],
+      ?   OR?: ExecutionLogWhereInput[],
+      ?   NOT?: ExecutionLogWhereInput | ExecutionLogWhereInput[],
+      ?   id?: StringFilter | String,
+      ?   ruleId?: StringFilter | String,
+      ?   decisionRuleId?: StringNullableFilter | String | Null,
+      ?   action?: StringFilter | String,
+      ?   status?: StringFilter | String,
+      ?   metadata?: JsonNullableFilter,
+      ?   executedAt?: DateTimeFilter | DateTime,
+      ?   brand?: BrandRelationFilter | BrandWhereInput,
+      ?   decisionRule?: DecisionRuleNullableRelationFilter | 
+DecisionRuleWhereInput | Null
+        }
+      })
+
+Unknown argument `executionStatus`. Available options are marked 
+with ?.
+    at <unknown> (D:\PROJECT IOT\Automation Smart Lighting System\sm
+art-billiard-main\achiera-web\.next\dev\server\chunks\[root-of-the-s
+erver]__93e63786._.js:123:201)
+    at async GET (D:\PROJECT IOT\Automation Smart Lighting System\sm
+art-billiard-main\achiera-web\.next\dev\server\chunks\[root-of-the-s
+erver]__93e63786._.js:123:35)
+    at async responseGenerator (D:\PROJECT IOT\Automation Smart 
+Lighting System\smart-billiard-main\achiera-web\.next\dev\server\chu
+nks\234cf_next_957cd7dc._.js:14333:38)
+    at async handleResponse (D:\PROJECT IOT\Automation Smart 
+Lighting System\smart-billiard-main\achiera-web\.next\dev\server\chu
+nks\234cf_next_957cd7dc._.js:14395:32)
+    at async handler (D:\PROJECT IOT\Automation Smart Lighting Syste
+m\smart-billiard-main\achiera-web\.next\dev\server\chunks\234cf_next
+_957cd7dc._.js:14448:13) {
+  clientVersion: '5.22.0'
+}
+ GET /api/autonomous-analytics/settings?brandId=test_brand_001 500 in 345ms (compile: 167ms, render: 178ms)
+[API] rules/summary called for brandId: test_brand_001
+[API] Prisma keys: [
+  '_originalClient',
+  '_middlewares',
+  '_createPrismaPromise',
+  '$extends',
+  '_extensions',
+  '_previewFeatures',
+  '_clientVersion',
+  '_activeProvider',
+  '_globalOmit',
+  '_tracingHelper',
+  '_errorFormat',
+  '_runtimeDataModel',
+  '_engineConfig',
+  '_accelerateEngineConfig',
+  '_engine',
+  '_requestHandler',
+  '_metrics',
+  '_appliedParent',
+  'brand',
+  'user',
+  'userBrandRole',
+  'heroSlide',
+  'analyticsEvent',
+  'merchSettings',
+  'merchCollection',
+  'product',
+  'productVariant',
+  'mockupTemplate',
+  'catalogueRequest',
+  'itSettings',
+  'itService',
+  'itCaseStudy',
+  'developmentLifecycleStep',
+  'frozenSettings',
+  'frozenCategory',
+  'frozenProduct',
+  'frozenVariant',
+  'inventoryBatch',
+  'subscription',
+  'subscriptionItem',
+  'order',
+  'orderStatusLog',
+  'payment',
+  'invoice',
+  'priceComponent',
+  'priceRule',
+  'priceHistory',
+  'currency',
+  'bankAccount',
+  'orderItem',
+  'adCampaign',
+  'loyaltyAccount',
+  'loyaltyTransaction',
+  'ledgerAccount',
+  'journalTransaction',
+  'journalEntry',
+  'idempotencyKey',
+  'systemLog',
+  'killSwitch',
+  'systemConfig',
+  'auditLog',
+  'decisionRule',
+  'executionLog',
+  'trustMetricsHistory',
+  'aIExplanationLog',
+  'approvalRequest',
+  'approvalAction',
+  'approvalPolicy',
+  'approvalEscalation',
+  'manualOverride',
+  'brandConfig',
+  'budgetPolicy',
+  '$parent'
+]
+[API] Has decisionRule: true
+[API] Fetching counts by level...
+prisma:query SELECT 1
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`autonomyLevel` = ? AND `achiera_db_master`.`decision_rules`.`isActive` = ?)) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`autonomyLevel` = ? AND `achiera_db_master`.`decision_rules`.`isActive` = ?)) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`autonomyLevel` = ? AND `achiera_db_master`.`decision_rules`.`isActive` = ?)) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`autonomyLevel` = ? AND `achiera_db_master`.`decision_rules`.`isActive` = ?)) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`status` = ? AND `achiera_db_master`.`decision_rules`.`isActive` = ?)) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`status` = ? AND `achiera_db_master`.`decision_rules`.`isActive` = ?)) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`status` = ? AND `achiera_db_master`.`decision_rules`.`isActive` = ?)) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE `achiera_db_master`.`decision_rules`.`brandId` = ?) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`isActive` = ?)) AS `sub`
+ GET /api/autonomous-analytics/rules/summary?brandId=test_brand_001 200 in 232ms (compile: 175ms, render: 57ms)
+ Γùï Compiling /autonomous/settings ...
+ GET /autonomous/settings?brandId=test_brand_001 200 in 5.5s (compile: 4.8s, render: 690ms)
+prisma:query SELECT 1
+prisma:query SELECT `achiera_db_master`.`brand_configs`.`id`, `achiera_db_master`.`brand_configs`.`brand_id`, `achiera_db_master`.`brand_configs`.`level_1_enabled`, `achiera_db_master`.`brand_configs`.`level_2_enabled`, `achiera_db_master`.`brand_configs`.`level_3_enabled`, `achiera_db_master`.`brand_configs`.`emergency_paused`, `achiera_db_master`.`brand_configs`.`created_at`, `achiera_db_master`.`brand_configs`.`updated_at` FROM `achiera_db_master`.`brand_configs` WHERE (`achiera_db_master`.`brand_configs`.`brand_id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE `achiera_db_master`.`decision_rules`.`brandId` = ?) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`isActive` = ?)) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`status` = ?)) AS `sub`
+prisma:error 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$achiera$2d$web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].executionLog.count()` invocation in
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\.next\dev\server\chunks\[root-of-the-server]__93e63786._.js:120:201
+
+  117     }
+  118 });
+  119 // Get pending executions
+ΓåÆ 120 const pendingExecutions = await __TURBOPACK__imported__module__$5b$project$5d2f$achiera$2d$web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].executionLog.count({
+        select: {
+          _count: {
+            select: {
+              _all: true
+            }
+          }
+        },
+        where: {
+          brandId: "test_brand_001",
+          executionStatus: "pending",
+          ~~~~~~~~~~~~~~~
+      ?   AND?: ExecutionLogWhereInput | ExecutionLogWhereInput[],
+      ?   OR?: ExecutionLogWhereInput[],
+      ?   NOT?: ExecutionLogWhereInput | ExecutionLogWhereInput[],
+      ?   id?: StringFilter | String,
+      ?   ruleId?: StringFilter | String,
+      ?   decisionRuleId?: StringNullableFilter | String | Null,
+      ?   action?: StringFilter | String,
+      ?   status?: StringFilter | String,
+      ?   metadata?: JsonNullableFilter,
+      ?   executedAt?: DateTimeFilter | DateTime,
+      ?   brand?: BrandRelationFilter | BrandWhereInput,
+      ?   decisionRule?: DecisionRuleNullableRelationFilter | DecisionRuleWhereInput | Null
+        }
+      })
+
+Unknown argument `executionStatus`. Available options are marked with ?.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\[root-of-the-server]__93e63786._
+.js: Invalid source map. Only conformant source maps can be used to 
+find the original code. Cause: Error: sourceMapURL could not be 
+parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\@prisma\client\runtime\library.js: Invalid 
+source map. Only conformant source maps can be used to find the 
+original code. Cause: TypeError [ERR_INVALID_ARG_TYPE]: The 
+"payload" argument must be of type object. Received null
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\compiled\next-server\app-route-tu
+rbo.runtime.dev.js: Invalid source map. Only conformant source maps 
+can be used to find the original code. Cause: Error: sourceMapURL 
+could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\234cf_next_957cd7dc._.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\base-server.js: Invalid 
+source map. Only conformant source maps can be used to find the 
+original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\next-server.js: Invalid 
+source map. Only conformant source maps can be used to find the 
+original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\dev\next-dev-server.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\trace\trace.js: Invalid source 
+map. Only conformant source maps can be used to find the original 
+code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\lib\router-server.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\lib\start-server.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+Error fetching settings: Error [PrismaClientValidationError]: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$achiera$2d$
+web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascr
+ipt$29$__["prisma"].executionLog.count()` invocation in
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\[root-of-the-server]__93e63786._
+.js:120:201
+
+  117     }
+  118 });
+  119 // Get pending executions
+ΓåÆ 120 const pendingExecutions = await __TURBOPACK__imported__modul
+e__$5b$project$5d2f$achiera$2d$web$2f$src$2f$lib$2f$prisma$2e$ts__$5
+b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].executionLog.coun
+t({
+        select: {
+          _count: {
+            select: {
+              _all: true
+            }
+          }
+        },
+        where: {
+          brandId: "test_brand_001",
+          executionStatus: "pending",
+          ~~~~~~~~~~~~~~~
+      ?   AND?: ExecutionLogWhereInput | ExecutionLogWhereInput[],
+      ?   OR?: ExecutionLogWhereInput[],
+      ?   NOT?: ExecutionLogWhereInput | ExecutionLogWhereInput[],
+      ?   id?: StringFilter | String,
+      ?   ruleId?: StringFilter | String,
+      ?   decisionRuleId?: StringNullableFilter | String | Null,
+      ?   action?: StringFilter | String,
+      ?   status?: StringFilter | String,
+      ?   metadata?: JsonNullableFilter,
+      ?   executedAt?: DateTimeFilter | DateTime,
+      ?   brand?: BrandRelationFilter | BrandWhereInput,
+      ?   decisionRule?: DecisionRuleNullableRelationFilter | 
+DecisionRuleWhereInput | Null
+        }
+      })
+
+Unknown argument `executionStatus`. Available options are marked 
+with ?.
+    at <unknown> (D:\PROJECT IOT\Automation Smart Lighting System\sm
+art-billiard-main\achiera-web\.next\dev\server\chunks\[root-of-the-s
+erver]__93e63786._.js:120:201)
+    at async GET (D:\PROJECT IOT\Automation Smart Lighting System\sm
+art-billiard-main\achiera-web\.next\dev\server\chunks\[root-of-the-s
+erver]__93e63786._.js:120:35)
+    at async responseGenerator (D:\PROJECT IOT\Automation Smart 
+Lighting System\smart-billiard-main\achiera-web\.next\dev\server\chu
+nks\234cf_next_957cd7dc._.js:14333:38)
+    at async handleResponse (D:\PROJECT IOT\Automation Smart 
+Lighting System\smart-billiard-main\achiera-web\.next\dev\server\chu
+nks\234cf_next_957cd7dc._.js:14395:32)
+    at async handler (D:\PROJECT IOT\Automation Smart Lighting Syste
+m\smart-billiard-main\achiera-web\.next\dev\server\chunks\234cf_next
+_957cd7dc._.js:14448:13) {
+  clientVersion: '5.22.0'
+}
+ GET /api/autonomous-analytics/settings?brandId=test_brand_001 500 in 165ms (compile: 71ms, render: 94ms)
+prisma:query SELECT 1
+prisma:query SELECT `achiera_db_master`.`brand_configs`.`id`, `achiera_db_master`.`brand_configs`.`brand_id`, `achiera_db_master`.`brand_configs`.`level_1_enabled`, `achiera_db_master`.`brand_configs`.`level_2_enabled`, `achiera_db_master`.`brand_configs`.`level_3_enabled`, `achiera_db_master`.`brand_configs`.`emergency_paused`, `achiera_db_master`.`brand_configs`.`created_at`, `achiera_db_master`.`brand_configs`.`updated_at` FROM `achiera_db_master`.`brand_configs` WHERE (`achiera_db_master`.`brand_configs`.`brand_id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE `achiera_db_master`.`decision_rules`.`brandId` = ?) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`isActive` = ?)) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`status` = ?)) AS `sub`
+prisma:error 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$achiera$2d$web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].executionLog.count()` invocation in
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\.next\dev\server\chunks\[root-of-the-server]__93e63786._.js:120:201
+
+  117     }
+  118 });
+  119 // Get pending executions
+ΓåÆ 120 const pendingExecutions = await __TURBOPACK__imported__module__$5b$project$5d2f$achiera$2d$web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].executionLog.count({
+        select: {
+          _count: {
+            select: {
+              _all: true
+            }
+          }
+        },
+        where: {
+          brandId: "test_brand_001",
+          executionStatus: "pending",
+          ~~~~~~~~~~~~~~~
+      ?   AND?: ExecutionLogWhereInput | ExecutionLogWhereInput[],
+      ?   OR?: ExecutionLogWhereInput[],
+      ?   NOT?: ExecutionLogWhereInput | ExecutionLogWhereInput[],
+      ?   id?: StringFilter | String,
+      ?   ruleId?: StringFilter | String,
+      ?   decisionRuleId?: StringNullableFilter | String | Null,
+      ?   action?: StringFilter | String,
+      ?   status?: StringFilter | String,
+      ?   metadata?: JsonNullableFilter,
+      ?   executedAt?: DateTimeFilter | DateTime,
+      ?   brand?: BrandRelationFilter | BrandWhereInput,
+      ?   decisionRule?: DecisionRuleNullableRelationFilter | DecisionRuleWhereInput | Null
+        }
+      })
+
+Unknown argument `executionStatus`. Available options are marked with ?.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\[root-of-the-server]__93e63786._
+.js: Invalid source map. Only conformant source maps can be used to 
+find the original code. Cause: Error: sourceMapURL could not be 
+parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\@prisma\client\runtime\library.js: Invalid 
+source map. Only conformant source maps can be used to find the 
+original code. Cause: TypeError [ERR_INVALID_ARG_TYPE]: The 
+"payload" argument must be of type object. Received null
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\compiled\next-server\app-route-tu
+rbo.runtime.dev.js: Invalid source map. Only conformant source maps 
+can be used to find the original code. Cause: Error: sourceMapURL 
+could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\234cf_next_957cd7dc._.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\base-server.js: Invalid 
+source map. Only conformant source maps can be used to find the 
+original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\next-server.js: Invalid 
+source map. Only conformant source maps can be used to find the 
+original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\dev\next-dev-server.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\trace\trace.js: Invalid source 
+map. Only conformant source maps can be used to find the original 
+code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\lib\router-server.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\lib\start-server.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+Error fetching settings: Error [PrismaClientValidationError]: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$achiera$2d$
+web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascr
+ipt$29$__["prisma"].executionLog.count()` invocation in
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\[root-of-the-server]__93e63786._
+.js:120:201
+
+  117     }
+  118 });
+  119 // Get pending executions
+ΓåÆ 120 const pendingExecutions = await __TURBOPACK__imported__modul
+e__$5b$project$5d2f$achiera$2d$web$2f$src$2f$lib$2f$prisma$2e$ts__$5
+b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].executionLog.coun
+t({
+        select: {
+          _count: {
+            select: {
+              _all: true
+            }
+          }
+        },
+        where: {
+          brandId: "test_brand_001",
+          executionStatus: "pending",
+          ~~~~~~~~~~~~~~~
+      ?   AND?: ExecutionLogWhereInput | ExecutionLogWhereInput[],
+      ?   OR?: ExecutionLogWhereInput[],
+      ?   NOT?: ExecutionLogWhereInput | ExecutionLogWhereInput[],
+      ?   id?: StringFilter | String,
+      ?   ruleId?: StringFilter | String,
+      ?   decisionRuleId?: StringNullableFilter | String | Null,
+      ?   action?: StringFilter | String,
+      ?   status?: StringFilter | String,
+      ?   metadata?: JsonNullableFilter,
+      ?   executedAt?: DateTimeFilter | DateTime,
+      ?   brand?: BrandRelationFilter | BrandWhereInput,
+      ?   decisionRule?: DecisionRuleNullableRelationFilter | 
+DecisionRuleWhereInput | Null
+        }
+      })
+
+Unknown argument `executionStatus`. Available options are marked 
+with ?.
+    at <unknown> (D:\PROJECT IOT\Automation Smart Lighting System\sm
+art-billiard-main\achiera-web\.next\dev\server\chunks\[root-of-the-s
+erver]__93e63786._.js:120:201)
+    at async GET (D:\PROJECT IOT\Automation Smart Lighting System\sm
+art-billiard-main\achiera-web\.next\dev\server\chunks\[root-of-the-s
+erver]__93e63786._.js:120:35)
+    at async responseGenerator (D:\PROJECT IOT\Automation Smart 
+Lighting System\smart-billiard-main\achiera-web\.next\dev\server\chu
+nks\234cf_next_957cd7dc._.js:14333:38)
+    at async handleResponse (D:\PROJECT IOT\Automation Smart 
+Lighting System\smart-billiard-main\achiera-web\.next\dev\server\chu
+nks\234cf_next_957cd7dc._.js:14395:32)
+    at async handler (D:\PROJECT IOT\Automation Smart Lighting Syste
+m\smart-billiard-main\achiera-web\.next\dev\server\chunks\234cf_next
+_957cd7dc._.js:14448:13) {
+  clientVersion: '5.22.0'
+}
+ GET /api/autonomous-analytics/settings?brandId=test_brand_001 500 in 86ms (compile: 16ms, render: 70ms)
+ GET /autonomous/rules?brandId=test_brand_001 200 in 1402ms (compile: 1271ms, render: 131ms)
+prisma:query SELECT `achiera_db_master`.`decision_rules`.`id`, `achiera_db_master`.`decision_rules`.`brandId`, `achiera_db_master`.`decision_rules`.`ruleId`, `achiera_db_master`.`decision_rules`.`name`, `achiera_db_master`.`decision_rules`.`description`, `achiera_db_master`.`decision_rules`.`category`, `achiera_db_master`.`decision_rules`.`autonomyLevel`, `achiera_db_master`.`decision_rules`.`status`, `achiera_db_master`.`decision_rules`.`isActive`, `achiera_db_master`.`decision_rules`.`condition`, `achiera_db_master`.`decision_rules`.`action`, `achiera_db_master`.`decision_rules`.`explanationTemplate`, `achiera_db_master`.`decision_rules`.`createdAt`, `achiera_db_master`.`decision_rules`.`updatedAt` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`isActive` = ?) ORDER BY `achiera_db_master`.`decision_rules`.`name` ASC
+prisma:query SELECT `achiera_db_master`.`execution_logs`.`id`, `achiera_db_master`.`execution_logs`.`brandId`, `achiera_db_master`.`execution_logs`.`ruleId`, `achiera_db_master`.`execution_logs`.`decisionRuleId`, `achiera_db_master`.`execution_logs`.`action`, `achiera_db_master`.`execution_logs`.`status`, `achiera_db_master`.`execution_logs`.`metadata`, `achiera_db_master`.`execution_logs`.`executedAt` FROM `achiera_db_master`.`execution_logs` WHERE (`achiera_db_master`.`execution_logs`.`executedAt` >= ? AND `achiera_db_master`.`execution_logs`.`decisionRuleId` IN (?)) ORDER BY `achiera_db_master`.`execution_logs`.`id` ASC LIMIT ? OFFSET ?
+ GET /api/autonomous-analytics/rules?brandId=test_brand_001 200 in 232ms (compile: 198ms, render: 35ms)
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\compiled\next-server\app-route-tu
+rbo.runtime.dev.js: Invalid source map. Only conformant source maps 
+can be used to find the original code. Cause: Error: sourceMapURL 
+could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\[root-of-the-server]__97655f83._
+.js: Invalid source map. Only conformant source maps can be used to 
+find the original code. Cause: Error: sourceMapURL could not be 
+parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\lib\trace\tracer.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+Error: Route "/api/autonomous-analytics/rules/[ruleId]" used 
+`params.ruleId`. `params` is a Promise and must be unwrapped with 
+`await` or `React.use()` before accessing its properties. Learn 
+more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at GET (D:\PROJECT IOT\Automation Smart Lighting System\smart-bi
+lliard-main\achiera-web\.next\dev\server\chunks\[root-of-the-server]
+__97655f83._.js:886:17)
+prisma:error 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$achiera$2d$web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].decisionRule.findUnique()` invocation in
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\.next\dev\server\chunks\[root-of-the-server]__97655f83._.js:888:188
+
+  885 try {
+  886     const { ruleId } = params;
+  887     // Get rule
+ΓåÆ 888     const rule = await __TURBOPACK__imported__module__$5b$project$5d2f$achiera$2d$web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].decisionRule.findUnique({
+            where: {
+              id: undefined,
+          ?   brandId_ruleId?: DecisionRuleBrandIdRuleIdCompoundUniqueInput,
+          ?   AND?: DecisionRuleWhereInput | DecisionRuleWhereInput[],
+          ?   OR?: DecisionRuleWhereInput[],
+          ?   NOT?: DecisionRuleWhereInput | DecisionRuleWhereInput[],
+          ?   brandId?: StringFilter | String,
+          ?   ruleId?: StringFilter | String,
+          ?   name?: StringNullableFilter | String | Null,
+          ?   description?: StringNullableFilter | String | Null,
+          ?   category?: StringNullableFilter | String | Null,
+          ?   autonomyLevel?: IntFilter | Int,
+          ?   status?: StringFilter | String,
+          ?   isActive?: BoolFilter | Boolean,
+          ?   condition?: JsonNullableFilter,
+          ?   action?: JsonNullableFilter,
+          ?   explanationTemplate?: StringNullableFilter | String | Null,
+          ?   createdAt?: DateTimeFilter | DateTime,
+          ?   updatedAt?: DateTimeFilter | DateTime,
+          ?   brand?: BrandRelationFilter | BrandWhereInput,
+          ?   approvals?: ApprovalRequestListRelationFilter,
+          ?   executions?: ExecutionLogListRelationFilter
+            },
+            include: {
+              executions: {
+                where: {
+                  executedAt: {
+                    gte: new Date("2025-11-18T14:24:10.355Z")
+                  }
+                }
+              }
+            }
+          })
+
+Argument `where` of type DecisionRuleWhereUniqueInput needs at least one of `id` or `brandId_ruleId` arguments. Available options are marked with ?.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\[root-of-the-server]__97655f83._
+.js: Invalid source map. Only conformant source maps can be used to 
+find the original code. Cause: Error: sourceMapURL could not be 
+parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\@prisma\client\runtime\library.js: Invalid 
+source map. Only conformant source maps can be used to find the 
+original code. Cause: TypeError [ERR_INVALID_ARG_TYPE]: The 
+"payload" argument must be of type object. Received null
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\compiled\next-server\app-route-tu
+rbo.runtime.dev.js: Invalid source map. Only conformant source maps 
+can be used to find the original code. Cause: Error: sourceMapURL 
+could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\234cf_next_53c3f821._.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\base-server.js: Invalid 
+source map. Only conformant source maps can be used to find the 
+original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\next-server.js: Invalid 
+source map. Only conformant source maps can be used to find the 
+original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\dev\next-dev-server.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\trace\trace.js: Invalid source 
+map. Only conformant source maps can be used to find the original 
+code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\lib\router-server.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\lib\start-server.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+Error fetching rule details: Error [PrismaClientValidationError]: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$achiera$2d$
+web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascr
+ipt$29$__["prisma"].decisionRule.findUnique()` invocation in
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\[root-of-the-server]__97655f83._
+.js:888:188
+
+  885 try {
+  886     const { ruleId } = params;
+  887     // Get rule
+ΓåÆ 888     const rule = await __TURBOPACK__imported__module__$5b$pr
+oject$5d2f$achiera$2d$web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$
+route$5d$__$28$ecmascript$29$__["prisma"].decisionRule.findUnique({
+            where: {
+              id: undefined,
+          ?   brandId_ruleId?: 
+DecisionRuleBrandIdRuleIdCompoundUniqueInput,
+          ?   AND?: DecisionRuleWhereInput | 
+DecisionRuleWhereInput[],
+          ?   OR?: DecisionRuleWhereInput[],
+          ?   NOT?: DecisionRuleWhereInput | 
+DecisionRuleWhereInput[],
+          ?   brandId?: StringFilter | String,
+          ?   ruleId?: StringFilter | String,
+          ?   name?: StringNullableFilter | String | Null,
+          ?   description?: StringNullableFilter | String | Null,
+          ?   category?: StringNullableFilter | String | Null,
+          ?   autonomyLevel?: IntFilter | Int,
+          ?   status?: StringFilter | String,
+          ?   isActive?: BoolFilter | Boolean,
+          ?   condition?: JsonNullableFilter,
+          ?   action?: JsonNullableFilter,
+          ?   explanationTemplate?: StringNullableFilter | String | 
+Null,
+          ?   createdAt?: DateTimeFilter | DateTime,
+          ?   updatedAt?: DateTimeFilter | DateTime,
+          ?   brand?: BrandRelationFilter | BrandWhereInput,
+          ?   approvals?: ApprovalRequestListRelationFilter,
+          ?   executions?: ExecutionLogListRelationFilter
+            },
+            include: {
+              executions: {
+                where: {
+                  executedAt: {
+                    gte: new Date("2025-11-18T14:24:10.355Z")
+                  }
+                }
+              }
+            }
+          })
+
+Argument `where` of type DecisionRuleWhereUniqueInput needs at 
+least one of `id` or `brandId_ruleId` arguments. Available options 
+are marked with ?.
+    at <unknown> (D:\PROJECT IOT\Automation Smart Lighting System\sm
+art-billiard-main\achiera-web\.next\dev\server\chunks\[root-of-the-s
+erver]__97655f83._.js:888:188)
+    at async GET (D:\PROJECT IOT\Automation Smart Lighting System\sm
+art-billiard-main\achiera-web\.next\dev\server\chunks\[root-of-the-s
+erver]__97655f83._.js:888:22)
+    at async responseGenerator (D:\PROJECT IOT\Automation Smart 
+Lighting System\smart-billiard-main\achiera-web\.next\dev\server\chu
+nks\234cf_next_53c3f821._.js:14333:38)
+    at async handleResponse (D:\PROJECT IOT\Automation Smart 
+Lighting System\smart-billiard-main\achiera-web\.next\dev\server\chu
+nks\234cf_next_53c3f821._.js:14395:32)
+    at async handler (D:\PROJECT IOT\Automation Smart Lighting Syste
+m\smart-billiard-main\achiera-web\.next\dev\server\chunks\234cf_next
+_53c3f821._.js:14448:13) {
+  clientVersion: '5.22.0'
+}
+ GET /api/autonomous-analytics/rules/cmja85ovz0001g73jqqodnhlh 500 in 1290ms (compile: 1202ms, render: 88ms)
+ GET /autonomous/settings?brandId=test_brand_001 200 in 169ms (compile: 13ms, render: 156ms)
+prisma:query SELECT 1
+prisma:query SELECT `achiera_db_master`.`brand_configs`.`id`, `achiera_db_master`.`brand_configs`.`brand_id`, `achiera_db_master`.`brand_configs`.`level_1_enabled`, `achiera_db_master`.`brand_configs`.`level_2_enabled`, `achiera_db_master`.`brand_configs`.`level_3_enabled`, `achiera_db_master`.`brand_configs`.`emergency_paused`, `achiera_db_master`.`brand_configs`.`created_at`, `achiera_db_master`.`brand_configs`.`updated_at` FROM `achiera_db_master`.`brand_configs` WHERE (`achiera_db_master`.`brand_configs`.`brand_id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE `achiera_db_master`.`decision_rules`.`brandId` = ?) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`isActive` = ?)) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`status` = ?)) AS `sub`
+prisma:error 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$achiera$2d$web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].executionLog.count()` invocation in
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\.next\dev\server\chunks\[root-of-the-server]__93e63786._.js:120:201
+
+  117     }
+  118 });
+  119 // Get pending executions
+ΓåÆ 120 const pendingExecutions = await __TURBOPACK__imported__module__$5b$project$5d2f$achiera$2d$web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].executionLog.count({
+        select: {
+          _count: {
+            select: {
+              _all: true
+            }
+          }
+        },
+        where: {
+          brandId: "test_brand_001",
+          executionStatus: "pending",
+          ~~~~~~~~~~~~~~~
+      ?   AND?: ExecutionLogWhereInput | ExecutionLogWhereInput[],
+      ?   OR?: ExecutionLogWhereInput[],
+      ?   NOT?: ExecutionLogWhereInput | ExecutionLogWhereInput[],
+      ?   id?: StringFilter | String,
+      ?   ruleId?: StringFilter | String,
+      ?   decisionRuleId?: StringNullableFilter | String | Null,
+      ?   action?: StringFilter | String,
+      ?   status?: StringFilter | String,
+      ?   metadata?: JsonNullableFilter,
+      ?   executedAt?: DateTimeFilter | DateTime,
+      ?   brand?: BrandRelationFilter | BrandWhereInput,
+      ?   decisionRule?: DecisionRuleNullableRelationFilter | DecisionRuleWhereInput | Null
+        }
+      })
+
+Unknown argument `executionStatus`. Available options are marked with ?.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\[root-of-the-server]__93e63786._
+.js: Invalid source map. Only conformant source maps can be used to 
+find the original code. Cause: Error: sourceMapURL could not be 
+parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\@prisma\client\runtime\library.js: Invalid 
+source map. Only conformant source maps can be used to find the 
+original code. Cause: TypeError [ERR_INVALID_ARG_TYPE]: The 
+"payload" argument must be of type object. Received null
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\compiled\next-server\app-route-tu
+rbo.runtime.dev.js: Invalid source map. Only conformant source maps 
+can be used to find the original code. Cause: Error: sourceMapURL 
+could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\234cf_next_957cd7dc._.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\base-server.js: Invalid 
+source map. Only conformant source maps can be used to find the 
+original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\next-server.js: Invalid 
+source map. Only conformant source maps can be used to find the 
+original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\dev\next-dev-server.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\trace\trace.js: Invalid source 
+map. Only conformant source maps can be used to find the original 
+code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\lib\router-server.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\lib\start-server.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+Error fetching settings: Error [PrismaClientValidationError]: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$achiera$2d$
+web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascr
+ipt$29$__["prisma"].executionLog.count()` invocation in
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\[root-of-the-server]__93e63786._
+.js:120:201
+
+  117     }
+  118 });
+  119 // Get pending executions
+ΓåÆ 120 const pendingExecutions = await __TURBOPACK__imported__modul
+e__$5b$project$5d2f$achiera$2d$web$2f$src$2f$lib$2f$prisma$2e$ts__$5
+b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].executionLog.coun
+t({
+        select: {
+          _count: {
+            select: {
+              _all: true
+            }
+          }
+        },
+        where: {
+          brandId: "test_brand_001",
+          executionStatus: "pending",
+          ~~~~~~~~~~~~~~~
+      ?   AND?: ExecutionLogWhereInput | ExecutionLogWhereInput[],
+      ?   OR?: ExecutionLogWhereInput[],
+      ?   NOT?: ExecutionLogWhereInput | ExecutionLogWhereInput[],
+      ?   id?: StringFilter | String,
+      ?   ruleId?: StringFilter | String,
+      ?   decisionRuleId?: StringNullableFilter | String | Null,
+      ?   action?: StringFilter | String,
+      ?   status?: StringFilter | String,
+      ?   metadata?: JsonNullableFilter,
+      ?   executedAt?: DateTimeFilter | DateTime,
+      ?   brand?: BrandRelationFilter | BrandWhereInput,
+      ?   decisionRule?: DecisionRuleNullableRelationFilter | 
+DecisionRuleWhereInput | Null
+        }
+      })
+
+Unknown argument `executionStatus`. Available options are marked 
+with ?.
+    at <unknown> (D:\PROJECT IOT\Automation Smart Lighting System\sm
+art-billiard-main\achiera-web\.next\dev\server\chunks\[root-of-the-s
+erver]__93e63786._.js:120:201)
+    at async GET (D:\PROJECT IOT\Automation Smart Lighting System\sm
+art-billiard-main\achiera-web\.next\dev\server\chunks\[root-of-the-s
+erver]__93e63786._.js:120:35)
+    at async responseGenerator (D:\PROJECT IOT\Automation Smart 
+Lighting System\smart-billiard-main\achiera-web\.next\dev\server\chu
+nks\234cf_next_957cd7dc._.js:14333:38)
+    at async handleResponse (D:\PROJECT IOT\Automation Smart 
+Lighting System\smart-billiard-main\achiera-web\.next\dev\server\chu
+nks\234cf_next_957cd7dc._.js:14395:32)
+    at async handler (D:\PROJECT IOT\Automation Smart Lighting Syste
+m\smart-billiard-main\achiera-web\.next\dev\server\chunks\234cf_next
+_957cd7dc._.js:14448:13) {
+  clientVersion: '5.22.0'
+}
+ GET /api/autonomous-analytics/settings?brandId=test_brand_001 500 in 62ms (compile: 7ms, render: 55ms)
+ GET /autonomous/rules?brandId=test_brand_001 200 in 49ms (compile: 7ms, render: 42ms)
+prisma:query SELECT `achiera_db_master`.`decision_rules`.`id`, `achiera_db_master`.`decision_rules`.`brandId`, `achiera_db_master`.`decision_rules`.`ruleId`, `achiera_db_master`.`decision_rules`.`name`, `achiera_db_master`.`decision_rules`.`description`, `achiera_db_master`.`decision_rules`.`category`, `achiera_db_master`.`decision_rules`.`autonomyLevel`, `achiera_db_master`.`decision_rules`.`status`, `achiera_db_master`.`decision_rules`.`isActive`, `achiera_db_master`.`decision_rules`.`condition`, `achiera_db_master`.`decision_rules`.`action`, `achiera_db_master`.`decision_rules`.`explanationTemplate`, `achiera_db_master`.`decision_rules`.`createdAt`, `achiera_db_master`.`decision_rules`.`updatedAt` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`isActive` = ?) ORDER BY `achiera_db_master`.`decision_rules`.`name` ASC
+prisma:query SELECT `achiera_db_master`.`execution_logs`.`id`, `achiera_db_master`.`execution_logs`.`brandId`, `achiera_db_master`.`execution_logs`.`ruleId`, `achiera_db_master`.`execution_logs`.`decisionRuleId`, `achiera_db_master`.`execution_logs`.`action`, `achiera_db_master`.`execution_logs`.`status`, `achiera_db_master`.`execution_logs`.`metadata`, `achiera_db_master`.`execution_logs`.`executedAt` FROM `achiera_db_master`.`execution_logs` WHERE (`achiera_db_master`.`execution_logs`.`executedAt` >= ? AND `achiera_db_master`.`execution_logs`.`decisionRuleId` IN (?)) ORDER BY `achiera_db_master`.`execution_logs`.`id` ASC LIMIT ? OFFSET ?
+ GET /api/autonomous-analytics/rules?brandId=test_brand_001 200 in 27ms (compile: 7ms, render: 20ms)
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\compiled\next-server\app-route-tu
+rbo.runtime.dev.js: Invalid source map. Only conformant source maps 
+can be used to find the original code. Cause: Error: sourceMapURL 
+could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\[root-of-the-server]__97655f83._
+.js: Invalid source map. Only conformant source maps can be used to 
+find the original code. Cause: Error: sourceMapURL could not be 
+parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\lib\trace\tracer.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+Error: Route "/api/autonomous-analytics/rules/[ruleId]" used 
+`params.ruleId`. `params` is a Promise and must be unwrapped with 
+`await` or `React.use()` before accessing its properties. Learn 
+more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at GET (D:\PROJECT IOT\Automation Smart Lighting System\smart-bi
+lliard-main\achiera-web\.next\dev\server\chunks\[root-of-the-server]
+__97655f83._.js:886:17)
+prisma:error 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$achiera$2d$web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].decisionRule.findUnique()` invocation in
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\.next\dev\server\chunks\[root-of-the-server]__97655f83._.js:888:188
+
+  885 try {
+  886     const { ruleId } = params;
+  887     // Get rule
+ΓåÆ 888     const rule = await __TURBOPACK__imported__module__$5b$project$5d2f$achiera$2d$web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].decisionRule.findUnique({
+            where: {
+              id: undefined,
+          ?   brandId_ruleId?: DecisionRuleBrandIdRuleIdCompoundUniqueInput,
+          ?   AND?: DecisionRuleWhereInput | DecisionRuleWhereInput[],
+          ?   OR?: DecisionRuleWhereInput[],
+          ?   NOT?: DecisionRuleWhereInput | DecisionRuleWhereInput[],
+          ?   brandId?: StringFilter | String,
+          ?   ruleId?: StringFilter | String,
+          ?   name?: StringNullableFilter | String | Null,
+          ?   description?: StringNullableFilter | String | Null,
+          ?   category?: StringNullableFilter | String | Null,
+          ?   autonomyLevel?: IntFilter | Int,
+          ?   status?: StringFilter | String,
+          ?   isActive?: BoolFilter | Boolean,
+          ?   condition?: JsonNullableFilter,
+          ?   action?: JsonNullableFilter,
+          ?   explanationTemplate?: StringNullableFilter | String | Null,
+          ?   createdAt?: DateTimeFilter | DateTime,
+          ?   updatedAt?: DateTimeFilter | DateTime,
+          ?   brand?: BrandRelationFilter | BrandWhereInput,
+          ?   approvals?: ApprovalRequestListRelationFilter,
+          ?   executions?: ExecutionLogListRelationFilter
+            },
+            include: {
+              executions: {
+                where: {
+                  executedAt: {
+                    gte: new Date("2025-11-18T14:24:28.244Z")
+                  }
+                }
+              }
+            }
+          })
+
+Argument `where` of type DecisionRuleWhereUniqueInput needs at least one of `id` or `brandId_ruleId` arguments. Available options are marked with ?.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\[root-of-the-server]__97655f83._
+.js: Invalid source map. Only conformant source maps can be used to 
+find the original code. Cause: Error: sourceMapURL could not be 
+parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\@prisma\client\runtime\library.js: Invalid 
+source map. Only conformant source maps can be used to find the 
+original code. Cause: TypeError [ERR_INVALID_ARG_TYPE]: The 
+"payload" argument must be of type object. Received null
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\compiled\next-server\app-route-tu
+rbo.runtime.dev.js: Invalid source map. Only conformant source maps 
+can be used to find the original code. Cause: Error: sourceMapURL 
+could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\234cf_next_53c3f821._.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\base-server.js: Invalid 
+source map. Only conformant source maps can be used to find the 
+original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\next-server.js: Invalid 
+source map. Only conformant source maps can be used to find the 
+original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\dev\next-dev-server.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\trace\trace.js: Invalid source 
+map. Only conformant source maps can be used to find the original 
+code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\lib\router-server.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\lib\start-server.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+Error fetching rule details: Error [PrismaClientValidationError]: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$achiera$2d$
+web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascr
+ipt$29$__["prisma"].decisionRule.findUnique()` invocation in
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\[root-of-the-server]__97655f83._
+.js:888:188
+
+  885 try {
+  886     const { ruleId } = params;
+  887     // Get rule
+ΓåÆ 888     const rule = await __TURBOPACK__imported__module__$5b$pr
+oject$5d2f$achiera$2d$web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$
+route$5d$__$28$ecmascript$29$__["prisma"].decisionRule.findUnique({
+            where: {
+              id: undefined,
+          ?   brandId_ruleId?: 
+DecisionRuleBrandIdRuleIdCompoundUniqueInput,
+          ?   AND?: DecisionRuleWhereInput | 
+DecisionRuleWhereInput[],
+          ?   OR?: DecisionRuleWhereInput[],
+          ?   NOT?: DecisionRuleWhereInput | 
+DecisionRuleWhereInput[],
+          ?   brandId?: StringFilter | String,
+          ?   ruleId?: StringFilter | String,
+          ?   name?: StringNullableFilter | String | Null,
+          ?   description?: StringNullableFilter | String | Null,
+          ?   category?: StringNullableFilter | String | Null,
+          ?   autonomyLevel?: IntFilter | Int,
+          ?   status?: StringFilter | String,
+          ?   isActive?: BoolFilter | Boolean,
+          ?   condition?: JsonNullableFilter,
+          ?   action?: JsonNullableFilter,
+          ?   explanationTemplate?: StringNullableFilter | String | 
+Null,
+          ?   createdAt?: DateTimeFilter | DateTime,
+          ?   updatedAt?: DateTimeFilter | DateTime,
+          ?   brand?: BrandRelationFilter | BrandWhereInput,
+          ?   approvals?: ApprovalRequestListRelationFilter,
+          ?   executions?: ExecutionLogListRelationFilter
+            },
+            include: {
+              executions: {
+                where: {
+                  executedAt: {
+                    gte: new Date("2025-11-18T14:24:28.244Z")
+                  }
+                }
+              }
+            }
+          })
+
+Argument `where` of type DecisionRuleWhereUniqueInput needs at 
+least one of `id` or `brandId_ruleId` arguments. Available options 
+are marked with ?.
+    at <unknown> (D:\PROJECT IOT\Automation Smart Lighting System\sm
+art-billiard-main\achiera-web\.next\dev\server\chunks\[root-of-the-s
+erver]__97655f83._.js:888:188)
+    at async GET (D:\PROJECT IOT\Automation Smart Lighting System\sm
+art-billiard-main\achiera-web\.next\dev\server\chunks\[root-of-the-s
+erver]__97655f83._.js:888:22)
+    at async responseGenerator (D:\PROJECT IOT\Automation Smart 
+Lighting System\smart-billiard-main\achiera-web\.next\dev\server\chu
+nks\234cf_next_53c3f821._.js:14333:38)
+    at async handleResponse (D:\PROJECT IOT\Automation Smart 
+Lighting System\smart-billiard-main\achiera-web\.next\dev\server\chu
+nks\234cf_next_53c3f821._.js:14395:32)
+    at async handler (D:\PROJECT IOT\Automation Smart Lighting Syste
+m\smart-billiard-main\achiera-web\.next\dev\server\chunks\234cf_next
+_53c3f821._.js:14448:13) {
+  clientVersion: '5.22.0'
+}
+ GET /api/autonomous-analytics/rules/cmja85ovz0001g73jqqodnhlh 500 in 71ms (compile: 21ms, render: 50ms)
+ GET /autonomous/settings?brandId=test_brand_001 200 in 127ms (compile: 11ms, render: 115ms)
+prisma:query SELECT 1
+prisma:query SELECT `achiera_db_master`.`brand_configs`.`id`, `achiera_db_master`.`brand_configs`.`brand_id`, `achiera_db_master`.`brand_configs`.`level_1_enabled`, `achiera_db_master`.`brand_configs`.`level_2_enabled`, `achiera_db_master`.`brand_configs`.`level_3_enabled`, `achiera_db_master`.`brand_configs`.`emergency_paused`, `achiera_db_master`.`brand_configs`.`created_at`, `achiera_db_master`.`brand_configs`.`updated_at` FROM `achiera_db_master`.`brand_configs` WHERE (`achiera_db_master`.`brand_configs`.`brand_id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE `achiera_db_master`.`decision_rules`.`brandId` = ?) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`isActive` = ?)) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`status` = ?)) AS `sub`
+prisma:error 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$achiera$2d$web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].executionLog.count()` invocation in
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\.next\dev\server\chunks\[root-of-the-server]__93e63786._.js:120:201
+
+  117     }
+  118 });
+  119 // Get pending executions
+ΓåÆ 120 const pendingExecutions = await __TURBOPACK__imported__module__$5b$project$5d2f$achiera$2d$web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].executionLog.count({
+        select: {
+          _count: {
+            select: {
+              _all: true
+            }
+          }
+        },
+        where: {
+          brandId: "test_brand_001",
+          executionStatus: "pending",
+          ~~~~~~~~~~~~~~~
+      ?   AND?: ExecutionLogWhereInput | ExecutionLogWhereInput[],
+      ?   OR?: ExecutionLogWhereInput[],
+      ?   NOT?: ExecutionLogWhereInput | ExecutionLogWhereInput[],
+      ?   id?: StringFilter | String,
+      ?   ruleId?: StringFilter | String,
+      ?   decisionRuleId?: StringNullableFilter | String | Null,
+      ?   action?: StringFilter | String,
+      ?   status?: StringFilter | String,
+      ?   metadata?: JsonNullableFilter,
+      ?   executedAt?: DateTimeFilter | DateTime,
+      ?   brand?: BrandRelationFilter | BrandWhereInput,
+      ?   decisionRule?: DecisionRuleNullableRelationFilter | DecisionRuleWhereInput | Null
+        }
+      })
+
+Unknown argument `executionStatus`. Available options are marked with ?.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\[root-of-the-server]__93e63786._
+.js: Invalid source map. Only conformant source maps can be used to 
+find the original code. Cause: Error: sourceMapURL could not be 
+parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\@prisma\client\runtime\library.js: Invalid 
+source map. Only conformant source maps can be used to find the 
+original code. Cause: TypeError [ERR_INVALID_ARG_TYPE]: The 
+"payload" argument must be of type object. Received null
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\compiled\next-server\app-route-tu
+rbo.runtime.dev.js: Invalid source map. Only conformant source maps 
+can be used to find the original code. Cause: Error: sourceMapURL 
+could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\234cf_next_957cd7dc._.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\base-server.js: Invalid 
+source map. Only conformant source maps can be used to find the 
+original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\next-server.js: Invalid 
+source map. Only conformant source maps can be used to find the 
+original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\dev\next-dev-server.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\trace\trace.js: Invalid source 
+map. Only conformant source maps can be used to find the original 
+code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\lib\router-server.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\lib\start-server.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+Error fetching settings: Error [PrismaClientValidationError]: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$achiera$2d$
+web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascr
+ipt$29$__["prisma"].executionLog.count()` invocation in
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\[root-of-the-server]__93e63786._
+.js:120:201
+
+  117     }
+  118 });
+  119 // Get pending executions
+ΓåÆ 120 const pendingExecutions = await __TURBOPACK__imported__modul
+e__$5b$project$5d2f$achiera$2d$web$2f$src$2f$lib$2f$prisma$2e$ts__$5
+b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].executionLog.coun
+t({
+        select: {
+          _count: {
+            select: {
+              _all: true
+            }
+          }
+        },
+        where: {
+          brandId: "test_brand_001",
+          executionStatus: "pending",
+          ~~~~~~~~~~~~~~~
+      ?   AND?: ExecutionLogWhereInput | ExecutionLogWhereInput[],
+      ?   OR?: ExecutionLogWhereInput[],
+      ?   NOT?: ExecutionLogWhereInput | ExecutionLogWhereInput[],
+      ?   id?: StringFilter | String,
+      ?   ruleId?: StringFilter | String,
+      ?   decisionRuleId?: StringNullableFilter | String | Null,
+      ?   action?: StringFilter | String,
+      ?   status?: StringFilter | String,
+      ?   metadata?: JsonNullableFilter,
+      ?   executedAt?: DateTimeFilter | DateTime,
+      ?   brand?: BrandRelationFilter | BrandWhereInput,
+      ?   decisionRule?: DecisionRuleNullableRelationFilter | 
+DecisionRuleWhereInput | Null
+        }
+      })
+
+Unknown argument `executionStatus`. Available options are marked 
+with ?.
+    at <unknown> (D:\PROJECT IOT\Automation Smart Lighting System\sm
+art-billiard-main\achiera-web\.next\dev\server\chunks\[root-of-the-s
+erver]__93e63786._.js:120:201)
+    at async GET (D:\PROJECT IOT\Automation Smart Lighting System\sm
+art-billiard-main\achiera-web\.next\dev\server\chunks\[root-of-the-s
+erver]__93e63786._.js:120:35)
+    at async responseGenerator (D:\PROJECT IOT\Automation Smart 
+Lighting System\smart-billiard-main\achiera-web\.next\dev\server\chu
+nks\234cf_next_957cd7dc._.js:14333:38)
+    at async handleResponse (D:\PROJECT IOT\Automation Smart 
+Lighting System\smart-billiard-main\achiera-web\.next\dev\server\chu
+nks\234cf_next_957cd7dc._.js:14395:32)
+    at async handler (D:\PROJECT IOT\Automation Smart Lighting Syste
+m\smart-billiard-main\achiera-web\.next\dev\server\chunks\234cf_next
+_957cd7dc._.js:14448:13) {
+  clientVersion: '5.22.0'
+}
+ GET /api/autonomous-analytics/settings?brandId=test_brand_001 500 in 52ms (compile: 6ms, render: 46ms)
+ Γùï Compiling /autonomous/overview ...
+ GET /autonomous/overview?brandId=test_brand_001 200 in 3.6s (compile: 3.5s, render: 127ms)
+[API] Calling getTrustMetrics for test_brand_001
+[TrustMetrics] Calculating for brand test_brand_001 from Tue Nov 18 2025 21:24:37 GMT+0700 (Indochina Time) to Thu Dec 18 2025 21:24:37 GMT+0700 (Indochina Time)
+[TrustMetrics] Fetching approvalRequests...
+[API] rules/summary called for brandId: test_brand_001
+[API] Prisma keys: [
+  '_originalClient',
+  '_middlewares',
+  '_createPrismaPromise',
+  '$extends',
+  '_extensions',
+  '_previewFeatures',
+  '_clientVersion',
+  '_activeProvider',
+  '_globalOmit',
+  '_tracingHelper',
+  '_errorFormat',
+  '_runtimeDataModel',
+  '_engineConfig',
+  '_accelerateEngineConfig',
+  '_engine',
+  '_requestHandler',
+  '_metrics',
+  '_appliedParent',
+  'brand',
+  'user',
+  'userBrandRole',
+  'heroSlide',
+  'analyticsEvent',
+  'merchSettings',
+  'merchCollection',
+  'product',
+  'productVariant',
+  'mockupTemplate',
+  'catalogueRequest',
+  'itSettings',
+  'itService',
+  'itCaseStudy',
+  'developmentLifecycleStep',
+  'frozenSettings',
+  'frozenCategory',
+  'frozenProduct',
+  'frozenVariant',
+  'inventoryBatch',
+  'subscription',
+  'subscriptionItem',
+  'order',
+  'orderStatusLog',
+  'payment',
+  'invoice',
+  'priceComponent',
+  'priceRule',
+  'priceHistory',
+  'currency',
+  'bankAccount',
+  'orderItem',
+  'adCampaign',
+  'loyaltyAccount',
+  'loyaltyTransaction',
+  'ledgerAccount',
+  'journalTransaction',
+  'journalEntry',
+  'idempotencyKey',
+  'systemLog',
+  'killSwitch',
+  'systemConfig',
+  'auditLog',
+  'decisionRule',
+  'executionLog',
+  'trustMetricsHistory',
+  'aIExplanationLog',
+  'approvalRequest',
+  'approvalAction',
+  'approvalPolicy',
+  'approvalEscalation',
+  'manualOverride',
+  'brandConfig',
+  'budgetPolicy',
+  '$parent'
+]
+[API] Has decisionRule: true
+[API] Fetching counts by level...
+prisma:query SELECT `achiera_db_master`.`approval_requests`.`id`, `achiera_db_master`.`approval_requests`.`brandId`, `achiera_db_master`.`approval_requests`.`decisionId`, `achiera_db_master`.`approval_requests`.`ruleId`, `achiera_db_master`.`approval_requests`.`decisionRuleId`, `achiera_db_master`.`approval_requests`.`actionId`, `achiera_db_master`.`approval_requests`.`state`, `achiera_db_master`.`approval_requests`.`riskTier`, `achiera_db_master`.`approval_requests`.`autonomyLevel`, `achiera_db_master`.`approval_requests`.`requiredApprover`, `achiera_db_master`.`approval_requests`.`assignedTo`, `achiera_db_master`.`approval_requests`.`createdAt`, `achiera_db_master`.`approval_requests`.`submittedAt`, `achiera_db_master`.`approval_requests`.`decidedAt`, `achiera_db_master`.`approval_requests`.`expiresAt`, `achiera_db_master`.`approval_requests`.`approvedBy`, `achiera_db_master`.`approval_requests`.`rejectedBy`, `achiera_db_master`.`approval_requests`.`escalatedBy`, `achiera_db_master`.`approval_requests`.`rejectionReason`, `achiera_db_master`.`approval_requests`.`escalationReason`, `achiera_db_master`.`approval_requests`.`decisionContext`, `achiera_db_master`.`approval_requests`.`estimatedImpact`, `achiera_db_master`.`approval_requests`.`correlationId` FROM `achiera_db_master`.`approval_requests` WHERE (`achiera_db_master`.`approval_requests`.`brandId` = ? AND `achiera_db_master`.`approval_requests`.`createdAt` >= ? AND `achiera_db_master`.`approval_requests`.`createdAt` < ?)
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`autonomyLevel` = ? AND `achiera_db_master`.`decision_rules`.`isActive` = ?)) AS `sub`
+prisma:query SELECT 1
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`autonomyLevel` = ? AND `achiera_db_master`.`decision_rules`.`isActive` = ?)) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`autonomyLevel` = ? AND `achiera_db_master`.`decision_rules`.`isActive` = ?)) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`autonomyLevel` = ? AND `achiera_db_master`.`decision_rules`.`isActive` = ?)) AS `sub`
+[TrustMetrics] Found 0 approvals
+[TrustMetrics] Fetching aiExplanationLogs...
+prisma:query SELECT `achiera_db_master`.`ai_explanation_logs`.`id`, `achiera_db_master`.`ai_explanation_logs`.`brandId`, `achiera_db_master`.`ai_explanation_logs`.`approvalRequestId`, `achiera_db_master`.`ai_explanation_logs`.`explanation`, `achiera_db_master`.`ai_explanation_logs`.`sentiment`, `achiera_db_master`.`ai_explanation_logs`.`confidenceScore`, `achiera_db_master`.`ai_explanation_logs`.`createdAt` FROM `achiera_db_master`.`ai_explanation_logs` WHERE (`achiera_db_master`.`ai_explanation_logs`.`brandId` = ? AND `achiera_db_master`.`ai_explanation_logs`.`createdAt` >= ? AND `achiera_db_master`.`ai_explanation_logs`.`createdAt` < ?)
+prisma:query SELECT `achiera_db_master`.`brands`.`id`, `achiera_db_master`.`brands`.`paymentSettings` FROM `achiera_db_master`.`brands` WHERE (`achiera_db_master`.`brands`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT 1
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`status` = ? AND `achiera_db_master`.`decision_rules`.`isActive` = ?)) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`status` = ? AND `achiera_db_master`.`decision_rules`.`isActive` = ?)) AS `sub`
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`status` = ? AND `achiera_db_master`.`decision_rules`.`isActive` = ?)) AS `sub`
+[TrustMetrics] Found 0 AI recommendations
+[TrustMetrics] Fetching executionLogs...
+prisma:error 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$achiera$2d$web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].executionLog.findMany()` invocation in
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\.next\dev\server\chunks\[root-of-the-server]__9fa7ddd4._.js:98:199
+
+  95 // Get daily exposure
+  96 const today = new Date();
+  97 today.setHours(0, 0, 0, 0);
+ΓåÆ 98 const dailyExecutions = await __TURBOPACK__imported__module__$5b$project$5d2f$achiera$2d$web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].executionLog.findMany({
+       where: {
+         brandId: "test_brand_001",
+         executedAt: {
+           gte: new Date("2025-12-17T17:00:00.000Z")
+         }
+       },
+       include: {
+         rule: true,
+         ~~~~
+     ?   brand?: true,
+     ?   decisionRule?: true
+       }
+     })
+
+Unknown field `rule` for include statement on model `ExecutionLog`. Available options are marked with ?.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\[root-of-the-server]__9fa7ddd4._
+.js: Invalid source map. Only conformant source maps can be used to 
+find the original code. Cause: Error: sourceMapURL could not be 
+parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\@prisma\client\runtime\library.js: Invalid 
+source map. Only conformant source maps can be used to find the 
+original code. Cause: TypeError [ERR_INVALID_ARG_TYPE]: The 
+"payload" argument must be of type object. Received null
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\compiled\next-server\app-route-tu
+rbo.runtime.dev.js: Invalid source map. Only conformant source maps 
+can be used to find the original code. Cause: Error: sourceMapURL 
+could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\234cf_next_330a041b._.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\base-server.js: Invalid 
+source map. Only conformant source maps can be used to find the 
+original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\next-server.js: Invalid 
+source map. Only conformant source maps can be used to find the 
+original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\dev\next-dev-server.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\trace\trace.js: Invalid source 
+map. Only conformant source maps can be used to find the original 
+code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\lib\router-server.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\lib\start-server.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+Error fetching exposure: Error [PrismaClientValidationError]: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$achiera$2d$
+web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascr
+ipt$29$__["prisma"].executionLog.findMany()` invocation in
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\[root-of-the-server]__9fa7ddd4._
+.js:98:199
+
+  95 // Get daily exposure
+  96 const today = new Date();
+  97 today.setHours(0, 0, 0, 0);
+ΓåÆ 98 const dailyExecutions = await __TURBOPACK__imported__module__
+$5b$project$5d2f$achiera$2d$web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$a
+pp$2d$route$5d$__$28$ecmascript$29$__["prisma"].executionLog.findMan
+y({
+       where: {
+         brandId: "test_brand_001",
+         executedAt: {
+           gte: new Date("2025-12-17T17:00:00.000Z")
+         }
+       },
+       include: {
+         rule: true,
+         ~~~~
+     ?   brand?: true,
+     ?   decisionRule?: true
+       }
+     })
+
+Unknown field `rule` for include statement on model `ExecutionLog`. 
+Available options are marked with ?.
+    at <unknown> (D:\PROJECT IOT\Automation Smart Lighting System\sm
+art-billiard-main\achiera-web\.next\dev\server\chunks\[root-of-the-s
+erver]__9fa7ddd4._.js:98:199)
+    at async GET (D:\PROJECT IOT\Automation Smart Lighting System\sm
+art-billiard-main\achiera-web\.next\dev\server\chunks\[root-of-the-s
+erver]__9fa7ddd4._.js:98:33)
+    at async responseGenerator (D:\PROJECT IOT\Automation Smart 
+Lighting System\smart-billiard-main\achiera-web\.next\dev\server\chu
+nks\234cf_next_330a041b._.js:14333:38)
+    at async handleResponse (D:\PROJECT IOT\Automation Smart 
+Lighting System\smart-billiard-main\achiera-web\.next\dev\server\chu
+nks\234cf_next_330a041b._.js:14395:32)
+    at async handler (D:\PROJECT IOT\Automation Smart Lighting Syste
+m\smart-billiard-main\achiera-web\.next\dev\server\chunks\234cf_next
+_330a041b._.js:14448:13) {
+  clientVersion: '5.22.0'
+}
+ GET /api/autonomous-analytics/dashboard/exposure?brandId=test_brand_001 500 in 273ms (compile: 208ms, render: 65ms)
+prisma:query SELECT `achiera_db_master`.`execution_logs`.`id`, `achiera_db_master`.`execution_logs`.`brandId`, `achiera_db_master`.`execution_logs`.`ruleId`, `achiera_db_master`.`execution_logs`.`decisionRuleId`, `achiera_db_master`.`execution_logs`.`action`, `achiera_db_master`.`execution_logs`.`status`, `achiera_db_master`.`execution_logs`.`metadata`, `achiera_db_master`.`execution_logs`.`executedAt` FROM `achiera_db_master`.`execution_logs` WHERE (`achiera_db_master`.`execution_logs`.`brandId` = ? AND `achiera_db_master`.`execution_logs`.`executedAt` >= ? AND `achiera_db_master`.`execution_logs`.`executedAt` < ?)
+prisma:query SELECT `achiera_db_master`.`audit_logs`.`id`, `achiera_db_master`.`audit_logs`.`userId`, `achiera_db_master`.`audit_logs`.`brandId`, `achiera_db_master`.`audit_logs`.`action`, `achiera_db_master`.`audit_logs`.`entityType`, `achiera_db_master`.`audit_logs`.`entityId`, `achiera_db_master`.`audit_logs`.`metadata`, `achiera_db_master`.`audit_logs`.`ipAddress`, `achiera_db_master`.`audit_logs`.`userAgent`, `achiera_db_master`.`audit_logs`.`createdAt` FROM `achiera_db_master`.`audit_logs` WHERE (`achiera_db_master`.`audit_logs`.`brandId` = ? AND `achiera_db_master`.`audit_logs`.`action` = ? AND `achiera_db_master`.`audit_logs`.`createdAt` >= ? AND `achiera_db_master`.`audit_logs`.`createdAt` <= ?)
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE `achiera_db_master`.`decision_rules`.`brandId` = ?) AS `sub`
+[TrustMetrics] Found 0 executions
+[TrustMetrics] Fetching manualOverrides...
+ GET /api/autonomous-analytics/budget/consumption?brandId=test_brand_001&period=daily 200 in 379ms (compile: 261ms, render: 119ms)
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`manual_overrides`.`id` FROM `achiera_db_master`.`manual_overrides` WHERE (`achiera_db_master`.`manual_overrides`.`brandId` = ? AND `achiera_db_master`.`manual_overrides`.`performedAt` >= ? AND `achiera_db_master`.`manual_overrides`.`performedAt` < ?)) AS `sub`
+[TrustMetrics] Found 0 manual overrides
+[API] getTrustMetrics completed
+ GET /api/autonomous-analytics/trust/metrics?brandId=test_brand_001 200 in 421ms (compile: 81ms, render: 340ms)
+prisma:query SELECT COUNT(*) FROM (SELECT `achiera_db_master`.`decision_rules`.`id` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`isActive` = ?)) AS `sub`
+ GET /api/autonomous-analytics/rules/summary?brandId=test_brand_001 200 in 420ms (compile: 178ms, render: 242ms)
+prisma:query SELECT `achiera_db_master`.`decision_rules`.`id`, `achiera_db_master`.`decision_rules`.`brandId`, `achiera_db_master`.`decision_rules`.`ruleId`, `achiera_db_master`.`decision_rules`.`name`, `achiera_db_master`.`decision_rules`.`description`, `achiera_db_master`.`decision_rules`.`category`, `achiera_db_master`.`decision_rules`.`autonomyLevel`, `achiera_db_master`.`decision_rules`.`status`, `achiera_db_master`.`decision_rules`.`isActive`, `achiera_db_master`.`decision_rules`.`condition`, `achiera_db_master`.`decision_rules`.`action`, `achiera_db_master`.`decision_rules`.`explanationTemplate`, `achiera_db_master`.`decision_rules`.`createdAt`, `achiera_db_master`.`decision_rules`.`updatedAt` FROM `achiera_db_master`.`decision_rules` WHERE (`achiera_db_master`.`decision_rules`.`brandId` = ? AND `achiera_db_master`.`decision_rules`.`isActive` = ?)
+prisma:query SELECT `achiera_db_master`.`execution_logs`.`id`, `achiera_db_master`.`execution_logs`.`brandId`, `achiera_db_master`.`execution_logs`.`ruleId`, `achiera_db_master`.`execution_logs`.`decisionRuleId`, `achiera_db_master`.`execution_logs`.`action`, `achiera_db_master`.`execution_logs`.`status`, `achiera_db_master`.`execution_logs`.`metadata`, `achiera_db_master`.`execution_logs`.`executedAt` FROM `achiera_db_master`.`execution_logs` WHERE (`achiera_db_master`.`execution_logs`.`executedAt` >= ? AND `achiera_db_master`.`execution_logs`.`decisionRuleId` IN (?))
+ GET /api/autonomous-analytics/dashboard/heatmap?brandId=test_brand_001 200 in 239ms (compile: 221ms, render: 17ms)
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\[root-of-the-server]__66527a95._
+.js: Invalid source map. Only conformant source maps can be used to 
+find the original code. Cause: Error: sourceMapURL could not be 
+parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\@prisma\client\runtime\library.js: Invalid 
+source map. Only conformant source maps can be used to find the 
+original code. Cause: TypeError [ERR_INVALID_ARG_TYPE]: The 
+"payload" argument must be of type object. Received null
+Error fetching recent executions: Error 
+[PrismaClientValidationError]: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$achiera$2d$
+web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascr
+ipt$29$__["prisma"].executionLog.findMany()` invocation in
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\[root-of-the-server]__66527a95._
+.js:97:194
+
+  94 }
+  95 // Get recent executions (last 24 hours)
+  96 const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
+ΓåÆ 97 const executions = await __TURBOPACK__imported__module__$5b$p
+roject$5d2f$achiera$2d$web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d
+$route$5d$__$28$ecmascript$29$__["prisma"].executionLog.findMany({
+       where: {
+         brandId: "test_brand_001",
+         executedAt: {
+           gte: new Date("2025-12-17T14:24:38.398Z")
+         }
+       },
+       include: {
+         rule: true,
+         action: true,
+         ~~~~~~
+     ?   brand?: true,
+     ?   decisionRule?: true
+       },
+       orderBy: {
+         executedAt: "desc"
+       },
+       take: 10
+     })
+
+Invalid scalar field `action` for include statement on model 
+ExecutionLog. Available options are marked with ?.
+Note that include statements only accept relation fields.
+    at <unknown> (D:\PROJECT IOT\Automation Smart Lighting System\sm
+art-billiard-main\achiera-web\.next\dev\server\chunks\[root-of-the-s
+erver]__66527a95._.js:97:194) {
+  clientVersion: '5.22.0'
+}
+ GET /api/autonomous-analytics/executions/recent?brandId=test_brand_001 500 in 270ms (compile: 247ms, render: 23ms)
+prisma:error 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$achiera$2d$web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].approvalRequest.findMany()` invocation in
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\achiera-web\.next\dev\server\chunks\[root-of-the-server]__ad296e80._.js:96:196
+
+  93     });
+  94 }
+  95 // Get pending approvals
+ΓåÆ 96 const approvals = await __TURBOPACK__imported__module__$5b$project$5d2f$achiera$2d$web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].approvalRequest.findMany({
+       where: {
+         brandId: "test_brand_001",
+         status: "PENDING",
+         ~~~~~~
+         expiresAt: {
+           gt: new Date("2025-12-18T14:24:38.337Z")
+         },
+     ?   AND?: ApprovalRequestWhereInput | ApprovalRequestWhereInput[],
+     ?   OR?: ApprovalRequestWhereInput[],
+     ?   NOT?: ApprovalRequestWhereInput | ApprovalRequestWhereInput[],
+     ?   id?: StringFilter | String,
+     ?   decisionId?: StringFilter | String,
+     ?   ruleId?: StringFilter | String,
+     ?   decisionRuleId?: StringNullableFilter | String | Null,
+     ?   actionId?: StringFilter | String,
+     ?   state?: StringFilter | String,
+     ?   riskTier?: StringFilter | String,
+     ?   autonomyLevel?: IntFilter | Int,
+     ?   requiredApprover?: StringNullableFilter | String | Null,
+     ?   assignedTo?: StringNullableFilter | String | Null,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   submittedAt?: DateTimeNullableFilter | DateTime | Null,
+     ?   decidedAt?: DateTimeNullableFilter | DateTime | Null,
+     ?   approvedBy?: StringNullableFilter | String | Null,
+     ?   rejectedBy?: StringNullableFilter | String | Null,
+     ?   escalatedBy?: StringNullableFilter | String | Null,
+     ?   rejectionReason?: StringNullableFilter | String | Null,
+     ?   escalationReason?: StringNullableFilter | String | Null,
+     ?   decisionContext?: JsonNullableFilter,
+     ?   estimatedImpact?: JsonNullableFilter,
+     ?   correlationId?: StringNullableFilter | String | Null,
+     ?   brand?: BrandRelationFilter | BrandWhereInput,
+     ?   decisionRule?: DecisionRuleNullableRelationFilter | DecisionRuleWhereInput | Null,
+     ?   actions?: ApprovalActionListRelationFilter,
+     ?   escalations?: ApprovalEscalationListRelationFilter
+       },
+       include: {
+         rule: true,
+         action: true
+       },
+       orderBy: {
+         createdAt: "desc"
+       }
+     })
+
+Unknown argument `status`. Did you mean `state`? Available options are marked with ?.
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\[root-of-the-server]__ad296e80._
+.js: Invalid source map. Only conformant source maps can be used to 
+find the original code. Cause: Error: sourceMapURL could not be 
+parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\@prisma\client\runtime\library.js: Invalid 
+source map. Only conformant source maps can be used to find the 
+original code. Cause: TypeError [ERR_INVALID_ARG_TYPE]: The 
+"payload" argument must be of type object. Received null
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\compiled\next-server\app-route-tu
+rbo.runtime.dev.js: Invalid source map. Only conformant source maps 
+can be used to find the original code. Cause: Error: sourceMapURL 
+could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\234cf_next_e94715f0._.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\base-server.js: Invalid 
+source map. Only conformant source maps can be used to find the 
+original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\next-server.js: Invalid 
+source map. Only conformant source maps can be used to find the 
+original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\dev\next-dev-server.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\trace\trace.js: Invalid source 
+map. Only conformant source maps can be used to find the original 
+code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\lib\router-server.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\node_modules\next\dist\server\lib\start-server.js: 
+Invalid source map. Only conformant source maps can be used to find 
+the original code. Cause: Error: sourceMapURL could not be parsed
+Error fetching pending approvals: Error 
+[PrismaClientValidationError]: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$achiera$2d$
+web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascr
+ipt$29$__["prisma"].approvalRequest.findMany()` invocation in
+D:\PROJECT IOT\Automation Smart Lighting System\smart-billiard-main\
+achiera-web\.next\dev\server\chunks\[root-of-the-server]__ad296e80._
+.js:96:196
+
+  93     });
+  94 }
+  95 // Get pending approvals
+ΓåÆ 96 const approvals = await __TURBOPACK__imported__module__$5b$pr
+oject$5d2f$achiera$2d$web$2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$
+route$5d$__$28$ecmascript$29$__["prisma"].approvalRequest.findMany({
+       where: {
+         brandId: "test_brand_001",
+         status: "PENDING",
+         ~~~~~~
+         expiresAt: {
+           gt: new Date("2025-12-18T14:24:38.337Z")
+         },
+     ?   AND?: ApprovalRequestWhereInput | 
+ApprovalRequestWhereInput[],
+     ?   OR?: ApprovalRequestWhereInput[],
+     ?   NOT?: ApprovalRequestWhereInput | 
+ApprovalRequestWhereInput[],
+     ?   id?: StringFilter | String,
+     ?   decisionId?: StringFilter | String,
+     ?   ruleId?: StringFilter | String,
+     ?   decisionRuleId?: StringNullableFilter | String | Null,
+     ?   actionId?: StringFilter | String,
+     ?   state?: StringFilter | String,
+     ?   riskTier?: StringFilter | String,
+     ?   autonomyLevel?: IntFilter | Int,
+     ?   requiredApprover?: StringNullableFilter | String | Null,
+     ?   assignedTo?: StringNullableFilter | String | Null,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   submittedAt?: DateTimeNullableFilter | DateTime | Null,
+     ?   decidedAt?: DateTimeNullableFilter | DateTime | Null,
+     ?   approvedBy?: StringNullableFilter | String | Null,
+     ?   rejectedBy?: StringNullableFilter | String | Null,
+     ?   escalatedBy?: StringNullableFilter | String | Null,
+     ?   rejectionReason?: StringNullableFilter | String | Null,
+     ?   escalationReason?: StringNullableFilter | String | Null,
+     ?   decisionContext?: JsonNullableFilter,
+     ?   estimatedImpact?: JsonNullableFilter,
+     ?   correlationId?: StringNullableFilter | String | Null,
+     ?   brand?: BrandRelationFilter | BrandWhereInput,
+     ?   decisionRule?: DecisionRuleNullableRelationFilter | 
+DecisionRuleWhereInput | Null,
+     ?   actions?: ApprovalActionListRelationFilter,
+     ?   escalations?: ApprovalEscalationListRelationFilter
+       },
+       include: {
+         rule: true,
+         action: true
+ GET /api/autonomous-analytics/approvals/pending?brandId=test_brand_001 500 in 308ms (compile: 188ms, render: 119ms)
+       },
+       orderBy: {
+         createdAt: "desc"
+       }
+     })
+
+Unknown argument `status`. Did you mean `state`? Available options 
+are marked with ?.
+    at <unknown> (D:\PROJECT IOT\Automation Smart Lighting System\sm
+art-billiard-main\achiera-web\.next\dev\server\chunks\[root-of-the-s
+erver]__ad296e80._.js:96:196)
+    at async GET (D:\PROJECT IOT\Automation Smart Lighting System\sm
+art-billiard-main\achiera-web\.next\dev\server\chunks\[root-of-the-s
+erver]__ad296e80._.js:96:27)
+    at async responseGenerator (D:\PROJECT IOT\Automation Smart 
+Lighting System\smart-billiard-main\achiera-web\.next\dev\server\chu
+nks\234cf_next_e94715f0._.js:14333:38)
+    at async handleResponse (D:\PROJECT IOT\Automation Smart 
+Lighting System\smart-billiard-main\achiera-web\.next\dev\server\chu
+nks\234cf_next_e94715f0._.js:14395:32)
+    at async handler (D:\PROJECT IOT\Automation Smart Lighting Syste
+m\smart-billiard-main\achiera-web\.next\dev\server\chunks\234cf_next
+_e94715f0._.js:14448:13) {
+  clientVersion: '5.22.0'
+}

@@ -1,0 +1,489 @@
+// ============================================
+// ACHIERA AUTONOMOUS ANALYTICS SYSTEM
+// Complete Prisma Schema Extension
+// ============================================
+
+// ============================================
+// RAW LAYER - File & Row Preservation
+// ============================================
+
+model RawImportFile {
+  id                String   @id @default(uuid())
+  brandId           String   @map("brand_id")
+  
+  // File metadata
+  fileName          String   @map("file_name") @db.VarChar(255)
+  fileType          String   @map("file_type") @db.VarChar(10) // 'csv' | 'excel'
+  fileSizeBytes     BigInt   @map("file_size_bytes")
+  fileHash          String   @map("file_hash") @db.VarChar(64) // SHA256
+  fileStoragePath   String   @map("file_storage_path") @db.Text
+  
+  // Upload info
+  uploadTimestamp   DateTime @default(now()) @map("upload_timestamp")
+  uploadedBy        String   @map("uploaded_by")
+  platformHint      String?  @map("platform_hint") @db.VarChar(50)
+  
+  // Processing status
+  processingStatus  String   @default("pending") @map("processing_status") @db.VarChar(20)
+  rowCount          Int      @default(0) @map("row_count")
+  validRowCount     Int      @default(0) @map("valid_row_count")
+  errorRowCount     Int      @default(0) @map("error_row_count")
+  
+  // Processing timestamps
+  processingStartedAt DateTime? @map("processing_started_at")
+  processingCompletedAt DateTime? @map("processing_completed_at")
+  
+  // Relations
+  brand             Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  rawRows           RawRow[]
+  schemaMappings    InferredSchemaMapping[]
+  confidenceScore   SchemaConfidenceScore?
+  
+  @@unique([brandId, fileHash], name: "unique_brand_file_hash")
+  @@index([brandId, uploadTimestamp], name: "idx_brand_upload")
+  @@index([processingStatus], name: "idx_processing_status")
+  @@map("raw_import_files")
+}
+
+model RawRow {
+  id                    String   @id @default(uuid())
+  fileId                String   @map("file_id")
+  brandId               String   @map("brand_id")
+  rowNumber             Int      @map("row_number")
+  
+  // Raw data (JSON)
+  rawData               Json     @map("raw_data")
+  
+  // Inference results
+  inferredType          String?  @map("inferred_type") @db.VarChar(50) // 'sales' | 'ads' | 'inventory'
+  inferredPlatform      String?  @map("inferred_platform") @db.VarChar(50)
+  mappingConfidence     Decimal? @map("mapping_confidence") @db.Decimal(3, 2)
+  
+  // Validation
+  validationStatus      String   @default("pending") @map("validation_status") @db.VarChar(20)
+  validationErrors      Json?    @map("validation_errors")
+  validationWarnings    Json?    @map("validation_warnings")
+  
+  // Processing
+  processedAt           DateTime? @map("processed_at")
+  canonicalRecordId     String?  @map("canonical_record_id") // Link to canonical table
+  
+  // Relations
+  file                  RawImportFile @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  brand                 Brand         @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  
+  @@index([fileId, rowNumber], name: "idx_file_row")
+  @@index([brandId, validationStatus], name: "idx_brand_validation")
+  @@index([canonicalRecordId], name: "idx_canonical_link")
+  @@map("raw_rows")
+}
+
+model InferredSchemaMapping {
+  id                  String   @id @default(uuid())
+  fileId              String   @map("file_id")
+  brandId             String   @map("brand_id")
+  
+  // Source column
+  sourceColumnName    String   @map("source_column_name") @db.VarChar(255)
+  sourceColumnIndex   Int      @map("source_column_index")
+  
+  // Canonical mapping
+  canonicalField      String   @map("canonical_field") @db.VarChar(100)
+  
+  // Inference method
+  inferenceMethod     String   @map("inference_method") @db.VarChar(50)
+  confidenceScore     Decimal  @map("confidence_score") @db.Decimal(3, 2)
+  
+  // Sample data
+  sampleValues        Json     @map("sample_values")
+  dataType            String   @map("data_type") @db.VarChar(20)
+  
+  // Metadata
+  createdAt           DateTime @default(now()) @map("created_at")
+  
+  // Relations
+  file                RawImportFile @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  brand               Brand         @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  
+  @@index([fileId], name: "idx_file_mapping")
+  @@index([brandId, canonicalField], name: "idx_brand_canonical")
+  @@map("inferred_schema_mappings")
+}
+
+model SchemaConfidenceScore {
+  id                    String   @id @default(uuid())
+  fileId                String   @unique @map("file_id")
+  
+  // Confidence scores
+  overallConfidence     Decimal  @map("overall_confidence") @db.Decimal(3, 2)
+  
+  // Issues
+  blockingIssues        Json?    @map("blocking_issues")
+  warnings              Json?    @map("warnings")
+  
+  // Approval
+  autoApproved          Boolean  @default(false) @map("auto_approved")
+  manualReviewRequired  Boolean  @default(false) @map("manual_review_required")
+  
+  // Review
+  reviewedBy            String?  @map("reviewed_by")
+  reviewedAt            DateTime? @map("reviewed_at")
+  
+  // Relations
+  file                  RawImportFile @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  
+  @@map("schema_confidence_scores")
+}
+
+// ============================================
+// CANONICAL LAYER - Normalized Transactions
+// ============================================
+
+model CanonicalSalesTransaction {
+  id                  String    @id @default(uuid())
+  brandId             String    @map("brand_id")
+  rawRowId            String    @map("raw_row_id") // Lineage
+  
+  // Transaction
+  transactionDate     DateTime  @map("transaction_date") @db.Date
+  transactionTime     DateTime? @map("transaction_time")
+  orderId             String?   @map("order_id") @db.VarChar(100)
+  
+  // Product
+  sku                 String?   @db.VarChar(100)
+  productName         String    @map("product_name") @db.VarChar(255)
+  productCategory     String?   @map("product_category") @db.VarChar(100)
+  variantName         String?   @map("variant_name") @db.VarChar(255)
+  
+  // Quantity & Pricing
+  quantity            Decimal   @db.Decimal(10, 2)
+  unitPrice           Decimal   @map("unit_price") @db.Decimal(15, 2)
+  totalAmount         Decimal   @map("total_amount") @db.Decimal(15, 2)
+  discountAmount      Decimal   @default(0) @map("discount_amount") @db.Decimal(15, 2)
+  netAmount           Decimal   @map("net_amount") @db.Decimal(15, 2)
+  
+  // Platform & Channel
+  platform            String?   @db.VarChar(50)
+  channel             String?   @db.VarChar(50)
+  storeName           String?   @map("store_name") @db.VarChar(255)
+  
+  // Customer
+  customerId          String?   @map("customer_id") @db.VarChar(100)
+  customerName        String?   @map("customer_name") @db.VarChar(255)
+  customerPhone       String?   @map("customer_phone") @db.VarChar(50)
+  customerEmail       String?   @map("customer_email") @db.VarChar(255)
+  
+  // Promotion
+  promotionCode       String?   @map("promotion_code") @db.VarChar(100)
+  promotionName       String?   @map("promotion_name") @db.VarChar(255)
+  
+  // Metadata
+  paymentMethod       String?   @map("payment_method") @db.VarChar(50)
+  shippingCost        Decimal?  @map("shipping_cost") @db.Decimal(15, 2)
+  notes               String?   @db.Text
+  
+  // Processing
+  createdAt           DateTime  @default(now()) @map("created_at")
+  
+  // Relations
+  brand               Brand     @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  
+  @@index([brandId, transactionDate], name: "idx_brand_date")
+  @@index([rawRowId], name: "idx_raw_lineage")
+  @@index([orderId], name: "idx_order")
+  @@map("canonical_sales_transactions")
+}
+
+model CanonicalAdsMetric {
+  id                  String    @id @default(uuid())
+  brandId             String    @map("brand_id")
+  rawRowId            String    @map("raw_row_id") // Lineage
+  
+  // Campaign
+  campaignId          String?   @map("campaign_id") @db.VarChar(100)
+  campaignName        String    @map("campaign_name") @db.VarChar(255)
+  adSetId             String?   @map("ad_set_id") @db.VarChar(100)
+  adSetName           String?   @map("ad_set_name") @db.VarChar(255)
+  adId                String?   @map("ad_id") @db.VarChar(100)
+  adName              String?   @map("ad_name") @db.VarChar(255)
+  
+  // Platform
+  platform            String    @db.VarChar(50)
+  
+  // Date
+  date                DateTime  @db.Date
+  
+  // Core Metrics
+  impressions         BigInt    @default(0)
+  clicks              Int       @default(0)
+  spend               Decimal   @db.Decimal(15, 2)
+  conversions         Int       @default(0)
+  revenue             Decimal   @default(0) @db.Decimal(15, 2)
+  
+  // Optional Metrics
+  reach               BigInt?
+  frequency           Decimal?  @db.Decimal(5, 2)
+  videoViews          Int?      @map("video_views")
+  engagement          Int?
+  
+  // Calculated Metrics
+  ctr                 Decimal   @default(0) @db.Decimal(5, 4)
+  cpc                 Decimal   @default(0) @db.Decimal(10, 2)
+  cpa                 Decimal   @default(0) @db.Decimal(10, 2)
+  roas                Decimal   @default(0) @db.Decimal(10, 2)
+  
+  // Processing
+  createdAt           DateTime  @default(now()) @map("created_at")
+  
+  // Relations
+  brand               Brand     @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  
+  @@index([brandId, date], name: "idx_brand_date")
+  @@index([rawRowId], name: "idx_raw_lineage")
+  @@index([platform, date], name: "idx_platform_date")
+  @@map("canonical_ads_metrics")
+}
+
+// ============================================
+// DIMENSION LAYER
+// ============================================
+
+model DimPlatform {
+  id              String   @id @default(uuid())
+  platformName    String   @unique @map("platform_name") @db.VarChar(50)
+  platformType    String   @map("platform_type") @db.VarChar(50) // 'marketplace' | 'ads' | 'social'
+  isActive        Boolean  @default(true) @map("is_active")
+  createdAt       DateTime @default(now()) @map("created_at")
+  
+  @@map("dim_platform")
+}
+
+model DimTime {
+  dateKey         DateTime @id @db.Date @map("date_key")
+  dayOfWeek       Int      @map("day_of_week")
+  weekOfYear      Int      @map("week_of_year")
+  month           Int
+  quarter         Int
+  year            Int
+  isWeekend       Boolean  @map("is_weekend")
+  isHoliday       Boolean  @default(false) @map("is_holiday")
+  
+  @@index([year, month], name: "idx_year_month")
+  @@map("dim_time")
+}
+
+// ============================================
+// FACT LAYER
+// ============================================
+
+model SalesFact {
+  id                  String    @id @default(uuid())
+  brandId             String    @map("brand_id")
+  canonicalRecordId   String    @map("canonical_record_id") // Lineage
+  
+  // Dimensions
+  dateKey             DateTime  @map("date_key") @db.Date
+  platform            String?   @db.VarChar(50)
+  channel             String?   @db.VarChar(50)
+  
+  // Product (denormalized for performance)
+  sku                 String?   @db.VarChar(100)
+  productName         String    @map("product_name") @db.VarChar(255)
+  productCategory     String?   @map("product_category") @db.VarChar(100)
+  
+  // Transaction
+  orderId             String?   @map("order_id") @db.VarChar(100)
+  transactionTimestamp DateTime @map("transaction_timestamp")
+  
+  // Metrics
+  quantity            Decimal   @db.Decimal(10, 2)
+  unitPrice           Decimal   @map("unit_price") @db.Decimal(15, 2)
+  totalAmount         Decimal   @map("total_amount") @db.Decimal(15, 2)
+  discountAmount      Decimal   @map("discount_amount") @db.Decimal(15, 2)
+  netAmount           Decimal   @map("net_amount") @db.Decimal(15, 2)
+  
+  // Calculated
+  costOfGoods         Decimal?  @map("cost_of_goods") @db.Decimal(15, 2)
+  grossProfit         Decimal?  @map("gross_profit") @db.Decimal(15, 2)
+  
+  // Customer
+  customerId          String?   @map("customer_id") @db.VarChar(100)
+  
+  // Promotion
+  promotionId         String?   @map("promotion_id")
+  
+  // Processing
+  createdAt           DateTime  @default(now()) @map("created_at")
+  
+  // Relations
+  brand               Brand     @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  
+  @@index([brandId, dateKey], name: "idx_brand_date")
+  @@index([sku, dateKey], name: "idx_sku_date")
+  @@index([platform, dateKey], name: "idx_platform_date")
+  @@index([canonicalRecordId], name: "idx_canonical_lineage")
+  @@map("sales_facts")
+}
+
+model AdsPerformanceFact {
+  id                  String    @id @default(uuid())
+  brandId             String    @map("brand_id")
+  canonicalRecordId   String    @map("canonical_record_id") // Lineage
+  
+  // Dimensions
+  dateKey             DateTime  @map("date_key") @db.Date
+  platform            String    @db.VarChar(50)
+  
+  // Campaign (denormalized)
+  campaignId          String?   @map("campaign_id") @db.VarChar(100)
+  campaignName        String    @map("campaign_name") @db.VarChar(255)
+  
+  // Metrics
+  impressions         BigInt
+  clicks              Int
+  spend               Decimal   @db.Decimal(15, 2)
+  conversions         Int
+  revenue             Decimal   @db.Decimal(15, 2)
+  
+  // Calculated
+  ctr                 Decimal   @db.Decimal(5, 4)
+  cpc                 Decimal   @db.Decimal(10, 2)
+  cpa                 Decimal   @db.Decimal(10, 2)
+  roas                Decimal   @db.Decimal(10, 2)
+  
+  // Processing
+  createdAt           DateTime  @default(now()) @map("created_at")
+  
+  // Relations
+  brand               Brand     @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  
+  @@index([brandId, dateKey], name: "idx_brand_date")
+  @@index([campaignId, dateKey], name: "idx_campaign_date")
+  @@index([platform, dateKey], name: "idx_platform_date")
+  @@index([canonicalRecordId], name: "idx_canonical_lineage")
+  @@map("ads_performance_facts")
+}
+
+// ============================================
+// AGGREGATION LAYER
+// ============================================
+
+model AggDailySales {
+  id                    String   @id @default(uuid())
+  brandId               String   @map("brand_id")
+  snapshotDate          DateTime @map("snapshot_date") @db.Date
+  
+  // Revenue metrics
+  grossRevenue          Decimal  @default(0) @map("gross_revenue") @db.Decimal(15, 2)
+  netRevenue            Decimal  @default(0) @map("net_revenue") @db.Decimal(15, 2)
+  discountAmount        Decimal  @default(0) @map("discount_amount") @db.Decimal(15, 2)
+  
+  // Order metrics
+  orderCount            Int      @default(0) @map("order_count")
+  avgOrderValue         Decimal  @default(0) @map("avg_order_value") @db.Decimal(15, 2)
+  
+  // Product metrics
+  unitsSold             Int      @default(0) @map("units_sold")
+  uniqueProductsSold    Int      @default(0) @map("unique_products_sold")
+  
+  // Customer metrics
+  uniqueCustomers       Int      @default(0) @map("unique_customers")
+  
+  // Channel breakdown (JSON)
+  revenueByChannel      Json?    @map("revenue_by_channel")
+  ordersByChannel       Json?    @map("orders_by_channel")
+  
+  // Processing
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  brand                 Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  
+  @@unique([brandId, snapshotDate], name: "unique_brand_date")
+  @@index([brandId, snapshotDate], name: "idx_brand_date")
+  @@map("agg_daily_sales")
+}
+
+model AggDailyAds {
+  id              String   @id @default(uuid())
+  brandId         String   @map("brand_id")
+  snapshotDate    DateTime @map("snapshot_date") @db.Date
+  platform        String   @db.VarChar(50)
+  
+  // Metrics
+  impressions     BigInt   @default(0)
+  clicks          Int      @default(0)
+  spend           Decimal  @default(0) @db.Decimal(15, 2)
+  conversions     Int      @default(0)
+  revenue         Decimal  @default(0) @db.Decimal(15, 2)
+  
+  // Calculated
+  ctr             Decimal  @default(0) @db.Decimal(5, 4)
+  cpc             Decimal  @default(0) @db.Decimal(10, 2)
+  cpa             Decimal  @default(0) @db.Decimal(10, 2)
+  roas            Decimal  @default(0) @db.Decimal(10, 2)
+  
+  // Campaign breakdown (JSON)
+  campaigns       Json?
+  
+  // Processing
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  brand           Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  
+  @@unique([brandId, snapshotDate, platform], name: "unique_brand_date_platform")
+  @@index([brandId, snapshotDate], name: "idx_brand_date")
+  @@map("agg_daily_ads")
+}
+
+model AggWeeklyTrends {
+  id                      String   @id @default(uuid())
+  brandId                 String   @map("brand_id")
+  weekStartDate           DateTime @map("week_start_date") @db.Date
+  weekEndDate             DateTime @map("week_end_date") @db.Date
+  
+  // Revenue trends
+  revenueTotal            Decimal  @default(0) @map("revenue_total") @db.Decimal(15, 2)
+  revenueGrowthPct        Decimal  @default(0) @map("revenue_growth_pct") @db.Decimal(5, 2)
+  revenueTrend            String   @default("stable") @map("revenue_trend") @db.VarChar(20)
+  
+  // Product trends (JSON)
+  topProducts             Json?    @map("top_products")
+  trendingProducts        Json?    @map("trending_products")
+  decliningProducts       Json?    @map("declining_products")
+  
+  // Ads trends
+  totalAdSpend            Decimal  @default(0) @map("total_ad_spend") @db.Decimal(15, 2)
+  avgRoas                 Decimal  @default(0) @map("avg_roas") @db.Decimal(10, 2)
+  bestPerformingPlatform  String?  @map("best_performing_platform") @db.VarChar(50)
+  
+  // Processing
+  createdAt               DateTime @default(now()) @map("created_at")
+  updatedAt               DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  brand                   Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  
+  @@unique([brandId, weekStartDate], name: "unique_brand_week")
+  @@index([brandId, weekStartDate], name: "idx_brand_week")
+  @@map("agg_weekly_trends")
+}
+
+// ============================================
+// UPDATE BRAND MODEL (Add Relations)
+// ============================================
+
+// Add these to existing Brand model:
+// rawImportFiles              RawImportFile[]
+// rawRows                     RawRow[]
+// inferredSchemaMappings      InferredSchemaMapping[]
+// canonicalSalesTransactions  CanonicalSalesTransaction[]
+// canonicalAdsMetrics         CanonicalAdsMetric[]
+// salesFacts                  SalesFact[]
+// adsPerformanceFacts         AdsPerformanceFact[]
+// aggDailySales               AggDailySales[]
+// aggDailyAds                 AggDailyAds[]
+// aggWeeklyTrends             AggWeeklyTrends[]

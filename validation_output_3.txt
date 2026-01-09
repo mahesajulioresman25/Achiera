@@ -1,0 +1,117 @@
+﻿Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+node.exe : 
+At C:\Program 
+Files\nodejs\npx.ps1:29 char:3
++   & $NODE_EXE $NPX_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : No 
+   tSpecified: (:String) [], Re  
+  moteException
+    + FullyQualifiedErrorId : Na 
+   tiveCommandError
+ 
+Error: Prisma schema validation 
+- (validate wasm)
+Error code: P1012
+[1;91merror[0m: [1mError 
+validating model 
+"DevelopmentLifecycleStep": The 
+constraint name 'DevelopmentLifec
+ycleStep_development_lifecycle_st
+eps_brandId_idx' specified in 
+the `map` argument for the 
+`@@index` constraint is too long 
+for your chosen provider. The 
+maximum allowed length is 63 
+bytes.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:515[0m
+[1;94m   | [0m
+[1;94m514 | [0m
+[1;94m515 | [0m  
+[1;91m@@index([brandId], map: "D
+evelopmentLifecycleStep_developme
+nt_lifecycle_steps_brandId_idx")
+[0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+validating field `product` in 
+model `MockupTemplate`: The 
+relation field `product` on 
+model `MockupTemplate` is 
+missing an opposite relation 
+field on the model 
+`MockupProductTemplate`. Either 
+run `prisma format` or add it 
+manually.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:416[0m
+[1;94m   | [0m
+[1;94m415 | [0m  updatedAt     
+      DateTime        @updatedAt
+[1;94m416 | [0m  
+[1;91mproduct             
+MockupProductTemplate 
+@relation(fields: [productId], 
+references: [id], onDelete: 
+Cascade)
+[0m
+[1;94m417 | [0m  variant       
+      MockupVariant?        
+@relation(fields: [variantId], 
+references: [id])
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+validating field `variant` in 
+model `MockupTemplate`: The 
+relation field `variant` on 
+model `MockupTemplate` is 
+missing an opposite relation 
+field on the model 
+`MockupVariant`. Either run 
+`prisma format` or add it 
+manually.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:417[0m
+[1;94m   | [0m
+[1;94m416 | [0m  product       
+      MockupProductTemplate 
+@relation(fields: [productId], 
+references: [id], onDelete: 
+Cascade)
+[1;94m417 | [0m  
+[1;91mvariant             
+MockupVariant?        
+@relation(fields: [variantId], 
+references: [id])
+[0m
+[1;94m418 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+validating field `orders` in 
+model `FlashSaleConfig`: The 
+relation field `orders` on model 
+`FlashSaleConfig` is missing an 
+opposite relation field on the 
+model `Order`. Either run 
+`prisma format` or add it 
+manually.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:2937[0m
+[1;94m   | [0m
+[1;94m2936 | [0m  brand        
+      Brand    @relation(fields: 
+[brandId], references: [id])
+[1;94m2937 | [0m  
+[1;91morders             
+Order[] // Relation to track 
+sales
+[0m
+[1;94m2938 | [0m  
+[1;94m   | [0m
+
+Validation Error Count: 4
+[Context: validate]
+
+Prisma CLI Version : 5.22.0

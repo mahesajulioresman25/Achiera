@@ -1,0 +1,6 @@
+﻿--- Listing All Users ---
+User: mahesajulioresman@achier.com (Mahesa Julio Resman)
+  - Brand: RASA IBU (Slug: rasa-ibu, Role: BRAND_ADMIN)
+  - Brand: Achiera (Slug: achiera, Role: BRAND_ADMIN)
+  - Brand: Achiera Merch (Slug: achiera-merch, Role: BRAND_ADMIN)
+  - Brand: Achiera IT Solution (Slug: achiera-it-solution, Role: BRAND_ADMIN)

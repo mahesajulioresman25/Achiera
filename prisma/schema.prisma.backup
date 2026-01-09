@@ -1,0 +1,698 @@
+// This is your Prisma schema file for Multi-Brand CMS
+// Database: achiera_db_master
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum BrandRole {
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
+enum HeroMode {
+  SINGLE
+  SLIDER
+  VIDEO
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+enum AnalyticsEventType {
+  PAGE_VIEW
+  COLLECTION_CLICK
+  MOCKUP_OPEN
+  MOCKUP_CONFIRM
+  HERO_CTA_CLICK
+}
+
+enum OrderStatus {
+  PENDING
+  WAITING_PAYMENT
+  PAYMENT_VERIFIED
+  IN_PRODUCTION
+  WAITING_FINAL_PAYMENT
+  QUALITY_CHECK
+  PACKING
+  SHIPPED
+  COMPLETED
+  CANCELLED
+}
+
+// ============================================
+// CORE MULTI-BRAND MODELS
+// ============================================
+
+model Brand {
+  id              String   @id @default(cuid())
+  slug            String   @unique // "merch", "it-solutions"
+  name            String // "ACHIERA Merch", "ACHIERA IT Solutions"
+  paymentSettings Json? // { "downPaymentPercentage": 50 }
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  userRoles              UserBrandRole[]
+  merchSettings          MerchSettings[]
+  merchCollections       MerchCollection[]
+  mockupConfigs          MockupConfig[]
+  catalogueRequests      CatalogueRequest[]
+  heroSlides             HeroSlide[]
+  analyticsEvents        AnalyticsEvent[]
+  itSettings             ItSettings[]
+  itServices             ItService[]
+  itCaseStudies          ItCaseStudy[]
+  lifecycleSteps         DevelopmentLifecycleStep[]
+  mockupProductTemplates MockupProductTemplate[]
+
+  @@map("brands")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  brandRoles UserBrandRole[]
+
+  @@map("users")
+}
+
+model UserBrandRole {
+  id        String    @id @default(cuid())
+  userId    String
+  brandId   String
+  role      BrandRole
+  createdAt DateTime  @default(now())
+
+  // Relations
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  brand Brand @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, brandId])
+  @@map("user_brand_roles")
+}
+
+// ============================================
+// UNIVERSAL MODELS (SHARED ACROSS BRANDS)
+// ============================================
+
+model HeroSlide {
+  id        String    @id @default(cuid())
+  brandId   String
+  title     String    @db.Text
+  subtitle  String    @db.Text
+  ctaLabel  String?
+  ctaLink   String?
+  mediaType MediaType @default(IMAGE)
+  imageUrl  String?   @db.Text
+  videoUrl  String?   @db.Text
+  sortOrder Int       @default(0)
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  // Relations
+  brand Brand @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  @@map("hero_slides")
+}
+
+model AnalyticsEvent {
+  id             String             @id @default(cuid())
+  brandId        String
+  type           AnalyticsEventType
+  path           String?
+  collectionSlug String?
+  userAgent      String?            @db.Text
+  ipHash         String?
+  sessionId      String? // Track user sessions
+  referrer       String?            @db.Text // Track traffic sources
+  metadata       Json? // Flexible event data (e.g., button clicked, scroll depth, etc.)
+  createdAt      DateTime           @default(now())
+
+  // Relations
+  brand Brand @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  @@index([brandId, type, createdAt])
+  @@index([brandId, sessionId]) // For session-based queries
+  @@index([brandId, path]) // For page-specific queries
+  @@map("analytics_events")
+}
+
+// ============================================
+// MERCHANDISE MODELS (BRAND-SCOPED)
+// ============================================
+
+model MerchSettings {
+  id      Int    @id @default(autoincrement())
+  brandId String @unique
+
+  // Hero Section
+  heroMode     HeroMode @default(SINGLE)
+  heroTitle    String   @db.Text
+  heroSubtitle String   @db.Text
+  heroTagline  String   @db.Text
+  heroCtaLabel String
+  heroCtaLink  String
+
+  // Highlight Line
+  highlightLine String @db.Text
+
+  // Try Live Mockup Section
+  mockupTitle    String  @db.Text
+  mockupSubtitle String  @db.Text
+  mockupTagline  String  @db.Text
+  mockupEnabled  Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  brand Brand @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  @@map("merch_settings")
+}
+
+model MerchCollection {
+  id      String @id @default(cuid())
+  brandId String
+  slug    String
+
+  // Basic Info
+  name         String
+  heroTitle    String @db.Text
+  heroSubtitle String @db.Text
+
+  // Content Sections (JSON)
+  highlights       Json // array of strings
+  whatsInside      Json // array of strings
+  designOptions    Json // array of strings
+  materialPoints   Json // array of strings
+  useCases         Json // array of { title, description }
+  packagingOptions Json // array of strings
+  faq              Json // array of { question, answer }
+  galleryImages    Json // array of image URLs
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  brand    Brand               @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  products CollectionProduct[]
+
+  @@unique([brandId, slug])
+  @@map("merch_collections")
+}
+
+model CollectionProduct {
+  id           String @id @default(cuid())
+  collectionId String
+  productId    String
+
+  // Display in collection
+  showcaseImage  String? @db.Text
+  showcaseImages Json? // array of additional image URLs (optional)
+  displayOrder   Int     @default(0)
+  featured       Boolean @default(false)
+
+  // Collection-specific overrides
+  description String? @db.Text
+  highlights  Json? // array of strings
+
+  // Material & Printing Info
+  materialInfo    String? @db.Text
+  printingMethods Json? // array of allowed methods: ["PLASTISOL", "DTF", "DTG", "EMBROIDERY"]
+  specifications  Json? // { "weight": "...", "dimensions": "...", etc }
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  collection MerchCollection       @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  product    MockupProductTemplate @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([collectionId, productId])
+  @@map("collection_products")
+}
+
+model MockupConfig {
+  id      String @id @default(cuid())
+  brandId String
+
+  productType         String // "tote", "tshirt", "hoodie", "tumbler", "bag"
+  displayName         String
+  baseImages          Json // mapping color -> image path
+  baseImageUrl        String? @db.Text // Single base image for tinting
+  colorOptions        Json? // Array of { key, label, hex }
+  safeZoneX           Int     @default(0)
+  safeZoneY           Int     @default(0)
+  safeZoneWidth       Int     @default(200)
+  safeZoneHeight      Int     @default(200)
+  isActive            Boolean @default(true)
+  isDefaultForBuilder Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  brand         Brand                @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  colorVariants MockupColorVariant[]
+
+  @@map("mockup_configs")
+}
+
+model MockupColorVariant {
+  id           String   @id @default(cuid())
+  templateId   String
+  key          String // "black", "white", "red"
+  label        String // "Black", "White", "Red"
+  swatchHex    String // "#111827" for button display
+  imageUrl     String   @db.Text // URL to final PNG
+  backImageUrl String?  @db.Text // URL to back side PNG
+  sortOrder    Int      @default(0)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  template MockupConfig @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@map("mockup_color_variants")
+}
+
+model CatalogueRequest {
+  id      String @id @default(cuid())
+  brandId String
+
+  companyName String
+  contactName String
+  email       String
+  phone       String? @db.Text
+  notes       String? @db.Text
+  status      String  @default("NEW") // "NEW" | "IN_PROGRESS" | "DONE"
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  brand Brand @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  @@map("catalogue_requests")
+}
+
+// ============================================
+// IT SOLUTIONS MODELS (BRAND-SCOPED)
+// ============================================
+
+model ItSettings {
+  id      Int    @id @default(autoincrement())
+  brandId String @unique
+
+  // Hero Section
+  heroMode     HeroMode @default(SINGLE)
+  heroTitle    String   @db.Text
+  heroSubtitle String   @db.Text
+  heroTagline  String?  @db.Text
+  heroCtaLabel String?
+  heroCtaLink  String?
+
+  // About Section
+  aboutTitle   String? @db.Text
+  aboutContent String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  brand Brand @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  @@map("it_settings")
+}
+
+model ItService {
+  id      String @id @default(cuid())
+  brandId String
+  slug    String
+
+  name        String
+  description String  @db.Text
+  icon        String? // Icon name or URL
+  features    Json? // array of strings
+  sortOrder   Int     @default(0)
+  isActive    Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  brand Brand @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  @@unique([brandId, slug])
+  @@map("it_services")
+}
+
+model ItCaseStudy {
+  id      String @id @default(cuid())
+  brandId String
+  slug    String
+
+  title       String
+  subtitle    String? @db.Text
+  client      String?
+  industry    String?
+  duration    String?
+  teamSize    String?
+  context     String? @db.Text
+  challenge   String? @db.Text
+  solution    String? @db.Text
+  results     String? @db.Text
+  techStack   Json? // array of strings
+  images      Json? // array of image URLs
+  sortOrder   Int     @default(0)
+  isPublished Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  brand Brand @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  @@unique([brandId, slug])
+  @@map("it_case_studies")
+}
+
+model DevelopmentLifecycleStep {
+  id      String @id @default(cuid())
+  brandId String
+
+  title       String
+  description String  @db.Text
+  icon        String? // Icon name
+  sortOrder   Int     @default(0)
+  isActive    Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  brand Brand @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  @@map("development_lifecycle_steps")
+}
+
+// ============================================
+// NEW MOCKUP SYSTEM (REFACTOR)
+// ============================================
+
+model MockupProductTemplate {
+  id          String @id @default(cuid())
+  brandId     String
+  slug        String @unique
+  displayName String
+  productType String
+
+  canvasWidth  Int @default(2000)
+  canvasHeight Int @default(2000)
+
+  // New Fields
+  defaultRatio String? // e.g. "1:1"
+  description  String? @db.Text
+
+  hasVariants Boolean @default(true)
+
+  variants           MockupVariant[]
+  orders             Order[]
+  collectionProducts CollectionProduct[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  brand Brand @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  @@map("mockup_product_templates")
+}
+
+model MockupVariant {
+  id          String  @id @default(cuid())
+  templateId  String
+  name        String
+  description String?
+
+  baseImageUrl   String  @db.Text
+  tintMaskUrl    String? @db.Text
+  colorHex       String? // For UI Swatch
+  safeZoneX      Float
+  safeZoneY      Float
+  safeZoneWidth  Float
+  safeZoneHeight Float
+
+  // Back View (Optional)
+  backImageUrl       String? @db.Text
+  backSafeZoneX      Float?
+  backSafeZoneY      Float?
+  backSafeZoneWidth  Float?
+  backSafeZoneHeight Float?
+
+  // Pricing & Config
+  price            Decimal @default(0) @db.Decimal(10, 2)
+  additionalConfig Json? // For future flexibility
+
+  orderIndex Int     @default(0)
+  isActive   Boolean @default(true)
+
+  template MockupProductTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  orders   Order[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("mockup_variants")
+}
+
+// ============================================
+// ORDER & TRANSACTION SYSTEM (NEW)
+// ============================================
+
+model Order {
+  id        String @id @default(cuid())
+  invoiceNo String @unique // ACH-YYYYMMDD-RANDOM
+
+  // Product Details
+  // Product Details (Legacy / Single Item Fallback)
+  productId String?
+  variantId String?
+  product   MockupProductTemplate? @relation(fields: [productId], references: [id])
+  variant   MockupVariant?         @relation(fields: [variantId], references: [id])
+
+  // Order Details
+  quantity Int
+  subtotal Decimal @db.Decimal(12, 2)
+  tax      Decimal @default(0) @db.Decimal(12, 2)
+  total    Decimal @db.Decimal(12, 2)
+
+  // Customer Details
+  customerName    String
+  customerEmail   String
+  customerPhone   String
+  customerAddress String? @db.Text
+  customerNote    String? @db.Text
+
+  // Meta
+  mockupResultPath String?     @db.Text // Final mockup image
+  designUploadPath String?     @db.Text // Original user design
+  status           OrderStatus @default(WAITING_PAYMENT)
+  termsAccepted    Boolean     @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  statusLogs OrderStatusLog[]
+  payments   Payment[]
+  orderItems OrderItem[]
+  invoice    Invoice?
+
+  @@map("orders")
+}
+
+model OrderStatusLog {
+  id        String      @id @default(cuid())
+  orderId   String
+  order     Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  status    OrderStatus
+  message   String?     @db.Text
+  createdAt DateTime    @default(now())
+
+  @@map("order_status_logs")
+}
+
+model Payment {
+  id         String    @id @default(cuid())
+  orderId    String
+  order      Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  amount     Decimal   @db.Decimal(12, 2)
+  type       String // "DP" or "FULL"
+  proofPath  String?   @db.Text
+  isVerified Boolean   @default(false)
+  verifiedBy String? // Admin ID
+  verifiedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("payments")
+}
+
+model Invoice {
+  id            String @id @default(cuid())
+  invoiceNumber String @unique // ACH-INV-YYYYMMDD-XXXX
+  orderId       String @unique
+  order         Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  dueDate     DateTime
+  totalAmount Decimal  @db.Decimal(12, 2)
+
+  paymentStatus String    @default("UNPAID") // UNPAID, PENDING, PAID
+  paymentMethod String? // manual_transfer, qris, etc
+  paidAt        DateTime?
+
+  qrPaymentUrl  String? @db.Text
+  qrTrackingUrl String? @db.Text
+
+  watermarkStatus String @default("UNPAID") // UNPAID, PAID
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("invoices")
+}
+
+// ============================================
+// ADVANCED PRICING SYSTEM
+// ============================================
+
+enum PriceComponentType {
+  FIXED // Fixed amount (e.g., setup fee)
+  PERCENT // Percentage of base (e.g., tax)
+  PER_UNIT // Per piece (e.g., base price, per-color)
+  PER_METER // Per meter (e.g., DTF)
+  MULTIPLIER // Multiplier factor (e.g., size)
+}
+
+enum PriceScope {
+  GLOBAL // Applies to all
+  BRAND // Specific brand
+  PRODUCT // Specific product template
+  VARIANT // Specific variant
+}
+
+model PriceComponent {
+  id          String             @id @default(cuid())
+  code        String             @unique // e.g., "BASE_UNIT", "BULK_TIER", "PRINT_PLASTISOL_SETUP"
+  name        String // Human-readable name
+  description String?            @db.Text
+  type        PriceComponentType
+  isActive    Boolean            @default(true)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  rules PriceRule[]
+
+  @@map("price_components")
+}
+
+model PriceRule {
+  id          String @id @default(cuid())
+  componentId String
+
+  // Scope & Target
+  scope   PriceScope
+  scopeId String? // brandId, productId, or variantId (null for GLOBAL)
+
+  // Rule Logic
+  priority Int     @default(0) // Higher wins in conflicts
+  currency String  @default("IDR")
+  amount   Decimal @db.Decimal(12, 2)
+
+  // Conditions
+  minQty        Int? // Apply if qty >= minQty
+  maxQty        Int? // Apply if qty <= maxQty
+  minOrderMeter Decimal? @db.Decimal(10, 2) // For DTF
+
+  // Metadata for filtering
+  metadata Json? // e.g., { "printMethod": "plastisol", "size": "L", "colorCount": 2 }
+
+  // Validity
+  isActive Boolean   @default(true)
+  startAt  DateTime?
+  endAt    DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  component PriceComponent @relation(fields: [componentId], references: [id], onDelete: Cascade)
+
+  @@index([scope, scopeId, isActive])
+  @@index([componentId, isActive])
+  @@index([startAt, endAt])
+  @@map("price_rules")
+}
+
+model PriceHistory {
+  id          String   @id @default(cuid())
+  ruleId      String? // Nullable if component deleted
+  action      String // CREATED, UPDATED, DELETED
+  payload     Json // Full snapshot of the rule
+  performedBy String? // userId
+  createdAt   DateTime @default(now())
+
+  @@index([ruleId, createdAt])
+  @@map("price_history")
+}
+
+model Currency {
+  code   String @id
+  name   String
+  symbol String
+
+  @@map("currencies")
+}
+
+model OrderItem {
+  id      String @id @default(cuid())
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  name        String
+  variantName String?
+  quantity    Int
+  price       Decimal @db.Decimal(12, 2)
+  subtotal    Decimal @db.Decimal(12, 2)
+
+  // Design Meta
+  mockupResultPath String? @db.Text
+  designUploadPath String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("order_items")
+}

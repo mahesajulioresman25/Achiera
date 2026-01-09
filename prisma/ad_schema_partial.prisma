@@ -1,0 +1,48 @@
+
+model AdGroup {
+  id          String       @id @default(cuid())
+  campaignId  String
+  name        String
+  bidAmount   Decimal      @db.Decimal(12, 2)
+  status      String       @default("ACTIVE")
+  placement   String       @default("FEED")
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  campaign    AdCampaign   @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  creatives   AdCreative[]
+
+  @@index([campaignId])
+  @@map("ad_groups")
+}
+
+model AdCreative {
+  id        String    @id @default(cuid())
+  adGroupId String
+  title     String
+  body      String?   @db.Text
+  imageUrl  String
+  linkUrl   String
+  status    String    @default("ACTIVE")
+  cachedCtr Float     @default(0)
+  cachedVr  Float     @default(0)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  adGroup   AdGroup   @relation(fields: [adGroupId], references: [id], onDelete: Cascade)
+  events    AdEvent[]
+
+  @@index([adGroupId])
+  @@map("ad_creatives")
+}
+
+model AdEvent {
+  id         String     @id @default(cuid())
+  creativeId String
+  type       String     // IMPRESSION, CLICK, CONVERSION
+  viewerId   String?
+  metadata   Json?
+  createdAt  DateTime   @default(now())
+  creative   AdCreative @relation(fields: [creativeId], references: [id], onDelete: Cascade)
+
+  @@index([creativeId, type])
+  @@map("ad_events")
+}

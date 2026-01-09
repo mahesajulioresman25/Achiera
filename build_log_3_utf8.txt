@@ -1,0 +1,76 @@
+﻿
+> achiera-web@0.1.0 build
+> next build
+
+node.exe : [baseline-browser-mapping] 
+The data in this module is over two 
+months old.  To ensure accurate 
+Baseline data, please update: `npm i 
+baseline-browser-mapping@latest -D`
+At C:\Program Files\nodejs\npm.ps1:29 
+char:3
++   & $NODE_EXE $NPM_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpec 
+   ified: ([baseline-brows...ping@la  
+  test -D`:String) [], RemoteExcept   
+ ion
+    + FullyQualifiedErrorId : NativeC 
+   ommandError
+ 
+   Γû▓ Next.js 16.0.5 (Turbopack)
+   - Environments: .env
+
+ ΓÜá The "middleware" file convention 
+is deprecated. Please use "proxy" 
+instead. Learn more: https://nextjs.or
+g/docs/messages/middleware-to-proxy
+   Creating an optimized production build ...
+[baseline-browser-mapping] The data 
+in this module is over two months 
+old.  To ensure accurate Baseline 
+data, please update: `npm i 
+baseline-browser-mapping@latest -D`
+ Γ£ô Compiled successfully in 46s
+   Running TypeScript ...
+Failed to compile.
+
+./src/app/(public)/rasa-ibu/p/[slug]/p
+age.tsx:13:13
+Type error: Type '{ slug: string; }' 
+is not assignable to type 
+'CampaignWhereUniqueInput'.
+  Type '{ slug: string; }' is not 
+assignable to type '{ id: string | Cam
+paignBrandIdSlugCompoundUniqueInput; 
+brandId_slug: string | CampaignBrandId
+SlugCompoundUniqueInput; } & { ...; 
+}'.
+    Type '{ slug: string; }' is 
+missing the following properties from 
+type '{ id: string | CampaignBrandIdSl
+ugCompoundUniqueInput; brandId_slug: 
+string | CampaignBrandIdSlugCompoundUn
+iqueInput; }': id, brandId_slug
+
+[0m [90m 11 |[39m     
+[36mconst[39m fetchCampaign 
+[33m=[39m [36masync[39m () 
+[33m=>[39m {
+ [90m 12 |[39m         
+[36mreturn[39m [36mawait[39m prism
+a[33m.[39mcampaign[33m.[39mfindUni
+que({
+[31m[1m>[22m[39m[90m 13 |[39m   
+          where[33m:[39m { slug 
+}[33m,[39m
+ [90m    |[39m             
+[31m[1m^[22m[39m
+ [90m 14 |[39m             
+include[33m:[39m {
+ [90m 15 |[39m                 
+bundles[33m:[39m {
+ [90m 16 |[39m                     
+include[33m:[39m {[0m
+Next.js build worker exited with 
+code: 1 and signal: null

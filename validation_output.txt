@@ -1,0 +1,106 @@
+﻿Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+node.exe : 
+At C:\Program 
+Files\nodejs\npx.ps1:29 char:3
++   & $NODE_EXE $NPX_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : No 
+   tSpecified: (:String) [], Re  
+  moteException
+    + FullyQualifiedErrorId : Na 
+   tiveCommandError
+ 
+Error: Prisma schema validation 
+- (validate wasm)
+Error code: P1012
+[1;91merror[0m: [1mError 
+validating: This line is 
+invalid. It does not start with 
+any known Prisma schema 
+keyword.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:1[0m
+[1;94m   | [0m
+[1;94m   | [0m
+[1;94m 1 | 
+[0m[1;91m∩╗┐generator client {
+[0m
+[1;94m 2 | [0m  provider = 
+"prisma-client-js"
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+validating: This line is 
+invalid. It does not start with 
+any known Prisma schema 
+keyword.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:2[0m
+[1;94m   | [0m
+[1;94m 1 | [0m∩╗┐generator 
+client {
+[1;94m 2 | [0m  
+[1;91mprovider = 
+"prisma-client-js"
+[0m
+[1;94m 3 | [0m}
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+validating: This line is 
+invalid. It does not start with 
+any known Prisma schema 
+keyword.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:3[0m
+[1;94m   | [0m
+[1;94m 2 | [0m  provider = 
+"prisma-client-js"
+[1;94m 3 | [0m[1;91m}
+[0m
+[1;94m 4 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+validating: This line is not a 
+valid field or attribute 
+definition.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:416[0m
+[1;94m   | [0m
+[1;94m415 | [0m  updatedAt     
+      DateTime        @updatedAt
+[1;94m416 | [0m 
+[1;91m@relation(fields: 
+[productId], references: [id], 
+onDelete: Cascade)
+[0m
+[1;94m417 | [0m  variant       
+      MockupVariant?        
+@relation(fields: [variantId], 
+references: [id])
+[1;94m   | [0m
+[1;91merror[0m: [1mError 
+validating model 
+"FrozenVariant": This field 
+declaration is invalid. It is 
+either missing a name or a 
+type.[0m
+  [1;94m-->[0m  
+[4mprisma\schema.prisma:613[0m
+[1;94m   | [0m
+[1;94m612 | [0m  
+demandForecasts        
+DemandForecast[]
+[1;94m613 | 
+[0m[1;91mrozenProduct      
+@relation(fields: [productId], 
+references: [id], onDelete: 
+Cascade)
+[0m
+[1;94m614 | [0m  batches       
+         InventoryBatch[]
+[1;94m   | [0m
+
+Validation Error Count: 5
+[Context: validate]
+
+Prisma CLI Version : 5.22.0
