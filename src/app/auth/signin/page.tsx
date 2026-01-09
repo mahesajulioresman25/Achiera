@@ -9,6 +9,18 @@ import { Loader2, Mail, Lock, Heart, ShieldCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function LoginPage() {
+    return (
+        <React.Suspense fallback={
+            <div className="min-h-[700px] flex items-center justify-center bg-[#FDFBF7] rounded-[3rem] border border-[#E5E1D8]">
+                <Loader2 className="w-10 h-10 animate-spin text-[#2D3A2D]" />
+            </div>
+        }>
+            <SignInContent />
+        </React.Suspense>
+    );
+}
+
+function SignInContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const callbackUrl = searchParams.get('callbackUrl') || '/rasa-ibu/profile';
