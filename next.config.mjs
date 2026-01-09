@@ -7,6 +7,7 @@ const nextConfig = {
         ignoreDuringBuilds: true,
     },
     serverExternalPackages: ['imapflow', 'pino'],
+    distDir: '.next',
     experimental: {
     },
     async redirects() {
