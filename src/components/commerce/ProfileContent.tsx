@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import SubscriptionList from '@/components/commerce/SubscriptionList';
 import OrderHistory from '@/components/commerce/OrderHistory';
-import { User, Package, CreditCard, LogOut, Home as HomeIcon, ChevronRight } from 'lucide-react';
+import { User, Package, CreditCard, LogOut, Home as HomeIcon, ChevronRight, Settings } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import { motion } from 'framer-motion';
 
@@ -17,6 +17,7 @@ export default function ProfileContent({ user }: { user: any }) {
         { id: 'profile', label: 'Profil Saya', icon: User },
         { id: 'orders', label: 'Riwayat Pesanan', icon: Package },
         { id: 'subscription', label: 'Daftar Langganan', icon: CreditCard },
+        { id: 'settings', label: 'Pengaturan Akun', icon: Settings },
     ];
 
     return (
@@ -38,9 +39,17 @@ export default function ProfileContent({ user }: { user: any }) {
                             <div className="flex flex-col items-center mb-10 text-center">
                                 <div className="relative mb-6">
                                     <div className="w-24 h-24 bg-[#F9F7F2] rounded-full border-2 border-[#E5E1D8] p-1">
-                                        <div className="w-full h-full bg-[#2D3A2D] rounded-full flex items-center justify-center text-white text-3xl font-serif italic font-black shadow-inner">
-                                            {user.name?.charAt(0).toUpperCase() || "M"}
-                                        </div>
+                                        {user.profileImage || user.image ? (
+                                            <img
+                                                src={user.profileImage || user.image}
+                                                alt={user.name}
+                                                className="w-full h-full rounded-full object-cover"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full bg-[#2D3A2D] rounded-full flex items-center justify-center text-white text-3xl font-serif italic font-black shadow-inner">
+                                                {user.name?.charAt(0).toUpperCase() || "M"}
+                                            </div>
+                                        )}
                                     </div>
                                     <div className="absolute bottom-0 right-0 w-8 h-8 bg-[#8B7E66] rounded-full border-4 border-white flex items-center justify-center">
                                         <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
@@ -53,8 +62,13 @@ export default function ProfileContent({ user }: { user: any }) {
                             <nav className="space-y-2">
                                 {tabs.map((tab) => {
                                     const isActive = activeTab === tab.id;
+                                    const isSettings = tab.id === 'settings';
+
                                     return (
-                                        <Link key={tab.id} href={`/rasa-ibu/profile?tab=${tab.id}`}>
+                                        <Link
+                                            key={tab.id}
+                                            href={isSettings ? '/rasa-ibu/profile/edit' : `/rasa-ibu/profile?tab=${tab.id}`}
+                                        >
                                             <button
                                                 className={`w-full flex items-center justify-between px-6 py-4 rounded-2xl text-xs font-black uppercase tracking-widest transition-all ${isActive
                                                     ? 'bg-[#2D3A2D] text-white shadow-[0_10px_30px_rgba(45,58,45,0.2)] scale-[1.02]'
@@ -180,4 +194,3 @@ export default function ProfileContent({ user }: { user: any }) {
         </div>
     );
 }
-

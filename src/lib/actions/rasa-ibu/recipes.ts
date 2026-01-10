@@ -77,3 +77,54 @@ export async function getProductCategories(brandId: string) {
         return [];
     }
 }
+
+/**
+ * Get single recipe by slug
+ */
+export async function getRecipeBySlug(brandId: string, slug: string) {
+    try {
+        const recipe = await (prisma as any).recipePost.findFirst({
+            where: {
+                brandId,
+                slug,
+                isPublished: true
+            }
+        });
+
+        if (!recipe) return null;
+
+        // Increment views (fire and forget)
+        (prisma as any).recipePost.update({
+            where: { id: recipe.id },
+            data: { views: { increment: 1 } }
+        }).catch(console.error);
+
+        return recipe;
+    } catch (error) {
+        console.error('[getRecipeBySlug] Error:', error);
+        return null;
+    }
+}
+
+/**
+ * Get related recipes from same category
+ */
+export async function getRelatedRecipes(brandId: string, category: string, currentId: string, limit = 3) {
+    try {
+        const recipes = await (prisma as any).recipePost.findMany({
+            where: {
+                brandId,
+                category,
+                isPublished: true,
+                id: { not: currentId }
+            },
+            orderBy: { likes: 'desc' },
+            take: limit
+        });
+
+        return recipes;
+    } catch (error) {
+        console.error('[getRelatedRecipes] Error:', error);
+        return [];
+    }
+}
