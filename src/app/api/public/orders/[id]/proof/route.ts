@@ -1,9 +1,13 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { writeFile } from 'fs/promises';
-import { join } from 'path';
-import { mkdir } from 'fs/promises';
+import { createClient } from '@supabase/supabase-js';
+
+// Initialize Supabase Client
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || '';
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY || '';
+
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function POST(
     req: NextRequest,
@@ -26,20 +30,41 @@ export async function POST(
             return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
         }
 
+        // Validate file type (images only)
+        if (!file.type.startsWith('image/')) {
+            return NextResponse.json({ error: 'File must be an image' }, { status: 400 });
+        }
+
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            return NextResponse.json({ error: 'File size must be less than 5MB' }, { status: 400 });
+        }
+
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
-        // Ensure directory exists
-        const uploadDir = join(process.cwd(), 'public/uploads/proofs');
-        await mkdir(uploadDir, { recursive: true });
-
         // Generate filename
         const filename = `${order.invoiceNo}-proof-${Date.now()}.${file.name.split('.').pop()}`;
-        const filepath = join(uploadDir, filename);
 
-        await writeFile(filepath, buffer);
+        // Upload to Supabase Storage (bucket: 'uploads')
+        const { data, error } = await supabase
+            .storage
+            .from('uploads')
+            .upload(`proofs/${filename}`, buffer, {
+                contentType: file.type,
+                upsert: false
+            });
 
-        const publicPath = `/uploads/proofs/${filename}`;
+        if (error) {
+            console.error('Supabase Upload Error:', error);
+            throw error;
+        }
+
+        // Get Public URL
+        const { data: { publicUrl } } = supabase
+            .storage
+            .from('uploads')
+            .getPublicUrl(`proofs/${filename}`);
 
         const paymentType = (formData.get('paymentType') as string) || 'DP';
         const destinationBankId = formData.get('destinationBankId') as string | null;
@@ -70,7 +95,7 @@ export async function POST(
                 orderId: order.id,
                 amount: amount,
                 type: paymentType,
-                proofPath: publicPath,
+                proofPath: publicUrl,
                 destinationBankId: (destinationBankId && destinationBankId !== 'undefined') ? destinationBankId : undefined,
                 sourceBankName: sourceBankName || undefined,
                 isVerified: false
@@ -105,7 +130,7 @@ export async function POST(
             console.error('[UploadProof] Email notification error:', e);
         }
 
-        return NextResponse.json({ success: true, path: publicPath });
+        return NextResponse.json({ success: true, path: publicUrl });
 
     } catch (error: any) {
         console.error('CRITICAL: Upload proof error:', error);
