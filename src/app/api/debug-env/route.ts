@@ -1,8 +1,6 @@
-
 import { NextResponse } from 'next/server';
 
-export const dynamic = 'force-dynamic';
-
+// Public endpoint - no authentication required
 export async function GET() {
     const dbUrl = process.env.DATABASE_URL || 'NOT_SET';
 
@@ -20,5 +18,9 @@ export async function GET() {
         database_url_host: masked,
         node_env: process.env.NODE_ENV,
         timestamp: new Date().toISOString()
+    }, {
+        headers: {
+            'Cache-Control': 'no-store, max-age=0',
+        }
     });
 }
