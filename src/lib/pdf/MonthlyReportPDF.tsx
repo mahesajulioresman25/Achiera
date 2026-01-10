@@ -148,21 +148,27 @@ export const MonthlyReportPDF = ({ data, analysis }: Props) => {
                 <View style={{ flexDirection: 'row', gap: 20, marginBottom: 20 }}>
                     <View style={{ ...styles.section, flex: 1, marginBottom: 0 }}>
                         <Text style={styles.sectionTitle}>Produk Terlaris</Text>
-                        {data.sales.topProducts.slice(0, 5).map((p, i) => (
-                            <View key={i} style={styles.row}>
-                                <Text style={{ ...styles.text, flex: 3 }}>{i + 1}. {p.name}</Text>
-                                <Text style={{ ...styles.text, flex: 1, textAlign: 'right' }}>{p.quantity}</Text>
-                            </View>
-                        ))}
+                        {data.sales.topProducts
+                            .filter((v, i, a) => a.findIndex(t => t.name === v.name) === i) // Deduplicate by name
+                            .slice(0, 5)
+                            .map((p, i) => (
+                                <View key={i} style={styles.row}>
+                                    <Text style={{ ...styles.text, flex: 3 }}>{i + 1}. {p.name}</Text>
+                                    <Text style={{ ...styles.text, flex: 1, textAlign: 'right' }}>{p.quantity}</Text>
+                                </View>
+                            ))}
                     </View>
                     <View style={{ ...styles.section, flex: 1, marginBottom: 0 }}>
                         <Text style={styles.sectionTitle}>Beban Operasional</Text>
-                        {data.financial.expenseBreakdown.slice(0, 5).map((exp, i) => (
-                            <View key={i} style={styles.row}>
-                                <Text style={{ ...styles.text, flex: 3 }}>{i + 1}. {exp.name}</Text>
-                                <Text style={{ ...styles.text, flex: 2, textAlign: 'right' }}>Rp {exp.amount.toLocaleString('id-ID')}</Text>
-                            </View>
-                        ))}
+                        {data.financial.expenseBreakdown
+                            .filter((v, i, a) => a.findIndex(t => t.name === v.name) === i) // Deduplicate by name
+                            .slice(0, 5)
+                            .map((exp, i) => (
+                                <View key={i} style={styles.row}>
+                                    <Text style={{ ...styles.text, flex: 3 }}>{i + 1}. {exp.name}</Text>
+                                    <Text style={{ ...styles.text, flex: 2, textAlign: 'right' }}>Rp {exp.amount.toLocaleString('id-ID')}</Text>
+                                </View>
+                            ))}
                     </View>
                 </View>
 

@@ -18,13 +18,15 @@ export default async function RasaIbuProductListPage() {
 
     if (!brand) return <div className="py-24 text-center">Brand not found</div>;
 
-    // Fetch real products - ONLY from PUBLIC categories
+    // Fetch real products - Filter for FINISHED_GOOD (Menu) only, exclude Raw Materials 
     const products = await prisma.frozenProduct.findMany({
         where: {
+            // Ensure product belongs to this brand (via category linkage)
             category: {
-                brandId: brand.id,
-                isActive: true
-            }
+                brandId: brand.id
+            },
+            // STRICTLY exclude Raw Materials/Ingredients
+            inventoryType: 'FINISHED_GOOD'
         },
         include: {
             category: true,
@@ -52,6 +54,8 @@ export default async function RasaIbuProductListPage() {
         };
     });
 
+    const config = brand.brandConfig as any;
+
     return (
         <div className="min-h-screen bg-[#FDFBF7] pb-20">
             {/* Header Section (Recipe Style) */}
@@ -69,7 +73,7 @@ export default async function RasaIbuProductListPage() {
                             Dapur Rasa Ibu
                         </span>
                         <h1 className="text-4xl md:text-6xl font-black text-[#FDFBF7] mb-6 leading-tight font-serif">
-                            Hidangan Rumah <br /> <span className="text-[#B2BCA2] italic">Untuk Keluarga</span>
+                            {config?.publicTitle || "Hidangan Rumah"} <br /> <span className="text-[#B2BCA2] italic">{config?.heroTagline || "Untuk Keluarga"}</span>
                         </h1>
                         <p className="text-[#E5E1D8] text-lg mb-8 max-w-xl mx-auto font-light">
                             Tanpa pengawet, bumbu alami, dan porsi pas untuk keluarga. Praktis tinggal hangatkan.

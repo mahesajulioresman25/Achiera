@@ -26,7 +26,7 @@ export class FlashSaleService {
                 include: { items: true }
             });
 
-            console.log('[FlashSaleService] Config found:', config?.name || 'NONE');
+            // console.log('[FlashSaleService] Config found:', config?.name || 'NONE');
             if (!config) return null;
 
             const now = new Date();
@@ -38,11 +38,11 @@ export class FlashSaleService {
             const endStr = config.endDate ? new Date(config.endDate).toISOString().split('T')[0] : null;
 
             if (startStr && todayStr < startStr) {
-                console.log('[FlashSaleService] NOT ACTIVE: todayStr < startStr', todayStr, startStr);
+                // console.log('[FlashSaleService] NOT ACTIVE: todayStr < startStr', todayStr, startStr);
                 return null;
             }
             if (endStr && todayStr > endStr) {
-                console.log('[FlashSaleService] NOT ACTIVE: todayStr > endStr', todayStr, endStr);
+                // console.log('[FlashSaleService] NOT ACTIVE: todayStr > endStr', todayStr, endStr);
                 return null;
             }
 
@@ -75,16 +75,16 @@ export class FlashSaleService {
             };
 
             if (currentMinutes >= startMinutes && currentMinutes < endMinutes) {
-                console.log('[FlashSaleService] Flash Sale is ACTIVE');
+                // console.log('[FlashSaleService] Flash Sale is ACTIVE');
                 return { ...configData, status: 'ACTIVE' };
             }
 
             if (currentMinutes < startMinutes) {
-                console.log('[FlashSaleService] Flash Sale is UPCOMING');
+                // console.log('[FlashSaleService] Flash Sale is UPCOMING');
                 return { ...configData, status: 'UPCOMING' };
             }
 
-            console.log('[FlashSaleService] Flash Sale is NOT ACTIVE (Already Ended today)');
+            // console.log('[FlashSaleService] Flash Sale is NOT ACTIVE (Already Ended today)');
             return null;
 
         } catch (error) {

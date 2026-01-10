@@ -4,6 +4,7 @@ import SeasonalDecorations from "@/components/ui/SeasonalDecorations";
 import { unisolatedPrisma as prisma } from "@/lib/prisma";
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function RasaIbuLayout({
     children,
@@ -26,8 +27,22 @@ export default async function RasaIbuLayout({
         { label: 'TENTANG KAMI', href: '/rasa-ibu/about' },
     ];
 
-    if (config?.navLinks && Array.isArray(config.navLinks) && config.navLinks.length > 0) {
-        navLinks = config.navLinks;
+    // Check specifically for 'publicNavLinks' as defined in schema (NOT 'navLinks')
+    // Also handle potential JSON-stringified data from DB
+    let cmsLinks = config?.publicNavLinks || config?.navLinks; // Fallback to old name just in case
+
+    if (cmsLinks) {
+        if (typeof cmsLinks === 'string') {
+            try {
+                cmsLinks = JSON.parse(cmsLinks);
+            } catch (e) {
+                // Invalid JSON, ignore
+            }
+        }
+
+        if (Array.isArray(cmsLinks) && cmsLinks.length > 0) {
+            navLinks = cmsLinks;
+        }
     }
 
     return (

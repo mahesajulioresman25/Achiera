@@ -23,14 +23,40 @@ export const revalidate = 60;
  * Copy: Natural Indonesian (not corporate).
  */
 export default async function RasaIbuHomePage() {
-    // Fetch Brand RASA IBU
+    // Unified Data Fetching using Promise.all for maximum speed
     const brand = await prisma.brand.findUnique({
         where: { slug: 'rasa-ibu' },
         include: { brandConfig: true }
     });
 
-    // Dynamic Config
-    const config = brand?.brandConfig;
+    if (!brand) return <div className="py-24 text-center">Brand not found</div>;
+
+    const brandId = brand.id;
+    const config = brand.brandConfig;
+
+    // Second stage parallel fetch (once we have brandId)
+    const [
+        featuredProducts,
+        bestSellersRaw,
+        heroSlidesRaw,
+        cheapestPlan,
+        activeFlashSale,
+        activeCampaigns,
+    ] = await Promise.all([
+        getFeaturedProducts(brandId),
+        getBestSellers(brandId, 12) as Promise<any[]>,
+        prisma.heroSlide.findMany({
+            where: { brandId, isActive: true },
+            orderBy: { sortOrder: 'asc' },
+            take: 5
+        }),
+        prisma.subscriptionPlan.findFirst({
+            where: { brandId, isActive: true },
+            orderBy: { price: 'asc' }
+        }),
+        FlashSaleService.getActiveFlashSale(brandId),
+        getActiveCampaigns(brandId),
+    ]);
 
     // 1. Hero
     const heroTagline = config?.heroTagline || "Hangatnya Meja Makan";
@@ -45,14 +71,13 @@ export default async function RasaIbuHomePage() {
     // 2. Philosophy
     const philosophyTagline = config?.philosophyTagline || "Filosofi Rasa";
     const philosophyTitle = config?.philosophyTitle || "Kenapa Memilih\nRasa Ibu?";
-    const philosophyContent = config?.philosophyContent || "Di tengah kesibukan harian, meja makan seringkali menjadi tempat terakhir kita untuk benar-benar terhubung dengan keluarga. Namun, memasak hidangan rumah yang layak membutuhkan waktu yang tidak sedikit.\n\nRasa Ibu hadir untuk menjembatani itu. Kami mengolah setiap bahan dengan cara yang sama seperti bagaimana seorang ibu memasak di dapurnya: sabar, teliti, dan jujur.\n\n\"Tujuan kami bukan sekadar menjual makanan, tapi membawakan kembali momen kehangatan rumah ke meja Anda, tanpa kompromi pada kesehatan.\"";
+    const philosophyContent = config?.philosophyContent || "Di tengah kesibukan harian, meja makan seringkali menjadi tempat terakhir kita untuk benar-benar terhubung dengan keluarga. Namun, memasak hidangan rumah yang layak membutuhkan waktu yang tidak sedikit.\n\nRasa Ibu hadir for menjembatani itu. Kami mengolah setiap bahan dengan cara yang sama seperti bagaimana seorang ibu memasak di dapurnya: sabar, teliti, dan jujur.\n\n\"Tujuan kami bukan sekadar menjual makanan, tapi membawakan kembali momen kehangatan rumah ke meja Anda, tanpa kompromi pada kesehatan.\"";
     const philosophyLinkText = config?.philosophyLinkText || "Lanjut Baca";
     const philosophyLinkUrl = config?.philosophyLinkUrl || "/rasa-ibu/about";
 
     // 3. Featured
     const featuredTagline = config?.featuredTagline || "Menu Terlaris";
     const featuredTitle = config?.featuredSectionTitle || "Favorit Keluarga.";
-    const featuredSubtitle = config?.featuredSectionSubtitle || "Menu Terlaris"; // Legacy fallback
 
     // 4. Platform
     const platformTagline = config?.platformTagline || "Keluarga RASA IBU";
@@ -75,7 +100,7 @@ export default async function RasaIbuHomePage() {
     const ctaSubtitle = config?.ctaSectionSubtitle || "Pesan sekarang via WhatsApp, kami bantu pilihkan kurir tercepat agar masakan ibu sampai tepat waktu untuk makan malam.";
     const ctaButton = config?.ctaButtonText || "Pesan via WhatsApp";
 
-    // WhatsApp number from paymentSettings or config or default
+    // WhatsApp number from Intelligence Config (whatsappCrm) or fallback to config.whatsapp
     const whatsapp = paymentSettings?.whatsappCrm || (config as any)?.whatsapp || "628123456789";
 
     // Trust Badges (Default if empty)
@@ -90,7 +115,7 @@ export default async function RasaIbuHomePage() {
 
     // Prioritize "Our Values (Pillars)" from CMS Section 7
     if (config?.aboutValuesList && Array.isArray(config.aboutValuesList) && config.aboutValuesList.length > 0) {
-        trustBadges = (config.aboutValuesList as any[]).map(val => ({
+        trustBadges = (config.aboutValuesList as any[]).map((val: any) => ({
             title: val.title,
             desc: val.desc,
             icon: val.title.toLowerCase().includes('bahan') ? 'leaf' :
@@ -106,32 +131,14 @@ export default async function RasaIbuHomePage() {
         trustBadges = config.trustBadges as any[];
     }
 
-    // Fetch featured products (or fallback to best sellers)
-    const featuredProducts = brand ? await getFeaturedProducts(brand.id) : [];
-
-    // Fetch best sellers for dedicated section (Fetch 12 to ensure we have enough after filtering)
-    const bestSellersRaw = brand ? await getBestSellers(brand.id, 12) : [];
-
     // De-duplicate: Ensure best sellers don't show products already in featured section
-    const featuredIds = new Set(featuredProducts.map(p => p.id));
+    const featuredIds = new Set(featuredProducts.map((p: any) => p.id));
     const bestSellers = bestSellersRaw
-        .filter(p => !featuredIds.has(p.id))
+        .filter((p: any) => !featuredIds.has(p.id))
         .slice(0, 6);
 
-    // Fetch active hero slides
-    const heroSlidesRaw = brand ? await prisma.heroSlide.findMany({
-        where: {
-            brandId: brand.id,
-            isActive: true
-        },
-        orderBy: {
-            sortOrder: 'asc'
-        },
-        take: 5 // Max 5 slides as agreed
-    }) : [];
-
     // Map to match HeroSlider interface (convert null to undefined)
-    const heroSlides = heroSlidesRaw.map(slide => ({
+    const heroSlides = heroSlidesRaw.map((slide: any) => ({
         ...slide,
         ctaLabel: slide.ctaLabel || undefined,
         ctaLink: slide.ctaLink || undefined,
@@ -139,17 +146,6 @@ export default async function RasaIbuHomePage() {
         videoUrl: slide.videoUrl || undefined,
         tagline: (slide as any).tagline || undefined
     }));
-
-    // Fetch Cheapest Plan for Promo
-    const cheapestPlan = brand ? await prisma.subscriptionPlan.findFirst({
-        where: {
-            brandId: brand.id,
-            isActive: true
-        },
-        orderBy: {
-            price: 'asc'
-        }
-    }) : null;
 
     const CheapestPlanComponent = cheapestPlan ? (
         <SubscriptionPromoSection
@@ -165,11 +161,6 @@ export default async function RasaIbuHomePage() {
         />
     ) : null;
 
-    // Fetch Active Flash Sale
-    const activeFlashSale = brand ? await FlashSaleService.getActiveFlashSale(brand.id) : null;
-
-    // Fetch Active Campaigns
-    const activeCampaigns = brand ? await getActiveCampaigns(brand.id) : [];
 
     // Helper to calculate product price with flash sale
     const getProductPrice = (product: any) => {
@@ -287,7 +278,7 @@ export default async function RasaIbuHomePage() {
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
-                    {featuredProducts.map((product) => (
+                    {featuredProducts.map((product: any) => (
                         <div key={product.id} className="group cursor-pointer">
                             <div className="aspect-[4/5] bg-gradient-to-br from-[#F9F7F2] to-[#E5E1D8] rounded-3xl mb-6 overflow-hidden relative shadow-sm group-hover:shadow-xl transition-all duration-500">
                                 {product.image ? (

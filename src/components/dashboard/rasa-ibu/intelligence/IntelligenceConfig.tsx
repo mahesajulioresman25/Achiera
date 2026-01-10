@@ -37,7 +37,7 @@ export default function IntelligenceConfig({ brandId }: IntelligenceConfigProps)
     if (isLoading || !settings) return null;
 
     return (
-        <div className="bg-slate-900 rounded-[3.5rem] p-12 text-white shadow-2xl relative overflow-hidden group">
+        <div className="bg-slate-900 rounded-2xl sm:rounded-[3.5rem] p-4 sm:p-6 lg:p-12 text-white shadow-2xl relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-[100px] -mr-48 -mt-48 transition-all duration-1000 group-hover:bg-indigo-500/20"></div>
 
             <div className="relative z-10 space-y-12">
@@ -53,7 +53,7 @@ export default function IntelligenceConfig({ brandId }: IntelligenceConfigProps)
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
                     <div className="space-y-8">
                         <div className="flex items-center gap-3 border-b border-white/5 pb-4">
                             <MessageSquare className="w-4 h-4 text-emerald-400" />
@@ -89,6 +89,24 @@ export default function IntelligenceConfig({ brandId }: IntelligenceConfigProps)
                                 <p className="text-[9px] text-slate-500 font-medium leading-relaxed italic mt-2">
                                     Digunakan untuk menerima notifikasi pesan tulus dari pelanggan.
                                 </p>
+                            </div>
+
+                            <div className="space-y-4 pt-4 border-t border-white/5">
+                                <div className="flex items-center gap-2">
+                                    <Info className="w-3 h-3 text-indigo-400" />
+                                    <label className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider">AI Parameters</label>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Target Penjualan Bulanan (Unit)</label>
+                                    <input
+                                        type="number"
+                                        placeholder="100"
+                                        value={settings.targetMonthlyVolume || ''}
+                                        onChange={(e) => setSettings({ ...settings, targetMonthlyVolume: e.target.value })}
+                                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm font-black focus:outline-none focus:border-indigo-500 transition-colors"
+                                    />
+                                    <p className="text-[8px] text-slate-500 leading-relaxed uppercase tracking-tighter">Digunakan AI untuk menghitung alokasi biaya tetap per produk.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -129,7 +147,7 @@ export default function IntelligenceConfig({ brandId }: IntelligenceConfigProps)
                     <button
                         onClick={handleSave}
                         disabled={isSaving}
-                        className="px-10 py-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 flex items-center gap-3 shadow-xl shadow-indigo-500/20 disabled:opacity-50"
+                        className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl sm:rounded-2xl font-black text-sm sm:text-base uppercase tracking-widest hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 shadow-lg hover:shadow-xl min-h-[44px]"
                     >
                         {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                         Terapkan Konfigurasi
