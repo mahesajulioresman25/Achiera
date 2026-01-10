@@ -3,6 +3,7 @@ import Link from 'next/link';
 import AddToCartButton from '@/components/commerce/AddToCartButton';
 import { ShoppingBag, Utensils, Star } from 'lucide-react';
 import PromoBadge from '@/components/commerce/PromoBadge';
+import CategoryFilter from '@/components/filters/CategoryFilter';
 
 import { prisma } from '@/lib/prisma';
 import { FlashSaleService } from '@/lib/services/FlashSaleService';
@@ -11,7 +12,14 @@ import { FlashSaleService } from '@/lib/services/FlashSaleService';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-export default async function RasaIbuProductListPage() {
+export default async function RasaIbuProductListPage({
+    searchParams
+}: {
+    searchParams: Promise<{ category?: string }>
+}) {
+    const params = await searchParams;
+    const selectedCategory = params.category;
+
     // Fetch Brand RASA IBU
     const brand = await prisma.brand.findUnique({
         where: { slug: 'rasa-ibu' },
@@ -22,11 +30,18 @@ export default async function RasaIbuProductListPage() {
 
     const brandId = brand.id;
 
-    // Fetch real products - Filter for FINISHED_GOOD (Menu) only, exclude Raw Materials 
-    const [products, activeFlashSale] = await Promise.all([
+    // Fetch categories and products in parallel
+    const [categories, products, activeFlashSale] = await Promise.all([
+        prisma.category.findMany({
+            where: { brandId, isActive: true },
+            orderBy: { name: 'asc' }
+        }),
         prisma.frozenProduct.findMany({
             where: {
-                category: { brandId: brand.id },
+                category: {
+                    brandId: brand.id,
+                    ...(selectedCategory ? { slug: selectedCategory } : {})
+                },
                 inventoryType: 'FINISHED_GOOD'
             },
             include: {
@@ -109,21 +124,12 @@ export default async function RasaIbuProductListPage() {
 
             {/* Content Section */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 -mt-12 md:-mt-10 relative z-30">
-                {/* Filter / Search Bar Placeholder (Optional) */}
-                <div className="bg-white rounded-2xl p-6 shadow-xl border border-[#E5E1D8] mb-12 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 w-full md:w-auto">
-                        {['Semua Menu', 'Lauk Utama', 'Sayuran', 'Sambal'].map((cat) => (
-                            <button
-                                key={cat}
-                                className={`px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-colors ${cat === 'Semua Menu'
-                                    ? 'bg-[#2D3A2D] text-[#FDFBF7]'
-                                    : 'bg-[#F9F7F2] text-[#8B7E66] hover:bg-[#F0EEE9]'
-                                    }`}
-                            >
-                                {cat}
-                            </button>
-                        ))}
-                    </div>
+                {/* Filter / Search Bar */}
+                <div className="bg-white rounded-2xl p-4 md:p-6 shadow-xl border border-[#E5E1D8] mb-12 flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4">
+                    <CategoryFilter
+                        categories={categories.map((c: any) => ({ name: c.name, slug: c.slug }))}
+                        initialCategory={selectedCategory ? categories.find((c: any) => c.slug === selectedCategory)?.name || 'Semua' : 'Semua'}
+                    />
                     <div className="relative w-full md:w-80">
                         <input
                             type="text"
