@@ -206,30 +206,56 @@ export async function upsertIbuCategory(data: {
     try {
         const slug = data.name.toLowerCase().replace(/\s+/g, '-');
 
-        // If updating existing category (has id), use id + brandId
-        // If creating new category, use brandId + slug
-        const whereClause = data.id
-            ? { id_brandId: { id: data.id, brandId: data.brandId } }
-            : { brandId_slug: { brandId: data.brandId, slug } };
+        // Safer approach: Split Update and Create to ensure brandId is respected
+        // and avoid potential missing composite key issues in Prisma Schema
 
-        const category = await prisma.frozenCategory.upsert({
-            where: whereClause,
-            create: {
-                brandId: data.brandId,
-                name: data.name,
-                slug,
-                description: data.description,
-                isActive: data.isActive ?? true,
-                displayOrder: data.displayOrder ?? 0
-            } as any,
-            update: {
-                name: data.name,
-                slug, // Update slug too in case name changed
-                description: data.description,
-                isActive: data.isActive,
-                displayOrder: data.displayOrder
-            } as any
-        });
+        let category;
+
+        if (data.id) {
+            // Check if exists and belongs to brand
+            const existing = await prisma.frozenCategory.findFirst({
+                where: { id: data.id, brandId: data.brandId }
+            });
+
+            if (!existing) {
+                return { success: false, error: 'Kategori tidak ditemukan atau akses ditolak' };
+            }
+
+            category = await prisma.frozenCategory.update({
+                where: { id: data.id },
+                data: {
+                    name: data.name,
+                    slug,
+                    description: data.description,
+                    isActive: data.isActive,
+                    displayOrder: data.displayOrder
+                }
+            });
+        } else {
+            // Create new
+            // Use upsert on slug+brandId to prevent duplicates by name within brand
+            category = await prisma.frozenCategory.upsert({
+                where: {
+                    brandId_slug: { brandId: data.brandId, slug }
+                },
+                create: {
+                    brandId: data.brandId,
+                    name: data.name,
+                    slug,
+                    description: data.description,
+                    isActive: data.isActive ?? true,
+                    displayOrder: data.displayOrder ?? 0
+                },
+                update: {
+                    // If slug exists, just update details
+                    name: data.name,
+                    description: data.description,
+                    isActive: data.isActive,
+                    displayOrder: data.displayOrder
+                }
+            });
+        }
+
         revalidatePath('/dashboard/rasa-ibu');
         return { success: true, data: JSON.parse(JSON.stringify(category)) };
     } catch (error: any) {
