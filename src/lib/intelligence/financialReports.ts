@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { AccountType } from '@prisma/client';
+import { AccountType, LedgerAccount } from '@prisma/client';
 import { getAccountByCode } from './chartOfAccounts';
 
 export type DateRange = {
@@ -39,13 +39,21 @@ export class FinancialReports {
 
         const accounts = await prisma.ledgerAccount.findMany({
             where: whereClause,
-            include: {
+            select: {
+                id: true,
+                code: true,
+                name: true,
+                type: true,
                 entries: {
                     where: {
                         createdAt: {
                             gte: range.start,
                             lte: range.end
                         }
+                    },
+                    select: {
+                        debit: true,
+                        credit: true
                     }
                 }
             }
@@ -66,8 +74,8 @@ export class FinancialReports {
 
         for (const acc of accounts) {
             let balance = 0;
-            const debits = acc.entries.reduce((sum, e) => sum + Number(e.debit), 0);
-            const credits = acc.entries.reduce((sum, e) => sum + Number(e.credit), 0);
+            const debits = acc.entries.reduce((sum: number, e: any) => sum + Number(e.debit), 0);
+            const credits = acc.entries.reduce((sum: number, e: any) => sum + Number(e.credit), 0);
 
             if (acc.type === 'REVENUE') {
                 balance = credits - debits;
@@ -141,11 +149,24 @@ export class FinancialReports {
 
         let netIncomeAllTime = 0;
         for (const acc of plAccounts) {
-            const debits = acc.entries.reduce((sum, e) => sum + Number(e.debit), 0);
-            const credits = acc.entries.reduce((sum, e) => sum + Number(e.credit), 0);
+            const debits = acc.entries.reduce((sum: number, e: any) => sum + Number(e.debit), 0);
+            const credits = acc.entries.reduce((sum: number, e: any) => sum + Number(e.credit), 0);
             if (acc.type === 'REVENUE') netIncomeAllTime += (credits - debits);
             else netIncomeAllTime -= (debits - credits);
         }
+
+        // 3. Batch fetch balances for Asset, Liability, Equity
+        const accountIds = accounts.map((a: any) => a.id);
+        const balances = await prisma.journalEntry.groupBy({
+            by: ['accountId'],
+            where: {
+                accountId: { in: accountIds },
+                createdAt: { lte: asOfDate }
+            },
+            _sum: { debit: true, credit: true }
+        });
+
+        const balanceMap = new Map(balances.map((b: any) => [b.accountId, b]));
 
         const report = {
             assets: { total: 0, items: [] as any[] },
@@ -156,13 +177,9 @@ export class FinancialReports {
         };
 
         for (const acc of accounts) {
-            const entries = await prisma.journalEntry.aggregate({
-                where: { accountId: acc.id, createdAt: { lte: asOfDate } },
-                _sum: { debit: true, credit: true }
-            });
-
-            const debits = Number(entries._sum.debit || 0);
-            const credits = Number(entries._sum.credit || 0);
+            const sum: any = balanceMap.get(acc.id);
+            const debits = Number(sum?._sum?.debit || 0);
+            const credits = Number(sum?._sum?.credit || 0);
             let balance = 0;
 
             if (acc.type === 'ASSET') {
@@ -209,19 +226,23 @@ export class FinancialReports {
                 code: { startsWith: '1-1' } // Kas & Bank
             }
         });
-        const cashAccountIds = cashAccounts.map(a => a.id);
+        const cashAccountIds = cashAccounts.map((a: any) => a.id);
 
         // 2. Fetch all entries involving these accounts in range
         const entries = await prisma.journalEntry.findMany({
             where: {
                 accountId: { in: cashAccountIds },
-                createdAt: { gte: range.start, lte: range.end }
+                createdAt: { gte: range.start, lte: range.end },
+                account: { brandId } // Ensure isolation through relation
             },
             include: {
                 transaction: {
                     include: {
                         entries: {
-                            where: { accountId: { notIn: cashAccountIds } },
+                            where: {
+                                accountId: { notIn: cashAccountIds },
+                                account: { brandId } // Fixed: filter through relation
+                            },
                             include: { account: true }
                         }
                     }
@@ -241,6 +262,7 @@ export class FinancialReports {
         // Get Opening Balance
         const openingEntries = await prisma.journalEntry.aggregate({
             where: {
+                account: { brandId }, // Nested for isolation
                 accountId: { in: cashAccountIds },
                 createdAt: { lt: range.start }
             },
@@ -288,10 +310,14 @@ export class FinancialReports {
         const accounts = await prisma.ledgerAccount.findMany({
             where: { brandId, type: 'EQUITY' }
         });
-        const accountIds = accounts.map(a => a.id);
+        const accountIds = accounts.map((a: any) => a.id);
 
         const initialRes = await prisma.journalEntry.aggregate({
-            where: { accountId: { in: accountIds }, createdAt: { lt: range.start } },
+            where: {
+                account: { brandId }, // Nested for isolation
+                accountId: { in: accountIds },
+                createdAt: { lt: range.start }
+            },
             _sum: { debit: true, credit: true }
         });
         const initialBalance = Number(initialRes?._sum?.credit || 0) - Number(initialRes?._sum?.debit || 0);
@@ -303,14 +329,15 @@ export class FinancialReports {
         // 3. Transactions in period (Draws/Injections)
         const entries = await prisma.journalEntry.findMany({
             where: {
+                account: { brandId }, // Nested for isolation
                 accountId: { in: accountIds },
                 createdAt: { gte: range.start, lte: range.end }
             },
             include: { account: true }
         });
 
-        const injections = entries.filter(e => Number(e.credit) > 0).reduce((sum, e) => sum + Number(e.credit), 0);
-        const withdrawals = entries.filter(e => Number(e.debit) > 0).reduce((sum, e) => sum + Number(e.debit), 0);
+        const injections = entries.filter((e: any) => Number(e.credit) > 0).reduce((sum: number, e: any) => sum + Number(e.credit), 0);
+        const withdrawals = entries.filter((e: any) => Number(e.debit) > 0).reduce((sum: number, e: any) => sum + Number(e.debit), 0);
 
         return {
             period: range,
@@ -378,7 +405,12 @@ export class FinancialReports {
         const pl = await this.getProfitLoss(brandId, range);
         const bs = await this.getBalanceSheet(brandId, range.end);
 
-        // Dynamic analysis
+        // Dynamic analysis with zero-data guards
+        const revenueTotal = pl.revenue.total || 0;
+        const netProfit = pl.netProfit || 0;
+        const margin = pl.margin || 0;
+        const expenseToRevenue = revenueTotal > 0 ? ((pl.expenses.total / revenueTotal) * 100).toFixed(2) : "0.00";
+
         const notes = [
             {
                 title: "Dasar Penyusunan",
@@ -386,11 +418,15 @@ export class FinancialReports {
             },
             {
                 title: "Pendapatan Usaha",
-                content: `Total omset sebesar ${pl.revenue.total.toLocaleString('id-ID')} terkumpul dari ${pl.revenue.items.length} channel penjualan. Rata-rata margin bersih tercatat sebesar ${pl.margin.toFixed(2)}%.`
+                content: revenueTotal > 0
+                    ? `Total omset sebesar ${revenueTotal.toLocaleString('id-ID')} terkumpul dari ${pl.revenue.items.length} channel penjualan. Rata-rata margin bersih tercatat sebesar ${margin.toFixed(2)}%.`
+                    : "Belum terdapat catatan pendapatan pada periode ini."
             },
             {
                 title: "Biaya Operasional",
-                content: `Beban operasional utama terdiri dari ${pl.expenses.items.slice(0, 3).map(i => i.name).join(', ')}. Kontribusi beban terhadap omset adalah ${((pl.expenses.total / pl.revenue.total) * 100).toFixed(2)}%.`
+                content: pl.expenses.total > 0
+                    ? `Beban operasional utama terdiri dari ${pl.expenses.items.slice(0, 3).map(i => i.name).join(', ')}. Kontribusi beban terhadap omset adalah ${expenseToRevenue}%.`
+                    : "Belum terdapat catatan beban operasional pada periode ini."
             },
             {
                 title: "Posisi Kas",

@@ -1,4 +1,6 @@
 import { prisma } from '@/lib/prisma';
+import { Order, OrderItem, StockMutation, Subscription, SubscriptionPlan, MockupVariant } from '@prisma/client';
+import { unstable_cache } from 'next/cache';
 
 export interface FinancialPulse {
     periodicSales: {
@@ -89,9 +91,41 @@ export interface BundleRecommendation {
 }
 
 /**
- * Calculates financial metrics for RASA IBU.
+ * Helper to fetch monthly operational expenses (OPEX) from ledger.
  */
-export async function getFinancialPulse(brandId: string): Promise<FinancialPulse> {
+async function getMonthlyExpenses(brandId: string, monthDate: Date) {
+    const startOfMonth = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
+    const endOfMonth = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0, 23, 59, 59);
+
+    const ledgerExpenses = await prisma.journalEntry.aggregate({
+        where: {
+            account: {
+                brandId,
+                code: { startsWith: '5-', not: '5-1000' } // Exclude HPP
+            },
+            createdAt: {
+                gte: startOfMonth,
+                lte: endOfMonth
+            }
+        },
+        _sum: { debit: true, credit: true }
+    });
+
+    return Number(ledgerExpenses._sum.debit || 0) - Number(ledgerExpenses._sum.credit || 0);
+}
+
+/**
+ * Calculates financial metrics for RASA IBU with Caching.
+ */
+export const getFinancialPulse = unstable_cache(
+    async (brandId: string): Promise<FinancialPulse> => {
+        return await calculateFinancialPulse(brandId);
+    },
+    ['financial-pulse'],
+    { revalidate: 3600, tags: ['finance'] }
+);
+
+async function calculateFinancialPulse(brandId: string): Promise<FinancialPulse> {
     const now = new Date();
     const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -111,7 +145,7 @@ export async function getFinancialPulse(brandId: string): Promise<FinancialPulse
         }
     });
 
-    const dailyOrders = orders.filter(o => o.createdAt >= startOfDay);
+    const dailyOrders = orders.filter((o: Order) => o.createdAt >= startOfDay);
 
     // 2. Marketplace Fee Mapping (Dynamic)
     const brand = await prisma.brand.findUnique({
@@ -178,7 +212,7 @@ export async function getFinancialPulse(brandId: string): Promise<FinancialPulse
         }
     });
 
-    subscriptions.forEach(sub => {
+    subscriptions.forEach((sub: any) => {
         // Simple logic: if nextPaymentDate is in future, assume last payment was recent.
         // For accurate daily/monthly, we'd need a SubscriptionTransaction table.
         // For now, we project the recurring revenue into 'monthlyRevenue' if it's active.
@@ -188,7 +222,7 @@ export async function getFinancialPulse(brandId: string): Promise<FinancialPulse
             subValue = Number(sub.plan.price || 0); // Assuming plan has price
         } else {
             // Sum items if custom
-            subValue = sub.items.reduce((sum, item) => sum + (Number(item.variant?.price || 0) * item.quantity), 0);
+            subValue = sub.items.reduce((sum: number, item: any) => sum + (Number(item.variant?.price || 0) * item.quantity), 0);
         }
 
         // Only count if it effectively contributes to this month (simplified)
@@ -247,7 +281,7 @@ export async function getFinancialPulse(brandId: string): Promise<FinancialPulse
         channels[channel].mdr += mdrCost;
 
         // Calculate COGS from order items
-        order.orderItems.forEach(item => {
+        order.orderItems.forEach((item: any) => {
             const variant = item.frozenVariant as any;
             const cost = Number(variant?.costPrice || 0);
             monthlyCOGS += cost * item.quantity;
@@ -270,12 +304,12 @@ export async function getFinancialPulse(brandId: string): Promise<FinancialPulse
 
     const periodicSales = {
         daily: dailyRevenue,
-        weekly: orders.filter(o => o.createdAt >= startOfWeek).reduce((sum, o) => sum + Number(o.totalAmount || o.total || 0), 0),
+        weekly: orders.filter((o: Order) => o.createdAt >= startOfWeek).reduce((sum: number, o: any) => sum + Number(o.totalAmount || o.total || 0), 0),
         monthly: monthlyRevenue,
         yearly: await prisma.order.aggregate({
             where: { brandId, createdAt: { gte: startOfYear }, status: { not: 'DIBATALKAN' } },
             _sum: { totalAmount: true, total: true }
-        }).then(res => Number(res._sum.totalAmount || res._sum.total || 0))
+        }).then((res: any) => Number(res._sum.totalAmount || res._sum.total || 0))
     };
 
     // 5. Growth, AI Targeting & Comparison
@@ -286,7 +320,7 @@ export async function getFinancialPulse(brandId: string): Promise<FinancialPulse
     });
 
     const monthlySums: Record<string, number> = {};
-    historicalPerformance.forEach(p => {
+    historicalPerformance.forEach((p: any) => {
         const mKey = `${p.createdAt.getFullYear()}-${p.createdAt.getMonth()}`;
         monthlySums[mKey] = (monthlySums[mKey] || 0) + Number(p.totalAmount || p.total || 0);
     });
@@ -316,34 +350,22 @@ export async function getFinancialPulse(brandId: string): Promise<FinancialPulse
         include: { variant: true }
     });
 
-    const expiredBurden = expiredMutations.reduce((sum, m) => {
+    const expiredBurden = expiredMutations.reduce((sum: number, m: any) => {
         const cost = Number((m.variant as any).costPrice || 0);
         return sum + (cost * Math.abs(m.quantity));
     }, 0);
 
     // 7. Payment Health
     const realized = orders
-        .filter(o => ['DIBAYAR', 'DISIAPKAN', 'DIKIRIM', 'SELESAI'].includes(o.status))
-        .reduce((sum, o) => sum + Number(o.totalAmount || o.total || 0), 0);
+        .filter((o: Order) => ['DIBAYAR', 'DISIAPKAN', 'DIKIRIM', 'SELESAI'].includes(o.status))
+        .reduce((sum: number, o: any) => sum + Number(o.totalAmount || o.total || 0), 0);
 
     const pending = orders
-        .filter(o => o.status === 'DIPESAN')
-        .reduce((sum, o) => sum + Number(o.totalAmount || o.total || 0), 0);
+        .filter((o: Order) => o.status === 'DIPESAN')
+        .reduce((sum: number, o: any) => sum + Number(o.totalAmount || o.total || 0), 0);
 
     // 8. Ledger Expenses & Final Profit
-    // We separate OPEX (5-1100+) from HPP (5-1000) for clearer breakdown
-    const ledgerExpenses = await prisma.journalEntry.aggregate({
-        where: {
-            account: {
-                brandId,
-                code: { startsWith: '5-', not: '5-1000' } // Exclude HPP to avoid double-counting with monthlyCOGS
-            },
-            createdAt: { gte: startOfMonth }
-        },
-        _sum: { debit: true, credit: true }
-    });
-
-    const monthlyLedgerExpenses = Number(ledgerExpenses._sum.debit || 0) - Number(ledgerExpenses._sum.credit || 0);
+    const monthlyLedgerExpenses = await getMonthlyExpenses(brandId, now);
 
     const targets = {
         revenue: revenueTarget,
@@ -361,7 +383,7 @@ export async function getFinancialPulse(brandId: string): Promise<FinancialPulse
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
     const historicalOrders = await prisma.order.findMany({
-        where: { brandId, createdAt: { gte: thirtyDaysAgo } },
+        where: { brandId, createdAt: { gte: thirtyDaysAgo }, status: { not: 'DIBATALKAN' } },
         select: { totalAmount: true, total: true, createdAt: true }
     });
 
@@ -372,7 +394,7 @@ export async function getFinancialPulse(brandId: string): Promise<FinancialPulse
         dailyTrendMap[d.toISOString().split('T')[0]] = 0;
     }
 
-    historicalOrders.forEach(o => {
+    historicalOrders.forEach((o: any) => {
         const dateKey = o.createdAt.toISOString().split('T')[0];
         if (dailyTrendMap[dateKey] !== undefined) {
             dailyTrendMap[dateKey] += Number(o.totalAmount || o.total || 0);
@@ -384,7 +406,7 @@ export async function getFinancialPulse(brandId: string): Promise<FinancialPulse
         .sort((a, b) => a.date.localeCompare(b.date));
 
     // 10. Forecast
-    const last7DaysAvg = revenueTrend.slice(-7).reduce((sum, d) => sum + d.amount, 0) / 7;
+    const last7DaysAvg = revenueTrend.slice(-7).reduce((sum: number, d: any) => sum + d.amount, 0) / 7;
     const forecastTrend = [];
     for (let i = 1; i <= 7; i++) {
         const d = new Date();
@@ -506,8 +528,8 @@ export async function getStrategicSalesTrend(brandId: string) {
         select: { totalAmount: true, total: true, createdAt: true }
     });
 
-    const currentPeriod = orders.filter(o => o.createdAt >= thirtyDaysAgo);
-    const previousPeriod = orders.filter(o => o.createdAt < thirtyDaysAgo);
+    const currentPeriod = orders.filter((o: any) => o.createdAt >= thirtyDaysAgo);
+    const previousPeriod = orders.filter((o: any) => o.createdAt < thirtyDaysAgo);
 
     const currentTrend: Record<string, number> = {};
     const previousTrend: Record<string, number> = {};
@@ -524,12 +546,12 @@ export async function getStrategicSalesTrend(brandId: string) {
         previousTrend[p.toISOString().split('T')[0]] = 0;
     }
 
-    currentPeriod.forEach(o => {
+    currentPeriod.forEach((o: any) => {
         const key = o.createdAt.toISOString().split('T')[0];
         if (currentTrend[key] !== undefined) currentTrend[key] += Number(o.totalAmount || o.total || 0);
     });
 
-    previousPeriod.forEach(o => {
+    previousPeriod.forEach((o: any) => {
         const key = o.createdAt.toISOString().split('T')[0];
         if (previousTrend[key] !== undefined) previousTrend[key] += Number(o.totalAmount || o.total || 0);
     });
@@ -1642,26 +1664,22 @@ export async function getPricingRecommendation(brandId: string, costPrice: numbe
         });
 
         // 1. Fetch Real Expenses (OPEX) for current month
-        const ledgerExpenses = await prisma.journalEntry.aggregate({
-            where: {
-                account: {
-                    brandId,
-                    code: { startsWith: '5-', not: '5-1000' } // Exclude HPP
-                },
-                createdAt: { gte: startOfMonth }
-            },
-            _sum: { debit: true, credit: true }
-        });
+        const monthlyLedgerExpenses = await getMonthlyExpenses(brandId, now);
 
-        const monthlyLedgerExpenses = Number(ledgerExpenses._sum.debit || 0) - Number(ledgerExpenses._sum.credit || 0);
+        // EXTRA SECURE: Also fetch last month expenses for a more robust average if current is low
+        const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        const lastMonthExpenses = await getMonthlyExpenses(brandId, lastMonth);
+
+        // Use the higher of current month or last month to be conservative in pricing
+        const effectiveExpenses = Math.max(monthlyLedgerExpenses, lastMonthExpenses);
         const targetVolume = Number(config?.targetMonthlyVolume || 100);
 
         // 2. Calculate Dynamic Overhead
         let overhead = Number(config?.defaultOverheadPerUnit || 0);
         let isDynamic = false;
 
-        if (monthlyLedgerExpenses > 0) {
-            overhead = monthlyLedgerExpenses / targetVolume;
+        if (effectiveExpenses > 0) {
+            overhead = effectiveExpenses / targetVolume;
             isDynamic = true;
         }
 

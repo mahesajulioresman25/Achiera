@@ -1542,6 +1542,7 @@ model JournalEntry {
 
   @@index([transactionId])
   @@index([accountId])
+  @@index([accountId, createdAt])
   @@map("journal_entries")
 }
 
