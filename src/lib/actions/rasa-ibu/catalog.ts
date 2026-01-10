@@ -233,27 +233,40 @@ export async function upsertIbuCategory(data: {
             });
         } else {
             // Create new
-            // Use upsert on slug+brandId to prevent duplicates by name within brand
-            category = await prisma.frozenCategory.upsert({
+            // Cannot use upsert() because Brand Isolation Middleware fails to detect brandId inside composite key 'brandId_slug'
+            // So we use findFirst -> update/create pattern
+
+            const existingBySlug = await prisma.frozenCategory.findFirst({
                 where: {
-                    brandId_slug: { brandId: data.brandId, slug }
-                },
-                create: {
                     brandId: data.brandId,
-                    name: data.name,
-                    slug,
-                    description: data.description,
-                    isActive: data.isActive ?? true,
-                    displayOrder: data.displayOrder ?? 0
-                },
-                update: {
-                    // If slug exists, just update details
-                    name: data.name,
-                    description: data.description,
-                    isActive: data.isActive,
-                    displayOrder: data.displayOrder
+                    slug: slug
                 }
             });
+
+            if (existingBySlug) {
+                // Update existing slug match
+                category = await prisma.frozenCategory.update({
+                    where: { id: existingBySlug.id },
+                    data: {
+                        name: data.name,
+                        description: data.description,
+                        isActive: data.isActive,
+                        displayOrder: data.displayOrder
+                    }
+                });
+            } else {
+                // Create completely new
+                category = await prisma.frozenCategory.create({
+                    data: {
+                        brandId: data.brandId,
+                        name: data.name,
+                        slug,
+                        description: data.description,
+                        isActive: data.isActive ?? true,
+                        displayOrder: data.displayOrder ?? 0
+                    }
+                });
+            }
         }
 
         revalidatePath('/dashboard/rasa-ibu');
