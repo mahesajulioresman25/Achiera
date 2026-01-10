@@ -60,9 +60,7 @@ export async function middleware(request: NextRequest) {
     // 1. Protect all /api/ routes (except auth, public, debug, and test)
     const isApiRequest = request.nextUrl.pathname.startsWith('/api');
     const isPublicApi = request.nextUrl.pathname.startsWith('/api/auth') ||
-        request.nextUrl.pathname.startsWith('/api/public') ||
-        request.nextUrl.pathname.startsWith('/api/debug-') ||
-        request.nextUrl.pathname.startsWith('/api/test-');
+        request.nextUrl.pathname.startsWith('/api/public');
 
     if (isApiRequest && !isPublicApi && !token) {
         return new NextResponse(
@@ -104,6 +102,6 @@ export const config = {
     matcher: [
         '/dashboard/:path*',
         '/login',
-        '/api/((?!debug-).*)'  // Exclude all debug-* endpoints
+        '/api/((?!debug-).*)'
     ],
 };
