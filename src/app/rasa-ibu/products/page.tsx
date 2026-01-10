@@ -2,8 +2,10 @@ import React from 'react';
 import Link from 'next/link';
 import AddToCartButton from '@/components/commerce/AddToCartButton';
 import { ShoppingBag, Utensils, Star } from 'lucide-react';
+import PromoBadge from '@/components/commerce/PromoBadge';
 
 import { prisma } from '@/lib/prisma';
+import { FlashSaleService } from '@/lib/services/FlashSaleService';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -18,22 +20,23 @@ export default async function RasaIbuProductListPage() {
 
     if (!brand) return <div className="py-24 text-center">Brand not found</div>;
 
+    const brandId = brand.id;
+
     // Fetch real products - Filter for FINISHED_GOOD (Menu) only, exclude Raw Materials 
-    const products = await prisma.frozenProduct.findMany({
-        where: {
-            // Ensure product belongs to this brand (via category linkage)
-            category: {
-                brandId: brand.id
+    const [products, activeFlashSale] = await Promise.all([
+        prisma.frozenProduct.findMany({
+            where: {
+                category: { brandId: brand.id },
+                inventoryType: 'FINISHED_GOOD'
             },
-            // STRICTLY exclude Raw Materials/Ingredients
-            inventoryType: 'FINISHED_GOOD'
-        },
-        include: {
-            category: true,
-            variants: true
-        },
-        orderBy: { name: 'asc' }
-    });
+            include: {
+                category: true,
+                variants: true
+            },
+            orderBy: { name: 'asc' }
+        }),
+        FlashSaleService.getActiveFlashSale(brandId)
+    ]);
 
     // Map to simple structure for UI
     const mappedProducts = products.map(p => {
@@ -53,6 +56,28 @@ export default async function RasaIbuProductListPage() {
             rating: 4.8 + (Math.random() * 0.2) // Mock rating for visual consistency
         };
     });
+
+    // Helper to calculate product price with flash sale
+    const getProductPrice = (product: any) => {
+        const basePrice = product.price;
+        if (!activeFlashSale || activeFlashSale.status !== 'ACTIVE') return { base: basePrice, discount: 0, final: basePrice };
+
+        let isEligible = activeFlashSale.targetType === 'ALL';
+        if (activeFlashSale.targetType === 'SPECIFIC' && activeFlashSale.targetItems) {
+            isEligible = activeFlashSale.targetItems.includes(product.id);
+        }
+
+        if (isEligible) {
+            const discountAmount = basePrice * (activeFlashSale.discountPercentage / 100);
+            return {
+                base: basePrice,
+                discount: activeFlashSale.discountPercentage,
+                final: basePrice - discountAmount
+            };
+        }
+
+        return { base: basePrice, discount: 0, final: basePrice };
+    };
 
     const config = brand.brandConfig as any;
 
@@ -140,6 +165,10 @@ export default async function RasaIbuProductListPage() {
                                 <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-[#2D3A2D] flex items-center gap-1 shadow-sm">
                                     <Star className="w-3 h-3 text-amber-500 fill-current" /> {product.rating.toFixed(1)}
                                 </div>
+
+                                {getProductPrice(product).discount > 0 && (
+                                    <PromoBadge type="FLASH_SALE" className="absolute top-4 left-4" />
+                                )}
                             </Link>
 
                             <div className="p-6 flex flex-col flex-grow">
@@ -147,9 +176,27 @@ export default async function RasaIbuProductListPage() {
                                     <div className="bg-[#F9F7F2] px-3 py-1 rounded-lg text-xs font-bold text-[#8B7E66] uppercase tracking-wider">
                                         {product.category}
                                     </div>
-                                    <span className="text-sm font-black text-[#2D3A2D] bg-[#F0EEE9] px-2 py-1 rounded">
-                                        Rp {product.price.toLocaleString('id-ID')}
-                                    </span>
+                                    <div className="text-right">
+                                        {getProductPrice(product).discount > 0 ? (
+                                            <div className="flex flex-col items-end">
+                                                <span className="text-[10px] text-gray-400 line-through">
+                                                    Rp {product.price.toLocaleString('id-ID')}
+                                                </span>
+                                                <div className="flex items-center gap-1">
+                                                    <span className="text-[10px] bg-red-100 text-red-600 px-1 rounded font-black">
+                                                        -{getProductPrice(product).discount}%
+                                                    </span>
+                                                    <span className="text-sm font-black text-amber-600">
+                                                        Rp {getProductPrice(product).final.toLocaleString('id-ID')}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <span className="text-sm font-black text-[#2D3A2D] bg-[#F0EEE9] px-2 py-1 rounded">
+                                                Rp {product.price.toLocaleString('id-ID')}
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
 
                                 <Link href={`/rasa-ibu/products/${product.slug}`} className="group-hover:text-[#B2BCA2] transition-colors">

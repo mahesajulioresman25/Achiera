@@ -27,7 +27,8 @@ export default function BestSellersSection({ products, activeFlashSale }: BestSe
     // Helper to calculate product price with flash sale
     const getProductPrice = (product: Product) => {
         const basePrice = product.price;
-        if (!activeFlashSale) return { base: basePrice, discount: 0, final: basePrice };
+        // ONLY apply discount if it is ACTIVE
+        if (!activeFlashSale || activeFlashSale.status !== 'ACTIVE') return { base: basePrice, discount: 0, final: basePrice };
 
         // Check if targeted
         let isEligible = activeFlashSale.targetType === 'ALL';

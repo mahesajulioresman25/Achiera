@@ -165,7 +165,8 @@ export default async function RasaIbuHomePage() {
     // Helper to calculate product price with flash sale
     const getProductPrice = (product: any) => {
         const basePrice = product.price;
-        if (!activeFlashSale) return { base: basePrice, discount: 0, final: basePrice };
+        // ONLY apply discount if it is ACTIVE. UPCOMING should just show the banner.
+        if (!activeFlashSale || activeFlashSale.status !== 'ACTIVE') return { base: basePrice, discount: 0, final: basePrice };
 
         // Check if targeted
         let isEligible = activeFlashSale.targetType === 'ALL';

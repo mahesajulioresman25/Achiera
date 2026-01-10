@@ -1,7 +1,9 @@
 import PublicNav from "@/components/commerce/PublicNav";
 import RasaIbuFooter from "@/components/RasaIbuFooter";
 import SeasonalDecorations from "@/components/ui/SeasonalDecorations";
+import FlashSaleBanner from "@/components/marketing/FlashSaleBanner";
 import { unisolatedPrisma as prisma } from "@/lib/prisma";
+import { FlashSaleService } from "@/lib/services/FlashSaleService";
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -17,7 +19,13 @@ export default async function RasaIbuLayout({
         include: { brandConfig: true }
     });
 
-    const config = brand?.brandConfig as any;
+    if (!brand) return <div className="py-24 text-center">Brand not found</div>;
+
+    const brandId = brand.id;
+    const config = brand.brandConfig as any;
+
+    // 2. Fetch Active/Upcoming Flash Sale
+    const activeFlashSale = await FlashSaleService.getActiveFlashSale(brandId);
 
     // 2. Custom navigation links from CMS (prioritize CMS over hardcoded)
     let navLinks = [
@@ -47,6 +55,7 @@ export default async function RasaIbuLayout({
 
     return (
         <div className="bg-[#FDFBF7]">
+            <FlashSaleBanner activeFlashSale={activeFlashSale} />
             <SeasonalDecorations />
             <PublicNav
                 navLinks={navLinks}
