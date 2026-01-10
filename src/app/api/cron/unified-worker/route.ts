@@ -117,6 +117,38 @@ export async function GET(req: NextRequest) {
                 brandResults.tasks.push({ name: 'sync-operations', status: 'failed', error: String(e) });
             }
 
+            // NEW TASK 7: Weekly Trend (Mondays only)
+            const isMonday = new Date().getDay() === 1;
+            if (isMonday) {
+                try {
+                    const { MonthlyReportService } = await import('@/lib/services/MonthlyReportService');
+                    const reportService = new MonthlyReportService();
+                    const notificationService = new ReportNotificationService();
+                    const data = await reportService.getWeeklyTrends(brand.id);
+                    await notificationService.sendWeeklyTrend(brand.id, data);
+                    brandResults.tasks.push({ name: 'weekly-trend', status: 'success' });
+                } catch (e) {
+                    brandResults.tasks.push({ name: 'weekly-trend', status: 'failed', error: String(e) });
+                }
+            }
+
+            // NEW TASK 8: Monthly Report (1st of the month only)
+            const isFirstOfMonth = new Date().getDate() === 1;
+            if (isFirstOfMonth) {
+                try {
+                    const { MonthlyReportService } = await import('@/lib/services/MonthlyReportService');
+                    const { analyzeMonthlyData } = await import('@/lib/ai/monthly-report-analyzer');
+                    const reportService = new MonthlyReportService();
+                    const notificationService = new ReportNotificationService();
+                    const data = await reportService.collectMonthlyData(brand.id);
+                    const analysis = await analyzeMonthlyData(data);
+                    await notificationService.sendMonthlyReport(brand.id, data, analysis);
+                    brandResults.tasks.push({ name: 'monthly-report', status: 'success' });
+                } catch (e) {
+                    brandResults.tasks.push({ name: 'monthly-report', status: 'failed', error: String(e) });
+                }
+            }
+
             results.push(brandResults);
         }
 
