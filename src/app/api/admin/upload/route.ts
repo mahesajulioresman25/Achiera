@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
+import { supabase } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,25 +22,31 @@ export async function POST(req: NextRequest) {
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
-        // Ensure directory exists
-        const uploadDir = path.join(process.cwd(), 'public/mockups');
-        try {
-            await mkdir(uploadDir, { recursive: true });
-        } catch (e) {
-            // Ignore if exists
+        // Upload to Supabase Storage (bucket: 'uploads', folder: 'mockups')
+        const filename = `mockups/upload-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '')}`;
+
+        const { data: uploadData, error: uploadError } = await supabase
+            .storage
+            .from('uploads')
+            .upload(filename, buffer, {
+                contentType: file.type,
+                upsert: false
+            });
+
+        if (uploadError) {
+            console.error('Supabase Upload Error:', uploadError);
+            throw uploadError;
         }
 
-        // Generate unique filename to prevent overwrite
-        const filename = `upload-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '')}`;
-        const filepath = path.join(uploadDir, filename);
-
-        await writeFile(filepath, buffer);
-
-        const publicUrl = `/mockups/${filename}`;
+        // Get Public URL
+        const { data: { publicUrl } } = supabase
+            .storage
+            .from('uploads')
+            .getPublicUrl(filename);
 
         return NextResponse.json({ url: publicUrl });
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error uploading file:', error);
-        return NextResponse.json({ error: 'Failed to upload file' }, { status: 500 });
+        return NextResponse.json({ error: `Failed to upload file: ${error.message}` }, { status: 500 });
     }
 }

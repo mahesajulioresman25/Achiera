@@ -2,10 +2,8 @@
 
 import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
-import { writeFile, mkdir } from 'fs/promises';
-import { join, extname } from 'path';
+import { supabase } from '@/lib/supabase';
 import { sendWhatsAppMessageAction } from './whatsapp';
-import { existsSync } from 'fs';
 
 /**
  * Upload QRIS Image for Settings
@@ -29,19 +27,27 @@ export async function uploadQRISImageAction(brandId: string, formData: FormData)
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
-        // Path for QRIS images: public/uploads/qris/
-        const uploadDir = join(process.cwd(), 'public', 'uploads', 'qris');
-        if (!existsSync(uploadDir)) {
-            await mkdir(uploadDir, { recursive: true });
+        // Path for QRIS images in Supabase: qris/
+        const ext = file.name.split('.').pop() || 'png';
+        const filename = `qris/${brandId}-${Date.now()}.${ext}`;
+
+        const { data: uploadData, error: uploadError } = await supabase
+            .storage
+            .from('uploads')
+            .upload(filename, buffer, {
+                contentType: file.type,
+                upsert: false
+            });
+
+        if (uploadError) {
+            console.error('[QRIS_UPLOAD_ERROR_SUPABASE]', uploadError);
+            return { success: false, error: uploadError.message };
         }
 
-        // Use custom name with brandId and timestamp to avoid conflicts but keep it clean
-        const ext = extname(file.name) || '.png';
-        const filename = `${brandId}-${Date.now()}${ext}`;
-        const filepath = join(uploadDir, filename);
-
-        await writeFile(filepath, buffer);
-        const imageUrl = `/uploads/qris/${filename}`;
+        const { data: { publicUrl: imageUrl } } = supabase
+            .storage
+            .from('uploads')
+            .getPublicUrl(filename);
 
         // Update Brand Settings
         const brand = await prisma.brand.findUnique({
@@ -109,17 +115,26 @@ export async function uploadPaymentProofAction(orderId: string, formData: FormDa
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
-        const uploadDir = join(process.cwd(), 'public', 'uploads', 'payment-proofs');
-        if (!existsSync(uploadDir)) {
-            await mkdir(uploadDir, { recursive: true });
+        const ext = file.name.split('.').pop() || 'png';
+        const filename = `payment-proofs/${orderId}-${Date.now()}.${ext}`;
+
+        const { data: uploadData, error: uploadError } = await supabase
+            .storage
+            .from('uploads')
+            .upload(filename, buffer, {
+                contentType: file.type,
+                upsert: false
+            });
+
+        if (uploadError) {
+            console.error('[PROOF_UPLOAD_ERROR_SUPABASE]', uploadError);
+            return { success: false, error: uploadError.message };
         }
 
-        const ext = extname(file.name) || '.png';
-        const filename = `${orderId}-${Date.now()}${ext}`;
-        const filepath = join(uploadDir, filename);
-
-        await writeFile(filepath, buffer);
-        const proofPath = `/uploads/payment-proofs/${filename}`;
+        const { data: { publicUrl: proofPath } } = supabase
+            .storage
+            .from('uploads')
+            .getPublicUrl(filename);
 
         // Create or Update Payment record
         const order = await prisma.order.findUnique({

@@ -1,12 +1,9 @@
 'use server';
 
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
-import { existsSync } from 'fs';
+import { supabase } from '@/lib/supabase';
 
 /**
- * Upload product image to server
- * Supports single image upload with size validation
+ * Upload product image to Supabase Storage
  */
 export async function uploadProductImage(formData: FormData) {
     try {
@@ -37,21 +34,32 @@ export async function uploadProductImage(formData: FormData) {
         const buffer = Buffer.from(bytes);
 
         // Generate unique filename
-        const ext = path.extname(file.name);
-        const filename = `${Date.now()}-${Math.random().toString(36).substring(7)}${ext}`;
-        const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'products');
+        const ext = file.name.split('.').pop();
+        const filename = `products/${Date.now()}-${Math.random().toString(36).substring(7)}.${ext}`;
 
-        // Ensure upload directory exists
-        if (!existsSync(uploadDir)) {
-            await mkdir(uploadDir, { recursive: true });
+        // Upload to Supabase Storage
+        const { data, error } = await supabase
+            .storage
+            .from('uploads')
+            .upload(filename, buffer, {
+                contentType: file.type,
+                upsert: false
+            });
+
+        if (error) {
+            console.error('Supabase Upload Error:', error);
+            return { success: false, error: error.message };
         }
 
-        const filepath = path.join(uploadDir, filename);
-        await writeFile(filepath, buffer);
+        // Get public URL
+        const { data: { publicUrl } } = supabase
+            .storage
+            .from('uploads')
+            .getPublicUrl(filename);
 
         return {
             success: true,
-            path: `/uploads/products/${filename}`
+            path: publicUrl
         };
     } catch (error: any) {
         console.error('Image Upload Error:', error);
