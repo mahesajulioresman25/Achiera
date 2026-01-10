@@ -13,9 +13,9 @@ import { getActiveCampaigns } from '@/lib/actions/commerce/campaigns';
 import CampaignsSection from '@/components/commerce/CampaignsSection';
 import FlashSaleBanner from '@/components/marketing/FlashSaleBanner';
 
-// Force dynamic rendering
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// Enable ISR (Incremental Static Regeneration) for better performance
+// Page will be cached and revalidated every 60 seconds
+export const revalidate = 60;
 
 /**
  * RASA IBU HOMEPAGE
