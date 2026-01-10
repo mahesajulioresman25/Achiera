@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import path from 'path';
 
 export interface EmailOrderInfo {
     invoiceNo: string;
@@ -250,7 +251,7 @@ export class EmailService {
                 html: html,
                 attachments: [{
                     filename: 'rasa-ibu-logo.png',
-                    path: './public/images/logos/rasa-ibu-logo.png',
+                    path: path.join(process.cwd(), 'public', 'images', 'logos', 'rasa-ibu-logo.png'),
                     cid: 'rasa-ibu-logo'
                 }]
             });
@@ -331,7 +332,7 @@ export class EmailService {
                 html: html,
                 attachments: [{
                     filename: 'rasa-ibu-logo.png',
-                    path: './public/images/logos/rasa-ibu-logo.png',
+                    path: path.join(process.cwd(), 'public', 'images', 'logos', 'rasa-ibu-logo.png'),
                     cid: 'rasa-ibu-logo'
                 }]
             });
@@ -438,7 +439,7 @@ export class EmailService {
                 html: html,
                 attachments: [{
                     filename: 'rasa-ibu-logo.png',
-                    path: './public/images/logos/rasa-ibu-logo.png',
+                    path: path.join(process.cwd(), 'public', 'images', 'logos', 'rasa-ibu-logo.png'),
                     cid: 'rasa-ibu-logo'
                 }]
             });
@@ -673,7 +674,7 @@ export class EmailService {
                 html: html,
                 attachments: [{
                     filename: 'rasa-ibu-logo.png',
-                    path: './public/images/logos/rasa-ibu-logo.png',
+                    path: path.join(process.cwd(), 'public', 'images', 'logos', 'rasa-ibu-logo.png'),
                     cid: 'rasa-ibu-logo'
                 }]
             });

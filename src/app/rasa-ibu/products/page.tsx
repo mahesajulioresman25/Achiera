@@ -39,9 +39,9 @@ export default async function RasaIbuProductListPage() {
     ]);
 
     // Map to simple structure for UI
-    const mappedProducts = products.map(p => {
+    const mappedProducts = products.map((p: any) => {
         const firstVariant = p.variants[0];
-        const totalStock = p.variants.reduce((sum, v) => sum + v.stockOnHand, 0);
+        const totalStock = p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0);
         return {
             id: p.id,
             slug: p.slug,
@@ -84,7 +84,7 @@ export default async function RasaIbuProductListPage() {
     return (
         <div className="min-h-screen bg-[#FDFBF7] pb-20">
             {/* Header Section (Recipe Style) */}
-            <div className="relative h-[40vh] bg-[#2D3A2D] overflow-hidden">
+            <div className="relative min-h-[450px] md:h-[50vh] bg-[#2D3A2D] overflow-hidden">
                 <div className="absolute inset-0 bg-black/40 z-10" />
                 <img
                     src={config?.productListHeroImage || config?.heroImage || "https://images.unsplash.com/photo-1543362906-ac1b452601e0?w=1600&q=80"}
@@ -92,15 +92,15 @@ export default async function RasaIbuProductListPage() {
                     className="absolute inset-0 w-full h-full object-cover opacity-80"
                 />
 
-                <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4">
+                <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4 pt-16 md:pt-0">
                     <div className="max-w-3xl animate-fade-in-up">
-                        <span className="inline-block px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#FDFBF7] text-xs font-bold tracking-[0.2em] mb-4 uppercase">
+                        <span className="inline-block px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#FDFBF7] text-[10px] md:text-xs font-bold tracking-[0.2em] mb-4 uppercase">
                             {config?.productListHeroTagline || config?.heroTagline || "Dapur Rasa Ibu"}
                         </span>
-                        <h1 className="text-4xl md:text-6xl font-black text-[#FDFBF7] mb-6 leading-tight font-serif">
+                        <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-[#FDFBF7] mb-6 leading-tight font-serif px-2">
                             {config?.productListHeroTitle || config?.publicTitle || "Hidangan Rumah"}
                         </h1>
-                        <p className="text-[#E5E1D8] text-lg mb-8 max-w-xl mx-auto font-light">
+                        <p className="text-[#E5E1D8] text-sm sm:text-base md:text-lg mb-8 max-w-2xl mx-auto font-light leading-relaxed">
                             {config?.productListHeroSubtitle || "Tanpa pengawet, bumbu alami, dan porsi pas untuk keluarga. Praktis tinggal hangatkan."}
                         </p>
                     </div>
@@ -108,7 +108,7 @@ export default async function RasaIbuProductListPage() {
             </div>
 
             {/* Content Section */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 -mt-10 relative z-30">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 -mt-12 md:-mt-10 relative z-30">
                 {/* Filter / Search Bar Placeholder (Optional) */}
                 <div className="bg-white rounded-2xl p-6 shadow-xl border border-[#E5E1D8] mb-12 flex flex-col md:flex-row justify-between items-center gap-4">
                     <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 w-full md:w-auto">
@@ -136,7 +136,7 @@ export default async function RasaIbuProductListPage() {
 
                 {/* Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {mappedProducts.map((product) => (
+                    {mappedProducts.map((product: any) => (
                         <div
                             key={product.id}
                             className="group bg-white rounded-2xl overflow-hidden border border-[#E5E1D8] hover:shadow-2xl hover:shadow-[#2D3A2D]/10 transition-all duration-300 animate-fade-in flex flex-col h-full"
@@ -214,7 +214,6 @@ export default async function RasaIbuProductListPage() {
                                         product={product}
                                         className="w-full bg-[#2D3A2D] hover:bg-[#1A241A] text-[#FDFBF7] py-3 rounded-xl font-bold shadow-md transition-all flex items-center justify-center gap-2"
                                         label={product.inStock ? 'Pesan Sekarang' : 'Habis'}
-                                        icon={<ShoppingBag className="w-4 h-4" />}
                                     />
                                 </div>
                             </div>
