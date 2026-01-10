@@ -19,17 +19,15 @@ export async function GET(request: Request) {
     try {
         console.log('[TEST-LOGIN] Testing:', email);
 
-        // Find user
-        const user = await prisma.user.findUnique({
-            where: { email },
-            select: {
-                id: true,
-                email: true,
-                name: true,
-                passwordHash: true,
-                globalRole: true,
-            }
-        });
+        // Use raw query to bypass brand isolation extension
+        const users = await prisma.$queryRaw<any[]>`
+            SELECT id, email, name, "passwordHash", "globalRole"
+            FROM users
+            WHERE email = ${email}
+            LIMIT 1
+        `;
+
+        const user = users[0];
 
         if (!user) {
             return NextResponse.json({
