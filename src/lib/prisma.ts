@@ -23,6 +23,15 @@ const globalForPrisma = globalThis as unknown as {
     prisma: ExtendedPrismaClient | undefined;
 };
 
-export const prisma: ExtendedPrismaClient = globalForPrisma.prisma ?? prismaClientSingleton();
+const basePrisma = globalForPrisma.prisma ?? prismaClientSingleton();
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = basePrisma;
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+export const prisma: ExtendedPrismaClient = basePrisma;
+
+/**
+ * Unisolated Prisma client for global/executive operations (OWNER level only)
+ * Use with extreme caution as it bypasses brand isolation.
+ */
+export const unisolatedPrisma = new PrismaClient({
+    log: ['error', 'warn'],
+});

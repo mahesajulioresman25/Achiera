@@ -1,5 +1,5 @@
 
-import { prisma } from '@/lib/prisma';
+import { unisolatedPrisma as prisma } from "@/lib/prisma";
 import { OwnerService } from './OwnerService';
 
 export interface WorkforceMetric {
