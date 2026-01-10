@@ -10,15 +10,6 @@ const nextConfig = {
     distDir: '.next',
     experimental: {
     },
-    async redirects() {
-        return [
-            {
-                source: '/',
-                destination: '/rasa-ibu',
-                permanent: true,
-            },
-        ]
-    },
 };
 
 export default nextConfig;

@@ -4,40 +4,54 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function seedRasaIbu() {
-    console.log('🌱 Seeding Rasa Ibu brand...\n');
+    console.log('🌱 Seeding Rasa Ibu brand to Production...\n');
 
     try {
-        // Check if brand already exists
-        const existing = await prisma.brand.findUnique({
-            where: { slug: 'rasa-ibu' }
-        });
-
-        if (existing) {
-            console.log('✅ Brand "Rasa Ibu" already exists!');
-            console.log(`   ID: ${existing.id}`);
-            console.log(`   Name: ${existing.name}`);
-            return;
-        }
-
-        // Create Rasa Ibu brand
-        const rasaIbu = await prisma.brand.create({
-            data: {
+        // Upsert Brand (Create if new, Update if exists)
+        const rasaIbu = await prisma.brand.upsert({
+            where: { slug: 'rasa-ibu' },
+            update: {
+                paymentSettings: {
+                    enabledMethods: ['BANK_TRANSFER', 'E_WALLET', 'QRIS'],
+                    bankAccounts: []
+                }
+            },
+            create: {
                 slug: 'rasa-ibu',
                 name: 'Rasa Ibu',
                 isActive: true,
                 paymentSettings: {
-                    enabledMethods: ['BANK_TRANSFER', 'E_WALLET'],
+                    enabledMethods: ['BANK_TRANSFER', 'E_WALLET', 'QRIS'],
                     bankAccounts: []
                 }
             }
         });
 
-        console.log('✅ Brand "Rasa Ibu" created successfully!');
+        console.log('✅ Brand "Rasa Ibu" secured!');
         console.log(`   ID: ${rasaIbu.id}`);
-        console.log(`   Slug: ${rasaIbu.slug}`);
-        console.log(`   Name: ${rasaIbu.name}`);
-        console.log(`   Active: ${rasaIbu.isActive}`);
-        console.log('\n🎉 Seeding complete! You can now access /dashboard/rasa-ibu\n');
+
+        // Upsert Brand Config (The Visuals)
+        const config = await prisma.brandConfig.upsert({
+            where: { brandId: rasaIbu.id },
+            update: {
+                publicTitle: "Kapanpun Rindu Masakan Ibu.",
+                heroTagline: "Hangatnya Meja Makan",
+                heroCtaPrimary: "Lihat Menu Kami",
+                philosophyTitle: "Kenapa Memilih Rasa Ibu?",
+                subscriptionTitle: "Berlangganan Katering"
+            },
+            create: {
+                brandId: rasaIbu.id,
+                publicTitle: "Kapanpun Rindu Masakan Ibu.",
+                heroTagline: "Hangatnya Meja Makan",
+                heroCtaPrimary: "Lihat Menu Kami",
+                philosophyTitle: "Kenapa Memilih Rasa Ibu?",
+                subscriptionTitle: "Berlangganan Katering"
+            }
+        });
+
+        console.log('✅ Brand Config updated successfully!');
+        console.log('\n🎉 Seeding complete! Production DB is ready.\n');
 
     } catch (error) {
         console.error('❌ Error seeding brand:', error);
