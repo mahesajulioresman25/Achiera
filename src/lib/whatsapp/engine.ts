@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 
 const ENGINE_VERSION = '2.0-EXTERNAL-ROUTED';
-const WA_SERVICE_URL = process.env.WA_SERVICE_URL || 'http://localhost:3001';
+const WA_SERVICE_URL = (process.env.WA_SERVICE_URL || 'http://localhost:3001').replace(/\/$/, '');
 
 class WhatsAppEngine extends EventEmitter {
     private state: 'DISCONNECTED' | 'CONNECTING' | 'CONNECTED' | 'QR' = 'DISCONNECTED';
