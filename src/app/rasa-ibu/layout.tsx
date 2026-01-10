@@ -18,13 +18,17 @@ export default async function RasaIbuLayout({
 
     const config = brand?.brandConfig as any;
 
-    // 2. Custom navigation links per user request
-    const navLinks = [
+    // 2. Custom navigation links from CMS (prioritize CMS over hardcoded)
+    let navLinks = [
         { label: 'HOME', href: '/rasa-ibu' },
         { label: 'PRODUK', href: '/rasa-ibu/products' },
         { label: 'CARA PESAN', href: '/rasa-ibu/subscribe' },
         { label: 'TENTANG KAMI', href: '/rasa-ibu/about' },
     ];
+
+    if (config?.navLinks && Array.isArray(config.navLinks) && config.navLinks.length > 0) {
+        navLinks = config.navLinks;
+    }
 
     return (
         <div className="bg-[#FDFBF7]">
@@ -39,7 +43,7 @@ export default async function RasaIbuLayout({
             <main className="min-h-screen">
                 {children}
             </main>
-            <RasaIbuFooter />
+            <RasaIbuFooter config={config} paymentSettings={brand?.paymentSettings} />
         </div>
     );
 }

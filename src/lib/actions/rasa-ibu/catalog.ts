@@ -31,6 +31,7 @@ export async function createProduct(data: {
     try {
         const product = await (prisma.frozenProduct.create as any)({
             data: {
+                brandId: data.brandId,
                 categoryId: data.categoryId || undefined,
                 inventoryCategoryId: data.inventoryCategoryId || undefined,
                 name: data.name,
