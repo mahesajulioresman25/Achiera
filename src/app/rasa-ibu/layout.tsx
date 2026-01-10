@@ -1,4 +1,4 @@
-import Header from "@/components/Header";
+import PublicNav from "@/components/commerce/PublicNav";
 import RasaIbuFooter from "@/components/RasaIbuFooter";
 import SeasonalDecorations from "@/components/ui/SeasonalDecorations";
 import { unisolatedPrisma as prisma } from "@/lib/prisma";
@@ -18,10 +18,24 @@ export default async function RasaIbuLayout({
 
     const config = brand?.brandConfig as any;
 
+    // 2. Custom navigation links per user request
+    const navLinks = [
+        { label: 'HOME', href: '/rasa-ibu' },
+        { label: 'PRODUK', href: '/rasa-ibu/products' },
+        { label: 'CARA PESAN', href: '/rasa-ibu/subscribe' },
+        { label: 'TENTANG KAMI', href: '/rasa-ibu/about' },
+    ];
+
     return (
         <div className="bg-[#FDFBF7]">
             <SeasonalDecorations />
-            <Header />
+            <PublicNav
+                navLinks={navLinks}
+                whatsapp={config?.whatsapp}
+                instagramHandle={config?.instagramHandle}
+                socialLinks={config?.socialLinks}
+                config={config}
+            />
             <main className="min-h-screen">
                 {children}
             </main>
