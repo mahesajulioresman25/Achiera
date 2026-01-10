@@ -20,6 +20,7 @@ import {
     Megaphone,
     Zap,
     ShieldAlert,
+    Users,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -213,7 +214,7 @@ export default function Sidebar({ brandSlug }: SidebarProps) {
                                     {item.title}
                                 </div>
                                 <div className="space-y-1" suppressHydrationWarning>
-                                    {item.items.map((subItem) => {
+                                    {item.items?.map((subItem) => {
                                         const Icon = subItem.icon;
                                         const isActive = pathname === subItem.href;
                                         return (
