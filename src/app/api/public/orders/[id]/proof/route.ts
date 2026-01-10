@@ -3,17 +3,25 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createClient } from '@supabase/supabase-js';
 
-// Initialize Supabase Client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || '';
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY || '';
-
-const supabase = createClient(supabaseUrl, supabaseKey);
+// Don't initialize globally to avoid build errors if env vars are missing
+// const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function POST(
     req: NextRequest,
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        // Initialize Supabase Client lazily
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || '';
+        const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY || '';
+
+        if (!supabaseUrl || !supabaseKey) {
+            console.error('Supabase credentials missing');
+            return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
+        }
+
+        const supabase = createClient(supabaseUrl, supabaseKey);
+
         const resolvedParams = await params;
         const { id } = resolvedParams;
 

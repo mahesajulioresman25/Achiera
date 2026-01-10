@@ -1,14 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-// Initialize Supabase Client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || '';
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY || '';
-
-const supabase = createClient(supabaseUrl, supabaseKey);
+// Don't initialize globally to avoid build errors
+// const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function POST(req: NextRequest) {
     try {
+        // Initialize Supabase Client lazily
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || '';
+        const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY || '';
+
+        if (!supabaseUrl || !supabaseKey) {
+            console.error('Supabase credentials missing');
+            return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
+        }
+
+        const supabase = createClient(supabaseUrl, supabaseKey);
+
         const formData = await req.formData();
         const file = formData.get('file') as File;
 
