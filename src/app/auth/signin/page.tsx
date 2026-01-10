@@ -117,18 +117,28 @@ function SignInContent() {
         const loginEmail = formData.get('email') as string;
         const password = formData.get('password') as string;
 
-        const res = await signIn('credentials', {
-            redirect: false,
-            email: loginEmail,
-            password,
-        });
+        try {
+            const res = await signIn('credentials', {
+                redirect: false,
+                email: loginEmail,
+                password,
+            });
 
-        if (res?.error) {
-            setError('Email atau password salah.');
+            if (res?.error) {
+                console.error('[LOGIN] Error:', res.error);
+                setError('Email atau password salah.');
+                setLoading(false);
+            } else if (res?.ok) {
+                router.push(callbackUrl);
+                router.refresh();
+            } else {
+                setError('Terjadi kesalahan saat login.');
+                setLoading(false);
+            }
+        } catch (err) {
+            console.error('[LOGIN] Exception:', err);
+            setError('Terjadi kesalahan jaringan.');
             setLoading(false);
-        } else {
-            router.push(callbackUrl);
-            router.refresh();
         }
     };
 
