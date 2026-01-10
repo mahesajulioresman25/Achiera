@@ -87,7 +87,7 @@ export default async function RasaIbuProductListPage() {
             <div className="relative h-[40vh] bg-[#2D3A2D] overflow-hidden">
                 <div className="absolute inset-0 bg-black/40 z-10" />
                 <img
-                    src="https://images.unsplash.com/photo-1543362906-ac1b452601e0?w=1600&q=80"
+                    src={config?.productListHeroImage || config?.heroImage || "https://images.unsplash.com/photo-1543362906-ac1b452601e0?w=1600&q=80"}
                     alt="Dining Table"
                     className="absolute inset-0 w-full h-full object-cover opacity-80"
                 />
@@ -95,13 +95,13 @@ export default async function RasaIbuProductListPage() {
                 <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4">
                     <div className="max-w-3xl animate-fade-in-up">
                         <span className="inline-block px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#FDFBF7] text-xs font-bold tracking-[0.2em] mb-4 uppercase">
-                            Dapur Rasa Ibu
+                            {config?.productListHeroTagline || config?.heroTagline || "Dapur Rasa Ibu"}
                         </span>
                         <h1 className="text-4xl md:text-6xl font-black text-[#FDFBF7] mb-6 leading-tight font-serif">
-                            {config?.publicTitle || "Hidangan Rumah"} <br /> <span className="text-[#B2BCA2] italic">{config?.heroTagline || "Untuk Keluarga"}</span>
+                            {config?.productListHeroTitle || config?.publicTitle || "Hidangan Rumah"}
                         </h1>
                         <p className="text-[#E5E1D8] text-lg mb-8 max-w-xl mx-auto font-light">
-                            Tanpa pengawet, bumbu alami, dan porsi pas untuk keluarga. Praktis tinggal hangatkan.
+                            {config?.productListHeroSubtitle || "Tanpa pengawet, bumbu alami, dan porsi pas untuk keluarga. Praktis tinggal hangatkan."}
                         </p>
                     </div>
                 </div>

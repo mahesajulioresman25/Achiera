@@ -77,8 +77,14 @@ interface UpdateBrandConfigPayload {
     aboutCtaSecondary?: string;
     aboutCtaSecondaryLink?: string;
 
-    // 8. Navigation
+    // 7. Navigation
     publicNavLinks?: { label: string; href: string }[];
+
+    // 12. Product List Page
+    productListHeroTitle?: string;
+    productListHeroSubtitle?: string;
+    productListHeroTagline?: string;
+    productListHeroImage?: string;
 
     // 9. Social Media
     instagramHandle?: string;

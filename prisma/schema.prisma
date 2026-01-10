@@ -1339,7 +1339,13 @@ model BrandConfig {
   aboutCtaSecondary     String?
   aboutCtaSecondaryLink String?
 
-  // 7. Navigation
+  // 7. Product List Page
+  productListHeroTitle    String? @db.Text
+  productListHeroSubtitle String? @db.Text
+  productListHeroTagline  String? @db.Text
+  productListHeroImage    String? @db.Text
+
+  // 8. Navigation
   publicNavLinks Json? // [{ label: 'Home', href: '/rasa-ibu' }, ...]
   trustBadges    Json? // Array of objects { icon, title, desc }
   loyaltyTiers   Json? // Array of objects { name, spend, multiplier, perk, color }

@@ -148,7 +148,13 @@ export default function CMSForm({ brandId, initialData }: CMSFormProps) {
             { title: "Bayar Dulu, Baru Kirim", desc: "Sistem invoice otomatis, aman dan teratur." }
         ],
         subscriptionButtonText: initialData?.subscriptionButtonText || 'Mulai Berlangganan',
-        subscriptionImage: initialData?.subscriptionImage || ''
+        subscriptionImage: initialData?.subscriptionImage || '',
+
+        // 14. Product List Page (NEW)
+        productListHeroTitle: initialData?.productListHeroTitle || 'Hidangan Rumah',
+        productListHeroSubtitle: initialData?.productListHeroSubtitle || 'Pesan menu favorit keluarga sekarang via WhatsApp.',
+        productListHeroTagline: initialData?.productListHeroTagline || 'Untuk Keluarga',
+        productListHeroImage: initialData?.productListHeroImage || ''
     });
     const [isSaving, setIsSaving] = useState(false);
     const [activeTab, setActiveTab] = useState<'CONTENT' | 'SLIDER'>('CONTENT');
@@ -794,6 +800,35 @@ export default function CMSForm({ brandId, initialData }: CMSFormProps) {
                                         label="Subscription Promo Image"
                                         value={formData.subscriptionImage}
                                         onChange={(url) => setFormData({ ...formData, subscriptionImage: url })}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* 12. Product List Page Configuration (NEW) */}
+                        <div className="bg-white p-8 rounded-[2.5rem] border border-[#E5E1D8] shadow-sm">
+                            <div className="flex items-center gap-4 mb-6 text-orange-800">
+                                <ListOrdered className="w-6 h-6" />
+                                <h2 className="text-xl font-black tracking-tight">12. Product List Page</h2>
+                            </div>
+                            <div className="grid grid-cols-1 gap-6">
+                                <div>
+                                    <label className="block text-xs font-bold uppercase text-gray-500 mb-2">Tagline (Over Highlighted)</label>
+                                    <input type="text" value={formData.productListHeroTagline} onChange={e => setFormData({ ...formData, productListHeroTagline: e.target.value })} className="w-full p-3 bg-[#F9F7F2] rounded-xl border-none font-bold tracking-widest text-[#8B7E66]" />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold uppercase text-gray-500 mb-2">Hero Title</label>
+                                    <input type="text" value={formData.productListHeroTitle} onChange={e => setFormData({ ...formData, productListHeroTitle: e.target.value })} className="w-full p-3 bg-[#F9F7F2] rounded-xl border-none font-black text-lg" />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold uppercase text-gray-500 mb-2">Hero Subtitle</label>
+                                    <textarea value={formData.productListHeroSubtitle} onChange={e => setFormData({ ...formData, productListHeroSubtitle: e.target.value })} className="w-full p-3 bg-[#F9F7F2] rounded-xl border-none h-20" />
+                                </div>
+                                <div>
+                                    <ImageUpload
+                                        label="Product Page Hero Background"
+                                        value={formData.productListHeroImage}
+                                        onChange={(url) => setFormData({ ...formData, productListHeroImage: url })}
                                     />
                                 </div>
                             </div>
