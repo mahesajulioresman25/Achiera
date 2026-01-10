@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prisma, unisolatedPrisma } from '@/lib/prisma';
 
 export async function GET(
     req: NextRequest,
@@ -8,7 +8,6 @@ export async function GET(
     try {
         const { brandId } = await params;
 
-        console.log('[Subscription API GET] Fetching for brandId:', brandId);
 
         const subscriptions = await prisma.subscription.findMany({
             where: { brandId },
@@ -33,9 +32,8 @@ export async function GET(
             }
         });
 
-        const totalCount = await (prisma as any).subscription.count();
-        console.log('[Subscription API GET] Found subscriptions:', subscriptions.length, 'Total in DB:', totalCount);
-        return NextResponse.json({ success: true, data: subscriptions, debug: { totalCount, brandId } });
+        const totalCount = await unisolatedPrisma.subscription.count({ where: { brandId } });
+        return NextResponse.json({ success: true, data: subscriptions });
     } catch (error: any) {
         console.error('[Subscription API GET] Error fetching subscriptions:', error);
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });

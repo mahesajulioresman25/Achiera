@@ -62,7 +62,7 @@ export class LoyaltyEngine {
         };
     }
     async getMemberByPhone(brandId: string, customerPhone: string): Promise<LoyaltyMember | null> {
-        return await (prisma as any).loyaltyMember.findUnique({
+        return await (unisolatedPrisma as any).loyaltyMember.findUnique({
             where: {
                 brandId_customerPhone: {
                     brandId,
@@ -88,7 +88,7 @@ export class LoyaltyEngine {
         customerEmail?: string,
         isMarketingAllowed?: boolean
     ): Promise<LoyaltyMember> {
-        let member = await (prisma as any).loyaltyMember.findUnique({
+        let member = await (unisolatedPrisma as any).loyaltyMember.findUnique({
             where: {
                 brandId_customerPhone: {
                     brandId,
@@ -101,7 +101,7 @@ export class LoyaltyEngine {
             // Generate unique referral code
             const referralCode = `${customerName.substring(0, 3).toUpperCase()}${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
 
-            member = await (prisma as any).loyaltyMember.create({
+            member = await (unisolatedPrisma as any).loyaltyMember.create({
                 data: {
                     brandId,
                     customerPhone,
@@ -113,7 +113,7 @@ export class LoyaltyEngine {
             });
         } else if (isMarketingAllowed !== undefined && member.isMarketingAllowed !== isMarketingAllowed) {
             // Update if changed
-            member = await (prisma as any).loyaltyMember.update({
+            member = await (unisolatedPrisma as any).loyaltyMember.update({
                 where: { id: member.id },
                 data: { isMarketingAllowed }
             });
@@ -365,8 +365,8 @@ export class LoyaltyEngine {
      */
     async getMemberStats(brandId: string) {
         const [totalMembers, activeMembers, pointStats, tierResults] = await Promise.all([
-            (prisma as any).loyaltyMember.count({ where: { brandId } }),
-            (prisma as any).loyaltyMember.count({
+            (unisolatedPrisma as any).loyaltyMember.count({ where: { brandId } }),
+            (unisolatedPrisma as any).loyaltyMember.count({
                 where: {
                     brandId,
                     isActive: true,
@@ -375,14 +375,14 @@ export class LoyaltyEngine {
                     }
                 }
             }),
-            (prisma as any).loyaltyMember.aggregate({
+            (unisolatedPrisma as any).loyaltyMember.aggregate({
                 where: { brandId },
                 _sum: {
                     availablePoints: true,
                     lifetimePoints: true
                 }
             }),
-            (prisma as any).loyaltyMember.groupBy({
+            (unisolatedPrisma as any).loyaltyMember.groupBy({
                 by: ['tier'],
                 where: { brandId },
                 _count: {

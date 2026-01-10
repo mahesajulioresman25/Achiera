@@ -1,7 +1,7 @@
 // ACHIERA Platform - Data Integrity Validation Script
 // Run this to verify data consistency across the system
 
-import { prisma } from '@/lib/prisma';
+import { unisolatedPrisma as prisma } from '@/lib/prisma';
 import { verifyLedgerIntegrity } from '@/lib/hardening/ledger-integrity';
 
 interface IntegrityIssue {

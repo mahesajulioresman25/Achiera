@@ -1,6 +1,6 @@
 'use server';
 
-import { prisma } from '@/lib/prisma';
+import { prisma, unisolatedPrisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 
 /**
@@ -101,7 +101,7 @@ export async function createManualOrder(data: {
         const existingOrderId = data.existingOrderId;
         if (existingOrderId) {
             // MERGE Logic
-            order = await prisma.order.update({
+            order = await unisolatedPrisma.order.update({
                 where: { id: existingOrderId },
                 data: {
                     customerName: data.customerName,
@@ -227,7 +227,7 @@ export async function createManualOrder(data: {
  */
 export async function updateOrderStatus(orderId: string, status: string) {
     try {
-        const order = await prisma.order.update({
+        const order = await unisolatedPrisma.order.update({
             where: { id: orderId },
             data: { status: status as any },
         });
@@ -245,7 +245,7 @@ export async function updateOrderStatus(orderId: string, status: string) {
                 }
 
                 // Calculate HPP
-                const orderWithItems = await prisma.order.findUnique({
+                const orderWithItems = await unisolatedPrisma.order.findUnique({
                     where: { id: orderId },
                     include: {
                         orderItems: {
@@ -426,7 +426,7 @@ export async function getUnlinkedAutoOrdersAction(brandId: string, channel: stri
         });
 
         // Parse result
-        const formatted = orders.map(o => ({
+        const formatted = orders.map((o: any) => ({
             id: o.id,
             externalOrderId: o.externalOrderId,
             total: Number(o.total),

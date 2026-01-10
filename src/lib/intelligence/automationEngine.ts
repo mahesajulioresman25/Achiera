@@ -91,7 +91,7 @@ export async function processAutonomousOrder(orderData: AutomatedOrderData) {
         const isFullyMapped = unmappedItems.length === 0;
         const status = isFullyMapped ? 'DIBAYAR' : 'DIPESAN'; // DIBAYAR triggers KDS
 
-        const count = await prisma.order.count();
+        const count = await prisma.order.count({ where: { brandId: orderData.brandId } });
         const invoiceNo = `AUTO/${new Date().getFullYear()}/${count + 1}`;
 
         // Items summary for internal notes (since we don't have OrderItem table yet)

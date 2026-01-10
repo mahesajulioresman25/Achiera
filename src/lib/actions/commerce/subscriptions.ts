@@ -115,7 +115,6 @@ export async function createSubscriptionAction(data: {
     try {
         // Resolve Brand ID
         const brand = await prisma.brand.findUnique({ where: { slug: 'rasa-ibu' } });
-        console.log('[createSubscriptionAction] Resolved brand:', brand ? { id: brand.id, slug: brand.slug } : 'NOT FOUND');
         if (!brand) return { success: false, error: "Brand Rasa Ibu tidak ditemukan." };
 
         let plan = null;
@@ -184,7 +183,6 @@ export async function createSubscriptionAction(data: {
         }
 
         // Create Subscription
-        console.log('[createSubscriptionAction] Creating subscription for brandId:', brand.id);
         const sub = await (prisma as any).subscription.create({
             data: {
                 userId: finalUserId,

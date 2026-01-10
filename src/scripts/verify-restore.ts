@@ -1,7 +1,7 @@
 // ACHIERA Platform - Restore Verification Script
 // Verifies database integrity after restore
 
-import { prisma } from '@/lib/prisma';
+import { unisolatedPrisma as prisma } from '@/lib/prisma';
 import { verifyLedgerIntegrity } from '@/lib/hardening/ledger-integrity';
 import { validateDataIntegrity } from './validate-data-integrity';
 

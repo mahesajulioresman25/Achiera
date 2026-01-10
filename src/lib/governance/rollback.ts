@@ -1,7 +1,7 @@
 // ACHIERA Platform - Safe Rollback Strategies
 // Database migration and deployment rollback mechanisms
 
-import { prisma } from '@/lib/prisma';
+import { unisolatedPrisma as prisma } from '@/lib/prisma';
 import { logger } from '@/lib/observability/logger';
 
 export type RollbackType =

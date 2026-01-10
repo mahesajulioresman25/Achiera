@@ -1,10 +1,10 @@
-import { prisma } from '@/lib/prisma';
+import { prisma, unisolatedPrisma } from '@/lib/prisma';
 
 export class LoyaltyService {
 
     // Calculate and add points for an order
     async addPointsForOrder(orderId: string) {
-        const order = await prisma.order.findUnique({
+        const order = await unisolatedPrisma.order.findUnique({
             where: { id: orderId },
             include: { brand: true }
         });
@@ -12,7 +12,7 @@ export class LoyaltyService {
         if (!order || !order.customerPhone) return;
 
         // Rule: 1 Point per Rp 10,000 spent
-        const grandTotal = Number(order.grandTotal || 0);
+        const grandTotal = Number((order as any).grandTotal || (order as any).totalAmount || (order as any).total || 0);
         const pointsEarned = Math.floor(grandTotal / 10000);
 
         if (pointsEarned <= 0) return;
@@ -56,7 +56,7 @@ export class LoyaltyService {
 
         // Update Account
         await prisma.loyaltyAccount.update({
-            where: { id: account.id },
+            where: { id: account.id, brandId: order.brandId! },
             data: {
                 balance: { increment: pointsEarned },
                 lifetimeEarned: { increment: pointsEarned },
@@ -71,7 +71,7 @@ export class LoyaltyService {
     }
 
     async checkTierUpgrade(accountId: string) {
-        const account = await prisma.loyaltyAccount.findUnique({ where: { id: accountId } });
+        const account = await unisolatedPrisma.loyaltyAccount.findUnique({ where: { id: accountId } });
         if (!account) return;
 
         let newTier = 'BRONZE';
@@ -112,7 +112,7 @@ export class LoyaltyService {
 
         // Update Balance
         await prisma.loyaltyAccount.update({
-            where: { id: account.id },
+            where: { id: account.id, brandId: brandId },
             data: {
                 balance: { decrement: pointsToRedeem },
                 lifetimeRedeemed: { increment: pointsToRedeem }

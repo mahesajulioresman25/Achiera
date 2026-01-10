@@ -36,7 +36,15 @@ const BRAND_SCOPED_MODELS = [
     'HumanAgreementSignal',
     'AssistedAction',
     'Warehouse',
-    'Subscription'
+    'Subscription',
+    'SubscriptionPlan',
+    'Campaign',
+    'FlashSaleConfig',
+    'FlashSaleItem',
+    'LoyaltyAccount',
+    'WhatsAppQueue',
+    'Anomaly',
+    'StockMutation'
 ];
 
 /**
@@ -116,6 +124,23 @@ function getBrandIdFromWhere(where: any): string | null {
         }
     }
 
+    // 5. Look for brandId inside any nested object (composite keys like brandId_customerPhone)
+    for (const key in where) {
+        if (where[key] && typeof where[key] === 'object') {
+            if (where[key].brandId && typeof where[key].brandId === 'string') {
+                return where[key].brandId;
+            }
+            // Optional: recurse one level deeper for composite keys
+            if (key.includes('brandId')) {
+                for (const subKey in where[key]) {
+                    if (subKey === 'brandId' && typeof where[key][subKey] === 'string') {
+                        return where[key][subKey];
+                    }
+                }
+            }
+        }
+    }
+
     return null;
 }
 
@@ -141,6 +166,7 @@ export const brandIsolationExtension =
                                 const brandId = getBrandIdFromWhere((args as any).where);
 
                                 if (!brandId) {
+                                    console.error(`[BrandIsolation] Violation in ${model}.${operation}. Args:`, JSON.stringify(args, null, 2));
                                     throw new BrandIsolationError(
                                         `Brand isolation violation: ${model}.${operation} requires brandId in where clause`,
                                         model,
