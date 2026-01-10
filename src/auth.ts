@@ -1,6 +1,6 @@
 import { NextAuthOptions, getServerSession as originalGetServerSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { prisma } from "@/lib/prisma";
+import { unisolatedPrisma as prisma } from "@/lib/prisma";
 import bcrypt from "bcrypt";
 import { GlobalRole } from "@prisma/client";
 

@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma';
+import { unisolatedPrisma as prisma } from '@/lib/prisma';
 import { AuditAction, AuditSeverity } from '@prisma/client';
 
 export interface AuditLogParams {
@@ -63,8 +63,8 @@ export class AuditService {
                     entityType: params.entityType,
                     entityId: params.entityId,
                     brandId: params.brandId,
-                    changes: params.changes || null,
-                    metadata: params.metadata || null,
+                    changes: (params.changes as any) || null,
+                    metadata: (params.metadata as any) || null,
                     severity: params.severity || 'INFO',
                     ipAddress: params.ipAddress,
                     userAgent: params.userAgent,
@@ -273,7 +273,7 @@ export class AuditService {
 
         // 3. Detect failed login patterns (if we track login attempts)
         const failedLogins = logs.filter(log =>
-            log.action === 'USER_LOGIN' && log.metadata?.success === false
+            log.action === 'USER_LOGIN' && (log.metadata as any)?.success === false
         );
 
         const failedLoginsByUser: Record<string, number> = {};

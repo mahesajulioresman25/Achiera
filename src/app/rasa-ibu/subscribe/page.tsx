@@ -32,10 +32,10 @@ export default async function SubscribePage() {
         }
     });
 
-    const plans = (brand?.subscriptionPlans || []).map(plan => ({
+    const plans = (brand?.subscriptionPlans || []).map((plan: any) => ({
         ...plan,
         price: Number(plan.price),
-        planProducts: plan.planProducts.map(pp => ({
+        planProducts: plan.planProducts.map((pp: any) => ({
             ...pp,
             subscriptionPrice: Number(pp.subscriptionPrice),
             variant: pp.variant ? {
@@ -55,7 +55,10 @@ export default async function SubscribePage() {
     let existingData = null;
     if (session?.user?.id) {
         const latestSub = await prisma.subscription.findFirst({
-            where: { userId: session.user.id },
+            where: {
+                userId: session.user.id,
+                brandId: brand?.id
+            },
             orderBy: { createdAt: 'desc' }
         });
 

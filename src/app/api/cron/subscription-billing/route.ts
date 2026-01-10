@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma';
+import { unisolatedPrisma as prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import { EmailService } from '@/lib/services/EmailService';
 
@@ -63,7 +63,7 @@ export async function GET(req: NextRequest) {
                         total: totalAmount, // Tax logic can be added here
                         status: 'MENUNGGU_PEMBAYARAN', // Custom status for Subscription Pending
                         channel: 'SUBSCRIPTION',
-                        items: {
+                        orderItems: {
                             create: orderItems
                         }
                     }

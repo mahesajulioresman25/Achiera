@@ -46,7 +46,7 @@ export async function explainDecision(
         // Call AI with Caching enabled for system prompt and large context
         const response = await anthropic.messages.create({
             model: ruleEvaluation.riskLevel === 'HIGH' || ruleEvaluation.riskLevel === 'CRITICAL'
-                ? 'claude-3-5-sonnet-latest'
+                ? 'claude-3-5-sonnet-20240620'
                 : 'claude-3-haiku-20240307',
             max_tokens: maxTokens,
             temperature,

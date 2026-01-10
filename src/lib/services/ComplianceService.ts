@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma';
+import { unisolatedPrisma as prisma } from '@/lib/prisma';
 import { ComplianceCategory, RuleType, ComplianceSeverity, ViolationStatus } from '@prisma/client';
 
 export interface ComplianceRuleInput {

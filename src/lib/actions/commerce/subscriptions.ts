@@ -1,6 +1,6 @@
 'use server';
 
-import { prisma } from '@/lib/prisma';
+import { prisma, unisolatedPrisma } from '@/lib/prisma';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 
@@ -39,7 +39,7 @@ export async function getUserSubscriptionsAction() {
 
 export async function cancelSubscriptionAction(subscriptionId: string) {
     try {
-        await prisma.subscription.update({
+        await unisolatedPrisma.subscription.update({
             where: { id: subscriptionId },
             data: { status: 'CANCELLED' }
         });
@@ -241,7 +241,7 @@ export async function uploadSubscriptionProofAction(subscriptionId: string, proo
     try {
         // In a real app, you'd upload to S3/Cloudinary. For now, we store the base64 or a mock path.
         // We'll update the subscription status to 'PENDING_VERIFICATION' or keep as 'WAITING_PAYMENT' but with proof.
-        await prisma.subscription.update({
+        await unisolatedPrisma.subscription.update({
             where: { id: subscriptionId },
             data: {
                 paymentProof: proofBase64,

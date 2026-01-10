@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma';
+import { unisolatedPrisma as prisma } from '@/lib/prisma';
 import { GlobalRole, BrandRole } from '@prisma/client';
 
 export class UserService {

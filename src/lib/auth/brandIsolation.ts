@@ -2,7 +2,6 @@
 // Prisma middleware to enforce brandId on all queries
 
 import { Prisma } from '@prisma/client';
-import { prisma } from '@/lib/prisma';
 
 /**
  * Models that are brand-scoped (require brandId)
@@ -19,7 +18,6 @@ const BRAND_SCOPED_MODELS = [
     'LedgerAccount',
     'JournalTransaction',
     'JournalEntry',
-    'User',
     'AuditLog',
     'ProductionPlan',
     'ProductionPlanItem',
@@ -56,6 +54,7 @@ const BRAND_SCOPED_MODELS = [
  * Models that are globally accessible (no brandId required)
  */
 const GLOBAL_MODELS = [
+    'User',
     'Brand',
     'PriceComponent',
     'PriceRule',
@@ -90,11 +89,40 @@ function getBrandIdFromWhere(where: any): string | null {
         if (where.brand.id.equals) return where.brand.id.equals;
     }
 
-    // 3. Common nested paths
-    const nestedPaths = ['order', 'product', 'category', 'item', 'batch', 'inventoryCategory', 'transaction', 'orderItem', 'account', 'warehouse', 'variant', 'plan', 'recipe', 'suggestion', 'member', 'asset', 'subscription'];
+    // 3. Logical operators (OR, AND, NOT)
+    if (Array.isArray(where.OR)) {
+        for (const item of where.OR) {
+            const nestedId = getBrandIdFromWhere(item);
+            if (nestedId) return nestedId;
+        }
+    }
+    if (Array.isArray(where.AND)) {
+        for (const item of where.AND) {
+            const nestedId = getBrandIdFromWhere(item);
+            if (nestedId) return nestedId;
+        }
+    }
+    if (where.NOT) {
+        const nestedId = getBrandIdFromWhere(where.NOT);
+        if (nestedId) return nestedId;
+    }
+
+    // 4. Common nested paths
+    const nestedPaths = [
+        'order', 'product', 'category', 'item', 'batch', 'inventoryCategory',
+        'transaction', 'orderItem', 'account', 'warehouse', 'variant', 'plan',
+        'recipe', 'suggestion', 'member', 'asset', 'subscription', 'brandRoles',
+        'user'
+    ];
     for (const path of nestedPaths) {
         if (where[path]) {
             const nestedId = getBrandIdFromWhere(where[path]);
+            if (nestedId) return nestedId;
+        }
+
+        // Handle collection checks (some, every, none)
+        if (where[path]?.some) {
+            const nestedId = getBrandIdFromWhere(where[path].some);
             if (nestedId) return nestedId;
         }
     }

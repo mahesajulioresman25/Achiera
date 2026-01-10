@@ -1459,6 +1459,7 @@ export async function getWasteAnalysis(brandId: string) {
         const mutations = await prisma.stockMutation.findMany({
             where: {
                 variant: { product: { inventoryType: 'RAW_MATERIAL' } },
+                warehouse: { brandId }, // Added for isolation
                 createdAt: { gte: thirtyDaysAgo },
                 type: { in: ['OUT', 'ADJUSTMENT'] }
             },

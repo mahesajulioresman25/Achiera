@@ -152,26 +152,26 @@ export class CapitalAllocationEngine {
         const threeMonthsAgo = new Date();
         threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 
-        const expenses = await prisma.journalTransaction.aggregate({
+        const expenses = await prisma.journalEntry.aggregate({
             where: {
-                brandId,
-                date: { gte: threeMonthsAgo },
-                status: 'POSTED',
-                entries: {
-                    some: {
-                        account: {
-                            type: 'EXPENSE'
-                        }
-                    }
+                transaction: {
+                    brandId,
+                    date: { gte: threeMonthsAgo }
+                },
+                account: {
+                    type: 'EXPENSE'
                 }
             },
             _sum: {
-                // This is simplified - in production, sum entry amounts
+                debit: true,
+                credit: true
             }
         });
 
         // Simplified burn rate calculation
-        const burnRate = 25_000_000; // Default 25M/month (should calculate from actual data)
+        const totalExpenses = Number(expenses._sum.debit || 0) - Number(expenses._sum.credit || 0);
+        const monthlyAverage = totalExpenses / 3;
+        const burnRate = monthlyAverage > 0 ? monthlyAverage : 25_000_000;
 
         // Calculate runway
         const runway = cash > 0 ? cash / burnRate : 0;

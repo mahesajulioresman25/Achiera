@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { unisolatedPrisma as prisma } from '@/lib/prisma';
 import { JournalService } from "../intelligence/journalService";
 
 export interface ICTransactionInput {

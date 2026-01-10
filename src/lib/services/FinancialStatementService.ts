@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma';
+import { unisolatedPrisma as prisma } from '@/lib/prisma';
 import { ConsolidationPeriod } from '@prisma/client';
 import { ConsolidationEngine } from './ConsolidationEngine';
 

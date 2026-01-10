@@ -103,6 +103,7 @@ model Brand {
   recommendations              Recommendation[]
   salesImports                 SalesImportRaw[]
   adsImports                   AdsImportRaw[]
+  complianceReports            ComplianceReport[]
 
   @@map("brands")
 }
@@ -2410,6 +2411,22 @@ enum AuditAction {
   SETTINGS_CHANGED
   POLICY_UPDATED
   DATA_EXPORTED
+
+  // Autonomous system actions
+  EXECUTION_STARTED
+  EXECUTION_COMPLETED
+  EXECUTION_FAILED
+  BUDGET_CONSUMPTION
+
+  // Compliance actions
+  COMPLIANCE_REPORT_GENERATED
+  SENSITIVE_DATA_ACCESS
+  SECURITY_LOGIN_SUCCESS
+  SECURITY_LOGIN_FAILURE
+  ROLE_CHANGE
+  BRAND_FREEZE
+  KILL_SWITCH_ACTIVATED
+  SYSTEM_CONFIG_CHANGE
 }
 
 enum AuditSeverity {
@@ -3855,4 +3872,21 @@ model AdsImportRaw {
   @@index([brandId, importId], map: "AdsImportRaw_idx_brand_import_ads_idx")
   @@index([validationStatus], map: "AdsImportRaw_idx_validation_status_ads_idx")
   @@map("ads_import_raw")
+}
+
+model ComplianceReport {
+  id          String   @id @default(cuid())
+  type        String
+  brandId      String?
+  startDate   DateTime
+  endDate     DateTime
+  requestedBy String
+  data        Json
+  status      String   @default("PENDING")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  brand       Brand?   @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  @@index([brandId])
+  @@map("compliance_reports")
 }

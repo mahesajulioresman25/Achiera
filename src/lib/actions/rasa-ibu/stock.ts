@@ -298,8 +298,20 @@ export async function registerIngredientAction(data: {
  */
 export async function getStockMutationsAction(variantId: string) {
     try {
+        // Fetch variant first to get brandId for isolation
+        const variant = await prisma.frozenVariant.findUnique({
+            where: { id: variantId },
+            include: { product: { include: { category: true } } }
+        });
+
+        if (!variant) throw new Error('Variant not found');
+        const brandId = (variant.product.category as any)?.brandId;
+
         const mutations = await prisma.stockMutation.findMany({
-            where: { variantId },
+            where: {
+                variantId,
+                warehouse: { brandId } // Added for isolation
+            },
             orderBy: { createdAt: 'desc' },
             take: 10
         });
@@ -414,10 +426,20 @@ export async function updateIngredientAction(data: {
  */
 export async function getPriceAnalysisAction(variantId: string) {
     try {
+        // Fetch variant first to get brandId for isolation
+        const variant = await prisma.frozenVariant.findUnique({
+            where: { id: variantId },
+            include: { product: { include: { category: true } } }
+        });
+
+        if (!variant) throw new Error('Variant not found');
+        const brandId = (variant.product.category as any)?.brandId;
+
         const mutations = await prisma.stockMutation.findMany({
             where: {
                 variantId,
-                type: 'IN'
+                type: 'IN',
+                warehouse: { brandId } // Added for isolation
             },
             orderBy: { createdAt: 'asc' },
             select: {
@@ -491,7 +513,8 @@ export async function getBrandPriceAnalysisAction(brandId: string) {
         const mutations = await prisma.stockMutation.findMany({
             where: {
                 variantId: { in: variantIds },
-                type: 'IN'
+                type: 'IN',
+                warehouse: { brandId } // Added for isolation (StockMutation -> Warehouse -> Brand)
             },
             orderBy: { createdAt: 'asc' },
             select: {
