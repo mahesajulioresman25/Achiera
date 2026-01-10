@@ -26,7 +26,7 @@ async function restoreBrands() {
         }
 
         // 2. Link User (Mahesa)
-        const email = 'mahesajulioresman@achier.com';
+        const email = 'mahesajulioresman25@achiera.com';
         const user = await prisma.user.findUnique({ where: { email } });
 
         if (user) {

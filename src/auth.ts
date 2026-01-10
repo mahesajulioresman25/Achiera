@@ -22,6 +22,12 @@ declare module "next-auth" {
                 brandName: string;
                 role: string;
             }>;
+            brandRoles: Array<{
+                brandId: string;
+                brandSlug: string;
+                brandName: string;
+                role: string;
+            }>;
         }
     }
 
@@ -32,6 +38,12 @@ declare module "next-auth" {
         profileImage?: string | null;
         globalRole: GlobalRole;
         brands: Array<{
+            brandId: string;
+            brandSlug: string;
+            brandName: string;
+            role: string;
+        }>;
+        brandRoles: Array<{
             brandId: string;
             brandSlug: string;
             brandName: string;
@@ -48,6 +60,12 @@ declare module "next-auth/jwt" {
         profileImage?: string | null;
         globalRole: GlobalRole;
         brands: Array<{
+            brandId: string;
+            brandSlug: string;
+            brandName: string;
+            role: string;
+        }>;
+        brandRoles: Array<{
             brandId: string;
             brandSlug: string;
             brandName: string;
@@ -141,12 +159,19 @@ export const authOptions: NextAuthOptions = {
 
                 // OWNER gets access to ALL brands
                 if (user.globalRole === 'OWNER') {
-                    // Instead of loading all brands into session (causes HTTP 431),
-                    // we use an empty array and let /dashboard page fetch brands
-                    // This prevents routing conflicts with brand slugs
-                    mappedBrands = [];
+                    console.log(`[AUTH] OWNER detected! Fetching all active brands.`);
 
-                    console.log(`[AUTH] OWNER detected! Will fetch brands on-demand.`);
+                    // Fetch all active brands for OWNER
+                    const allBrands = await prisma.$queryRaw<any[]>`
+                        SELECT id, name, slug FROM brands WHERE "isActive" = true ORDER BY name ASC
+                    `;
+
+                    mappedBrands = allBrands.map(b => ({
+                        brandId: b.id,
+                        brandSlug: b.slug,
+                        brandName: b.name,
+                        role: 'OWNER'
+                    }));
                 } else {
                     // Regular users only get their assigned brands
                     mappedBrands = user.brandRoles.map(br => ({
@@ -167,7 +192,8 @@ export const authOptions: NextAuthOptions = {
                     address: user.address,
                     profileImage: user.profileImage,
                     globalRole: user.globalRole,
-                    brands: mappedBrands
+                    brands: mappedBrands,
+                    brandRoles: mappedBrands
                 };
             }
         })
@@ -184,6 +210,7 @@ export const authOptions: NextAuthOptions = {
                 token.profileImage = (user as any).profileImage;
                 token.globalRole = user.globalRole;
                 token.brands = (user as any).brands;
+                token.brandRoles = (user as any).brandRoles;
             }
             return token;
         },
@@ -195,6 +222,7 @@ export const authOptions: NextAuthOptions = {
                 session.user.profileImage = token.profileImage;
                 session.user.globalRole = token.globalRole;
                 session.user.brands = token.brands;
+                session.user.brandRoles = token.brandRoles;
             }
             return session;
         }
