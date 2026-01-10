@@ -49,27 +49,32 @@ export default async function LabelPrintingPage({ searchParams }: { searchParams
 
     // Normalize
     const products = [
-        ...regularVariants.map(v => ({
+        ...regularVariants.map((v: any) => ({
             id: v.id,
             name: `${v.template.displayName} - ${v.name}`,
             sku: v.sku || `MERCH-${v.id.slice(-6)}`,
             price: Number(v.price),
             slug: v.template.slug, // Added Slug
-            type: 'MERCH'
+            type: 'MERCH' as const
         })),
-        ...frozenVariants.map(v => ({
+        ...frozenVariants.map((v: any) => ({
             id: v.id,
             name: `${v.product.name} - ${v.name}`,
             sku: v.sku,
             price: Number(v.price),
             slug: v.product.slug, // Added Slug
-            type: 'FROZEN'
+            type: 'FROZEN' as const
         }))
     ];
 
     return (
         <div className="p-6 md:p-8 space-y-8">
             <div className="flex flex-col gap-2">
+                <div className="mb-2">
+                    <a href="/dashboard/rasa-ibu" className="text-xs font-bold text-[#8B7E66] hover:text-[#2D3A2D] flex items-center gap-1 transition-colors">
+                        &larr; Kembali ke Dashboard
+                    </a>
+                </div>
                 <h1 className="text-3xl font-black text-[#2D3A2D] tracking-tight">Smart Labeling</h1>
                 <p className="text-[#8B7E66] font-medium">Generate and print standardized barcodes for your inventory.</p>
             </div>

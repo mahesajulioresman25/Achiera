@@ -134,7 +134,7 @@ export default function PricingAdvantageHub({ brandId, onClose }: PricingAdvanta
                         {/* Summary Cards */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="bg-white p-6 rounded-[2rem] border border-[#E5E1D8] shadow-sm flex items-center gap-4 relative overflow-hidden group">
-                                {data?.overhead?.opexTotal > 0 && (
+                                {data?.overhead?.opexTotal && data?.overhead?.opexTotal > 0 && (
                                     <div className="absolute top-0 right-0 bg-emerald-600 text-white px-3 py-1 rounded-bl-xl text-[8px] font-black uppercase tracking-widest animate-pulse">
                                         Live Opex
                                     </div>
@@ -144,7 +144,7 @@ export default function PricingAdvantageHub({ brandId, onClose }: PricingAdvanta
                                 </div>
                                 <div>
                                     <p className="text-[10px] font-black text-[#8B7E66] uppercase">Overhead / Unit</p>
-                                    <p className="text-2xl font-black text-[#2D3A2D]">Rp {data?.overhead?.perUnitDynamic?.toLocaleString()}</p>
+                                    <p className="text-2xl font-black text-[#2D3A2D]">Rp {(data?.overhead?.perUnitDynamic || 0).toLocaleString()}</p>
                                 </div>
                             </div>
                             <div className="bg-white p-6 rounded-[2rem] border border-[#E5E1D8] shadow-sm flex items-center gap-4">
@@ -282,7 +282,7 @@ export default function PricingAdvantageHub({ brandId, onClose }: PricingAdvanta
                                         <div key={idx} className="space-y-2">
                                             <div className="flex justify-between items-end">
                                                 <p className="text-[10px] font-black uppercase text-white">{item.name}</p>
-                                                <p className="text-[10px] font-bold text-[#B2BCA2]">Rp {item.amount.toLocaleString()}</p>
+                                                <p className="text-[10px] font-bold text-[#B2BCA2]">Rp {(item.amount || 0).toLocaleString()}</p>
                                             </div>
                                             <div className="h-1 bg-white/10 rounded-full overflow-hidden">
                                                 <div
@@ -299,17 +299,17 @@ export default function PricingAdvantageHub({ brandId, onClose }: PricingAdvanta
                                 <div className="flex justify-between items-center bg-white/5 p-4 rounded-2xl">
                                     <div className="space-y-1">
                                         <p className="text-[8px] font-black text-stone-400 uppercase">
-                                            {data?.overhead?.opexTotal > 0 ? 'Live Monthly OPEX' : 'Fallback Overhead Mode'}
+                                            {(data?.overhead?.opexTotal || 0) > 0 ? 'Live Monthly OPEX' : 'Fallback Overhead Mode'}
                                         </p>
                                         <p className="text-lg font-black text-emerald-400">
                                             {data?.overhead?.opexTotal > 0
-                                                ? `Rp ${data?.overhead?.opexTotal?.toLocaleString()}`
-                                                : `Rp ${data?.overhead?.perUnitDynamic?.toLocaleString()} / unit`
+                                                ? `Rp ${(data?.overhead?.opexTotal || 0).toLocaleString()}`
+                                                : `Rp ${(typeof data?.overhead?.perUnitDynamic === 'number' ? data.overhead.perUnitDynamic : 0).toLocaleString()} / unit`
                                             }
                                         </p>
                                     </div>
-                                    <div className={`p-2 rounded-lg ${data?.overhead?.opexTotal > 0 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}`}>
-                                        <Zap size={16} className={data?.overhead?.opexTotal > 0 ? 'animate-pulse' : ''} />
+                                    <div className={`p-2 rounded-lg ${(data?.overhead?.opexTotal || 0) > 0 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}`}>
+                                        <Zap size={16} className={(data?.overhead?.opexTotal || 0) > 0 ? 'animate-pulse' : ''} />
                                     </div>
                                 </div>
                             </div>
