@@ -78,6 +78,7 @@ export async function upsertFlashSaleConfig(data: any, brandIdInput: string) {
 }
 
 export async function deleteFlashSaleAction(id: string, brandId: string) {
+    const { prisma } = await import('@/lib/prisma');
     try {
         const config = await prisma.flashSaleConfig.findFirst({
             where: { id, brandId }
