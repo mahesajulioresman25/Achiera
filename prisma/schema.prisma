@@ -104,6 +104,7 @@ model Brand {
   salesImports                 SalesImportRaw[]
   adsImports                   AdsImportRaw[]
   complianceReports            ComplianceReport[]
+  recipePosts                  RecipePost[]
 
   @@map("brands")
 }
@@ -3896,4 +3897,56 @@ model ComplianceReport {
 
   @@index([brandId])
   @@map("compliance_reports")
+}
+
+// Recipe Blog Post Model (separate from production Recipe)
+model RecipePost {
+  id          String   @id @default(cuid())
+  brandId     String
+  brand       Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  
+  // Basic Info
+  title       String
+  slug        String
+  description String?  @db.Text
+  image       String?
+  
+  // Author
+  authorName   String
+  authorAvatar String?
+  
+  // Recipe Details
+  duration     Int      // in minutes
+  difficulty   String   // "Mudah", "Sedang", "Sulit"
+  servings     Int?
+  
+  // Content
+  ingredients  Json?    // Array of ingredients
+  steps        Json?    // Array of cooking steps
+  tips         String?  @db.Text
+  
+  // Categorization
+  category     String   // "Sarapan", "Makan Siang", "Camilan", "Bekal Anak"
+  tags         String[] // ["Praktis", "Sehat", "Pedas", etc]
+  
+  // Related Products (FrozenProduct IDs that are used in this recipe)
+  productIds   String[]
+  
+  // Engagement
+  likes        Int      @default(0)
+  views        Int      @default(0)
+  
+  // Status
+  isPublished  Boolean  @default(false)
+  isFeatured   Boolean  @default(false)
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@unique([brandId, slug])
+  @@index([brandId])
+  @@index([category])
+  @@index([isPublished])
+  @@index([isFeatured])
+  @@map("recipe_posts")
 }
