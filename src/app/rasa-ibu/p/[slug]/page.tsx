@@ -90,7 +90,6 @@ async function CampaignContent({ slug }: { slug: string }) {
                                 bundle={bundle}
                                 onAddToCart={(b) => {
                                     // Logic for add to cart bundle
-                                    console.log('Adding bundle to cart:', b);
                                 }}
                             />
                         ))}

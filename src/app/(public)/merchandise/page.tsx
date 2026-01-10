@@ -75,17 +75,13 @@ export default function MerchandisePage() {
     useEffect(() => {
         const fetchCollections = async () => {
             try {
-                console.log('Fetching collections...');
                 const res = await fetch('/api/public/merch/collections');
-                console.log('Collections response status:', res.status);
                 const data = await res.json();
-                console.log('Collections data:', data);
                 setCollections(Array.isArray(data) ? data : []);
             } catch (error) {
                 console.error('Failed to fetch collections:', error);
                 setCollections([]);
             } finally {
-                console.log('Collections loading complete');
             }
         };
 

@@ -41,10 +41,6 @@ export async function POST(
         // Use brandId from body (sent by frontend) as primary source
         const brandId = body.brandId || paramBrandId;
 
-        console.log('[Subscription Plan POST] paramBrandId:', paramBrandId);
-        console.log('[Subscription Plan POST] body.brandId:', body.brandId);
-        console.log('[Subscription Plan POST] final brandId:', brandId);
-        console.log('[Subscription Plan POST] Received body:', JSON.stringify(body, null, 2));
 
         if (!brandId) {
             return NextResponse.json({ error: "Brand ID is required" }, { status: 400 });

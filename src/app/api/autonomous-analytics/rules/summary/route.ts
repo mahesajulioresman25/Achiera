@@ -8,23 +8,14 @@ export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
         const brandId = searchParams.get('brandId');
-        console.log(`[API] rules/summary called for brandId: ${brandId}`);
-
-        // Debug Prisma instance
-        console.log('[API] Prisma keys:', Object.keys(prisma));
-        // Check if decisionRule exists
-        // @ts-ignore
-        console.log('[API] Has decisionRule:', !!prisma.decisionRule);
 
         if (!brandId) {
-            console.log('[API] brandId is invalid');
             return NextResponse.json(
                 { error: 'brandId is required' },
                 { status: 400 }
             );
         }
 
-        console.log('[API] Fetching counts by level...');
         // Get rule counts by level
         const byLevel = await Promise.all(
             [0, 1, 2, 3].map(async (level) => {
@@ -62,11 +53,6 @@ export async function GET(request: NextRequest) {
         });
     } catch (error) {
         console.error('Error fetching rules summary:', error);
-        // Force log to stdout
-        console.log('CRITICAL API ERROR:', error);
-        if (error instanceof Error) {
-            console.log('Stack:', error.stack);
-        }
         return NextResponse.json(
             { error: 'Failed to fetch rules summary', details: String(error) },
             { status: 500 }
