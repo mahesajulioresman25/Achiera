@@ -26,15 +26,27 @@ export default async function OwnerDashboardPage() {
     const strategyService = new GlobalStrategyService();
     const workforceService = new WorkforceAnalyticsService();
 
-    const stats = await service.getGlobalStats();
-    const brands = await service.getBrandComparison();
-    const risks = await service.getRisks();
-    const assetPortfolio = await service.getGlobalAssetPortfolio();
-    const consolidatedFinancials = await service.getConsolidatedFinancials();
-    const synergyOpportunities = await synergyService.analyzeSynergy();
-    const briefing = await strategyService.generateDailyBriefing();
-    const workforceMetrics = await workforceService.getWorkforceMetrics();
-    const interactions = await service.getRecentInteractions();
+    const [
+        stats,
+        brands,
+        risks,
+        assetPortfolio,
+        consolidatedFinancials,
+        synergyOpportunities,
+        briefing,
+        workforceMetrics,
+        interactions
+    ] = await Promise.all([
+        service.getGlobalStats(),
+        service.getBrandComparison(),
+        service.getRisks(),
+        service.getGlobalAssetPortfolio(),
+        service.getConsolidatedFinancials(),
+        synergyService.analyzeSynergy(),
+        strategyService.generateDailyBriefing(),
+        workforceService.getWorkforceMetrics(),
+        service.getRecentInteractions()
+    ]);
 
     // Formatters
     const currency = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 });
