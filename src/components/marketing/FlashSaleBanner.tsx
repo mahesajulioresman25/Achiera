@@ -14,7 +14,6 @@ export default function FlashSaleBanner({ activeFlashSale }: FlashSaleBannerProp
     const router = useRouter();
 
     useEffect(() => {
-        console.log('[FlashSaleBanner] Active Data:', activeFlashSale);
         if (!activeFlashSale) return;
 
         const isUpcoming = activeFlashSale.status === 'UPCOMING';
