@@ -24,7 +24,11 @@ export async function verifyRestore(): Promise<VerificationResult> {
 
     // 1. Table count
     try {
-        const tables = await prisma.$queryRaw<Array<any>>`SHOW TABLES`;
+        const tables = await prisma.$queryRaw<Array<any>>`
+            SELECT table_name 
+            FROM information_schema.tables 
+            WHERE table_schema = 'public'
+        `;
         const tableCount = tables.length;
 
         checks.push({
@@ -139,10 +143,9 @@ export async function verifyRestore(): Promise<VerificationResult> {
     try {
         // Verify critical indexes exist
         const indexes = await prisma.$queryRaw<Array<any>>`
-            SELECT DISTINCT TABLE_NAME, INDEX_NAME
-            FROM INFORMATION_SCHEMA.STATISTICS
-            WHERE TABLE_SCHEMA = DATABASE()
-            AND INDEX_NAME != 'PRIMARY'
+            SELECT tablename as "TABLE_NAME", indexname as "INDEX_NAME"
+            FROM pg_indexes
+            WHERE schemaname = 'public'
         `;
 
         checks.push({

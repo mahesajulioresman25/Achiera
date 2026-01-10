@@ -15,15 +15,15 @@ async function setupBankAccounts() {
         // 1. Setup Rasa Ibu Bank Account
         if (rasaIbu) {
             await prisma.$executeRaw`
-                INSERT INTO bank_accounts (id, brandId, bankName, accountNumber, accountHolder, isActive, createdAt, updatedAt)
-                VALUES ('rasa-ibu-bca-main', ${rasaIbu.id}, 'BCA', '8000818181', 'RASA IBU - ACHIERA', 1, NOW(), NOW())
-                ON DUPLICATE KEY UPDATE
-                brandId = ${rasaIbu.id},
-                bankName = 'BCA',
-                accountNumber = '8000818181',
-                accountHolder = 'RASA IBU - ACHIERA',
-                isActive = 1,
-                updatedAt = NOW();
+                INSERT INTO bank_accounts (id, "brandId", "bankName", "accountNumber", "accountHolder", "isActive", "createdAt", "updatedAt")
+                VALUES ('rasa-ibu-bca-main', ${rasaIbu.id}, 'BCA', '8000818181', 'RASA IBU - ACHIERA', true, NOW(), NOW())
+                ON CONFLICT (id) DO UPDATE SET
+                "brandId" = EXCLUDED."brandId",
+                "bankName" = EXCLUDED."bankName",
+                "accountNumber" = EXCLUDED."accountNumber",
+                "accountHolder" = EXCLUDED."accountHolder",
+                "isActive" = EXCLUDED."isActive",
+                "updatedAt" = NOW();
             `;
             console.log('✅ Rasa Ibu Bank Account configured (BCA)');
         } else {
@@ -33,15 +33,15 @@ async function setupBankAccounts() {
         // 2. Setup ACHIERA Merch Bank Account
         if (merch) {
             await prisma.$executeRaw`
-                INSERT INTO bank_accounts (id, brandId, bankName, accountNumber, accountHolder, isActive, createdAt, updatedAt)
-                VALUES ('achiera-merch-bca-main', ${merch.id}, 'BCA', '1234567890', 'ACHIERA MERCHANDISE', 1, NOW(), NOW())
-                ON DUPLICATE KEY UPDATE
-                brandId = ${merch.id},
-                bankName = 'BCA',
-                accountNumber = '1234567890',
-                accountHolder = 'ACHIERA MERCHANDISE',
-                isActive = 1,
-                updatedAt = NOW();
+                INSERT INTO bank_accounts (id, "brandId", "bankName", "accountNumber", "accountHolder", "isActive", "createdAt", "updatedAt")
+                VALUES ('achiera-merch-bca-main', ${merch.id}, 'BCA', '1234567890', 'ACHIERA MERCHANDISE', true, NOW(), NOW())
+                ON CONFLICT (id) DO UPDATE SET
+                "brandId" = EXCLUDED."brandId",
+                "bankName" = EXCLUDED."bankName",
+                "accountNumber" = EXCLUDED."accountNumber",
+                "accountHolder" = EXCLUDED."accountHolder",
+                "isActive" = EXCLUDED."isActive",
+                "updatedAt" = NOW();
             `;
             console.log('✅ ACHIERA Merch Bank Account configured (BCA)');
         } else {
@@ -50,15 +50,15 @@ async function setupBankAccounts() {
 
         // 3. Setup Global Bank Account (nullable brandId)
         await prisma.$executeRaw`
-            INSERT INTO bank_accounts (id, brandId, bankName, accountNumber, accountHolder, isActive, createdAt, updatedAt)
-            VALUES ('global-mandiri-main', NULL, 'Mandiri', '9876543210', 'ACHIERA GROUP', 1, NOW(), NOW())
-            ON DUPLICATE KEY UPDATE
-            brandId = NULL,
-            bankName = 'Mandiri',
-            accountNumber = '9876543210',
-            accountHolder = 'ACHIERA GROUP',
-            isActive = 1,
-            updatedAt = NOW();
+            INSERT INTO bank_accounts (id, "brandId", "bankName", "accountNumber", "accountHolder", "isActive", "createdAt", "updatedAt")
+            VALUES ('global-mandiri-main', NULL, 'Mandiri', '9876543210', 'ACHIERA GROUP', true, NOW(), NOW())
+            ON CONFLICT (id) DO UPDATE SET
+            "brandId" = EXCLUDED."brandId",
+            "bankName" = EXCLUDED."bankName",
+            "accountNumber" = EXCLUDED."accountNumber",
+            "accountHolder" = EXCLUDED."accountHolder",
+            "isActive" = EXCLUDED."isActive",
+            "updatedAt" = NOW();
         `;
         console.log('✅ Global Bank Account configured (Mandiri)');
 
