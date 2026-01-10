@@ -42,6 +42,7 @@ export class FrozenProductService {
             // 2. Create product
             const product = await tx.frozenProduct.create({
                 data: {
+                    brandId: ctx.brandId,
                     categoryId: input.categoryId,
                     name: input.name,
                     slug: input.slug,

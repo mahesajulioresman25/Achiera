@@ -14,9 +14,11 @@ class WhatsAppEngine extends EventEmitter {
 
     // Periodically sync status from the external service
     private async startSync() {
+        console.log(`[WA Engine Client] Starting sync with ${WA_SERVICE_URL}`);
         setInterval(async () => {
             try {
                 const res = await fetch(`${WA_SERVICE_URL}/status`);
+                if (!res.ok) throw new Error(`Status fetch failed: ${res.status}`);
                 const data = await res.json();
                 this.state = data.state;
                 this.qr = data.qr;
@@ -26,14 +28,15 @@ class WhatsAppEngine extends EventEmitter {
                 } else if (this.state === 'QR' && this.qr) {
                     this.emit('qr', this.qr);
                 }
-            } catch (e) {
+            } catch (e: any) {
+                console.error(`[WA Engine Client] Sync Error (${WA_SERVICE_URL}):`, e.message);
                 this.state = 'DISCONNECTED';
             }
         }, 5000);
     }
 
     async init() {
-        console.log(`[WA Engine Client] Initialized ${ENGINE_VERSION}.`);
+        console.log(`[WA Engine Client] Initialized ${ENGINE_VERSION}. Target: ${WA_SERVICE_URL}`);
     }
 
     getStatus() {

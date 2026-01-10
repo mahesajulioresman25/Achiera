@@ -457,12 +457,13 @@ export async function getPriceAnalysisAction(variantId: string) {
 
         const journals = await prisma.journalTransaction.findMany({
             where: {
+                brandId, // Added for isolation
                 referenceType: 'STOCK_MUTATION',
                 referenceId: { in: mutationIds }
             },
             include: {
                 entries: {
-                    take: 1 // We just need the debit amount (unit cost)
+                    take: 1
                 }
             }
         });
@@ -528,6 +529,7 @@ export async function getBrandPriceAnalysisAction(brandId: string) {
 
         const journals = await prisma.journalTransaction.findMany({
             where: {
+                brandId, // Added for isolation isolation
                 referenceType: 'STOCK_MUTATION',
                 referenceId: { in: mutationIds }
             },
