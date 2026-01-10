@@ -73,19 +73,39 @@ export const authOptions: NextAuthOptions = {
                 const { email, password, otpToken } = credentials;
 
                 console.log(`[AUTH] Authorizing user: ${credentials.email}`);
-                const user = await prisma.user.findUnique({
-                    where: { email: credentials.email },
-                    include: {
-                        brandRoles: {
-                            include: { brand: { select: { name: true, slug: true } } }
-                        }
-                    }
-                });
+
+                // Use raw query to bypass brand isolation extension
+                const users = await prisma.$queryRaw<any[]>`
+                    SELECT id, email, name, phone, address, "profileImage", "passwordHash", "globalRole"
+                    FROM users
+                    WHERE email = ${credentials.email}
+                    LIMIT 1
+                `;
+
+                const user = users[0];
 
                 if (!user) {
                     console.log(`[AUTH] User not found: ${credentials.email}`);
                     return null;
                 }
+
+                // Fetch brand roles separately
+                const brandRoles = await prisma.$queryRaw<any[]>`
+                    SELECT br."brandId", br.role, b.name as "brandName", b.slug as "brandSlug"
+                    FROM brand_roles br
+                    INNER JOIN brands b ON br."brandId" = b.id
+                    WHERE br."userId" = ${user.id}
+                `;
+
+                // Attach brandRoles to user object
+                user.brandRoles = brandRoles.map((br: any) => ({
+                    brandId: br.brandId,
+                    role: br.role,
+                    brand: {
+                        name: br.brandName,
+                        slug: br.brandSlug
+                    }
+                }));
 
                 if (otpToken) {
                     // Login via OTP Token
