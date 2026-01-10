@@ -64,8 +64,16 @@ export default function FinancialReportsModal({ brandId, onClose }: FinancialRep
         loadData();
     }, [activeTab, brandId, dateRange]);
 
+    const [isPrinting, setIsPrinting] = useState(false);
+
     const handlePrint = () => {
+        if (isPrinting) return; // Prevent duplicate clicks
+        setIsPrinting(true);
+
         window.print();
+
+        // Reset after 2 seconds
+        setTimeout(() => setIsPrinting(false), 2000);
     };
 
     // Helper to calculate common-size %
@@ -91,13 +99,13 @@ export default function FinancialReportsModal({ brandId, onClose }: FinancialRep
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1A241A]/60 backdrop-blur-md p-6">
-            <div className="bg-[#FDFBF7] w-full max-w-6xl max-h-[90vh] rounded-[3rem] shadow-2xl border border-[#E5E1D8] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-500 relative print:shadow-none print:max-h-none print:overflow-visible print:rounded-none">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1A241A]/60 backdrop-blur-md p-2 sm:p-4 lg:p-6">
+            <div className="bg-[#FDFBF7] w-full max-w-[98vw] sm:max-w-[95vw] lg:max-w-6xl max-h-[95vh] sm:max-h-[90vh] rounded-2xl sm:rounded-[3rem] shadow-2xl border border-[#E5E1D8] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-500 relative print:shadow-none print:max-h-none print:overflow-visible print:rounded-none">
 
                 {/* Header */}
-                <div className="px-10 py-6 border-b border-[#E5E1D8] bg-white flex justify-between items-center shrink-0 print:hidden">
-                    <div className="flex items-center gap-6">
-                        <div className="p-4 bg-amber-50 rounded-2xl">
+                <div className="px-4 sm:px-6 lg:px-10 py-4 sm:py-6 border-b border-[#E5E1D8] bg-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0 print:hidden">
+                    <div className="flex items-center gap-3 sm:gap-6 w-full sm:w-auto">
+                        <div className="p-3 sm:p-4 bg-amber-50 rounded-xl sm:rounded-2xl">
                             <FileText className="w-8 h-8 text-[#8B7E66]" />
                         </div>
                         <div className="space-y-1">
@@ -124,12 +132,13 @@ export default function FinancialReportsModal({ brandId, onClose }: FinancialRep
                         />
                     </div>
 
-                    <div className="flex items-center gap-4">
-                        <button onClick={handlePrint} className="p-3 hover:bg-slate-100 rounded-full transition-colors group" title="Print Report">
-                            <Printer className="w-6 h-6 text-slate-400 group-hover:text-[#2D3A2D]" />
+                    <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
+                        <button onClick={handlePrint} className="flex-1 sm:flex-none px-3 sm:px-5 py-2.5 sm:py-3 bg-white border-2 border-[#E5E1D8] rounded-xl sm:rounded-2xl hover:bg-amber-50 hover:border-amber-200 transition-all duration-300 flex items-center justify-center gap-2 group min-h-[44px]">
+                            <Printer className="w-4 h-4 text-slate-600 group-hover:text-amber-600 transition-colors" />
+                            <span className="text-xs sm:text-sm font-black text-slate-700 group-hover:text-amber-700 hidden sm:inline">Print</span>
                         </button>
-                        <button onClick={onClose} className="p-3 hover:bg-slate-100 rounded-full transition-colors">
-                            <X className="w-6 h-6 text-slate-400" />
+                        <button onClick={onClose} className="p-2.5 sm:p-3 bg-white border-2 border-[#E5E1D8] rounded-xl sm:rounded-2xl hover:bg-red-50 hover:border-red-200 transition-all duration-300 group min-h-[44px] min-w-[44px]">
+                            <X className="w-5 h-5 text-slate-600 group-hover:text-red-600 transition-colors" />
                         </button>
                     </div>
                 </div>
@@ -161,7 +170,15 @@ export default function FinancialReportsModal({ brandId, onClose }: FinancialRep
                             <div className="w-12 h-12 border-4 border-amber-200 border-t-[#8B7E66] rounded-full animate-spin"></div>
                             <p className="text-[10px] font-black uppercase tracking-widest text-[#8B7E66]">Menghitung Angka...</p>
                         </div>
-                    ) : (data && (
+                    ) : (!data) ? (
+                        <div className="flex flex-col items-center justify-center py-20 space-y-4 opacity-50">
+                            <div className="p-4 bg-slate-100 rounded-full">
+                                <FileText className="w-8 h-8 text-slate-400" />
+                            </div>
+                            <p className="text-sm font-bold text-slate-500">Belum ada data laporan.</p>
+                            <p className="text-xs text-slate-400">Pastikan Chart of Accounts sudah diinisialisasi dan terdapat transaksi.</p>
+                        </div>
+                    ) : (
                         <div className="max-w-5xl mx-auto space-y-12">
 
                             {/* REPORT VIEWS */}
@@ -489,10 +506,12 @@ export default function FinancialReportsModal({ brandId, onClose }: FinancialRep
                                 <div className="max-w-4xl mx-auto space-y-12">
                                     <div className="text-center space-y-4">
                                         <div className="inline-block p-4 bg-slate-900 rounded-full mb-2">
-                                            <FileText className="w-8 h-8 text-white" />
+                                            <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600" />
                                         </div>
-                                        <h3 className="text-3xl font-black text-[#2D3A2D]">Catatan Atas Laporan Keuangan</h3>
-                                        <p className="text-sm font-bold text-slate-400 uppercase tracking-[0.4em]">Notes to Financial Statements</p>
+                                        <div className="flex-1 sm:flex-none">
+                                            <h2 className="text-lg sm:text-xl lg:text-2xl font-black text-[#1A241A] tracking-tight">Laporan Keuangan</h2>
+                                            <p className="text-[9px] sm:text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-0.5 sm:mt-1">Financial Statements</p>
+                                        </div>
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -517,7 +536,7 @@ export default function FinancialReportsModal({ brandId, onClose }: FinancialRep
                                 </div>
                             )}
                         </div>
-                    ))}
+                    )}
                 </div>
 
                 {/* DRILL DOWN MODAL (OVERLAY) */}

@@ -205,8 +205,15 @@ export async function upsertIbuCategory(data: {
 }) {
     try {
         const slug = data.name.toLowerCase().replace(/\s+/g, '-');
+
+        // If updating existing category (has id), use id + brandId
+        // If creating new category, use brandId + slug
+        const whereClause = data.id
+            ? { id_brandId: { id: data.id, brandId: data.brandId } }
+            : { brandId_slug: { brandId: data.brandId, slug } };
+
         const category = await prisma.frozenCategory.upsert({
-            where: { id: data.id || 'new' },
+            where: whereClause,
             create: {
                 brandId: data.brandId,
                 name: data.name,
@@ -217,7 +224,7 @@ export async function upsertIbuCategory(data: {
             } as any,
             update: {
                 name: data.name,
-                slug,
+                slug, // Update slug too in case name changed
                 description: data.description,
                 isActive: data.isActive,
                 displayOrder: data.displayOrder
@@ -242,7 +249,9 @@ export async function upsertInventoryCategory(data: {
     try {
         const slug = data.name.toLowerCase().replace(/\s+/g, '-');
         const category = await (prisma as any).inventoryCategory.upsert({
-            where: { id: data.id || 'new' },
+            where: {
+                brandId_slug: { brandId: data.brandId, slug }
+            },
             create: {
                 brandId: data.brandId,
                 name: data.name,
@@ -251,7 +260,6 @@ export async function upsertInventoryCategory(data: {
             } as any,
             update: {
                 name: data.name,
-                slug,
                 type: data.type
             } as any
         });
