@@ -77,7 +77,7 @@ export const authOptions: NextAuthOptions = {
                 // Use raw query to bypass brand isolation extension
                 const users = await prisma.$queryRaw<any[]>`
                     SELECT id, email, name, phone, address, "profileImage", "passwordHash", "globalRole"
-                    FROM "User"
+                    FROM users
                     WHERE email = ${credentials.email}
                     LIMIT 1
                 `;
@@ -92,8 +92,8 @@ export const authOptions: NextAuthOptions = {
                 // Fetch brand roles separately
                 const brandRoles = await prisma.$queryRaw<any[]>`
                     SELECT br."brandId", br.role, b.name as "brandName", b.slug as "brandSlug"
-                    FROM "BrandRole" br
-                    INNER JOIN "Brand" b ON br."brandId" = b.id
+                    FROM user_brand_roles br
+                    INNER JOIN brands b ON br."brandId" = b.id
                     WHERE br."userId" = ${user.id}
                 `;
 

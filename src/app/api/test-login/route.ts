@@ -22,7 +22,7 @@ export async function GET(request: Request) {
         // Use raw query to bypass brand isolation extension
         const users = await prisma.$queryRaw<any[]>`
             SELECT id, email, name, "passwordHash", "globalRole"
-            FROM "User"
+            FROM users
             WHERE email = ${email}
             LIMIT 1
         `;
