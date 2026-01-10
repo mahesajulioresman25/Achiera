@@ -59,7 +59,7 @@ export default function PublicNav({ navLinks, whatsapp, instagramHandle = '@rasa
                     {/* Logo */}
                     <Link href="/rasa-ibu" className="relative z-[70] flex items-center gap-3 group">
                         <img
-                            src="/images/brand/logo.png"
+                            src="/images/logos/rasa-ibu-logo.png"
                             alt="Rasa Ibu"
                             className="h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
                         />
@@ -149,7 +149,7 @@ export default function PublicNav({ navLinks, whatsapp, instagramHandle = '@rasa
                 {/* Internal Overlay Header */}
                 <div className="h-20 px-6 flex items-center justify-between border-b border-[#E5E1D8]/50 bg-[#FDFBF7]">
                     <img
-                        src="/images/brand/logo.png"
+                        src="/images/logos/rasa-ibu-logo.png"
                         alt="Rasa Ibu"
                         className="h-10 w-auto object-contain"
                     />

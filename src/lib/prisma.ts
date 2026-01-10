@@ -17,25 +17,7 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 // 1. The base client is our "unisolated" instance
-// Force connection_limit=10 if not present to prevent P2024 errors
-const getClientWithPoolFix = () => {
-    let url = process.env.DATABASE_URL || "";
-    if (url && !url.includes("connection_limit")) {
-        const separator = url.includes("?") ? "&" : "?";
-        url = `${url}${separator}connection_limit=10&pool_timeout=20`;
-    }
-
-    return new PrismaClient({
-        datasources: {
-            db: {
-                url: url,
-            },
-        },
-        log: ['error', 'warn'],
-    });
-};
-
-export const unisolatedPrisma = globalForPrisma.basePrisma ?? getClientWithPoolFix();
+export const unisolatedPrisma = globalForPrisma.basePrisma ?? baseClientSingleton();
 
 // 2. The extended client is our "isolated" instance
 export const prisma = globalForPrisma.extendedPrisma ?? (

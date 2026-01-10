@@ -3,6 +3,8 @@ import Footer from "@/components/Footer";
 import SeasonalDecorations from "@/components/ui/SeasonalDecorations";
 import { unisolatedPrisma as prisma } from "@/lib/prisma";
 
+export const dynamic = 'force-dynamic';
+
 export default async function RasaIbuLayout({
     children,
 }: {
