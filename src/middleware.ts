@@ -102,6 +102,6 @@ export const config = {
     matcher: [
         '/dashboard/:path*',
         '/login',
-        '/api/((?!debug-env|debug-login).*)'  // Exclude debug endpoints
+        '/api/((?!debug-).*)'  // Exclude all debug-* endpoints
     ],
 };
