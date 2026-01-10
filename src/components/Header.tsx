@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Menu, X, ShoppingBag } from 'lucide-react';
 import Button from './Button';
 import { useCart } from '@/lib/contexts/CartContext';
@@ -22,7 +23,17 @@ export default function Header() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    const navLinks = [
+    const isRasaIbu = pathname?.startsWith('/rasa-ibu');
+    const brandName = isRasaIbu ? 'RASA IBU' : 'ACHIERA';
+
+    const navLinks = isRasaIbu ? [
+        { name: 'Home', href: '/rasa-ibu' },
+        { name: 'Products', href: '/rasa-ibu/products' },
+        { name: 'Subscription', href: '/rasa-ibu/subscribe' },
+        { name: 'Recipes', href: '/rasa-ibu/recipes' },
+        { name: 'About', href: '/rasa-ibu/about' },
+        { name: 'Main Hub', href: '/' },
+    ] : [
         { name: 'Home', href: '/' },
         { name: 'Rasa Ibu', href: '/rasa-ibu' },
         { name: 'Merchandise', href: '/merchandise' },
@@ -40,8 +51,10 @@ export default function Header() {
                     }`}
             >
                 <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
-                    <Link href="/" className="text-2xl font-bold tracking-tighter group">
-                        <span className="text-[var(--foreground)] group-hover:text-[var(--primary)] transition-all duration-300">ACHIERA</span>
+                    <Link href={isRasaIbu ? "/rasa-ibu" : "/"} className="text-2xl font-bold tracking-tighter group">
+                        <span className={isRasaIbu ? "text-[#2D3A2D]" : "text-[var(--foreground)] group-hover:text-[var(--primary)] transition-all duration-300"}>
+                            {brandName}
+                        </span>
                     </Link>
 
                     {/* Desktop Nav */}

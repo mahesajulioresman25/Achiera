@@ -1,37 +1,34 @@
 import { PrismaClient } from '@prisma/client';
 import { brandIsolationExtension } from './auth/brandIsolation';
 
-const prismaClientSingleton = () => {
-    const client = new PrismaClient({
-        log: ['query', 'error', 'info', 'warn'],
+const baseClientSingleton = () => {
+    return new PrismaClient({
+        log: ['error', 'warn'],
     });
-
-    // Only apply extension on the server side to prevent browser bundling issues
-    if (typeof window === 'undefined') {
-        return client.$extends(brandIsolationExtension);
-    }
-
-    return client as any;
 };
-
-// Define the stable extended type for the entire application
-// We use 'any' as a fallback to prevent "Excessive stack depth" in complex environments
-// while still providing better-than-nothing types for the models.
-export type ExtendedPrismaClient = any;
-
-const globalForPrisma = globalThis as unknown as {
-    prisma: ExtendedPrismaClient | undefined;
-};
-
-const basePrisma = globalForPrisma.prisma ?? prismaClientSingleton();
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = basePrisma;
-
-export const prisma: ExtendedPrismaClient = basePrisma;
 
 /**
- * Unisolated Prisma client for global/executive operations (OWNER level only)
- * Use with extreme caution as it bypasses brand isolation.
+ * We use globalThis to maintain a single Prisma instance during development hot reloads.
+ * This also ensures only one connection pool is created in serverless environments.
  */
-export const unisolatedPrisma = new PrismaClient({
-    log: ['error', 'warn'],
-});
+const globalForPrisma = globalThis as unknown as {
+    basePrisma: PrismaClient | undefined;
+    extendedPrisma: any | undefined;
+};
+
+// 1. The base client is our "unisolated" instance
+export const unisolatedPrisma = globalForPrisma.basePrisma ?? baseClientSingleton();
+
+// 2. The extended client is our "isolated" instance
+export const prisma = globalForPrisma.extendedPrisma ?? (
+    typeof window === 'undefined'
+        ? unisolatedPrisma.$extends(brandIsolationExtension)
+        : unisolatedPrisma
+);
+
+if (process.env.NODE_ENV !== 'production') {
+    globalForPrisma.basePrisma = unisolatedPrisma;
+    globalForPrisma.extendedPrisma = prisma;
+}
+
+export type ExtendedPrismaClient = typeof prisma;
