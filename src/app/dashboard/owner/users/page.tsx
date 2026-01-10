@@ -22,7 +22,7 @@ export default async function OwnerUserManagementPage() {
                 SELECT json_agg(br_json)
                 FROM (
                     SELECT br.*, row_to_json(b.*) as brand
-                    FROM brand_roles br
+                    FROM user_brand_roles br
                     LEFT JOIN brands b ON br."brandId" = b.id
                     WHERE br."userId" = u.id
                 ) br_json

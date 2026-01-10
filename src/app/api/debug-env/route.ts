@@ -20,18 +20,27 @@ export async function GET() {
         // We can't easily import the constant from the middleware file if it's not exported 
         // or if it causes cyclic imports, so we'll just check the logic by trial.
 
+        // Check if user_brand_roles table exists
+        let tableCheck = 'unknown';
+        try {
+            await unisolatedPrisma.$queryRaw`SELECT 1 FROM user_brand_roles LIMIT 1`;
+            tableCheck = 'EXISTS (user_brand_roles)';
+        } catch (e: any) {
+            tableCheck = `MISSING (Error: ${e.message})`;
+        }
+
         const debugInfo = {
             timestamp: new Date().toISOString(),
             env: process.env.NODE_ENV,
-            aiModel: 'Checking...',
+            aiModel: 'claude-3-5-sonnet-20241022', // Expected current model
+            sqlDiagnostics: {
+                tableStatus: tableCheck,
+                userTable: 'users',
+                brandTable: 'brands'
+            },
             prismaClients: {
                 isSame: (prisma as any) === (unisolatedPrisma as any),
                 extendedHasIsolation: typeof (prisma as any).$extends === 'function',
-            },
-            isolationConfig: {
-                // We'll try to deduce if User is in GLOBAL_MODELS by looking at the code if possible
-                // but since it's a constant in brandIsolation.ts, we'll just report what we expect.
-                expectedUserInGlobal: true,
             }
         };
 

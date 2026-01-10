@@ -56,7 +56,7 @@ Respond ONLY in JSON. Use Bahasa Indonesia.
         // 3. Call Claude (Using 3.5 Sonnet for Strategy & Caching)
         try {
             const message = await (anthropic.messages as any).create({
-                model: 'claude-3-5-sonnet-20240620',
+                model: 'claude-3-5-sonnet-20241022',
                 max_tokens: 1000,
                 system: [
                     {
