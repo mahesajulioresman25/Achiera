@@ -89,7 +89,7 @@ export default function RasaIbuFooter({ config, paymentSettings }: { config?: an
                 </div>
 
                 <div className="pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-[#B2BCA2] gap-4">
-                    <p>&copy; {new Date().getFullYear()} Rasa Ibu by Achiera. All rights reserved.</p>
+                    <p>&copy; {new Date().getFullYear()} Rasa Ibu by Achiera. All rights reserved. (System v2.5)</p>
                     <div className="flex items-center gap-1">
                         Made with <Heart className="w-3 h-3 text-pink-500 fill-current" /> for Families
                     </div>
