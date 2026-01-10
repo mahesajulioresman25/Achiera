@@ -9,6 +9,7 @@ import { useCart } from '@/lib/contexts/CartContext';
 import CartDrawer from './cart/CartDrawer';
 
 export default function Header() {
+    const pathname = usePathname();
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const { items, setIsCartOpen } = useCart();

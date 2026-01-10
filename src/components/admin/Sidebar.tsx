@@ -33,6 +33,96 @@ export default function Sidebar({ brandSlug }: SidebarProps) {
     const brandRoles = (session?.user as any)?.brandRoles || [];
     const currentBrand = brandRoles.find((br: any) => br.brandSlug === brandSlug);
 
+    const merchMenuItems = [
+        {
+            title: 'Dashboard',
+            href: `/dashboard/${brandSlug}`,
+            icon: LayoutDashboard,
+        },
+        {
+            title: 'Content',
+            items: [
+                { title: 'Hero & Highlight', href: `/dashboard/${brandSlug}/hero`, icon: FileText },
+                { title: 'Hero Slides', href: `/dashboard/${brandSlug}/hero-slides`, icon: ImageIcon },
+            ],
+        },
+        {
+            title: 'Collections',
+            href: `/dashboard/${brandSlug}/collections`,
+            icon: Package,
+        },
+        {
+            title: 'Catalogue Requests',
+            href: `/dashboard/${brandSlug}/catalogue-requests`,
+            icon: Mail,
+        },
+        {
+            title: 'Orders',
+            href: `/dashboard/${brandSlug}/orders`,
+            icon: Package,
+        },
+        {
+            title: 'Pricing Engine',
+            items: [
+                { title: 'Price Rules', href: `/dashboard/${brandSlug}/pricing/rules`, icon: DollarSign },
+                { title: 'Components', href: `/dashboard/${brandSlug}/pricing/components`, icon: Package },
+            ],
+        },
+        {
+            title: 'Marketing',
+            items: [
+                { title: 'Overview', href: `/dashboard/${brandSlug}/marketing`, icon: Sparkles },
+                { title: 'Campaigns', href: `/dashboard/${brandSlug}/marketing/campaigns`, icon: Megaphone },
+                { title: 'Flash Sale', href: `/dashboard/${brandSlug}/marketing/flash-sale`, icon: Zap },
+            ],
+        },
+        {
+            title: 'Analytics',
+            href: `/dashboard/${brandSlug}/analytics`,
+            icon: BarChart3,
+        },
+        {
+            title: 'Settings',
+            href: `/dashboard/${brandSlug}/settings`,
+            icon: Palette,
+        },
+    ];
+
+    const itMenuItems = [
+        {
+            title: 'Dashboard',
+            href: `/dashboard/${brandSlug}`,
+            icon: LayoutDashboard,
+        },
+        {
+            title: 'Content',
+            items: [
+                { title: 'Hero Section', href: `/dashboard/${brandSlug}/content/hero`, icon: FileText },
+                { title: 'Hero Slides', href: `/dashboard/${brandSlug}/content/hero-slides`, icon: ImageIcon },
+            ],
+        },
+        {
+            title: 'Services',
+            href: `/dashboard/${brandSlug}/services`,
+            icon: Briefcase,
+        },
+        {
+            title: 'Case Studies',
+            href: `/dashboard/${brandSlug}/case-studies`,
+            icon: FileCode,
+        },
+        {
+            title: 'Analytics',
+            href: `/dashboard/${brandSlug}/analytics`,
+            icon: BarChart3,
+        },
+        {
+            title: 'Settings',
+            href: `/dashboard/${brandSlug}/settings`,
+            icon: Palette,
+        },
+    ];
+
     const rasaIbuMenuItems = [
         {
             title: 'Dashboard',
