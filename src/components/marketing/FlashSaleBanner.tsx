@@ -23,23 +23,20 @@ export default function FlashSaleBanner({ activeFlashSale }: FlashSaleBannerProp
 
         const calculateTimeLeft = () => {
             const now = new Date();
-            const target = new Date();
-
-            if (timeToTarget) {
-                const [hours, minutes] = timeToTarget.split(':').map(Number);
-                target.setHours(hours, minutes, 0, 0);
-            } else {
-                target.setHours(23, 59, 59, 999);
-            }
+            const target = isUpcoming ? new Date(activeFlashSale.startDate) : new Date(activeFlashSale.endDate);
 
             const diff = target.getTime() - now.getTime();
             if (diff <= 0) return "00:00:00";
 
-            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
             const minutes = Math.floor((diff / (1000 * 60)) % 60);
             const seconds = Math.floor((diff / 1000) % 60);
 
-            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            let timeStr = "";
+            if (days > 0) timeStr += `${days}h `;
+            timeStr += `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            return timeStr;
         };
 
         const timer = setInterval(() => {

@@ -30,33 +30,17 @@ export class FlashSaleService {
             if (!config) return null;
 
             const now = new Date();
-            // 1. Check Date Range (Compare using YYYY-MM-DD strings for timezone safety)
-            const todayStr = now.toISOString().split('T')[0];
-            // @ts-ignore
-            const startStr = config.startDate ? new Date(config.startDate).toISOString().split('T')[0] : null;
-            // @ts-ignore
-            const endStr = config.endDate ? new Date(config.endDate).toISOString().split('T')[0] : null;
+            // Combine Date and Time into full timestamps
+            const getFullTimestamp = (date: Date | null, time: string) => {
+                if (!date) return null;
+                const ts = new Date(date);
+                const [hours, mins] = time.split(':').map(Number);
+                ts.setHours(hours, mins, 0, 0);
+                return ts;
+            };
 
-            if (startStr && todayStr < startStr) {
-                // console.log('[FlashSaleService] NOT ACTIVE: todayStr < startStr', todayStr, startStr);
-                return null;
-            }
-            if (endStr && todayStr > endStr) {
-                // console.log('[FlashSaleService] NOT ACTIVE: todayStr > endStr', todayStr, endStr);
-                return null;
-            }
-
-            // 2. Check Time Range
-            // "11:00" -> HH:mm
-            const [startHour, startMin] = config.startTime.split(':').map(Number);
-            const [endHour, endMin] = config.endTime.split(':').map(Number);
-
-            const currentHour = now.getHours();
-            const currentMin = now.getMinutes();
-
-            const currentMinutes = currentHour * 60 + currentMin;
-            const startMinutes = startHour * 60 + startMin;
-            const endMinutes = endHour * 60 + endMin;
+            const fullStart = getFullTimestamp(config.startDate, config.startTime);
+            const fullEnd = getFullTimestamp(config.endDate, config.endTime);
 
             const configData = {
                 configId: config.id,
@@ -66,25 +50,35 @@ export class FlashSaleService {
                 targetType: config.targetType || 'ALL',
                 // @ts-ignore
                 targetItems: Array.isArray(config.targetIds) ? config.targetIds : [],
-                // @ts-ignore
-                startDate: config.startDate ? (config.startDate as any).toISOString() : null,
-                // @ts-ignore
-                endDate: config.endDate ? (config.endDate as any).toISOString() : null,
+                startDate: fullStart?.toISOString() || null,
+                endDate: fullEnd?.toISOString() || null,
                 startTime: config.startTime,
                 endTime: config.endTime
             };
 
-            if (currentMinutes >= startMinutes && currentMinutes < endMinutes) {
-                // console.log('[FlashSaleService] Flash Sale is ACTIVE');
-                return { ...configData, status: 'ACTIVE' };
-            }
-
-            if (currentMinutes < startMinutes) {
-                // console.log('[FlashSaleService] Flash Sale is UPCOMING');
+            // 1. Check if UPCOMING
+            if (fullStart && now < fullStart) {
                 return { ...configData, status: 'UPCOMING' };
             }
 
-            // console.log('[FlashSaleService] Flash Sale is NOT ACTIVE (Already Ended today)');
+            // 2. Check if ACTIVE
+            if (fullStart && fullEnd && now >= fullStart && now <= fullEnd) {
+                return { ...configData, status: 'ACTIVE' };
+            }
+
+            // Fallback for cases without explicit dates (if any, though schema has them)
+            if (!fullStart || !fullEnd) {
+                const [startHour, startMin] = config.startTime.split(':').map(Number);
+                const [endHour, endMin] = config.endTime.split(':').map(Number);
+                const currentMinutes = now.getHours() * 60 + now.getMinutes();
+                const startMinutes = startHour * 60 + startMin;
+                const endMinutes = endHour * 60 + endMin;
+
+                if (currentMinutes >= startMinutes && currentMinutes < endMinutes) {
+                    return { ...configData, status: 'ACTIVE' };
+                }
+            }
+
             return null;
 
         } catch (error) {

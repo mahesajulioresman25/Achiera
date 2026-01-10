@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma';
+import { prisma, unisolatedPrisma } from '@/lib/prisma';
 
 // Define types manually to avoid build errors if Prisma client is out of sync
 export interface LoyaltyMember {
@@ -131,7 +131,7 @@ export class LoyaltyEngine {
         orderId: string,
         explicitConfig?: LoyaltyConfig
     ) {
-        const member = await (prisma as any).loyaltyMember.findUnique({
+        const member = await (unisolatedPrisma as any).loyaltyMember.findUnique({
             where: { id: memberId }
         });
 
@@ -177,7 +177,7 @@ export class LoyaltyEngine {
         // Check tier upgrade
         const newTier = this.calculateTier(newTotalSpent, config);
 
-        await (prisma as any).loyaltyMember.update({
+        await (unisolatedPrisma as any).loyaltyMember.update({
             where: { id: memberId },
             data: {
                 totalPoints: newTotalPoints,
@@ -193,8 +193,9 @@ export class LoyaltyEngine {
         });
 
         // Record transaction
-        await (prisma as any).loyaltyTransaction.create({
+        await (unisolatedPrisma as any).loyaltyTransaction.create({
             data: {
+                brandId: member.brandId,
                 memberId,
                 type: 'EARN',
                 points,
@@ -217,7 +218,7 @@ export class LoyaltyEngine {
         pointsCost: number,
         description: string
     ) {
-        const member = await (prisma as any).loyaltyMember.findUnique({
+        const member = await (unisolatedPrisma as any).loyaltyMember.findUnique({
             where: { id: memberId }
         });
 
@@ -228,7 +229,7 @@ export class LoyaltyEngine {
 
         const newAvailablePoints = (member.availablePoints || 0) - pointsCost;
 
-        await (prisma as any).loyaltyMember.update({
+        await (unisolatedPrisma as any).loyaltyMember.update({
             where: { id: memberId },
             data: {
                 availablePoints: newAvailablePoints,
@@ -236,8 +237,9 @@ export class LoyaltyEngine {
             } as any
         });
 
-        await (prisma as any).loyaltyTransaction.create({
+        await (unisolatedPrisma as any).loyaltyTransaction.create({
             data: {
+                brandId: member.brandId,
                 memberId,
                 type: 'REDEEM',
                 points: -pointsCost,
@@ -276,7 +278,7 @@ export class LoyaltyEngine {
      * Get global member info across all brands
      */
     async getGlobalMemberInfo(customerPhone: string) {
-        const members = await (prisma as any).loyaltyMember.findMany({
+        const members = await (unisolatedPrisma as any).loyaltyMember.findMany({
             where: { customerPhone },
             include: { brand: true }
         });
@@ -316,7 +318,7 @@ export class LoyaltyEngine {
      * Get total available points for a phone number across the holding
      */
     async getGlobalBalance(customerPhone: string): Promise<number> {
-        const result = await (prisma as any).loyaltyMember.aggregate({
+        const result = await (unisolatedPrisma as any).loyaltyMember.aggregate({
             where: { customerPhone },
             _sum: {
                 availablePoints: true
@@ -335,7 +337,7 @@ export class LoyaltyEngine {
         pointsCost: number,
         description: string
     ) {
-        const members = await (prisma as any).loyaltyMember.findMany({
+        const members = await (unisolatedPrisma as any).loyaltyMember.findMany({
             where: { customerPhone },
             orderBy: { availablePoints: 'desc' } // Prioritize brands with higher balance
         });

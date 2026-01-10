@@ -1,6 +1,6 @@
 'use server';
 
-import { prisma } from '@/lib/prisma';
+import { prisma, unisolatedPrisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 
 export async function createWebsiteOrderAction(data: {
@@ -295,7 +295,7 @@ export async function getUserOrdersAction(userId: string) {
             return [];
         }
 
-        const orders = await prisma.order.findMany({
+        const orders = await unisolatedPrisma.order.findMany({
             where: {
                 customerEmail: user.email
             },
@@ -335,7 +335,7 @@ export async function getUserOrdersAction(userId: string) {
 export async function getCustomerDataByNameAction(name: string) {
     try {
         // Find the most recent successful order with this customer name
-        const order = await prisma.order.findFirst({
+        const order = await unisolatedPrisma.order.findFirst({
             where: {
                 customerName: {
                     contains: name,

@@ -1,6 +1,6 @@
 'use server';
 
-import { prisma } from '@/lib/prisma';
+import { prisma, unisolatedPrisma } from '@/lib/prisma';
 import { smartPricingEngine } from '@/lib/intelligence/smartPricingEngine';
 import { loyaltyEngine } from '@/lib/intelligence/loyaltyEngine';
 import { revalidatePath } from 'next/cache';
@@ -66,7 +66,7 @@ export async function getLoyaltyStats(brandId: string) {
 
 export async function getMemberDetails(memberId: string) {
     try {
-        const member = await prisma.loyaltyMember.findUnique({
+        const member = await unisolatedPrisma.loyaltyMember.findUnique({
             where: { id: memberId },
             include: {
                 transactions: {
@@ -121,7 +121,7 @@ export async function getLoyaltyRewards(brandId: string) {
 
 export async function redeemLoyaltyReward(memberId: string, rewardId: string) {
     try {
-        const reward = await prisma.loyaltyReward.findUnique({
+        const reward = await unisolatedPrisma.loyaltyReward.findUnique({
             where: { id: rewardId }
         });
 
@@ -133,7 +133,7 @@ export async function redeemLoyaltyReward(memberId: string, rewardId: string) {
             `Redeemed: ${reward.name}`
         );
 
-        await prisma.loyaltyReward.update({
+        await unisolatedPrisma.loyaltyReward.update({
             where: { id: rewardId },
             data: { timesRedeemed: { increment: 1 } }
         });

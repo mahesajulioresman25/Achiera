@@ -102,7 +102,9 @@ export default function SubscriptionDataManager({ brandId }: { brandId: string }
             const res = await fetch(`/api/brands/${brandId}/subscriptions`);
             const data = await res.json();
             if (data.success) {
-                setSubscriptions(data.data);
+                const subs = data.data;
+                if (data.debug) (subs as any).debug = data.debug;
+                setSubscriptions(subs);
             } else {
                 toast.error('Failed to fetch subscriptions');
             }
@@ -207,8 +209,13 @@ export default function SubscriptionDataManager({ brandId }: { brandId: string }
                 <div>
                     <h2 className="text-2xl font-black text-slate-800 tracking-tight">Data Pelanggan Berlangganan</h2>
                     <p className="text-slate-500 text-sm">Kelola dan pantau seluruh langganan aktif pelanggan Anda.</p>
+                    <div className="text-[10px] text-stone-300 font-mono mt-1">ID: {brandId}</div>
                 </div>
                 <div className="flex items-center gap-3">
+                    <span className="text-[10px] text-stone-400">Total Filtered: {subscriptions.length}</span>
+                    {(subscriptions as any).debug && (
+                        <span className="text-[10px] text-stone-400">| DB Total: {(subscriptions as any).debug.totalCount}</span>
+                    )}
                     <Button onClick={fetchSubscriptions} variant="outline" size="icon" className="rounded-xl">
                         <Clock className="w-4 h-4 text-slate-500" />
                     </Button>

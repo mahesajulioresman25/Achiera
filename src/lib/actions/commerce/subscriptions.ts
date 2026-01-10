@@ -9,9 +9,12 @@ const MOCK_USER_ID = 'user-demo-id';
 
 export async function getUserSubscriptionsAction() {
     try {
+        const brand = await prisma.brand.findUnique({ where: { slug: 'rasa-ibu' } });
+        if (!brand) return [];
+
         const subscriptions = await prisma.subscription.findMany({
             where: {
-                brandId: 'rasa-ibu', // Scope to current store
+                brandId: brand.id,
                 // userId: userId // Enable this when User model has data
             },
             include: {
@@ -112,6 +115,7 @@ export async function createSubscriptionAction(data: {
     try {
         // Resolve Brand ID
         const brand = await prisma.brand.findUnique({ where: { slug: 'rasa-ibu' } });
+        console.log('[createSubscriptionAction] Resolved brand:', brand ? { id: brand.id, slug: brand.slug } : 'NOT FOUND');
         if (!brand) return { success: false, error: "Brand Rasa Ibu tidak ditemukan." };
 
         let plan = null;
@@ -180,6 +184,7 @@ export async function createSubscriptionAction(data: {
         }
 
         // Create Subscription
+        console.log('[createSubscriptionAction] Creating subscription for brandId:', brand.id);
         const sub = await (prisma as any).subscription.create({
             data: {
                 userId: finalUserId,

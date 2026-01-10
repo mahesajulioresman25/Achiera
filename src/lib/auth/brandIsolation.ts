@@ -9,8 +9,6 @@ import { Prisma } from '@prisma/client';
 const BRAND_SCOPED_MODELS = [
     'Order',
     'PaymentReconciliation',
-    'FrozenProduct',
-    'FrozenVariant',
     'FrozenCategory',
     'InventoryBatch',
     'LedgerAccount',
@@ -38,10 +36,7 @@ const BRAND_SCOPED_MODELS = [
     'HumanAgreementSignal',
     'AssistedAction',
     'Warehouse',
-    'Subscription',
-    'SubscriptionItem',
-    'SubscriptionDelivery',
-    'SubscriptionInvoice'
+    'Subscription'
 ];
 
 /**
