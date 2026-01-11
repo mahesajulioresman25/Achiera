@@ -45,9 +45,9 @@ export async function upsertRecipeAction(data: {
     try {
         const { id, items, ...recipeData } = data;
 
-        const recipe = await prisma.$transaction(async (tx) => {
+        const recipe = await prisma.$transaction(async (tx: any) => {
             const r = await tx.recipe.upsert({
-                where: { id: id || 'new' },
+                where: { id: id || 'new', brandId: recipeData.brandId },
                 update: {
                     ...recipeData,
                     items: {
@@ -175,9 +175,9 @@ export async function completeProductionAction(itemId: string, actualQuantity: n
 /**
  * Get ingredient forecast for a plan
  */
-export async function getIngredientForecastAction(planId: string) {
+export async function getIngredientForecastAction(brandId: string, planId: string) {
     try {
-        const forecast = await ProductionEngine.calculateIngredientForecast(planId);
+        const forecast = await ProductionEngine.calculateIngredientForecast(brandId, planId);
         return { success: true, data: forecast };
     } catch (error: any) {
         return { success: false, error: error.message };
@@ -186,19 +186,19 @@ export async function getIngredientForecastAction(planId: string) {
 /**
  * Get HPP calculation for a recipe
  */
-export async function getRecipeHPPAction(identifier: string) {
+export async function getRecipeHPPAction(brandId: string, identifier: string) {
     try {
         // 1. Try treating identifier as recipeId directly
-        let result = await ProductionEngine.calculateRecipeHPP(identifier);
+        let result = await ProductionEngine.calculateRecipeHPP(brandId, identifier);
         if (result.success) return result;
 
         // 2. If failed, it might be a variantId. Try to find the linked recipe.
         const recipe = await prisma.recipe.findFirst({
-            where: { frozenVariantId: identifier }
+            where: { brandId, frozenVariantId: identifier }
         });
 
         if (recipe) {
-            return await ProductionEngine.calculateRecipeHPP(recipe.id);
+            return await ProductionEngine.calculateRecipeHPP(brandId, recipe.id);
         }
 
         return { success: false, error: 'Recipe not found' };

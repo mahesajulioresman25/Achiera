@@ -154,7 +154,7 @@ export class KPIService {
             _sum: { totalAmount: true, total: true }
         });
 
-        const channelMix = channelOrders.map(ch => ({
+        const channelMix = channelOrders.map((ch: any) => ({
             channel: ch.channel || 'MANUAL',
             revenue: Number(ch._sum.totalAmount || ch._sum.total || 0),
             percentage: currentMonthRevenue > 0
@@ -194,7 +194,7 @@ export class KPIService {
         // EBITDA (simplified: net profit + depreciation)
         const depreciation = await prisma.assetDepreciation.aggregate({
             where: {
-                asset: { brandId },
+                brandId,
                 createdAt: { gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1) }
             },
             _sum: { amount: true }
@@ -244,12 +244,12 @@ export class KPIService {
 
         // Unique customers
         const uniqueCustomers = new Set(
-            orders.map(o => o.customerPhone || o.customerEmail).filter(Boolean)
+            orders.map((o: any) => o.customerPhone || o.customerEmail).filter(Boolean)
         );
         const totalCustomers = uniqueCustomers.size;
 
         // Total revenue
-        const totalRevenue = orders.reduce((sum, o) => sum + Number(o.totalAmount || o.total || 0), 0);
+        const totalRevenue = orders.reduce((sum: number, o: any) => sum + Number(o.totalAmount || o.total || 0), 0);
 
         // Average Order Value
         const averageOrderValue = orders.length > 0 ? totalRevenue / orders.length : 0;
@@ -307,7 +307,7 @@ export class KPIService {
             select: { createdAt: true, updatedAt: true }
         });
 
-        const totalFulfillmentTime = completedOrders.reduce((sum, o) => {
+        const totalFulfillmentTime = completedOrders.reduce((sum: number, o: any) => {
             const time = o.updatedAt.getTime() - o.createdAt.getTime();
             return sum + time;
         }, 0);
@@ -345,12 +345,12 @@ export class KPIService {
         });
 
         const currentAssets = assets
-            .filter(a => a.code.startsWith('1-1')) // Current assets
-            .reduce((sum, a) => sum + Number(a.balance), 0);
+            .filter((a: any) => a.code.startsWith('1-1')) // Current assets
+            .reduce((sum: number, a: any) => sum + Number(a.balance), 0);
 
         const inventory = assets
-            .filter(a => a.code.includes('INVENTORY'))
-            .reduce((sum, a) => sum + Number(a.balance), 0);
+            .filter((a: any) => a.code.includes('INVENTORY'))
+            .reduce((sum: number, a: any) => sum + Number(a.balance), 0);
 
         // Get liabilities
         const liabilities = await prisma.ledgerAccount.findMany({
@@ -359,17 +359,17 @@ export class KPIService {
         });
 
         const currentLiabilities = liabilities
-            .filter(l => l.code.startsWith('2-1')) // Current liabilities
-            .reduce((sum, l) => sum + Number(l.balance), 0);
+            .filter((l: any) => l.code.startsWith('2-1')) // Current liabilities
+            .reduce((sum: number, l: any) => sum + Number(l.balance), 0);
 
-        const totalLiabilities = liabilities.reduce((sum, l) => sum + Number(l.balance), 0);
+        const totalLiabilities = liabilities.reduce((sum: number, l: any) => sum + Number(l.balance), 0);
 
         // Get equity
         const equity = await prisma.ledgerAccount.findMany({
             where: { brandId, type: 'EQUITY' },
             select: { balance: true }
         });
-        const totalEquity = equity.reduce((sum, e) => sum + Number(e.balance), 0);
+        const totalEquity = equity.reduce((sum: number, e: any) => sum + Number(e.balance), 0);
 
         // Calculate ratios
         const currentRatio = currentLiabilities > 0 ? currentAssets / currentLiabilities : 0;
@@ -397,7 +397,7 @@ export class KPIService {
         });
 
         const brandKPIs = await Promise.all(
-            brands.map(brand => this.getKPIDashboard(brand.id))
+            brands.map((brand: any) => this.getKPIDashboard(brand.id))
         );
 
         const validKPIs = brandKPIs.filter(k => k !== null);
@@ -405,11 +405,11 @@ export class KPIService {
         // Aggregate KPIs
         const consolidated = {
             totalBrands: brands.length,
-            avgMonthlyGrowthRate: validKPIs.reduce((sum, k) => sum + (k?.revenue.monthlyGrowthRate || 0), 0) / validKPIs.length,
-            avgGrossProfitMargin: validKPIs.reduce((sum, k) => sum + (k?.profitability.grossProfitMargin || 0), 0) / validKPIs.length,
-            avgNetProfitMargin: validKPIs.reduce((sum, k) => sum + (k?.profitability.netProfitMargin || 0), 0) / validKPIs.length,
-            avgLtvToCacRatio: validKPIs.reduce((sum, k) => sum + (k?.customer.ltvToCacRatio || 0), 0) / validKPIs.length,
-            avgCurrentRatio: validKPIs.reduce((sum, k) => sum + (k?.financialHealth.currentRatio || 0), 0) / validKPIs.length,
+            avgMonthlyGrowthRate: validKPIs.reduce((sum: number, k: any) => sum + (k?.revenue.monthlyGrowthRate || 0), 0) / (validKPIs.length || 1),
+            avgGrossProfitMargin: validKPIs.reduce((sum: number, k: any) => sum + (k?.profitability.grossProfitMargin || 0), 0) / (validKPIs.length || 1),
+            avgNetProfitMargin: validKPIs.reduce((sum: number, k: any) => sum + (k?.profitability.netProfitMargin || 0), 0) / (validKPIs.length || 1),
+            avgLtvToCacRatio: validKPIs.reduce((sum: number, k: any) => sum + (k?.customer.ltvToCacRatio || 0), 0) / (validKPIs.length || 1),
+            avgCurrentRatio: validKPIs.reduce((sum: number, k: any) => sum + (k?.financialHealth.currentRatio || 0), 0) / (validKPIs.length || 1),
             brandKPIs: validKPIs
         };
 

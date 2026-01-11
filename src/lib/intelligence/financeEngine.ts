@@ -53,6 +53,10 @@ export interface FinancialPulse {
         totalWaste: number;
         efficiencyScore: number;
     };
+    profitability: {
+        totalAssets: number;
+        roi: number;
+    };
 }
 
 export interface ConsolidatedFinancePulse {
@@ -145,7 +149,7 @@ async function calculateFinancialPulse(brandId: string): Promise<FinancialPulse>
         }
     });
 
-    const dailyOrders = orders.filter((o: Order) => o.createdAt >= startOfDay);
+    const dailyOrders = orders.filter((o: any) => o.createdAt >= startOfDay);
 
     // 2. Marketplace Fee Mapping (Dynamic)
     const brand = await prisma.brand.findUnique({
@@ -289,14 +293,14 @@ async function calculateFinancialPulse(brandId: string): Promise<FinancialPulse>
     });
 
     // 4. Formatting Channel Breakdown
-    const channelBreakdown = Object.entries(channels).map(([channel, data]) => ({
+    const channelBreakdown = Object.entries(channels).map(([channel, data]: [string, any]) => ({
         channel,
         grossAmount: data.gross,
         netAmount: data.net,
         commissionFee: data.commission,
         mdrFee: data.mdr,
         percentage: monthlyRevenue > 0 ? (data.gross / monthlyRevenue) * 100 : 0
-    })).sort((a, b) => b.grossAmount - a.grossAmount);
+    })).sort((a: any, b: any) => b.grossAmount - a.grossAmount);
 
     // 4. Periodic Sales Calculations
     const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
@@ -304,7 +308,7 @@ async function calculateFinancialPulse(brandId: string): Promise<FinancialPulse>
 
     const periodicSales = {
         daily: dailyRevenue,
-        weekly: orders.filter((o: Order) => o.createdAt >= startOfWeek).reduce((sum: number, o: any) => sum + Number(o.totalAmount || o.total || 0), 0),
+        weekly: orders.filter((o: any) => o.createdAt >= startOfWeek).reduce((sum: number, o: any) => sum + Number(o.totalAmount || o.total || 0), 0),
         monthly: monthlyRevenue,
         yearly: await prisma.order.aggregate({
             where: { brandId, createdAt: { gte: startOfYear }, status: { not: 'DIBATALKAN' } },
@@ -343,7 +347,7 @@ async function calculateFinancialPulse(brandId: string): Promise<FinancialPulse>
     // 6. Expired Burden (Beban Expired)
     const expiredMutations = await prisma.stockMutation.findMany({
         where: {
-            variant: { product: { category: { brandId } } },
+            brandId,
             type: 'EXPIRED',
             createdAt: { gte: startOfMonth }
         },
@@ -357,11 +361,11 @@ async function calculateFinancialPulse(brandId: string): Promise<FinancialPulse>
 
     // 7. Payment Health
     const realized = orders
-        .filter((o: Order) => ['DIBAYAR', 'DISIAPKAN', 'DIKIRIM', 'SELESAI'].includes(o.status))
+        .filter((o: any) => ['DIBAYAR', 'DISIAPKAN', 'DIKIRIM', 'SELESAI'].includes(o.status))
         .reduce((sum: number, o: any) => sum + Number(o.totalAmount || o.total || 0), 0);
 
     const pending = orders
-        .filter((o: Order) => o.status === 'DIPESAN')
+        .filter((o: any) => o.status === 'DIPESAN')
         .reduce((sum: number, o: any) => sum + Number(o.totalAmount || o.total || 0), 0);
 
     // 8. Ledger Expenses & Final Profit
@@ -377,6 +381,14 @@ async function calculateFinancialPulse(brandId: string): Promise<FinancialPulse>
     // Net Profit: Revenue - COGS - Fees - Expenses
     // Note: expiredBurden is usually already in ledger if recorded via stock mutations (5-WASTE etc)
     const monthlyNetProfit = monthlyRevenue - monthlyCOGS - totalMarketplaceFees - monthlyLedgerExpenses;
+
+    // 9. Profitability Metrics
+    const assetsData = await prisma.businessAsset.aggregate({
+        where: { brandId, status: 'ACTIVE' },
+        _sum: { purchasePrice: true }
+    });
+    const totalAssets = Number(assetsData._sum.purchasePrice || 0);
+    const roi = totalAssets > 0 ? (monthlyNetProfit / totalAssets) * 100 : 0;
 
     // 9. Revenue Trend (Last 30 Days)
     const thirtyDaysAgo = new Date();
@@ -445,6 +457,10 @@ async function calculateFinancialPulse(brandId: string): Promise<FinancialPulse>
             totalMDR,
             totalWaste: expiredBurden,
             efficiencyScore
+        },
+        profitability: {
+            totalAssets,
+            roi
         }
     };
 }
@@ -607,8 +623,8 @@ export async function getProductParetoMatrix(brandId: string) {
 
     const products: Record<string, { name: string, revenue: number, cost: number, quantity: number }> = {};
 
-    orders.forEach(order => {
-        order.orderItems.forEach(item => {
+    orders.forEach((order: any) => {
+        order.orderItems.forEach((item: any) => {
             const variant = item.frozenVariant as any;
             const key = item.name + (item.variantName ? ` (${item.variantName})` : '');
             if (!products[key]) {
@@ -661,14 +677,14 @@ export async function getBundleRecommendations(brandId: string): Promise<BundleR
         const coOccurrence: Record<string, Record<string, number>> = {};
         const productInfo: Record<string, any> = {};
 
-        orders.forEach(order => {
-            const items = order.orderItems.map(item => item.frozenVariant);
+        orders.forEach((order: any) => {
+            const items = order.orderItems.map((item: any) => item.frozenVariant);
 
             items.forEach((item1, i) => {
                 if (!item1) return;
                 productInfo[item1.id] = item1;
 
-                items.slice(i + 1).forEach(item2 => {
+                items.slice(i + 1).forEach((item2: any) => {
                     if (!item2 || item1.id === item2.id) return;
 
                     const p1 = item1.id;

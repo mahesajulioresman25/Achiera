@@ -45,12 +45,14 @@ Pusat komando untuk operasional harian bisnis kuliner.
 | **Simple Manufacturing** | Mencatat hasil produksi dapur (Bahan Baku -> Produk Jadi) untuk update HPP dan stok. |
 | **Stock Opname** | Fitur rekonsiliasi stok fisik dan sistem untuk audit gudang bulanan. |
 | **Auto-Restock Alert** | Notifikasi otomatis jika stok bahan baku (misal: Cabai, Daging) di bawah batas aman. |
+| **Manufacturing Hub** | Kalkulasi HPP otomatis berbasis resep dan konversi satuan bahan baku yang akurat. |
 
 ### C. Finance (Level Brand)
 | Fitur | Fungsi Utama |
 | :--- | :--- |
 | **Brand P&L** | Laporan Laba Rugi spesifik untuk brand Rasa Ibu. Melihat profitabilitas unit bisnis ini secara mandiri. |
 | **Expense Recording** | Pencatatan pengeluaran operasional outlet (Gaji karyawan outlet, Listrik, Gas). |
+| **Asset & ROI Hub** | Monitoring total aset bisnis, nilai penyusutan (depreciation), dan Return on Investment (ROI) real-time. |
 | **Invoice Generator** | Membuat invoice PDF otomatis untuk pesanan B2B atau Catering besar. |
 
 ---

@@ -33,7 +33,7 @@ export class JournalService {
             throw new Error(`Transaction processing failed: Credits (${totalCredit}) do not equal Debits (${totalDebit})`);
         }
 
-        return prisma.$transaction(async (tx) => {
+        return prisma.$transaction(async (tx: any) => {
             // 2. Create Transaction Header
             const transaction = await tx.journalTransaction.create({
                 data: {
@@ -84,7 +84,7 @@ export class JournalService {
                 }
 
                 await tx.ledgerAccount.update({
-                    where: { id: account.id },
+                    where: { id: account.id, brandId },
                     data: {
                         balance: {
                             increment: balanceChange

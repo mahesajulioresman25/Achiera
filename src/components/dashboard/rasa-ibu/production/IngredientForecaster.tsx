@@ -17,9 +17,9 @@ export default function IngredientForecaster({ brandId, plans }: IngredientForec
     const handleCalculate = async () => {
         if (!selectedPlanId) return;
         setIsLoading(true);
-        const res = await getIngredientForecastAction(selectedPlanId);
+        const res = await getIngredientForecastAction(brandId, selectedPlanId);
         setIsLoading(false);
-        if (res.success) setForecastData(res.data);
+        if (res.success && res.data) setForecastData(res.data);
     };
 
     return (

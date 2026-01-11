@@ -37,8 +37,8 @@ export class AssetEngine {
             // Check if already depreciated this month
             const alreadyDepreciated = await prisma.assetDepreciation.findFirst({
                 where: {
+                    brandId,
                     assetId: asset.id,
-                    asset: { brandId }, // Added for Brand Isolation
                     date: {
                         gte: startOfMonth
                     }
@@ -116,8 +116,8 @@ export class AssetEngine {
         let totalPurchasePrice = 0;
         let totalCurrentDepreciation = 0;
 
-        const assetDetails = assets.map(asset => {
-            const accumulated = asset.depreciations.reduce((sum, d) => sum + Number(d.amount), 0);
+        const assetDetails = assets.map((asset: any) => {
+            const accumulated = asset.depreciations.reduce((sum: number, d: any) => sum + Number(d.amount), 0);
             const purchasePrice = Number(asset.purchasePrice);
             const bookValue = purchasePrice - accumulated;
 

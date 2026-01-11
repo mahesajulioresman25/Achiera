@@ -30,9 +30,9 @@ export class ProductionEngine {
     /**
      * Calculate total ingredients needed for a production plan
      */
-    static async calculateIngredientForecast(planId: string) {
+    static async calculateIngredientForecast(brandId: string, planId: string) {
         const plan = await prisma.productionPlan.findUnique({
-            where: { id: planId },
+            where: { id: planId, brandId },
             include: {
                 items: {
                     include: {
@@ -163,7 +163,7 @@ export class ProductionEngine {
                 });
 
                 // AUTO-HPP: Update costPrice of the finished good based on current ingredient costs
-                const hppData = await this.calculateRecipeHPP(item.recipe.id);
+                const hppData = await this.calculateRecipeHPP(item.plan.brandId, item.recipe.id);
                 if (hppData.success) {
                     await tx.frozenVariant.update({
                         where: { id: item.recipe.frozenVariantId },
@@ -212,10 +212,10 @@ export class ProductionEngine {
     /**
      * Calculate HPP (COGS) for a recipe based on current ingredient costs
      */
-    static async calculateRecipeHPP(recipeId: string) {
+    static async calculateRecipeHPP(brandId: string, recipeId: string) {
         try {
             const recipe = await prisma.recipe.findUnique({
-                where: { id: recipeId },
+                where: { id: recipeId, brandId },
                 include: {
                     items: {
                         include: {
