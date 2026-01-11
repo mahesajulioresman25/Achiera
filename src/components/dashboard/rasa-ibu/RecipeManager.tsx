@@ -22,6 +22,7 @@ import {
     deleteRecipeComment,
     deleteRecipePost
 } from '@/lib/actions/rasa-ibu/admin-recipes';
+import { createProductionRecipeFromPost } from '@/lib/actions/rasa-ibu/bridge';
 
 interface RecipeManagerProps {
     brandId: string;
@@ -103,6 +104,17 @@ export default function RecipeManager({ brandId, recipes: initialRecipes }: Reci
             }));
             toast.success('Komentar dihapus');
         }
+    };
+
+    const handleConvertToProduction = async (recipeId: string) => {
+        setLoadingId(recipeId);
+        const res = await createProductionRecipeFromPost(brandId, recipeId);
+        if (res.success && res.data) {
+            toast.success(`Berhasil! Resep Produksi dibuat dengan ${res.data.matchesCount} bahan terhubung.`);
+        } else {
+            toast.error(res.error || 'Gagal membuat resep produksi');
+        }
+        setLoadingId(null);
     };
 
     return (
@@ -254,6 +266,13 @@ export default function RecipeManager({ brandId, recipes: initialRecipes }: Reci
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex justify-end gap-2">
+                                                <button
+                                                    onClick={() => handleConvertToProduction(recipe.id)}
+                                                    className="p-2 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100"
+                                                    title="Jadikan Resep Produksi"
+                                                >
+                                                    <ChefHat className="w-4 h-4" />
+                                                </button>
                                                 <button
                                                     onClick={() => handleTogglePublish(recipe.id, recipe.isPublished)}
                                                     disabled={loadingId === recipe.id}
