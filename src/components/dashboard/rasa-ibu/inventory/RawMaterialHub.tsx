@@ -122,24 +122,46 @@ export default function RawMaterialHub({ brandId, onClose }: RawMaterialHubProps
 
     const loadData = async () => {
         setIsLoading(true);
-        const [stockRes, catRes] = await Promise.all([
-            getStockAction(brandId),
-            getInventoryCategories(brandId) // Fetch internal categories
-        ]);
+        try {
+            // Fetch concurrently but handle safely
+            const [stockRes, catRes] = await Promise.all([
+                getStockAction(brandId).catch(err => ({ success: false, error: err.message, data: [] })),
+                getInventoryCategories(brandId).catch(err => [])
+            ]);
 
-        if (stockRes.success) setMaterials(stockRes.data);
-        if (Array.isArray(catRes)) setCategories(catRes);
+            if (stockRes?.success && Array.isArray(stockRes.data)) {
+                setMaterials(stockRes.data);
+            } else {
+                console.warn('Invalid stock data:', stockRes);
+                setMaterials([]);
+            }
 
-        // Fetch asset accounts for restock payment
-        const { getLedgerAccountsAction } = await import('@/lib/actions/rasa-ibu/finance');
-        const accRes = await getLedgerAccountsAction(brandId);
-        if (accRes.success) {
-            const assets = accRes.data.filter((a: any) => a.type === 'ASSET');
-            setAssetAccounts(assets);
-            if (assets.length > 0) setSourceAccountId(assets[0].code);
+            // catRes validation
+            if (Array.isArray(catRes)) {
+                setCategories(catRes);
+            } else {
+                if (Array.isArray(catRes)) {
+                    setCategories(catRes);
+                } else {
+                    console.warn('Invalid category data:', catRes);
+                    setCategories([]);
+                }
+            }
+
+            // Fetch asset accounts for restock payment
+            const { getLedgerAccountsAction } = await import('@/lib/actions/rasa-ibu/finance');
+            const accRes = await getLedgerAccountsAction(brandId);
+            if (accRes?.success && Array.isArray(accRes.data)) {
+                const assets = accRes.data.filter((a: any) => a.type === 'ASSET');
+                setAssetAccounts(assets);
+                if (assets.length > 0) setSourceAccountId(assets[0].code);
+            }
+        } catch (error) {
+            console.error('Failed to load data:', error);
+            toast.error('Gagal memuat data inventaris');
+        } finally {
+            setIsLoading(false);
         }
-
-        setIsLoading(false);
     };
 
     useEffect(() => {
@@ -153,8 +175,16 @@ export default function RawMaterialHub({ brandId, onClose }: RawMaterialHubProps
     }, [selectedId]);
 
     const loadMutations = async (variantId: string) => {
-        const mutRes = await getStockMutationsAction(brandId, variantId);
-        if (mutRes.success) setMutations(mutRes.data);
+        try {
+            const mutRes = await getStockMutationsAction(brandId, variantId);
+            if (mutRes?.success && Array.isArray(mutRes.data)) {
+                setMutations(mutRes.data);
+            } else {
+                setMutations([]);
+            }
+        } catch (error) {
+            console.error('Failed to load mutations:', error);
+        }
     };
 
     const handleRestock = async () => {
