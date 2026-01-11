@@ -127,6 +127,7 @@ export default async function RasaIbuProductDetailPage({ params }: { params: Pro
                             }}
                             className="flex-1 bg-[#2D3A2D] text-[#FDFBF7] py-4 rounded-xl font-black uppercase tracking-widest hover:scale-[1.02] transition-transform"
                             label={inStock ? 'Siapkan Untuk Keluarga' : 'Habis Terjual'}
+                            disabled={!inStock}
                         />
                         <Link
                             href={waLink}

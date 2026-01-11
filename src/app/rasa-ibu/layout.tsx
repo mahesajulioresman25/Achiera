@@ -4,6 +4,7 @@ import SeasonalDecorations from "@/components/ui/SeasonalDecorations";
 import FlashSaleBanner from "@/components/marketing/FlashSaleBanner";
 import { unisolatedPrisma as prisma } from "@/lib/prisma";
 import { FlashSaleService } from "@/lib/services/FlashSaleService";
+import FloatingCartWrapper from "@/components/commerce/FloatingCartWrapper";
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -57,6 +58,7 @@ export default async function RasaIbuLayout({
         <div className="bg-[#FDFBF7]">
             <FlashSaleBanner activeFlashSale={activeFlashSale} />
             <SeasonalDecorations />
+            <FloatingCartWrapper />
             <PublicNav
                 navLinks={navLinks}
                 whatsapp={config?.whatsapp}

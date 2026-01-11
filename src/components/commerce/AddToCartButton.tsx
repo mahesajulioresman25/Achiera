@@ -15,12 +15,14 @@ interface AddToCartButtonProps {
     };
     className?: string;
     label?: string;
+    disabled?: boolean;
 }
 
-export default function AddToCartButton({ product, className, label = 'Siapkan Untuk Keluarga' }: AddToCartButtonProps) {
+export default function AddToCartButton({ product, className, label = 'Siapkan Untuk Keluarga', disabled = false }: AddToCartButtonProps) {
     const { addToCart } = useCart();
 
     const handleAdd = () => {
+        if (disabled) return;
         addToCart({
             productId: product.id,
             variantId: product.variantId || 'default',
@@ -35,7 +37,12 @@ export default function AddToCartButton({ product, className, label = 'Siapkan U
     return (
         <button
             onClick={handleAdd}
-            className={`flex items-center justify-center gap-3 px-8 py-4 rounded-full text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl ${className || 'bg-[#2D3A2D] text-[#FDFBF7] shadow-slate-900/10'}`}
+            disabled={disabled}
+            className={`flex items-center justify-center gap-3 px-8 py-4 rounded-full text-[10px] font-black uppercase tracking-widest transition-all shadow-xl 
+                ${disabled
+                    ? 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none'
+                    : `${className || 'bg-[#2D3A2D] text-[#FDFBF7] shadow-slate-900/10'} hover:scale-105 active:scale-95`
+                }`}
         >
             <ShoppingBag className="w-4 h-4" />
             {label}
