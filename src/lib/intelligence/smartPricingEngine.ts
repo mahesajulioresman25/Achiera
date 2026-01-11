@@ -1,6 +1,12 @@
 import { unisolatedPrisma } from '@/lib/prisma';
 
-// ... (existing interface code)
+interface PriceOptimizationResult {
+    variantId: string;
+    currentPrice: number;
+    recommendedPrice: number;
+    reason: string;
+    expectedImpact: string;
+}
 
 export class SmartPricingEngine {
     /**
@@ -126,7 +132,7 @@ export class SmartPricingEngine {
      * Get price optimization recommendations for all products
      */
     async getAllRecommendations(brandId: string): Promise<PriceOptimizationResult[]> {
-        const variants = await prisma.frozenVariant.findMany({
+        const variants = await unisolatedPrisma.frozenVariant.findMany({
             where: {
                 product: { category: { brandId: brandId } }
             },
