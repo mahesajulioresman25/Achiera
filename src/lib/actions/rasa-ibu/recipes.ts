@@ -1,6 +1,6 @@
 'use server';
 
-import { prisma } from '@/lib/prisma';
+import { prisma, unisolatedPrisma } from '@/lib/prisma';
 
 /**
  * Get all published recipes for a brand
@@ -94,13 +94,27 @@ export async function getRecipeBySlug(brandId: string, slug: string) {
 
         if (!recipe) return null;
 
+        // Fetch related product slug manually for Smart CTA
+        let relatedProductSlug = null;
+        if (recipe.productIds && recipe.productIds.length > 0) {
+            // Use unisolatedPrisma to ensure access to FrozenProduct
+            const product = await unisolatedPrisma.frozenProduct.findFirst({
+                where: { id: recipe.productIds[0] },
+                select: { slug: true }
+            });
+            if (product) relatedProductSlug = product.slug;
+        }
+
         // Increment views (fire and forget)
         (prisma as any).recipePost.update({
             where: { id: recipe.id },
             data: { views: { increment: 1 } }
         }).catch(console.error);
 
-        return recipe;
+        return {
+            ...recipe,
+            relatedProductSlug
+        };
     } catch (error) {
         console.error('[getRecipeBySlug] Error:', error);
         return null;

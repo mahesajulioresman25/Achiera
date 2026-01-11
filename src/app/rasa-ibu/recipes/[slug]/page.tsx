@@ -194,10 +194,10 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ s
                                 <h3 className="text-xl font-black mb-2">Mau Masak Ini?</h3>
                                 <p className="text-sm text-white/80 mb-6">Kami siapkan bahannya, Bunda tinggal masak!</p>
                                 <Link
-                                    href="/rasa-ibu/products"
+                                    href={(recipe as any).relatedProductSlug ? `/rasa-ibu/products/${(recipe as any).relatedProductSlug}` : '/rasa-ibu/products'}
                                     className="inline-block w-full py-3 bg-[#B2BCA2] text-[#2D3A2D] font-bold rounded-xl hover:bg-[#A3AD94] transition-colors shadow-lg"
                                 >
-                                    Belanja Bahannya
+                                    {(recipe as any).relatedProductSlug ? 'Belanja Bahannya' : 'Lihat Katalog Produk'}
                                 </Link>
                             </div>
                             {/* Decorative */}

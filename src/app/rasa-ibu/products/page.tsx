@@ -5,7 +5,7 @@ import { ShoppingBag, Utensils, Star } from 'lucide-react';
 import PromoBadge from '@/components/commerce/PromoBadge';
 import CategoryFilter from '@/components/filters/CategoryFilter';
 
-import { prisma } from '@/lib/prisma';
+import { unisolatedPrisma as prisma } from '@/lib/prisma';
 import { FlashSaleService } from '@/lib/services/FlashSaleService';
 
 // Force dynamic rendering
@@ -32,7 +32,7 @@ export default async function RasaIbuProductListPage({
 
     // Fetch categories and products in parallel
     const [categories, products, activeFlashSale] = await Promise.all([
-        prisma.category.findMany({
+        prisma.frozenCategory.findMany({
             where: { brandId, isActive: true },
             orderBy: { name: 'asc' }
         }),
