@@ -1,4 +1,6 @@
+/// <reference types="node" />
 import { PrismaClient } from '@prisma/client';
+
 
 const prisma = new PrismaClient();
 
@@ -44,7 +46,7 @@ async function seedRecipePosts() {
             category: 'Makan Siang',
             tags: ['Praktis', 'Pedas', 'Protein Tinggi'],
             productIds: [],
-            likes: 124,
+            likesCount: 124,
             views: 450,
             isPublished: true,
             isFeatured: true
@@ -78,7 +80,7 @@ async function seedRecipePosts() {
             category: 'Bekal Anak',
             tags: ['Crispy', 'Tahan Lama', 'Favorit Anak'],
             productIds: [],
-            likes: 89,
+            likesCount: 89,
             views: 320,
             isPublished: true,
             isFeatured: false
@@ -114,7 +116,7 @@ async function seedRecipePosts() {
             category: 'Sarapan',
             tags: ['Cepat', 'Praktis', 'Pedas', 'Hemat'],
             productIds: [],
-            likes: 215,
+            likesCount: 215,
             views: 890,
             isPublished: true,
             isFeatured: true
@@ -150,7 +152,7 @@ async function seedRecipePosts() {
             category: 'Camilan',
             tags: ['Sehat', 'Anak-Anak', 'Frozen Food', 'Tanpa MSG'],
             productIds: [],
-            likes: 156,
+            likesCount: 156,
             views: 520,
             isPublished: true,
             isFeatured: false
@@ -185,7 +187,7 @@ async function seedRecipePosts() {
             category: 'Makan Siang',
             tags: ['Hangat', 'Sehat', 'Comfort Food'],
             productIds: [],
-            likes: 78,
+            likesCount: 78,
             views: 290,
             isPublished: true,
             isFeatured: false

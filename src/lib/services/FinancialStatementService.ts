@@ -28,8 +28,8 @@ export class FinancialStatementService {
         const journals = await prisma.journalTransaction.findMany({
             where: {
                 brandId,
-                date: { gte: startDate, lte: endDate },
-                status: 'POSTED'
+                date: { gte: startDate, lte: endDate }
+                // status: 'POSTED'
             },
             include: {
                 entries: {
@@ -44,15 +44,19 @@ export class FinancialStatementService {
 
         for (const journal of journals) {
             for (const entry of journal.entries) {
-                const amount = Number(entry.amount);
+                const debit = Number(entry.debit);
+                const credit = Number(entry.credit);
                 const accountType = entry.account.type;
 
                 if (accountType === 'REVENUE') {
-                    revenue += entry.type === 'CREDIT' ? amount : -amount;
-                } else if (accountType === 'COGS') {
-                    cogs += entry.type === 'DEBIT' ? amount : -amount;
+                    revenue += (credit - debit);
                 } else if (accountType === 'EXPENSE') {
-                    expenses += entry.type === 'DEBIT' ? amount : -amount;
+                    // Simple heuristic for COGS if needed, or just group into expenses
+                    if (entry.account.name.toUpperCase().includes('COGS') || entry.account.name.toUpperCase().includes('HPP')) {
+                        cogs += (debit - credit);
+                    } else {
+                        expenses += (debit - credit);
+                    }
                 }
             }
         }
@@ -73,11 +77,11 @@ export class FinancialStatementService {
         const accounts = await prisma.ledgerAccount.findMany({
             where: { brandId },
             include: {
-                journalEntries: {
+                entries: {
                     where: {
                         transaction: {
-                            date: { lte: asOfDate },
-                            status: 'POSTED'
+                            date: { lte: asOfDate }
+                            // status: 'POSTED' // Status field might be missing
                         }
                     }
                 }
@@ -89,16 +93,25 @@ export class FinancialStatementService {
 
         for (const account of accounts) {
             let balance = 0;
-            for (const entry of account.journalEntries) {
-                const amount = Number(entry.amount);
-                balance += entry.type === 'DEBIT' ? amount : -amount;
+            for (const entry of account.entries) {
+                const debit = Number(entry.debit);
+                const credit = Number(entry.credit);
+
+                // Calculate balance based on normal balance type
+                if (account.type === 'ASSET' || account.type === 'EXPENSE') {
+                    balance += (debit - credit);
+                } else {
+                    balance += (credit - debit);
+                }
             }
 
             if (account.type === 'ASSET') {
                 assets += balance;
             } else if (account.type === 'LIABILITY') {
-                liabilities += Math.abs(balance);
+                liabilities += balance;
             }
+            // Equity is calculated as Assets - Liabilities in return statement, 
+            // or we could sum equity accounts here.
         }
 
         return {

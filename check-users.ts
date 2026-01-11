@@ -8,7 +8,7 @@ async function checkUsers() {
     try {
         const users = await prisma.user.findMany({
             take: 5,
-            select: { id: true, email: true, name: true, role: true }
+            select: { id: true, email: true, name: true }
         });
 
         if (users.length === 0) {

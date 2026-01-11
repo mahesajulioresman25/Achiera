@@ -174,7 +174,7 @@ export const authOptions: NextAuthOptions = {
                     }));
                 } else {
                     // Regular users only get their assigned brands
-                    mappedBrands = user.brandRoles.map(br => ({
+                    mappedBrands = user.brandRoles.map((br: any) => ({
                         brandId: br.brandId,
                         brandSlug: br.brand.slug,
                         brandName: br.brand.name,

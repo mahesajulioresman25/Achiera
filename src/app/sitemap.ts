@@ -33,7 +33,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         // We assume all FrozenProducts are visible for now as per current products page logic.
     });
 
-    const productRoutes = products.map((product) => ({
+    const productRoutes = products.map((product: any) => ({
         url: `${baseUrl}/rasa-ibu/products/${product.slug}`,
         lastModified: product.updatedAt,
         changeFrequency: 'weekly' as const,
@@ -46,7 +46,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         select: { slug: true, updatedAt: true },
     });
 
-    const recipeRoutes = recipes.map((recipe) => ({
+    const recipeRoutes = recipes.map((recipe: any) => ({
         url: `${baseUrl}/rasa-ibu/recipes/${recipe.slug}`,
         lastModified: recipe.updatedAt,
         changeFrequency: 'weekly' as const,
