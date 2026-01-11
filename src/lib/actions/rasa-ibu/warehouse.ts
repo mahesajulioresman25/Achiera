@@ -45,48 +45,54 @@ export async function getWarehousesAction(brandId: string) {
 
 export async function getWarehouseInventoryAction(warehouseId: string) {
     try {
-        // Group by Variant
-        // Prisma doesn't support complex group-by with include relations well, 
-        // effectively we want stock per variant.
-        // We can find all variants that have batches in this warehouse.
-        const variants = await prisma.frozenVariant.findMany({
-            where: {
-                batches: {
-                    some: {
-                        warehouseId,
-                        quantity: { gt: 0 },
-                        isExpired: false
+        // Get all variants that have stock mutations in this warehouse
+        const mutations = await prisma.stockMutation.findMany({
+            where: { warehouseId },
+            select: {
+                variantId: true,
+                variant: {
+                    include: {
+                        product: true,
+                        batches: {
+                            where: {
+                                warehouseId,
+                                quantity: { gt: 0 },
+                                isExpired: false
+                            },
+                            orderBy: { expiryDate: 'asc' }
+                        }
                     }
-                }
-            },
-            include: {
-                product: true,
-                batches: {
-                    where: {
-                        warehouseId,
-                        quantity: { gt: 0 },
-                        isExpired: false
-                    },
-                    orderBy: { expiryDate: 'asc' }
                 }
             }
         });
 
+        // Group by variant and get unique variants
+        const variantMap = new Map();
+        mutations.forEach(m => {
+            if (!variantMap.has(m.variantId)) {
+                variantMap.set(m.variantId, m.variant);
+            }
+        });
+
+        const variants = Array.from(variantMap.values());
+
         // Calculate total quantity per variant
-        const inventory = variants.map(v => ({
-            variantId: v.id,
-            variantName: v.name,
-            productName: v.product.name,
-            sku: v.sku,
-            unit: v.product.storageType, // Assuming storageType hint (e.g. PACK)
-            totalStock: v.batches.reduce((sum, b) => sum + b.quantity, 0),
-            batches: v.batches.map(b => ({
-                id: b.id,
-                code: b.batchCode,
-                qty: b.quantity,
-                expiry: b.expiryDate
-            }))
-        }));
+        const inventory = variants
+            .filter(v => v.stockOnHand > 0) // Only show variants with stock
+            .map(v => ({
+                variantId: v.id,
+                variantName: v.name,
+                productName: v.product.name,
+                sku: v.sku,
+                unit: v.unit || v.product.storageType || 'unit',
+                totalStock: v.stockOnHand, // Use stockOnHand from variant
+                batches: v.batches.map(b => ({
+                    id: b.id,
+                    code: b.batchCode,
+                    qty: b.quantity,
+                    expiry: b.expiryDate
+                }))
+            }));
 
         return { success: true, data: inventory };
     } catch (error) {
