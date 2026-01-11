@@ -241,6 +241,13 @@ export const brandIsolationExtension =
                                         operation
                                     );
                                 }
+
+                                // SPECIAL CASE: InventoryBatch is brand-scoped via Warehouse, not direct column.
+                                // We validate strictness above (that brandId was passed), but must remove it 
+                                // before sending to DB to avoid "Unknown Argument".
+                                if (model === 'InventoryBatch' && data?.brandId) {
+                                    delete data.brandId;
+                                }
                             }
 
                             // Mutation operations: update, updateMany, upsert, delete, deleteMany
