@@ -44,7 +44,8 @@ const BRAND_SCOPED_MODELS = [
     'LoyaltyAccount',
     'WhatsAppQueue',
     'Anomaly',
-    'StockMutation'
+    'StockMutation',
+    'RecipePost'
 ];
 
 /**

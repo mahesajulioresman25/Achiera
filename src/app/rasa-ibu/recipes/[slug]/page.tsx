@@ -175,9 +175,11 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ s
                             </div>
                             <h3 className="text-xl font-black text-[#2D3A2D] mb-1">{recipe.authorName}</h3>
                             <p className="text-sm text-gray-500 mb-6">Pecinta masakan rumahan</p>
-                            <button className="w-full py-3 bg-[#F9F7F2] text-[#8B7E66] font-bold rounded-xl hover:bg-[#F0EEE9] transition-colors">
-                                Lihat Resep Lainnya
-                            </button>
+                            <Link href="/rasa-ibu/recipes" className="block w-full">
+                                <button className="w-full py-3 bg-[#F9F7F2] text-[#8B7E66] font-bold rounded-xl hover:bg-[#F0EEE9] transition-colors">
+                                    Lihat Resep Lainnya
+                                </button>
+                            </Link>
                         </div>
 
                         {/* Call to Action - Product */}
