@@ -95,10 +95,10 @@ export async function runDepreciationAction(brandId: string) {
 /**
  * Dispose an asset (Write-off)
  */
-export async function disposeAssetAction(assetId: string, reason: string) {
+export async function disposeAssetAction(brandId: string, assetId: string, reason: string) {
     try {
         await prisma.businessAsset.update({
-            where: { id: assetId },
+            where: { id: assetId, brandId },
             data: { status: 'DISPOSED' }
         });
 

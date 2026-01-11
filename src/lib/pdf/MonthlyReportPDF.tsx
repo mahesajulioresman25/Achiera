@@ -122,7 +122,7 @@ export const MonthlyReportPDF = ({ data, analysis }: Props) => {
 
                 {/* Financial Snapshot */}
                 <View style={{ marginBottom: 20 }}>
-                    <Text style={styles.sectionTitle}>Kinerja Keuangan</Text>
+                    <Text style={styles.sectionTitle}>Kinerja Keuangan & Aset</Text>
                     <View style={styles.grid}>
                         <View style={styles.card}>
                             <Text style={styles.cardTitle}>Total Omset</Text>
@@ -132,14 +132,14 @@ export const MonthlyReportPDF = ({ data, analysis }: Props) => {
                             </Text>
                         </View>
                         <View style={styles.card}>
-                            <Text style={styles.cardTitle}>Omset Bersih (Setelah Biaya Apps)</Text>
-                            <Text style={styles.cardValue}>Rp {data.marketplace.netRevenue.toLocaleString('id-ID')}</Text>
-                            <Text style={styles.cardSub}>Potongan Apps: Rp {data.marketplace.totalFees.toLocaleString('id-ID')}</Text>
-                        </View>
-                        <View style={styles.card}>
                             <Text style={styles.cardTitle}>Keuntungan Bersih</Text>
                             <Text style={styles.cardValue}>Rp {data.financial.profit.toLocaleString('id-ID')}</Text>
                             <Text style={styles.cardSub}>Margin {data.financial.margin.toFixed(1)}%</Text>
+                        </View>
+                        <View style={styles.card}>
+                            <Text style={styles.cardTitle}>Total Aset Bisnis</Text>
+                            <Text style={styles.cardValue}>Rp {data.kpis.totalAssets.toLocaleString('id-ID')}</Text>
+                            <Text style={styles.cardSub}>ROI: {data.kpis.returnOnInvestment.toFixed(1)}%</Text>
                         </View>
                     </View>
                 </View>

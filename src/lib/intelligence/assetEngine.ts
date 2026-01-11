@@ -38,6 +38,7 @@ export class AssetEngine {
             const alreadyDepreciated = await prisma.assetDepreciation.findFirst({
                 where: {
                     assetId: asset.id,
+                    asset: { brandId }, // Added for Brand Isolation
                     date: {
                         gte: startOfMonth
                     }

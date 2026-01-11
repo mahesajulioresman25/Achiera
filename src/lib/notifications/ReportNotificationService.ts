@@ -79,6 +79,8 @@ export class ReportNotificationService {
                 <li>Current Ratio: ${data.kpis.currentRatio.toFixed(2)} ${data.kpis.currentRatio >= 1.5 ? '✅ (Likuid)' : '⚠️ (Arus Kas Ketat)'}</li>
                 <li>Inventory Turnover: ${data.kpis.inventoryTurnover.toFixed(1)}x</li>
                 <li>Retention Rate: ${data.kpis.retentionRate}%</li>
+                <li>Total Aset Bisnis: Rp ${data.kpis.totalAssets.toLocaleString('id-ID')}</li>
+                <li>ROI (Return on Investment): ${data.kpis.returnOnInvestment.toFixed(1)}%</li>
             </ul>
 
             <p><strong>🏆 Produk Terlaris</strong></p>

@@ -38,6 +38,8 @@ export interface MonthlyData {
         currentRatio: number;
         inventoryTurnover: number;
         retentionRate: number;
+        totalAssets: number;
+        returnOnInvestment: number;
     };
 }
 
@@ -193,7 +195,9 @@ export class MonthlyReportService {
                 ltvToCac: kpiDashboard?.customer.ltvToCacRatio || 0,
                 currentRatio: kpiDashboard?.financialHealth.currentRatio || 0,
                 inventoryTurnover: kpiDashboard?.operational.inventoryTurnover || 0,
-                retentionRate: kpiDashboard?.customer.retentionRate || 0
+                retentionRate: kpiDashboard?.customer.retentionRate || 0,
+                totalAssets: kpiDashboard?.profitability.roi ? (kpiDashboard.profitability.ebitda / (kpiDashboard.profitability.roi / 100)) : 0, // Simplified reverse calc or just fetch total assets
+                returnOnInvestment: kpiDashboard?.profitability.roi || 0
             }
         };
     }
