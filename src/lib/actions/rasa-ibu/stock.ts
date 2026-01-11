@@ -68,6 +68,7 @@ export async function adjustStock(data: {
             // 3. Create Mutation Record
             const mutation = await tx.stockMutation.create({
                 data: {
+                    brandId,
                     variantId: data.variantId,
                     warehouseId: defaultWarehouse.id,
                     type: data.type as any,
@@ -142,8 +143,14 @@ export async function adjustStock(data: {
                 });
 
                 // Update balances
-                await tx.ledgerAccount.update({ where: { id: pantryAccount.id }, data: { balance: { increment: data.unitCost } } });
-                await tx.ledgerAccount.update({ where: { id: sourceAccount.id }, data: { balance: { decrement: data.unitCost } } });
+                await tx.ledgerAccount.update({
+                    where: { id: pantryAccount.id, brandId },
+                    data: { balance: { increment: data.unitCost } }
+                });
+                await tx.ledgerAccount.update({
+                    where: { id: sourceAccount.id, brandId },
+                    data: { balance: { decrement: data.unitCost } }
+                });
             }
 
             // B. Spoilage/Waste Recording (WASTE / EXPIRED)
@@ -196,8 +203,14 @@ export async function adjustStock(data: {
                         }
                     });
 
-                    await tx.ledgerAccount.update({ where: { id: wasteAccount.id }, data: { balance: { increment: wasteAmount } } });
-                    await tx.ledgerAccount.update({ where: { id: pantryAccount.id }, data: { balance: { decrement: wasteAmount } } });
+                    await tx.ledgerAccount.update({
+                        where: { id: wasteAccount.id, brandId },
+                        data: { balance: { increment: wasteAmount } }
+                    });
+                    await tx.ledgerAccount.update({
+                        where: { id: pantryAccount.id, brandId },
+                        data: { balance: { decrement: wasteAmount } }
+                    });
                 }
             }
 

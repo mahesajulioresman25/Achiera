@@ -58,6 +58,7 @@ export const DEFAULT_CHART_OF_ACCOUNTS = [
     { code: '5-6100', name: 'Biaya Pajak & Perijinan', type: 'EXPENSE' as AccountType },
     { code: '5-7000', name: 'Biaya Penyusutan Aset', type: 'EXPENSE' as AccountType },
     { code: '5-8000', name: 'Biaya Dibuang (Waste)', type: 'EXPENSE' as AccountType },
+    { code: '5-7200', name: 'Biaya Loyalty & Reward', type: 'EXPENSE' as AccountType },
     { code: '5-9000', name: 'Biaya Lain-lain', type: 'EXPENSE' as AccountType },
 ];
 

@@ -120,7 +120,10 @@ export async function createSubscriptionAction(data: {
         let plan = null;
         if (data.planId) {
             plan = await (prisma as any).subscriptionPlan.findUnique({
-                where: { id: data.planId },
+                where: {
+                    id: data.planId,
+                    brandId: brand.id
+                },
                 include: {
                     planProducts: {
                         include: {

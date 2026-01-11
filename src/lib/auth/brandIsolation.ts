@@ -87,6 +87,16 @@ function getBrandIdFromWhere(where: any): string | null {
         if (where.brand.id.equals) return where.brand.id.equals;
     }
 
+    // 2b. InterCompany paths (fromBrandId, toBrandId)
+    if (where.fromBrandId) {
+        if (typeof where.fromBrandId === 'string') return where.fromBrandId;
+        if (where.fromBrandId.equals) return where.fromBrandId.equals;
+    }
+    if (where.toBrandId) {
+        if (typeof where.toBrandId === 'string') return where.toBrandId;
+        if (where.toBrandId.equals) return where.toBrandId.equals;
+    }
+
     // 3. Logical operators (OR, AND, NOT)
     if (Array.isArray(where.OR)) {
         for (const item of where.OR) {

@@ -26,13 +26,12 @@ export class FinanceService {
         brandId: string,
         input: RecordRevenueInput
     ) {
-        // Get ledger accounts
         const cashAccount = await tx.ledgerAccount.findFirst({
-            where: { brandId, code: '1000-CASH' }
+            where: { brandId, code: '1-1001' } // Kas Besar
         });
 
         const revenueAccount = await tx.ledgerAccount.findFirst({
-            where: { brandId, code: '4000-REVENUE' }
+            where: { brandId, code: '4-1000' } // Pendapatan Makanan/Utama
         });
 
         if (!cashAccount || !revenueAccount) {
@@ -82,14 +81,14 @@ export class FinanceService {
         return prisma.$transaction(async (tx) => {
             // Get accounts
             const cashAccount = await tx.ledgerAccount.findFirst({
-                where: { brandId: ctx.brandId, code: '1000-CASH' }
+                where: { brandId: ctx.brandId, code: '1-1001' }
             });
 
-            let expenseAccountCode = '7000-EXPENSE'; // Default
+            let expenseAccountCode = '5-9000'; // Default: Biaya Lain-lain
             if (input.category === 'COGS') {
-                expenseAccountCode = '6000-COGS';
+                expenseAccountCode = '5-1000';
             } else if (input.category === 'MARKETING') {
-                expenseAccountCode = '7100-MARKETING';
+                expenseAccountCode = '5-5000';
             }
 
             const expenseAccount = await tx.ledgerAccount.findFirst({
@@ -185,22 +184,31 @@ export class FinanceService {
         );
 
         // Operating Expenses
-        const opexEntries = await prisma.journalEntry.findMany({
+        const opexEntriesLegacy = await prisma.journalEntry.findMany({
             where: {
                 account: {
                     brandId,
-                    code: { startsWith: '7' } // 7000-EXPENSE
+                    code: { startsWith: '7' } // legacy mapping
                 },
                 transaction: {
-                    date: {
-                        gte: startDate,
-                        lte: endDate
-                    }
+                    date: { gte: startDate, lte: endDate }
                 }
             }
         });
 
-        const opex = opexEntries.reduce(
+        const opexEntriesModern = await prisma.journalEntry.findMany({
+            where: {
+                account: {
+                    brandId,
+                    code: { startsWith: '5-', not: '5-1' } // modern non-COGS
+                },
+                transaction: {
+                    date: { gte: startDate, lte: endDate }
+                }
+            }
+        });
+
+        const opex = [...opexEntriesLegacy, ...opexEntriesModern].reduce(
             (sum, entry) => sum + Number(entry.debit),
             0
         );
@@ -305,15 +313,15 @@ export class FinanceService {
      */
     async setupLedgerAccounts(brandId: string) {
         const defaultAccounts = [
-            { code: '1000-CASH', name: 'Cash', type: 'ASSET' },
-            { code: '1200-INVENTORY', name: 'Inventory', type: 'ASSET' },
-            { code: '2000-PAYABLE', name: 'Accounts Payable', type: 'LIABILITY' },
-            { code: '3000-EQUITY', name: 'Owner Equity', type: 'EQUITY' },
-            { code: '4000-REVENUE', name: 'Sales Revenue', type: 'REVENUE' },
-            { code: '6000-COGS', name: 'Cost of Goods Sold', type: 'EXPENSE' },
-            { code: '7000-EXPENSE', name: 'Operating Expenses', type: 'EXPENSE' },
-            { code: '7100-MARKETING', name: 'Marketing Expenses', type: 'EXPENSE' },
-            { code: '7200-LOYALTY', name: 'Loyalty Costs', type: 'EXPENSE' }
+            { code: '1-1001', name: 'Kas Besar', type: 'ASSET' },
+            { code: '1-1300', name: 'Persediaan Bahan Baku', type: 'ASSET' },
+            { code: '2-1000', name: 'Hutang Usaha', type: 'LIABILITY' },
+            { code: '3-1000', name: 'Modal Disetor', type: 'EQUITY' },
+            { code: '4-1000', name: 'Pendapatan Makanan', type: 'REVENUE' },
+            { code: '5-1000', name: 'Harga Pokok Penjualan (COGS)', type: 'EXPENSE' },
+            { code: '5-9000', name: 'Biaya Lain-lain', type: 'EXPENSE' },
+            { code: '5-5000', name: 'Biaya Marketing & Iklan', type: 'EXPENSE' },
+            { code: '5-7200', name: 'Biaya Loyalty & Reward', type: 'EXPENSE' }
         ];
 
         for (const account of defaultAccounts) {

@@ -105,6 +105,7 @@ model Brand {
   adsImports                   AdsImportRaw[]
   complianceReports            ComplianceReport[]
   recipePosts                  RecipePost[]
+  stockMutations               StockMutation[]
 
   @@map("brands")
 }
@@ -1595,6 +1596,7 @@ model Warehouse {
 
 model StockMutation {
   id          String            @id @default(cuid())
+  brandId     String?           @map("brand_id")
   warehouseId String
   variantId   String
   type        StockMutationType
@@ -1606,7 +1608,9 @@ model StockMutation {
   createdAt   DateTime          @default(now())
   variant     FrozenVariant     @relation(fields: [variantId], references: [id])
   warehouse   Warehouse         @relation(fields: [warehouseId], references: [id])
+  brand       Brand?            @relation(fields: [brandId], references: [id])
 
+  @@index([brandId])
   @@index([warehouseId, variantId])
   @@index([createdAt])
   @@index([variantId], map: "StockMutation_stock_mutations_variantId_idx")
