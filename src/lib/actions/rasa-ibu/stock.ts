@@ -99,6 +99,7 @@ export async function adjustStock(data: {
                         batchCode: `BATCH-${Date.now()}`,
                         quantity: roundedAdjustment,
                         expiryDate: expiryDate,
+                        brandId // Enforce isolation
                     }
                 });
             }
@@ -336,6 +337,7 @@ export async function registerIngredientAction(data: {
                         batchCode: `INITIAL-${Date.now()}`,
                         quantity: data.initialStock,
                         expiryDate: new Date(Date.now() + (365 * 24 * 60 * 60 * 1000)), // Default 1 year
+                        brandId // Enforce isolation
                     }
                 });
             }

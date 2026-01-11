@@ -65,7 +65,8 @@ export class WarehouseService {
                         quantity: -deduction,
                         batchCode: batch.batchCode,
                         referenceId,
-                        createdBy: ctx.userId
+                        createdBy: ctx.userId,
+                        brandId: ctx.brandId // Enforce isolation
                     }
                 });
 
@@ -114,7 +115,8 @@ export class WarehouseService {
                     batchCode,
                     quantity,
                     expiryDate,
-                    receivedAt: new Date()
+                    receivedAt: new Date(),
+                    brandId: ctx.brandId // Enforce isolation
                 }
             });
 
@@ -126,7 +128,8 @@ export class WarehouseService {
                     type: StockMutationType.IN,
                     quantity,
                     batchCode,
-                    createdBy: ctx.userId
+                    createdBy: ctx.userId,
+                    brandId: ctx.brandId // Enforce isolation
                 }
             });
 
@@ -195,7 +198,8 @@ export class WarehouseService {
                         batchCode: `${batch.batchCode}-TR`,
                         quantity: moveQty,
                         expiryDate: batch.expiryDate,
-                        receivedAt: new Date()
+                        receivedAt: new Date(),
+                        brandId: ctx.brandId // Enforce isolation
                     }
                 });
 
@@ -208,7 +212,8 @@ export class WarehouseService {
                         quantity: -moveQty,
                         batchCode: batch.batchCode,
                         notes: `Transfer OUT to ${toWarehouseId} (${transferCode})`,
-                        createdBy: ctx.userId
+                        createdBy: ctx.userId,
+                        brandId: ctx.brandId // Enforce isolation
                     }
                 });
 
@@ -220,7 +225,8 @@ export class WarehouseService {
                         quantity: moveQty,
                         batchCode: `${batch.batchCode}-TR`,
                         notes: `Transfer IN from ${fromWarehouseId} (${transferCode})`,
-                        createdBy: ctx.userId
+                        createdBy: ctx.userId,
+                        brandId: ctx.brandId // Enforce isolation
                     }
                 });
 
@@ -295,6 +301,9 @@ export class WarehouseService {
                     expiryDate: { lt: now },
                     isExpired: false,
                     quantity: { gt: 0 }
+                },
+                include: {
+                    warehouse: { select: { brandId: true } }
                 }
             });
 
@@ -314,7 +323,8 @@ export class WarehouseService {
                         quantity: -batch.quantity,
                         batchCode: batch.batchCode,
                         notes: 'Automatically marked as expired',
-                        createdBy: 'SYSTEM'
+                        createdBy: 'SYSTEM',
+                        brandId: batch.warehouse.brandId // Enforce isolation
                     }
                 });
 
