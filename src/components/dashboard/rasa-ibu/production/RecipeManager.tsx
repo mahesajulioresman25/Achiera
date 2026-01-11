@@ -32,15 +32,19 @@ export default function RecipeManager({ brandId, recipes, onRefresh }: RecipeMan
 
         if (f === t) return qty;
 
-        // Weight
-        if (f === 'gram' && t === 'kg') return qty / 1000;
-        if (f === 'kg' && t === 'gram') return qty * 1000;
+        // Base Conversion factors to "Small" units (gram/ml)
+        const isSmallFrom = f === 'gram' || f === 'ml';
+        const isLargeFrom = f === 'kg' || f === 'liter';
+        const isSmallTo = t === 'gram' || t === 'ml';
+        const isLargeTo = t === 'kg' || t === 'liter';
 
-        // Volume
-        if (f === 'ml' && t === 'liter') return qty / 1000;
-        if (f === 'liter' && t === 'ml') return qty * 1000;
+        // 1. Large to Small (kg/liter -> gram/ml)
+        if (isLargeFrom && isSmallTo) return qty * 1000;
 
-        // Fallback: No conversion logic found, assume 1:1 but warn logically (future improvement)
+        // 2. Small to Large (gram/ml -> kg/liter)
+        if (isSmallFrom && isLargeTo) return qty / 1000;
+
+        // Fallback for cases like 'pcs' or unknown units
         return qty;
     };
 
@@ -116,8 +120,24 @@ export default function RecipeManager({ brandId, recipes, onRefresh }: RecipeMan
     };
 
     const handleSave = async () => {
-        if (!formData.name || !formData.frozenVariantId || formData.items.length === 0) {
-            toast.error('Mohon lengkapi nama, produk hasil, dan minimal 1 bahan.');
+        // Precise Validation
+        if (!formData.name) {
+            toast.error('Mohon masukkan nama resep');
+            return;
+        }
+        if (!formData.frozenVariantId) {
+            toast.error('Mohon pilih produk hasil (Finished Good)');
+            return;
+        }
+        if (formData.items.length === 0) {
+            toast.error('Mohon tambahkan minimal 1 bahan');
+            return;
+        }
+
+        // Check if all items are fully specified
+        const hasEmptyItems = formData.items.some(item => !item.ingredientId || item.quantity <= 0);
+        if (hasEmptyItems) {
+            toast.error('Pastikan semua bahan sudah dipilih dan memiliki takaran yang valid');
             return;
         }
 

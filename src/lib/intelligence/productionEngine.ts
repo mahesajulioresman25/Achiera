@@ -6,6 +6,26 @@ import { Decimal } from '@prisma/client/runtime/library';
  * Handles recipes, production planning, and ingredient forecasting.
  */
 export class ProductionEngine {
+    /**
+     * Helper: Unit Conversion (Internal)
+     */
+    private static convertUnit(qty: number, fromUnit: string, toUnit: string): number {
+        const normalize = (u: string) => u?.toLowerCase() || '';
+        const f = normalize(fromUnit);
+        const t = normalize(toUnit);
+
+        if (f === t) return qty;
+
+        const isSmallFrom = f === 'gram' || f === 'ml';
+        const isLargeFrom = f === 'kg' || f === 'liter';
+        const isSmallTo = t === 'gram' || t === 'ml';
+        const isLargeTo = t === 'kg' || t === 'liter';
+
+        if (isLargeFrom && isSmallTo) return qty * 1000;
+        if (isSmallFrom && isLargeTo) return qty / 1000;
+
+        return qty;
+    }
 
     /**
      * Calculate total ingredients needed for a production plan
@@ -44,7 +64,10 @@ export class ProductionEngine {
             const multiplier = planItem.targetQuantity / planItem.recipe.outputQuantity;
 
             for (const ingredient of planItem.recipe.items) {
-                const required = Number(ingredient.quantity) * multiplier;
+                // Ensure required quantity is converted to the standardized unit ('gram') used in the forecast map
+                const convertedQty = this.convertUnit(Number(ingredient.quantity), ingredient.unit || 'gram', 'gram');
+                const required = convertedQty * multiplier;
+
                 const existing = forecastMap.get(ingredient.ingredientId) || {
                     name: ingredient.ingredient.name,
                     sku: ingredient.ingredient.sku,
@@ -117,7 +140,7 @@ export class ProductionEngine {
 
         if (!item) throw new Error('Production item not found');
 
-        return await prisma.$transaction(async (tx) => {
+        return await prisma.$transaction(async (tx: any) => {
             // 1. Update finished product stock
             if (item.recipe.frozenVariantId) {
                 await tx.frozenVariant.update({
@@ -208,12 +231,19 @@ export class ProductionEngine {
             const itemCosts = [];
 
             for (const item of recipe.items) {
-                const cost = Number(item.ingredient.costPrice) * Number(item.quantity);
+                // Convert recipe item quantity to match the ingredient's master stock unit
+                // (e.g. if recipe uses 500g and master price is Rp 20,000/kg, converted quantity is 0.5kg)
+                const convertedQty = this.convertUnit(Number(item.quantity), item.unit || 'gram', item.ingredient.unit);
+                const cost = Number(item.ingredient.costPrice) * convertedQty;
+
                 totalCost += cost;
                 itemCosts.push({
                     ingredientId: item.ingredientId,
                     name: item.ingredient.name,
                     quantity: Number(item.quantity),
+                    unit: item.unit || 'gram',
+                    convertedQuantity: convertedQty,
+                    masterUnit: item.ingredient.unit,
                     unitCost: Number(item.ingredient.costPrice),
                     subtotal: cost
                 });
