@@ -14,6 +14,7 @@ export interface ProfitabilityKPIs {
     netProfitMargin: number;
     ebitda: number;
     roi: number;
+    totalAssets: number;
 }
 
 export interface CustomerKPIs {
@@ -205,14 +206,15 @@ export class KPIService {
             where: { brandId, status: 'ACTIVE' },
             _sum: { purchasePrice: true }
         });
-        const totalAssets = Number(assets._sum.purchasePrice || 1);
-        const roi = (netProfit / totalAssets) * 100;
+        const totalAssets = Number(assets._sum.purchasePrice || 0);
+        const roi = totalAssets > 0 ? (netProfit / totalAssets) * 100 : 0;
 
         return {
             grossProfitMargin,
             netProfitMargin,
             ebitda,
-            roi
+            roi,
+            totalAssets
         };
     }
 

@@ -106,6 +106,7 @@ model Brand {
   complianceReports            ComplianceReport[]
   recipePosts                  RecipePost[]
   stockMutations               StockMutation[]
+  assetDepreciations           AssetDepreciation[]
 
   @@map("brands")
 }
@@ -2069,14 +2070,17 @@ model BusinessAsset {
 
 model AssetDepreciation {
   id                   String        @id @default(cuid())
+  brandId              String
   assetId              String
   date                 DateTime
   amount               Decimal       @db.Decimal(15, 2)
   journalTransactionId String?
   createdAt            DateTime      @default(now())
   asset                BusinessAsset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  brand                Brand         @relation(fields: [brandId], references: [id], onDelete: Cascade)
 
   @@index([assetId])
+  @@index([brandId])
   @@map("asset_depreciations")
 }
 

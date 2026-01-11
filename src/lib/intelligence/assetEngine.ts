@@ -79,12 +79,13 @@ export class AssetEngine {
             // Record depreciation entry
             await prisma.assetDepreciation.create({
                 data: {
+                    brandId,
                     assetId: asset.id,
                     date: now,
                     amount,
                     journalTransactionId: transaction.id
                 }
-            });
+            } as any);
         }
     }
 

@@ -196,7 +196,7 @@ export class MonthlyReportService {
                 currentRatio: kpiDashboard?.financialHealth.currentRatio || 0,
                 inventoryTurnover: kpiDashboard?.operational.inventoryTurnover || 0,
                 retentionRate: kpiDashboard?.customer.retentionRate || 0,
-                totalAssets: kpiDashboard?.profitability.roi ? (kpiDashboard.profitability.ebitda / (kpiDashboard.profitability.roi / 100)) : 0, // Simplified reverse calc or just fetch total assets
+                totalAssets: kpiDashboard?.profitability.totalAssets || 0,
                 returnOnInvestment: kpiDashboard?.profitability.roi || 0
             }
         };
