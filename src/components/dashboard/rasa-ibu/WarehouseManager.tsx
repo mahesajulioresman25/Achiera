@@ -61,7 +61,7 @@ export default function WarehouseManager({ brandId, onClose }: WarehouseManagerP
 
     async function loadInventory(warehouseId: string) {
         setLoading(true);
-        const res = await getWarehouseInventoryAction(warehouseId);
+        const res = await getWarehouseInventoryAction(brandId, warehouseId);
         if (res.success && res.data) {
             setInventory(res.data);
         }
@@ -70,7 +70,7 @@ export default function WarehouseManager({ brandId, onClose }: WarehouseManagerP
 
     async function loadMutations(warehouseId: string) {
         setLoading(true);
-        const res = await getStockMutationsAction(warehouseId);
+        const res = await getStockMutationsAction(brandId, warehouseId);
         if (res.success && res.data) {
             setMutations(res.data);
         }

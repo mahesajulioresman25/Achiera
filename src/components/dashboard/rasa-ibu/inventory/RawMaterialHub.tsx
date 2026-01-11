@@ -153,7 +153,7 @@ export default function RawMaterialHub({ brandId, onClose }: RawMaterialHubProps
     }, [selectedId]);
 
     const loadMutations = async (variantId: string) => {
-        const mutRes = await getStockMutationsAction(variantId);
+        const mutRes = await getStockMutationsAction(brandId, variantId);
         if (mutRes.success) setMutations(mutRes.data);
     };
 
@@ -220,6 +220,7 @@ export default function RawMaterialHub({ brandId, onClose }: RawMaterialHubProps
             if (isEditing && selectedId) {
                 // UPDATE LOGIC
                 const res = await updateIngredientAction({
+                    brandId, // ADDED
                     variantId: selectedId,
                     productName: newIngredient.name,
                     inventoryCategoryId: newIngredient.inventoryCategoryId,
@@ -325,7 +326,7 @@ export default function RawMaterialHub({ brandId, onClose }: RawMaterialHubProps
 
         setIsDeleting(true);
         try {
-            const res = await deleteIngredientAction(selectedId);
+            const res = await deleteIngredientAction(brandId, selectedId); // UPDATED
             if (res.success) {
                 toast.success('Bahan baku berhasil dihapus');
                 setSelectedId(null); // Close detail view

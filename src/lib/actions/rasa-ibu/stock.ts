@@ -14,12 +14,18 @@ export async function adjustStock(data: {
     operatorId: string;
     expiryDate?: string;
     unitCost?: number;
-    sourceAccountId?: string; // Optional: Dynamic source for payment
+    sourceAccountId?: string;
     brandId: string;
 }) {
     try {
+        // VALIDATE BRAND ID FIRST
+        if (!data.brandId) throw new Error('Brand ID required for isolation');
+
         const variant = await prisma.frozenVariant.findUnique({
-            where: { id: data.variantId, brandId: data.brandId },
+            where: {
+                id: data.variantId,
+                brandId: data.brandId // STRICT CONSTRAINT
+            },
             include: {
                 product: {
                     include: {
@@ -347,11 +353,14 @@ export async function registerIngredientAction(data: {
 /**
  * Get mutation history for a variant
  */
-export async function getStockMutationsAction(variantId: string) {
+export async function getStockMutationsAction(brandId: string, variantId: string) {
     try {
-        // Fetch variant first to get brandId for isolation
+        // Fetch variant first to get brandId for isolation compatibility check
         const variant = await prisma.frozenVariant.findUnique({
-            where: { id: variantId },
+            where: {
+                id: variantId,
+                brandId // Enforce Brand Isolation
+            },
             include: {
                 product: {
                     include: {
@@ -363,8 +372,8 @@ export async function getStockMutationsAction(variantId: string) {
         });
 
         if (!variant) throw new Error('Variant not found');
-        // @ts-ignore
-        const brandId = variant.product.category?.brandId || variant.product.inventoryCategory?.brandId;
+        // brandId is already available from arguments
+        // const brandId = variant.product.category?.brandId || variant.product.inventoryCategory?.brandId;
 
         const mutations = await prisma.stockMutation.findMany({
             where: {
@@ -383,10 +392,10 @@ export async function getStockMutationsAction(variantId: string) {
 /**
  * Delete a raw material (product and variant)
  */
-export async function deleteIngredientAction(variantId: string) {
+export async function deleteIngredientAction(brandId: string, variantId: string) {
     try {
         const variant = await prisma.frozenVariant.findUnique({
-            where: { id: variantId },
+            where: { id: variantId, brandId },
             select: { id: true, productId: true, recipes: { select: { id: true } } }
         });
 
@@ -432,6 +441,7 @@ export async function deleteIngredientAction(variantId: string) {
  * Update an existing ingredient/material
  */
 export async function updateIngredientAction(data: {
+    brandId: string; // REQUIRED FOR ISOLATION
     variantId: string;
     productName: string;
     inventoryCategoryId: string;
@@ -443,7 +453,7 @@ export async function updateIngredientAction(data: {
 }) {
     try {
         const variant = await prisma.frozenVariant.findUnique({
-            where: { id: data.variantId },
+            where: { id: data.variantId, brandId: data.brandId },
             select: { productId: true }
         });
 
@@ -483,16 +493,17 @@ export async function updateIngredientAction(data: {
  * Get price analysis data for a variant
  * Based on 'IN' mutations and their corresponding journal entries
  */
-export async function getPriceAnalysisAction(variantId: string) {
+export async function getPriceAnalysisAction(brandId: string, variantId: string) {
     try {
-        // Fetch variant first to get brandId for isolation
+        // Fetch variant with Brand Isolation
         const variant = await prisma.frozenVariant.findUnique({
-            where: { id: variantId },
+            where: { id: variantId, brandId },
             include: { product: { include: { category: true } } }
         });
 
         if (!variant) throw new Error('Variant not found');
-        const brandId = (variant.product.category as any)?.brandId;
+        // brandId is already available from arguments
+        // const brandId = (variant.product.category as any)?.brandId;
 
         const mutations = await prisma.stockMutation.findMany({
             where: {

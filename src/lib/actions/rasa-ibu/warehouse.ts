@@ -43,11 +43,14 @@ export async function getWarehousesAction(brandId: string) {
     }
 }
 
-export async function getWarehouseInventoryAction(warehouseId: string) {
+export async function getWarehouseInventoryAction(brandId: string, warehouseId: string) {
     try {
         // Get all variants that have stock mutations in this warehouse
         const mutations = await prisma.stockMutation.findMany({
-            where: { warehouseId },
+            where: {
+                warehouseId,
+                warehouse: { brandId }
+            },
             include: {
                 variant: {
                     include: {
@@ -100,10 +103,13 @@ export async function getWarehouseInventoryAction(warehouseId: string) {
     }
 }
 
-export async function getStockMutationsAction(warehouseId: string) {
+export async function getStockMutationsAction(brandId: string, warehouseId: string) {
     try {
         const mutations = await prisma.stockMutation.findMany({
-            where: { warehouseId },
+            where: {
+                warehouseId,
+                warehouse: { brandId } // FORCE BRAND ISOLATION
+            },
             include: {
                 variant: {
                     include: { product: true }
