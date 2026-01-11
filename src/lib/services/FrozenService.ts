@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { AccessControlError } from "@/lib/auth/rbac";
+import { AuthorizationError } from "@/lib/auth/rbac";
 
 type ServiceContext = {
     brandId: string;
@@ -44,7 +44,7 @@ export class FrozenService {
         });
         if (!variant) throw new Error("Variant not found or access denied");
 
-        return prisma.$transaction(async (tx) => {
+        return prisma.$transaction(async (tx: any) => {
             // 2. Fetch batches sorted by Expiry (Oldest First)
             const batches = await tx.inventoryBatch.findMany({
                 where: {
@@ -103,7 +103,7 @@ export class FrozenService {
 
         // Calculate Totals
         let subtotal = 0;
-        const orderItemsData = sub.items.map(item => {
+        const orderItemsData = sub.items.map((item: any) => {
             const lineTotal = Number(item.variant.price) * item.quantity;
             subtotal += lineTotal;
             return {
@@ -119,7 +119,7 @@ export class FrozenService {
         const order = await prisma.order.create({
             data: {
                 invoiceNo: `SUB-${Date.now()}`,
-                quantity: sub.items.reduce((acc, i) => acc + i.quantity, 0),
+                quantity: sub.items.reduce((acc: any, i: any) => acc + i.quantity, 0),
                 subtotal: subtotal,
                 total: subtotal, // Add tax logic if needed
                 customerName: sub.user.name,

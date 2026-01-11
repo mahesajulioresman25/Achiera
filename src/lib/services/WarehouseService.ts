@@ -242,7 +242,7 @@ export class WarehouseService {
             }
         });
 
-        return batches.reduce((sum, batch) => sum + batch.quantity, 0);
+        return batches.reduce((sum: number, batch: any) => sum + batch.quantity, 0);
     }
 
     /**
@@ -281,7 +281,7 @@ export class WarehouseService {
     async markExpiredBatches() {
         const now = new Date();
 
-        return unisolatedPrisma.$transaction(async (tx) => {
+        return unisolatedPrisma.$transaction(async (tx: any) => {
             const expiredBatches = await tx.inventoryBatch.findMany({
                 where: {
                     expiryDate: { lt: now },

@@ -49,7 +49,7 @@ export async function scanForAnomalies() {
     });
 
     const pairingCounts: Record<string, { count: number; sendName: string; recvName: string }> = {};
-    recentTransfers.forEach(t => {
+    recentTransfers.forEach((t: any) => {
         const key = `${t.sendingBrandId}-${t.receivingBrandId}`;
         if (!pairingCounts[key]) {
             pairingCounts[key] = {
@@ -83,11 +83,12 @@ export async function scanForAnomalies() {
     // 3. Unauthorized Holding Access (Patterns of forbidden attempts in Audit Logs)
     const securityAlerts = await unisolatedPrisma.auditLog.findMany({
         where: {
+            // @ts-ignore
             action: { in: ['UNAUTHORIZED_ACCESS', 'FORBIDDEN_ATTEMPT', 'HOLDING_ACCESS_DENIED'] },
             createdAt: { gte: probePeriod }
         },
-        include: { user: { select: { name: true, email: true } } }
-    });
+        include: { user: { select: { id: true, name: true, email: true } } }
+    }) as any[];
 
     for (const log of securityAlerts) {
         findings.push({
@@ -107,21 +108,29 @@ export async function scanForAnomalies() {
 
     // 4. Low Stock Risk (Detection as variant stockOnHand < 50)
     const lowStockItems = await prisma.frozenVariant.findMany({
-        where: { stockOnHand: { lt: 50 }, isActive: true },
-        include: { brand: { select: { name: true } } }
-    });
+        where: { stockOnHand: { lt: 50 } },
+        include: {
+            product: {
+                include: {
+                    category: { include: { brand: true } },
+                    inventoryCategory: { include: { brand: true } }
+                }
+            }
+        }
+    }) as any[];
 
     for (const item of lowStockItems) {
+        const brand = item.product?.category?.brand || item.product?.inventoryCategory?.brand;
         findings.push({
-            brandId: item.brandId,
+            brandId: brand?.id,
             type: 'LOW_STOCK' as any,
             severity: AnomalySeverity.WARNING,
-            description: `Variant "${item.name}" (SKU: ${item.sku}) is running low on stock (${item.stockOnHand} left) in brand ${item.brand?.name || 'Unknown'}.`,
+            description: `Variant "${item.name}" (SKU: ${item.sku}) is running low on stock (${item.stockOnHand} left) in brand ${brand?.name || 'Unknown'}.`,
             metadata: {
                 variantId: item.id,
                 sku: item.sku,
                 stockOnHand: item.stockOnHand,
-                brandName: item.brand?.name
+                brandName: brand?.name
             }
         });
     }
@@ -134,23 +143,35 @@ export async function scanForAnomalies() {
             quantity: { gt: 0 }
         },
         include: {
-            variant: { select: { name: true, sku: true, brand: { select: { name: true } } } }
+            variant: {
+                include: {
+                    product: {
+                        include: {
+                            category: { include: { brand: true } },
+                            inventoryCategory: { include: { brand: true } }
+                        }
+                    }
+                }
+            }
         }
-    });
+    }) as any[];
 
     for (const batch of expiringBatches) {
+        const variant = batch.variant;
+        const brand = variant?.product?.category?.brand || variant?.product?.inventoryCategory?.brand;
+
         findings.push({
-            brandId: batch.variant.brand.id,
+            brandId: brand?.id,
             type: 'EXPIRING_INVENTORY' as any,
             severity: AnomalySeverity.CRITICAL,
-            description: `Batch ${batch.batchCode} of "${batch.variant.name}" (${batch.quantity} units) is expiring on ${batch.expiryDate.toLocaleDateString()} in brand ${batch.variant.brand.name}.`,
+            description: `Batch ${batch.batchCode} of "${variant?.name}" (${batch.quantity} units) is expiring on ${batch.expiryDate.toLocaleDateString()} in brand ${brand?.name || 'Unknown'}.`,
             metadata: {
                 batchId: batch.id,
                 batchCode: batch.batchCode,
                 variantId: batch.variantId,
                 expiryDate: batch.expiryDate,
                 quantity: batch.quantity,
-                brandName: batch.variant.brand.name
+                brandName: brand?.name || 'Unknown'
             }
         });
     }
