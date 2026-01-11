@@ -68,7 +68,7 @@ export async function getProductCategories(brandId: string) {
             orderBy: { name: 'asc' }
         });
 
-        return categories.map(c => ({
+        return categories.map((c: any) => ({
             id: c.id,
             name: c.name,
             slug: c.slug
@@ -127,5 +127,25 @@ export async function getRelatedRecipes(brandId: string, category: string, curre
     } catch (error) {
         console.error('[getRelatedRecipes] Error:', error);
         return [];
+    }
+}
+
+/**
+ * Toggle recipe like count
+ */
+export async function toggleRecipeLike(recipeId: string, increment: boolean) {
+    try {
+        const recipe = await (prisma as any).recipePost.update({
+            where: { id: recipeId },
+            data: {
+                likes: {
+                    [increment ? 'increment' : 'decrement']: 1
+                }
+            }
+        });
+        return { success: true, likes: recipe.likes };
+    } catch (error) {
+        console.error('[toggleRecipeLike] Error:', error);
+        return { success: false, error: 'Failed' };
     }
 }

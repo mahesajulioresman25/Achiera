@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Utensils, ChefHat, Clock, Flame, Plus } from 'lucide-react';
 import CategoryFilter from '@/components/filters/CategoryFilter';
+import RecipeLikeButton from '@/components/content/RecipeLikeButton';
 
 import { prisma } from '@/lib/prisma';
 import { getPublishedRecipes, getRecipeCategories } from '@/lib/actions/rasa-ibu/recipes';
@@ -167,12 +168,21 @@ export default async function RecipesPage({
 
                             <div className="p-4 md:p-6 flex flex-col flex-grow">
                                 <div className="flex justify-between items-start mb-3">
+                                    import RecipeLikeButton from '@/components/content/RecipeLikeButton';
+
+                                    // ... (in grid render)
                                     <div className="bg-[#F9F7F2] px-3 py-1 rounded-lg text-xs font-bold text-[#8B7E66] uppercase tracking-wider">
                                         {recipe.difficulty}
                                     </div>
-                                    <button className="text-pink-500 hover:text-pink-600 flex items-center gap-1 text-xs font-medium">
-                                        <Flame className="w-4 h-4 fill-current" /> {recipe.likes}
-                                    </button>
+                                    <div className="flex items-center gap-1">
+                                        <RecipeLikeButton
+                                            recipeId={recipe.id}
+                                            initialLikes={recipe.likes}
+                                            showCount
+                                            className="text-pink-500 hover:text-pink-600 text-xs font-medium"
+                                            iconClassName="w-4 h-4"
+                                        />
+                                    </div>
                                 </div>
 
                                 <h3 className="text-lg md:text-xl font-bold text-[#2D3A2D] mb-2 font-serif group-hover:text-[#B2BCA2] transition-colors line-clamp-2">

@@ -3,6 +3,7 @@ import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Clock, ChefHat, Flame, Share2, Plus, ArrowLeft } from 'lucide-react';
+import RecipeLikeButton from '@/components/content/RecipeLikeButton';
 import AddToCartButton from '@/components/commerce/AddToCartButton';
 
 import { prisma } from '@/lib/prisma';
@@ -88,7 +89,12 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ s
                             <Clock className="w-4 h-4" /> {recipe.duration} Menit
                         </div>
                         <div className="flex items-center gap-2 text-sm font-bold">
-                            <Flame className="w-4 h-4 text-orange-500" /> {recipe.likes} Suka
+                            <RecipeLikeButton
+                                recipeId={recipe.id}
+                                initialLikes={recipe.likes}
+                                className="text-white hover:text-pink-200"
+                                iconClassName="w-4 h-4"
+                            /> Suka
                         </div>
                         <div className="flex items-center gap-2 text-sm font-bold">
                             Level: {recipe.difficulty}
