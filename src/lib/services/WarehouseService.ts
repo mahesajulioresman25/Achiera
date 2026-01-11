@@ -28,7 +28,7 @@ export class WarehouseService {
         quantity: number,
         referenceId?: string
     ) {
-        return prisma.$transaction(async (tx) => {
+        return prisma.$transaction(async (tx: any) => {
             // 1. Get batches sorted by expiry (FIFO)
             const batches = await tx.inventoryBatch.findMany({
                 where: {
@@ -100,7 +100,7 @@ export class WarehouseService {
         batchCode: string,
         expiryDate: Date
     ) {
-        return prisma.$transaction(async (tx) => {
+        return prisma.$transaction(async (tx: any) => {
             // 1. Create inventory batch
             const batch = await tx.inventoryBatch.create({
                 data: {
@@ -150,7 +150,7 @@ export class WarehouseService {
             throw new Error('Source and destination warehouses must be different');
         }
 
-        return prisma.$transaction(async (tx) => {
+        return prisma.$transaction(async (tx: any) => {
             const transferCode = `TR-${Date.now().toString().slice(-6)}`;
 
             // 1. Deduct from source
