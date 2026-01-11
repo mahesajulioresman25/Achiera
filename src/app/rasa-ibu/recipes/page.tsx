@@ -27,11 +27,18 @@ export default async function RecipesPage({
 
     if (!brand) return <div className="py-24 text-center">Brand not found</div>;
 
-    // Fetch recipes and categories
-    const [recipes, categories] = await Promise.all([
+    // Fetch recipes, categories and config
+    const [recipes, categories, config] = await Promise.all([
         getPublishedRecipes(brand.id, selectedCategory, selectedAuthor),
-        getRecipeCategories(brand.id)
+        getRecipeCategories(brand.id),
+        prisma.brandConfig.findUnique({ where: { brandId: brand.id } })
     ]);
+
+    // CMS Values with fallbacks
+    const heroTitle = config?.recipeListHeroTitle || 'Kreasi Rasa Dapur Bunda';
+    const heroSubtitle = config?.recipeListHeroSubtitle || 'Temukan inspirasi masakan lezat dari ribuan Ibu hebat lainnya. Punya resep rahasia? Bagikan dan jadilah inspirasi!';
+    const heroTagline = config?.recipeListHeroTagline || 'Komunitas Rasa Ibu';
+    const heroImage = config?.recipeListHeroImage || 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1600&q=80';
 
     // Fallback to mock data if no recipes in database
     const displayRecipes = recipes.length > 0 ? recipes : [
@@ -81,18 +88,18 @@ export default async function RecipesPage({
     return (
         <div className="min-h-screen bg-[#FDFBF7] pb-20">
             {/* Header Section */}
-            <div className="relative min-h-[350px] md:h-[50vh] bg-[#2D3A2D] overflow-hidden">
-                <div className="absolute inset-0 bg-black/40 z-10" />
+            <div className="relative h-[300px] sm:h-[400px] md:h-[500px] lg:h-[60vh] bg-[#2D3A2D] overflow-hidden flex items-center justify-center">
+                <div className="absolute inset-0 bg-black/50 z-10" />
                 <img
-                    src="https://images.unsplash.com/photo-1495521821758-ee18ece60918?w=1600&q=80"
+                    src={heroImage}
                     alt="Cooking Background"
-                    className="absolute inset-0 w-full h-full object-cover opacity-80"
+                    className="absolute inset-0 w-full h-full object-cover object-center opacity-70"
                 />
 
-                <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4 pt-16 md:pt-0">
-                    <div className="max-w-3xl animate-fade-in-up">
+                <div className="relative z-20 w-full max-w-4xl mx-auto text-center px-4 py-12 md:py-0">
+                    <div className="animate-fade-in-up">
                         <span className="inline-block px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#FDFBF7] text-[10px] md:text-xs font-bold tracking-[0.2em] mb-4 uppercase">
-                            Komunitas Rasa Ibu
+                            {heroTagline}
                         </span>
 
                         {selectedAuthor ? (
@@ -112,10 +119,17 @@ export default async function RecipesPage({
                         ) : (
                             <>
                                 <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-[#FDFBF7] mb-4 md:mb-6 leading-tight font-serif px-2">
-                                    Kreasi Rasa <br className="hidden sm:block" /> <span className="text-[#B2BCA2] italic">Dapur Bunda</span>
+                                    {heroTitle.includes(' ') ? (
+                                        <>
+                                            {heroTitle.split(' ').slice(0, -2).join(' ')} <br className="hidden sm:block" />
+                                            <span className="text-[#B2BCA2] italic">{heroTitle.split(' ').slice(-2).join(' ')}</span>
+                                        </>
+                                    ) : (
+                                        heroTitle
+                                    )}
                                 </h1>
-                                <p className="text-[#E5E1D8] text-sm sm:text-base md:text-lg mb-6 md:mb-8 max-w-xl mx-auto font-light leading-relaxed px-4">
-                                    Temukan inspirasi masakan lezat dari ribuan Ibu hebat lainnya. Punya resep rahasia? Bagikan dan jadilah inspirasi!
+                                <p className="text-[#E5E1D8] text-sm sm:text-base md:text-lg mb-6 md:mb-8 max-w-2xl mx-auto font-light leading-relaxed px-4">
+                                    {heroSubtitle}
                                 </p>
 
                                 <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">

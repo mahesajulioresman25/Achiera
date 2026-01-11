@@ -56,7 +56,7 @@ export class AssetEngine {
             if (amount <= 0) continue;
 
             // Financial Accounts Integration
-            const expenseAccount = '5-1100'; // Beban Penyusutan (Depreciation Expense)
+            const expenseAccount = '5-7000'; // Biaya Penyusutan Aset (Depreciation Expense)
             const accumAccount = `1-${asset.category}-ACCUM`; // Akumulasi Penyusutan
 
             // Ensure accounts exist

@@ -66,6 +66,7 @@ export default function FloatingCart() {
                                                 alt={item.name}
                                                 width={80}
                                                 height={80}
+                                                unoptimized
                                                 className="w-full h-full object-cover"
                                             />
                                         ) : (

@@ -60,30 +60,6 @@ export default function FinancialInsight({ pulse, onOpenLedger, onOpenReports, o
                 </div>
             </div>
 
-            {/* Added: Asset & ROI Insight */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-white border border-[#E5E1D8] p-8 rounded-[2.5rem] shadow-xl flex items-center gap-6 group hover:scale-[1.02] transition-all">
-                    <div className="p-4 bg-emerald-50 rounded-2xl">
-                        <PieChart className="w-8 h-8 text-emerald-600" />
-                    </div>
-                    <div>
-                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#8B7E66] mb-1">Total Aset Bisnis</p>
-                        <h3 className="text-2xl font-black text-[#1A241A]">{currency.format(pulse.profitability?.totalAssets || 0)}</h3>
-                        <p className="text-[9px] font-bold text-emerald-600 mt-1">Terdaftar dalam Inventori Aset</p>
-                    </div>
-                </div>
-                <div className="bg-white border border-[#E5E1D8] p-8 rounded-[2.5rem] shadow-xl flex items-center gap-6 group hover:scale-[1.02] transition-all">
-                    <div className="p-4 bg-indigo-50 rounded-2xl">
-                        <DollarSign className="w-8 h-8 text-indigo-600" />
-                    </div>
-                    <div>
-                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#8B7E66] mb-1">ROI (Return on Investment)</p>
-                        <h3 className="text-2xl font-black text-[#1A241A]">{(pulse.profitability?.roi || 0).toFixed(2)}%</h3>
-                        <p className="text-[9px] font-bold text-indigo-600 mt-1">Efisiensi Pemanfaatan Aset</p>
-                    </div>
-                </div>
-            </div>
-
             {/* 2. Channel Split & Payment Pulse */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Channel Breakdown */}

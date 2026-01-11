@@ -280,6 +280,55 @@ export default function FinanceHub({ brandId, pulse, onBack, onOpenExpenseEntry,
                 </div>
             </div>
 
+            {/* Asset & ROI Intelligence Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Total Assets Card */}
+                <div className={`${GLASS_CARD} bg-gradient-to-br from-emerald-600 to-teal-700 text-white`}>
+                    <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full -mr-24 -mt-24 blur-3xl"></div>
+                    <div className="flex justify-between items-start mb-6 relative z-10">
+                        <div className="p-4 bg-white/20 rounded-2xl border border-white/20">
+                            <Box className="w-6 h-6 text-white" />
+                        </div>
+                        <button
+                            onClick={onOpenAssetHub}
+                            className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-2 border border-white/20"
+                        >
+                            Kelola Aset <ArrowRight className="w-3 h-3" />
+                        </button>
+                    </div>
+                    <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-emerald-100 mb-3 opacity-80 relative z-10">Total Aset Bisnis</p>
+                    <h3 className="text-5xl font-black tracking-tighter text-white mb-4 relative z-10">
+                        {currency.format(pulse.profitability?.totalAssets || 0)}
+                    </h3>
+                    <div className="flex items-center gap-2 text-[10px] font-bold text-emerald-100/80 relative z-10">
+                        <Target className="w-3 h-3" />
+                        Terdaftar dalam Inventori Aset
+                    </div>
+                </div>
+
+                {/* ROI Card */}
+                <div className={`${GLASS_CARD} bg-gradient-to-br from-indigo-600 to-purple-700 text-white`}>
+                    <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full -mr-24 -mt-24 blur-3xl"></div>
+                    <div className="flex justify-between items-start mb-6 relative z-10">
+                        <div className="p-4 bg-white/20 rounded-2xl border border-white/20">
+                            <TrendingUp className="w-6 h-6 text-white" />
+                        </div>
+                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-100 bg-white/20 px-4 py-2 rounded-full border border-white/20">
+                            {(pulse.profitability?.roi || 0) >= 0 ? 'Positive' : 'Negative'}
+                        </span>
+                    </div>
+                    <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-indigo-100 mb-3 opacity-80 relative z-10">ROI (Return on Investment)</p>
+                    <h3 className="text-5xl font-black tracking-tighter text-white mb-4 relative z-10">
+                        {(pulse.profitability?.roi || 0).toFixed(2)}%
+                    </h3>
+                    <div className="flex items-center gap-2 text-[10px] font-bold text-indigo-100/80 relative z-10">
+                        <Info className="w-3 h-3" />
+                        Efisiensi Pemanfaatan Aset Bulanan
+                    </div>
+                </div>
+            </div>
+
+
             {/* Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 bg-white border border-[#E5E1D8] p-10 rounded-[3rem] shadow-xl">

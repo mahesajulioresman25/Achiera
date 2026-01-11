@@ -44,13 +44,21 @@ export async function createAssetAction(data: {
 
         try {
             const { JournalService } = await import('@/lib/intelligence/journalService');
+
+            // Dynamically find a valid credit account (Cash/Bank)
+            const cashAccounts = await prisma.ledgerAccount.findMany({
+                where: { brandId: data.brandId, code: { startsWith: '1-1' } },
+                take: 1
+            });
+            const creditAccount = cashAccounts.length > 0 ? cashAccounts[0].code : '1-1001';
+
             await JournalService.createTransaction(
                 data.brandId,
                 timestamp,
                 `[ACQUISITION] Perolehan Aset: ${data.name} (${data.code})`,
                 [
                     { accountCode: assetAccountCode, debit: data.purchasePrice, credit: 0 },
-                    { accountCode: '1-1000', debit: 0, credit: data.purchasePrice }
+                    { accountCode: creditAccount, debit: 0, credit: data.purchasePrice }
                 ],
                 'ASSET_ACQUISITION',
                 asset.id

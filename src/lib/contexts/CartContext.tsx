@@ -61,15 +61,35 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
     const addToCart = (newItem: Omit<CartItem, 'id' | 'total'>) => {
         setItems(prev => {
-            // Check if exact same item exists (same variant logic)
-            // For custom mockups, we treat every addition as unique to allow different designs
-            const item: CartItem = {
-                ...newItem,
-                type: newItem.type || 'UNIT',
-                id: Date.now().toString(),
-                total: newItem.price * newItem.quantity
-            };
-            return [...prev, item];
+            // Check if the same variant already exists in cart (for regular menu items)
+            // For custom mockups/designs, we still treat them as unique
+            const existingItemIndex = prev.findIndex(item =>
+                item.variantId === newItem.variantId &&
+                !newItem.mockupResultPath && // Not a custom design
+                !item.mockupResultPath
+            );
+
+            if (existingItemIndex !== -1) {
+                // Item exists, increment quantity
+                const updated = [...prev];
+                const existingItem = updated[existingItemIndex];
+                const newQuantity = existingItem.quantity + newItem.quantity;
+                updated[existingItemIndex] = {
+                    ...existingItem,
+                    quantity: newQuantity,
+                    total: existingItem.price * newQuantity
+                };
+                return updated;
+            } else {
+                // New item, add to cart
+                const item: CartItem = {
+                    ...newItem,
+                    type: newItem.type || 'UNIT',
+                    id: Date.now().toString(),
+                    total: newItem.price * newItem.quantity
+                };
+                return [...prev, item];
+            }
         });
         setIsCartOpen(true);
     };

@@ -151,19 +151,26 @@ export class ProductionEngine {
                 });
 
                 // Record Stock Mutation IN
-                await tx.stockMutation.create({
-                    data: {
-                        variantId: item.recipe.frozenVariantId,
-                        warehouseId: (await tx.warehouse.findFirst({ where: { brandId: item.plan.brandId, isDefault: true } }))?.id || '',
-                        type: 'IN',
-                        quantity: actualQuantity,
-                        notes: `Production Completion: ${item.recipe.name}`,
-                        createdBy: operatorId
-                    }
+                const defaultWarehouse = await tx.warehouse.findFirst({
+                    where: { brandId: item.plan.brandId, isDefault: true }
                 });
 
+                if (defaultWarehouse) {
+                    await tx.stockMutation.create({
+                        data: {
+                            brandId: item.plan.brandId,
+                            variantId: item.recipe.frozenVariantId,
+                            warehouseId: defaultWarehouse.id,
+                            type: 'IN',
+                            quantity: actualQuantity,
+                            notes: `Production Completion: ${item.recipe.name}`,
+                            createdBy: operatorId
+                        }
+                    });
+                }
+
                 // AUTO-HPP: Update costPrice of the finished good based on current ingredient costs
-                const hppData = await this.calculateRecipeHPP(item.plan.brandId, item.recipe.id);
+                const hppData = await this.calculateRecipeHPP(item.plan.brandId, item.recipe.id, tx);
                 if (hppData.success) {
                     await tx.frozenVariant.update({
                         where: { id: item.recipe.frozenVariantId },
@@ -185,16 +192,19 @@ export class ProductionEngine {
                 });
 
                 // Record Stock Mutation OUT
-                await tx.stockMutation.create({
-                    data: {
-                        variantId: ingredient.ingredientId,
-                        warehouseId: (await tx.warehouse.findFirst({ where: { brandId: item.plan.brandId, isDefault: true } }))?.id || '',
-                        type: 'OUT',
-                        quantity: deduction,
-                        notes: `Production Raw Material: ${item.recipe.name}`,
-                        createdBy: operatorId
-                    }
-                });
+                if (defaultWarehouse) {
+                    await tx.stockMutation.create({
+                        data: {
+                            brandId: item.plan.brandId,
+                            variantId: ingredient.ingredientId,
+                            warehouseId: defaultWarehouse.id,
+                            type: 'OUT',
+                            quantity: deduction,
+                            notes: `Production Raw Material: ${item.recipe.name}`,
+                            createdBy: operatorId
+                        }
+                    });
+                }
             }
 
             // 3. Mark item as completed
@@ -212,9 +222,9 @@ export class ProductionEngine {
     /**
      * Calculate HPP (COGS) for a recipe based on current ingredient costs
      */
-    static async calculateRecipeHPP(brandId: string, recipeId: string) {
+    static async calculateRecipeHPP(brandId: string, recipeId: string, client: any = prisma) {
         try {
-            const recipe = await prisma.recipe.findUnique({
+            const recipe = await client.recipe.findUnique({
                 where: { id: recipeId, brandId },
                 include: {
                     items: {

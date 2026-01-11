@@ -86,6 +86,12 @@ interface UpdateBrandConfigPayload {
     productListHeroTagline?: string;
     productListHeroImage?: string;
 
+    // 12a. Recipe List Page
+    recipeListHeroTitle?: string;
+    recipeListHeroSubtitle?: string;
+    recipeListHeroTagline?: string;
+    recipeListHeroImage?: string;
+
     // 9. Social Media
     instagramHandle?: string;
     socialLinks?: any; // Json

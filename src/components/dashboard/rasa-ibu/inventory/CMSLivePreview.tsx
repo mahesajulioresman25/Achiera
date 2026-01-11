@@ -9,7 +9,7 @@ interface CMSLivePreviewProps {
 }
 
 export default function CMSLivePreview({ data }: CMSLivePreviewProps) {
-    const [view, setView] = useState<'HOME' | 'ABOUT' | 'HOW_TO_ORDER'>('HOME');
+    const [view, setView] = useState<'HOME' | 'ABOUT' | 'HOW_TO_ORDER' | 'RECIPES_LIST'>('HOME');
 
     const renderHome = () => (
         <div className="space-y-0 text-[#2D3A2D] bg-white rounded-3xl overflow-hidden border border-[#E5E1D8] shadow-inner h-[800px] overflow-y-auto custom-scrollbar">
@@ -188,6 +188,49 @@ export default function CMSLivePreview({ data }: CMSLivePreviewProps) {
         </div>
     );
 
+    const renderRecipesList = () => (
+        <div className="space-y-0 text-[#2D3A2D] bg-white rounded-3xl overflow-hidden border border-[#E5E1D8] shadow-inner h-[800px] overflow-y-auto custom-scrollbar">
+            {/* Hero Section */}
+            <section className="relative h-[400px] flex items-center justify-center overflow-hidden bg-[#2D3A2D]">
+                <div className="absolute inset-0 bg-black/50 z-10"></div>
+                {data.recipeListHeroImage ? (
+                    <img src={data.recipeListHeroImage} alt="Hero" className="absolute inset-0 w-full h-full object-cover opacity-70" />
+                ) : (
+                    <div className="absolute inset-0 bg-[#2D3A2D] flex items-center justify-center italic text-gray-400 text-[10px]">
+                        [Hero Image Space]
+                    </div>
+                )}
+                <div className="relative z-20 px-8 text-center space-y-4">
+                    <span className="inline-block px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#FDFBF7] text-[8px] font-black uppercase tracking-[0.2em]">
+                        {data.recipeListHeroTagline}
+                    </span>
+                    <h1 className="text-2xl font-black text-[#FDFBF7] leading-tight font-serif italic">
+                        {data.recipeListHeroTitle}
+                    </h1>
+                    <p className="text-[#E5E1D8] text-[10px] max-w-xs mx-auto font-light leading-relaxed">
+                        {data.recipeListHeroSubtitle}
+                    </p>
+                    <div className="pt-2">
+                        <div className="inline-block px-6 py-2.5 bg-[#B2BCA2] text-[#2D3A2D] rounded-xl text-[8px] font-black uppercase tracking-widest shadow-lg">
+                            Bagikan Resep Saya
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Mock Recipes Grid */}
+            <section className="p-8 grid grid-cols-2 gap-4">
+                {[1, 2, 3, 4].map(i => (
+                    <div key={i} className="bg-[#F9F7F2] rounded-2xl p-3 space-y-2 border border-[#E5E1D8]">
+                        <div className="aspect-square bg-white rounded-xl flex items-center justify-center text-[8px] text-gray-300">Resep {i}</div>
+                        <div className="h-2 w-2/3 bg-gray-200 rounded"></div>
+                        <div className="h-1.5 w-1/2 bg-gray-100 rounded"></div>
+                    </div>
+                ))}
+            </section>
+        </div>
+    );
+
     return (
         <div className="sticky top-8 space-y-6">
             <div className="flex items-center justify-between">
@@ -195,16 +238,18 @@ export default function CMSLivePreview({ data }: CMSLivePreviewProps) {
                     <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></div>
                     <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8B7E66]">Live Preview</span>
                 </div>
-                <div className="flex bg-[#F9F7F2] p-1 rounded-xl gap-1">
-                    <button onClick={() => setView('HOME')} className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${view === 'HOME' ? 'bg-[#2D3A2D] text-white shadow-lg' : 'text-[#8B7E66] hover:bg-white'}`}>Home</button>
-                    <button onClick={() => setView('ABOUT')} className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${view === 'ABOUT' ? 'bg-[#2D3A2D] text-white shadow-lg' : 'text-[#8B7E66] hover:bg-white'}`}>About</button>
-                    <button onClick={() => setView('HOW_TO_ORDER')} className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${view === 'HOW_TO_ORDER' ? 'bg-[#2D3A2D] text-white shadow-lg' : 'text-[#8B7E66] hover:bg-white'}`}>Order</button>
+                <div className="flex bg-[#F9F7F2] p-1 rounded-xl gap-1 overflow-x-auto no-scrollbar">
+                    <button onClick={() => setView('HOME')} className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${view === 'HOME' ? 'bg-[#2D3A2D] text-white shadow-lg' : 'text-[#8B7E66] hover:bg-white'}`}>Home</button>
+                    <button onClick={() => setView('ABOUT')} className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${view === 'ABOUT' ? 'bg-[#2D3A2D] text-white shadow-lg' : 'text-[#8B7E66] hover:bg-white'}`}>About</button>
+                    <button onClick={() => setView('HOW_TO_ORDER')} className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${view === 'HOW_TO_ORDER' ? 'bg-[#2D3A2D] text-white shadow-lg' : 'text-[#8B7E66] hover:bg-white'}`}>Order</button>
+                    <button onClick={() => setView('RECIPES_LIST')} className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${view === 'RECIPES_LIST' ? 'bg-[#2D3A2D] text-white shadow-lg' : 'text-[#8B7E66] hover:bg-white'}`}>Recipes</button>
                 </div>
             </div>
 
             {view === 'HOME' && renderHome()}
             {view === 'ABOUT' && renderAbout()}
             {view === 'HOW_TO_ORDER' && renderHowToOrder()}
+            {view === 'RECIPES_LIST' && renderRecipesList()}
 
             <p className="text-[9px] text-slate-400 font-bold italic text-center uppercase tracking-widest opacity-60">
                 Tampilan di atas adalah simulasi live sesuai data Bunda.

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Play, CheckCircle2, AlertCircle, Clock, Calendar, Plus, ChevronRight, User, Trash2, Save } from 'lucide-react';
 import { toast } from 'sonner';
 import { startProductionAction, completeProductionAction, createProductionPlanAction } from '@/lib/actions/rasa-ibu/production';
+import QuantityModal from '@/components/ui/QuantityModal';
 
 interface CookingListProps {
     brandId: string;
@@ -19,6 +20,7 @@ export default function CookingList({ brandId, plans, recipes, onRefresh }: Cook
         { recipeId: '', targetQuantity: 0 }
     ]);
     const [isLoading, setIsLoading] = useState(false);
+    const [completionModal, setCompletionModal] = useState<{ isOpen: boolean; itemId: string; targetQuantity: number; unit: string; recipeName: string } | null>(null);
 
     const handleCreatePlan = async () => {
         const validItems = newPlanItems.filter(i => i.recipeId && i.targetQuantity > 0);
@@ -64,14 +66,24 @@ export default function CookingList({ brandId, plans, recipes, onRefresh }: Cook
         if (res.success) onRefresh();
     };
 
-    const handleComplete = async (itemId: string, targetQuantity: number) => {
-        const actual = prompt(`Berapa jumlah aktual yang berhasil dimasak?`, targetQuantity.toString());
-        if (actual === null) return;
+    const handleComplete = async (itemId: string, targetQuantity: number, unit: string, recipeName: string) => {
+        setCompletionModal({ isOpen: true, itemId, targetQuantity, unit, recipeName });
+    };
+
+    const confirmCompletion = async (actual: number) => {
+        if (!completionModal) return;
 
         setIsLoading(true);
-        const res = await completeProductionAction(itemId, parseInt(actual), 'SYSTEM_KITCHEN');
+        const res = await completeProductionAction(completionModal.itemId, actual, 'SYSTEM_KITCHEN');
         setIsLoading(false);
-        if (res.success) onRefresh();
+
+        if (res.success) {
+            toast.success(`Produksi ${completionModal.recipeName} berhasil diselesaikan!`);
+            setCompletionModal(null);
+            onRefresh();
+        } else {
+            toast.error('Gagal menyelesaikan produksi: ' + res.error);
+        }
     };
 
     const activePlans = plans.filter(p => p.status !== 'CANCELLED');
@@ -225,7 +237,7 @@ export default function CookingList({ brandId, plans, recipes, onRefresh }: Cook
                                                 )}
                                                 {item.status === 'IN_PROGRESS' && (
                                                     <button
-                                                        onClick={() => handleComplete(item.id, item.targetQuantity)}
+                                                        onClick={() => handleComplete(item.id, item.targetQuantity, item.recipe?.frozenVariant?.unit || 'pcs', item.recipe.name)}
                                                         className="flex items-center gap-2 px-6 py-2 bg-emerald-600 text-white rounded-xl font-black uppercase tracking-widest text-[9px] hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-500/20"
                                                     >
                                                         <CheckCircle2 className="w-3 h-3" /> Selesai
@@ -246,6 +258,18 @@ export default function CookingList({ brandId, plans, recipes, onRefresh }: Cook
                     )
                 }
             </div >
+
+            {completionModal && (
+                <QuantityModal
+                    isOpen={completionModal.isOpen}
+                    onClose={() => setCompletionModal(null)}
+                    onConfirm={confirmCompletion}
+                    title="Konfirmasi Hasil Masak"
+                    description={`Berapa jumlah aktual ${completionModal.recipeName} yang berhasil dimasak hari ini?`}
+                    defaultValue={completionModal.targetQuantity}
+                    unit={completionModal.unit}
+                />
+            )}
         </div >
     );
 }

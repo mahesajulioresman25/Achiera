@@ -297,7 +297,17 @@ export class FinancialReports {
 
     private static categorizeCashFlow(type: AccountType, code: string): 'operating' | 'investing' | 'financing' {
         if (type === 'REVENUE' || type === 'EXPENSE') return 'operating';
-        if (code.startsWith('1-2')) return 'investing'; // Fixed Assets
+
+        // Fixed Assets: Standard range (1-2xxx) OR Asset Category codes (1-EQUIPMENT, 1-VEHICLE, etc.)
+        if (code.startsWith('1-2') ||
+            code.startsWith('1-EQUIPMENT') ||
+            code.startsWith('1-VEHICLE') ||
+            code.startsWith('1-BUILDING') ||
+            code.startsWith('1-FURNITURE') ||
+            code.startsWith('1-OTHER')) {
+            return 'investing';
+        }
+
         if (type === 'EQUITY' || code.startsWith('2-2')) return 'financing'; // Equity or Long-term Loans
         return 'operating'; // Default to operating for things like AR/AP shifts
     }

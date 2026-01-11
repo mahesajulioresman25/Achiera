@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { updateBrandConfigAction } from '@/lib/actions/content/updateBrandConfig';
 import { toast } from 'sonner';
-import { Save, Globe, Layout, AlignLeft, ShieldCheck, Loader2, Star, ListOrdered, Navigation, Info, Eye, Instagram, Trophy } from 'lucide-react';
+import { Save, Globe, Layout, AlignLeft, ShieldCheck, Loader2, Star, ListOrdered, Navigation, Info, Eye, Instagram, Trophy, Utensils } from 'lucide-react';
 import ImageUpload from '@/components/ui/ImageUpload';
 import ListEditor from '@/components/ui/ListEditor';
 import CMSLivePreview from './inventory/CMSLivePreview';
@@ -154,7 +154,13 @@ export default function CMSForm({ brandId, initialData }: CMSFormProps) {
         productListHeroTitle: initialData?.productListHeroTitle || 'Hidangan Rumah',
         productListHeroSubtitle: initialData?.productListHeroSubtitle || 'Pesan menu favorit keluarga sekarang via WhatsApp.',
         productListHeroTagline: initialData?.productListHeroTagline || 'Untuk Keluarga',
-        productListHeroImage: initialData?.productListHeroImage || ''
+        productListHeroImage: initialData?.productListHeroImage || '',
+
+        // 15. Recipe List Page (NEW)
+        recipeListHeroTitle: initialData?.recipeListHeroTitle || 'Kreasi Rasa Dapur Bunda',
+        recipeListHeroSubtitle: initialData?.recipeListHeroSubtitle || 'Temukan inspirasi masakan lezat dari ribuan Ibu hebat lainnya.',
+        recipeListHeroTagline: initialData?.recipeListHeroTagline || 'Komunitas Rasa Ibu',
+        recipeListHeroImage: initialData?.recipeListHeroImage || ''
     });
     const [isSaving, setIsSaving] = useState(false);
     const [activeTab, setActiveTab] = useState<'CONTENT' | 'SLIDER'>('CONTENT');
@@ -829,6 +835,35 @@ export default function CMSForm({ brandId, initialData }: CMSFormProps) {
                                         label="Product Page Hero Background"
                                         value={formData.productListHeroImage}
                                         onChange={(url) => setFormData({ ...formData, productListHeroImage: url })}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* 13. Recipe List Page Configuration (NEW) */}
+                        <div className="bg-white p-8 rounded-[2.5rem] border border-[#E5E1D8] shadow-sm">
+                            <div className="flex items-center gap-4 mb-6 text-emerald-800">
+                                <Utensils className="w-6 h-6" />
+                                <h2 className="text-xl font-black tracking-tight">13. Recipe List Page</h2>
+                            </div>
+                            <div className="grid grid-cols-1 gap-6">
+                                <div>
+                                    <label className="block text-xs font-bold uppercase text-gray-500 mb-2">Tagline (Over Highlighted)</label>
+                                    <input type="text" value={formData.recipeListHeroTagline} onChange={e => setFormData({ ...formData, recipeListHeroTagline: e.target.value })} className="w-full p-3 bg-[#F9F7F2] rounded-xl border-none font-bold tracking-widest text-[#8B7E66]" />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold uppercase text-gray-500 mb-2">Hero Title</label>
+                                    <input type="text" value={formData.recipeListHeroTitle} onChange={e => setFormData({ ...formData, recipeListHeroTitle: e.target.value })} className="w-full p-3 bg-[#F9F7F2] rounded-xl border-none font-black text-lg" />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold uppercase text-gray-500 mb-2">Hero Subtitle</label>
+                                    <textarea value={formData.recipeListHeroSubtitle} onChange={e => setFormData({ ...formData, recipeListHeroSubtitle: e.target.value })} className="w-full p-3 bg-[#F9F7F2] rounded-xl border-none h-20" />
+                                </div>
+                                <div>
+                                    <ImageUpload
+                                        label="Recipe Page Hero Background"
+                                        value={formData.recipeListHeroImage}
+                                        onChange={(url) => setFormData({ ...formData, recipeListHeroImage: url })}
                                     />
                                 </div>
                             </div>

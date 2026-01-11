@@ -1348,6 +1348,12 @@ model BrandConfig {
   productListHeroTagline  String? @db.Text
   productListHeroImage    String? @db.Text
 
+  // 7a. Recipe List Page
+  recipeListHeroTitle    String? @db.Text
+  recipeListHeroSubtitle String? @db.Text
+  recipeListHeroTagline  String? @db.Text
+  recipeListHeroImage    String? @db.Text
+
   // 8. Navigation
   publicNavLinks Json? // [{ label: 'Home', href: '/rasa-ibu' }, ...]
   trustBadges    Json? // Array of objects { icon, title, desc }
