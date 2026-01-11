@@ -65,21 +65,38 @@ export class ReportNotificationService {
 
         const message = `
             <h2>📊 Laporan Bisnis Rasa Ibu - ${monthName}</h2>
-            <p><strong>💰 Keuangan</strong></p>
+            
+            <p><strong>💰 Performa Keuangan</strong></p>
             <ul>
                 <li>Omset: Rp ${data.financial.revenue.toLocaleString('id-ID')}</li>
                 <li>Profit: Rp ${data.financial.profit.toLocaleString('id-ID')} (Margin ${data.financial.margin.toFixed(1)}%)</li>
-                <li>Pertumbuhan: ${data.financial.growthRevenue.toFixed(1)}%</li>
+                <li>Pertumbuhan: ${data.financial.growthRevenue.toFixed(1)}% vs bulan lalu</li>
             </ul>
+
+            <p><strong>📈 Key Performance Indicators (KPI)</strong></p>
+            <ul>
+                <li>LTV/CAC Ratio: ${data.kpis.ltvToCac.toFixed(2)} ${data.kpis.ltvToCac > 3 ? '✅ (Sehat)' : '⚠️ (Butuh Optimasi)'}</li>
+                <li>Current Ratio: ${data.kpis.currentRatio.toFixed(2)} ${data.kpis.currentRatio >= 1.5 ? '✅ (Likuid)' : '⚠️ (Arus Kas Ketat)'}</li>
+                <li>Inventory Turnover: ${data.kpis.inventoryTurnover.toFixed(1)}x</li>
+                <li>Retention Rate: ${data.kpis.retentionRate}%</li>
+            </ul>
+
             <p><strong>🏆 Produk Terlaris</strong></p>
             <ul>
-                ${data.sales.topProducts.slice(0, 3).map((p, i) => `<li>${p.name} (${p.quantity})</li>`).join('')}
+                ${data.sales.topProducts.slice(0, 3).map((p, i) => `<li>${p.name} (${p.quantity} terjual)</li>`).join('')}
             </ul>
-            <p><strong>🧠 Analisis AI</strong></p>
+
+            <p><strong>🧠 Analisis Strategis AI</strong></p>
             <ul>
                 ${analysis.insights.map(i => `<li>${i}</li>`).join('')}
             </ul>
-            <p><em>Note: Laporan lengkap terlampir dalam format PDF.</em></p>
+
+            <p style="background: #F9F7F2; padding: 15px; border-radius: 10px; border: 1px dashed #D1CBBF;">
+                <strong>Rekomendasi Utama:</strong><br>
+                ${analysis.recommendations[0]}
+            </p>
+
+            <p><em>Note: Laporan eksekutif lengkap dengan grafik dan breakdown detail terlampir dalam format PDF.</em></p>
         `;
 
         await EmailService.sendAdminAlert(`Laporan Bulanan - ${monthName}`, message, pdfAttachment || undefined);

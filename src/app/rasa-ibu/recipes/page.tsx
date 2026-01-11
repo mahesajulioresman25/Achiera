@@ -176,6 +176,7 @@ export default async function RecipesPage({
                                     </div>
                                     <div className="flex items-center gap-1">
                                         <RecipeLikeButton
+                                            brandId={brand?.id || 'clsq7t0p6000008jt5p5y6u7v'} // rasa-ibu ID fallback
                                             recipeId={recipe.id}
                                             initialLikes={recipe.likes}
                                             showCount

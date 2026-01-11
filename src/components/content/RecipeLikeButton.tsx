@@ -5,6 +5,7 @@ import { Flame } from 'lucide-react';
 import { toggleRecipeLike } from '@/lib/actions/rasa-ibu/recipes';
 
 interface RecipeLikeButtonProps {
+    brandId: string;
     recipeId: string;
     initialLikes: number;
     className?: string;
@@ -13,6 +14,7 @@ interface RecipeLikeButtonProps {
 }
 
 export default function RecipeLikeButton({
+    brandId,
     recipeId,
     initialLikes,
     className = "",
@@ -53,7 +55,7 @@ export default function RecipeLikeButton({
         localStorage.setItem('liked_recipes', JSON.stringify(likedRecipes));
 
         // Call Server Action
-        await toggleRecipeLike(recipeId, newIsLiked);
+        await toggleRecipeLike(brandId, recipeId, newIsLiked);
 
         setTimeout(() => setIsAnimating(false), 300);
     };

@@ -107,7 +107,7 @@ export async function getRecipeBySlug(brandId: string, slug: string) {
 
         // Increment views (fire and forget)
         (prisma as any).recipePost.update({
-            where: { id: recipe.id },
+            where: { id: recipe.id, brandId },
             data: { views: { increment: 1 } }
         }).catch(console.error);
 
@@ -147,10 +147,10 @@ export async function getRelatedRecipes(brandId: string, category: string, curre
 /**
  * Toggle recipe like count
  */
-export async function toggleRecipeLike(recipeId: string, increment: boolean) {
+export async function toggleRecipeLike(brandId: string, recipeId: string, increment: boolean) {
     try {
         const recipe = await (prisma as any).recipePost.update({
-            where: { id: recipeId },
+            where: { id: recipeId, brandId },
             data: {
                 likes: {
                     [increment ? 'increment' : 'decrement']: 1

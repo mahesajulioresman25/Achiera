@@ -33,6 +33,12 @@ export interface MonthlyData {
         totalProduction: number;
         averageProcessingTime: number; // minutes
     };
+    kpis: {
+        ltvToCac: number;
+        currentRatio: number;
+        inventoryTurnover: number;
+        retentionRate: number;
+    };
 }
 
 export class MonthlyReportService {
@@ -65,7 +71,11 @@ export class MonthlyReportService {
         });
 
         const { FinancialReports } = await import('@/lib/intelligence/financialReports');
-        const plData = await FinancialReports.getProfitLoss(brandId, { start, end });
+        const { KPIService } = await import('@/lib/services/KPIService');
+
+        const plData = await FinancialReports.getProfitLoss(brandId, { start: start, end: end });
+        const kpiService = new KPIService();
+        const kpiDashboard = await kpiService.getKPIDashboard(brandId);
 
         // Calculate Revenue and Fees from current month orders
         let totalRevenue = 0;
@@ -178,6 +188,12 @@ export class MonthlyReportService {
             operational: {
                 totalProduction: 0,
                 averageProcessingTime: 0
+            },
+            kpis: {
+                ltvToCac: kpiDashboard?.customer.ltvToCacRatio || 0,
+                currentRatio: kpiDashboard?.financialHealth.currentRatio || 0,
+                inventoryTurnover: kpiDashboard?.operational.inventoryTurnover || 0,
+                retentionRate: kpiDashboard?.customer.retentionRate || 0
             }
         };
     }

@@ -90,6 +90,7 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ s
                         </div>
                         <div className="flex items-center gap-2 text-sm font-bold">
                             <RecipeLikeButton
+                                brandId={brand.id}
                                 recipeId={recipe.id}
                                 initialLikes={recipe.likes}
                                 className="text-white hover:text-pink-200"
