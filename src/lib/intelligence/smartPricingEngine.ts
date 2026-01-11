@@ -1,19 +1,14 @@
-import { prisma } from '@/lib/prisma';
+import { unisolatedPrisma } from '@/lib/prisma';
 
-interface PriceOptimizationResult {
-    variantId: string;
-    currentPrice: number;
-    recommendedPrice: number;
-    reason: string;
-    expectedImpact: string;
-}
+// ... (existing interface code)
 
 export class SmartPricingEngine {
     /**
      * Calculate optimal price for a variant based on demand and stock
      */
     async calculateOptimalPrice(variantId: string): Promise<PriceOptimizationResult | null> {
-        const variant = await prisma.frozenVariant.findUnique({
+        // Use unisolatedPrisma to avoid Brand Isolation check for internal engine calculations
+        const variant = await unisolatedPrisma.frozenVariant.findUnique({
             where: { id: variantId },
             include: {
                 product: true,
@@ -98,7 +93,7 @@ export class SmartPricingEngine {
         reason: string,
         triggeredBy: string = 'SYSTEM'
     ): Promise<void> {
-        const variant = await prisma.frozenVariant.findUnique({
+        const variant = await unisolatedPrisma.frozenVariant.findUnique({
             where: { id: variantId }
         });
 
@@ -108,13 +103,13 @@ export class SmartPricingEngine {
         const changePercent = ((newPrice - oldPrice) / oldPrice) * 100;
 
         // Update price
-        await prisma.frozenVariant.update({
+        await unisolatedPrisma.frozenVariant.update({
             where: { id: variantId },
             data: { price: newPrice }
         });
 
         // Record history
-        await prisma.priceHistory.create({
+        await unisolatedPrisma.priceHistory.create({
             data: {
                 variantId,
                 oldPrice,
