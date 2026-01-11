@@ -141,6 +141,15 @@ export class ProductionEngine {
         if (!item) throw new Error('Production item not found');
 
         return await prisma.$transaction(async (tx: any) => {
+            // Fetch default warehouse once for all mutations
+            const defaultWarehouse = await tx.warehouse.findFirst({
+                where: { brandId: item.plan.brandId, isDefault: true }
+            });
+
+            if (!defaultWarehouse) {
+                throw new Error('Default warehouse is not defined. Please set up a default warehouse first.');
+            }
+
             // 1. Update finished product stock
             if (item.recipe.frozenVariantId) {
                 await tx.frozenVariant.update({
@@ -151,23 +160,17 @@ export class ProductionEngine {
                 });
 
                 // Record Stock Mutation IN
-                const defaultWarehouse = await tx.warehouse.findFirst({
-                    where: { brandId: item.plan.brandId, isDefault: true }
+                await tx.stockMutation.create({
+                    data: {
+                        brandId: item.plan.brandId,
+                        variantId: item.recipe.frozenVariantId,
+                        warehouseId: defaultWarehouse.id,
+                        type: 'IN',
+                        quantity: actualQuantity,
+                        notes: `Production Completion: ${item.recipe.name}`,
+                        createdBy: operatorId
+                    }
                 });
-
-                if (defaultWarehouse) {
-                    await tx.stockMutation.create({
-                        data: {
-                            brandId: item.plan.brandId,
-                            variantId: item.recipe.frozenVariantId,
-                            warehouseId: defaultWarehouse.id,
-                            type: 'IN',
-                            quantity: actualQuantity,
-                            notes: `Production Completion: ${item.recipe.name}`,
-                            createdBy: operatorId
-                        }
-                    });
-                }
 
                 // AUTO-HPP: Update costPrice of the finished good based on current ingredient costs
                 const hppData = await this.calculateRecipeHPP(item.plan.brandId, item.recipe.id, tx);
@@ -192,19 +195,17 @@ export class ProductionEngine {
                 });
 
                 // Record Stock Mutation OUT
-                if (defaultWarehouse) {
-                    await tx.stockMutation.create({
-                        data: {
-                            brandId: item.plan.brandId,
-                            variantId: ingredient.ingredientId,
-                            warehouseId: defaultWarehouse.id,
-                            type: 'OUT',
-                            quantity: deduction,
-                            notes: `Production Raw Material: ${item.recipe.name}`,
-                            createdBy: operatorId
-                        }
-                    });
-                }
+                await tx.stockMutation.create({
+                    data: {
+                        brandId: item.plan.brandId,
+                        variantId: ingredient.ingredientId,
+                        warehouseId: defaultWarehouse.id,
+                        type: 'OUT',
+                        quantity: deduction,
+                        notes: `Production Raw Material: ${item.recipe.name}`,
+                        createdBy: operatorId
+                    }
+                });
             }
 
             // 3. Mark item as completed
