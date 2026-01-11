@@ -85,15 +85,24 @@ export default async function RasaIbuProductDetailPage({ params }: { params: Pro
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-24">
                 {/* Left: Image */}
-                <div className="aspect-[4/5] bg-[#F9F7F2] rounded-[3rem] overflow-hidden flex items-center justify-center italic text-gray-300">
+                <div className="aspect-[4/5] bg-[#F9F7F2] rounded-[3rem] overflow-hidden flex items-center justify-center italic text-gray-300 relative group">
                     {product.image ? (
                         <img
                             src={product.image}
                             alt={product.name}
-                            className="w-full h-full object-cover"
+                            className={`w-full h-full object-cover transition-all duration-500 ${!inStock ? 'grayscale opacity-75' : 'group-hover:scale-105'}`}
                         />
                     ) : (
                         <span>[Foto Detail: {product.name}]</span>
+                    )}
+
+                    {/* Out of Stock Overlay */}
+                    {!inStock && (
+                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-[2px]">
+                            <span className="bg-white/90 text-[#2D3A2D] px-8 py-3 rounded-full font-black uppercase tracking-widest text-sm md:text-base shadow-xl border border-white/50">
+                                Habis Terjual
+                            </span>
+                        </div>
                     )}
                 </div>
 
@@ -106,6 +115,10 @@ export default async function RasaIbuProductDetailPage({ params }: { params: Pro
                             <span className="h-4 w-px bg-gray-200"></span>
                             <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">
                                 {weight > 0 ? `${weight}g` : 'Per Porsi'}
+                            </span>
+                            <span className="h-4 w-px bg-gray-200"></span>
+                            <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest">
+                                {product.orderCount > 0 ? `${product.orderCount} Terjual` : 'Menu Baru'}
                             </span>
                         </div>
                     </div>
