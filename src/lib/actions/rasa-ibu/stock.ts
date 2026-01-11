@@ -295,7 +295,7 @@ export async function registerIngredientAction(data: {
                     brandId: data.brandId,
                     productId: product.id,
                     name: 'Default',
-                    sku: `INV-${slug.toUpperCase()}`,
+                    sku: `INV-${slug.toUpperCase().replace('TRIAL-', '').replace('-TRIAL', '')}`,
                     price: 0,
                     costPrice: 0,
                     weight: 0,

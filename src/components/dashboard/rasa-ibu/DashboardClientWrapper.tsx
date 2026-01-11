@@ -478,6 +478,15 @@ export default function DashboardClientWrapper({
                         </button>
                     )}
 
+                    {isGlobalOwner && (
+                        <button
+                            onClick={() => setViewMode('RECIPES')}
+                            className="px-6 py-2.5 bg-white border border-[#E5E1D8] text-[#2D3A2D] rounded-xl text-xs font-bold hover:bg-stone-50 transition-all shadow-sm"
+                        >
+                            Manajemen Resep
+                        </button>
+                    )}
+
                     <button
                         onClick={() => signOut({ callbackUrl: '/login' })}
                         className="p-2.5 bg-rose-50 text-rose-600 border border-rose-100 rounded-xl hover:bg-rose-100 transition-all"
