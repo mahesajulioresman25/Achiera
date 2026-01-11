@@ -355,7 +355,7 @@ export default function RawMaterialHub({ brandId, onClose }: RawMaterialHubProps
     return (
         <div className="flex flex-col h-full bg-[#FDFBF7] rounded-[3rem] shadow-2xl border border-[#E5E1D8] overflow-hidden animate-in fade-in zoom-in duration-500">
             {/* Header */}
-            <div className="px-10 py-6 border-b border-[#E5E1D8] bg-white flex justify-between items-center">
+            <div className="px-5 md:px-10 py-6 border-b border-[#E5E1D8] bg-white flex justify-between items-center">
                 <div className="flex items-center gap-5">
                     <div className="p-3 bg-blue-50 rounded-2xl">
                         <ShoppingBasket className="w-6 h-6 text-blue-600" />
@@ -370,9 +370,9 @@ export default function RawMaterialHub({ brandId, onClose }: RawMaterialHubProps
                 </button>
             </div>
 
-            <div className="flex-1 overflow-hidden flex">
+            <div className="flex-1 overflow-hidden flex flex-col md:flex-row">
                 {/* Left Sidebar: List */}
-                <div className="w-80 border-r border-[#E5E1D8] flex flex-col bg-[#F9F7F2]/50">
+                <div className="w-full md:w-80 border-b md:border-b-0 md:border-r border-[#E5E1D8] flex flex-col bg-[#F9F7F2]/50 h-[400px] md:h-auto shrink-0">
                     <div className="p-4 border-b border-[#E5E1D8] space-y-3">
                         <div className="flex p-1 bg-slate-100/50 rounded-xl">
                             {[
