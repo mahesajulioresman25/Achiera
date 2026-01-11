@@ -659,13 +659,13 @@ export default function FinanceHub({ brandId, pulse, onBack, onOpenExpenseEntry,
                                 <div className="px-6 py-3 bg-emerald-50 rounded-2xl border border-emerald-100">
                                     <p className="text-[10px] font-black uppercase tracking-widest text-emerald-600 mb-1">Harga Terbaru</p>
                                     <p className="text-lg font-black text-emerald-900">
-                                        Rp {priceAnalysis[priceAnalysis.length - 1].price.toLocaleString()}
+                                        Rp {(priceAnalysis[priceAnalysis.length - 1]?.price || 0).toLocaleString()}
                                     </p>
                                 </div>
                                 <div className="px-6 py-3 bg-amber-50 rounded-2xl border border-amber-100">
                                     <p className="text-[10px] font-black uppercase tracking-widest text-amber-600 mb-1">Rentang Harga</p>
                                     <p className="text-lg font-black text-amber-900">
-                                        Rp {Math.min(...priceAnalysis.map(p => p.price)).toLocaleString()} - Rp {Math.max(...priceAnalysis.map(p => p.price)).toLocaleString()}
+                                        Rp {Math.min(...priceAnalysis.map(p => p?.price || 0).filter(p => p > 0)).toLocaleString()} - Rp {Math.max(...priceAnalysis.map(p => p?.price || 0)).toLocaleString()}
                                     </p>
                                 </div>
                             </div>
