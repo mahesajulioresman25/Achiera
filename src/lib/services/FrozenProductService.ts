@@ -29,7 +29,7 @@ export class FrozenProductService {
      * Create product with variants
      */
     async createProduct(ctx: ServiceContext, input: CreateProductInput) {
-        return prisma.$transaction(async (tx) => {
+        return prisma.$transaction(async (tx: any) => {
             // 1. Verify category belongs to brand
             const category = await tx.frozenCategory.findUnique({
                 where: { id: input.categoryId }
@@ -92,10 +92,10 @@ export class FrozenProductService {
         productId: string,
         input: UpdateProductInput
     ) {
-        return prisma.$transaction(async (tx) => {
+        return prisma.$transaction(async (tx: any) => {
             // 1. Verify product belongs to brand
             const product = await tx.frozenProduct.findUnique({
-                where: { id: productId },
+                where: { id: productId, brandId: ctx.brandId },
                 include: { category: true }
             });
 
@@ -105,7 +105,7 @@ export class FrozenProductService {
 
             // 2. Update product
             const updated = await tx.frozenProduct.update({
-                where: { id: productId },
+                where: { id: productId, brandId: ctx.brandId },
                 data: {
                     ...(input.name ? { name: input.name } : {}),
                     ...(input.slug ? { slug: input.slug } : {}),
@@ -209,9 +209,9 @@ export class FrozenProductService {
         variantId: string,
         newPrice: number
     ) {
-        return prisma.$transaction(async (tx) => {
+        return prisma.$transaction(async (tx: any) => {
             const variant = await tx.frozenVariant.findUnique({
-                where: { id: variantId },
+                where: { id: variantId, brandId: ctx.brandId },
                 include: {
                     product: {
                         include: { category: true }
@@ -226,7 +226,7 @@ export class FrozenProductService {
             const oldPrice = variant.price;
 
             const updated = await tx.frozenVariant.update({
-                where: { id: variantId },
+                where: { id: variantId, brandId: ctx.brandId },
                 data: { price: newPrice }
             });
 

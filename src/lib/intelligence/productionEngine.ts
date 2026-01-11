@@ -140,6 +140,9 @@ export class ProductionEngine {
 
         if (!item) throw new Error('Production item not found');
 
+        const { WarehouseService } = await import('@/lib/services/WarehouseService');
+        const warehouseService = new WarehouseService() as any;
+
         return await prisma.$transaction(async (tx: any) => {
             // Fetch default warehouse once for all mutations
             const defaultWarehouse = await tx.warehouse.findFirst({
@@ -150,27 +153,23 @@ export class ProductionEngine {
                 throw new Error('Default warehouse is not defined. Please set up a default warehouse first.');
             }
 
-            // 1. Update finished product stock
-            if (item.recipe.frozenVariantId) {
-                await tx.frozenVariant.update({
-                    where: { id: item.recipe.frozenVariantId },
-                    data: {
-                        stockOnHand: { increment: actualQuantity }
-                    }
-                });
+            const ctx = { brandId: item.plan.brandId, userId: operatorId };
 
-                // Record Stock Mutation IN
-                await tx.stockMutation.create({
-                    data: {
-                        brandId: item.plan.brandId,
-                        variantId: item.recipe.frozenVariantId,
-                        warehouseId: defaultWarehouse.id,
-                        type: 'IN',
-                        quantity: actualQuantity,
-                        notes: `Production Completion: ${item.recipe.name}`,
-                        createdBy: operatorId
-                    }
-                });
+            // 1. Update finished product stock (HARDENED: use WarehouseService.addStock)
+            if (item.recipe.frozenVariantId) {
+                const shelfLife = item.recipe.frozenVariant?.product?.shelfLife || 365;
+                const expiryDate = new Date(Date.now() + (shelfLife * 24 * 60 * 60 * 1000));
+                const batchCode = `PROD-${Date.now()}`;
+
+                await warehouseService.addStock(
+                    ctx,
+                    defaultWarehouse.id,
+                    item.recipe.frozenVariantId,
+                    actualQuantity,
+                    batchCode,
+                    expiryDate,
+                    tx
+                );
 
                 // AUTO-HPP: Update costPrice of the finished good based on current ingredient costs
                 const hppData = await this.calculateRecipeHPP(item.plan.brandId, item.recipe.id, tx);
@@ -182,30 +181,19 @@ export class ProductionEngine {
                 }
             }
 
-            // 2. Clear ingredients stock
+            // 2. Clear ingredients stock (HARDENED: use WarehouseService.deductStock)
             const multiplier = actualQuantity / item.recipe.outputQuantity;
             for (const ingredient of item.recipe.items) {
                 const deduction = Math.ceil(Number(ingredient.quantity) * multiplier);
 
-                await tx.frozenVariant.update({
-                    where: { id: ingredient.ingredientId },
-                    data: {
-                        stockOnHand: { decrement: deduction }
-                    }
-                });
-
-                // Record Stock Mutation OUT
-                await tx.stockMutation.create({
-                    data: {
-                        brandId: item.plan.brandId,
-                        variantId: ingredient.ingredientId,
-                        warehouseId: defaultWarehouse.id,
-                        type: 'OUT',
-                        quantity: deduction,
-                        notes: `Production Raw Material: ${item.recipe.name}`,
-                        createdBy: operatorId
-                    }
-                });
+                await warehouseService.deductStock(
+                    ctx,
+                    defaultWarehouse.id,
+                    ingredient.ingredientId,
+                    deduction,
+                    `PRODUCTION-${item.id}`, // Reference ID
+                    tx
+                );
             }
 
             // 3. Mark item as completed

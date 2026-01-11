@@ -12,12 +12,25 @@ import {
     Shield, TrendingUp, TrendingDown, Minus,
     AlertCircle, CheckCircle, Clock, XCircle
 } from 'lucide-react';
+import PromptModal from '@/components/ui/PromptModal';
 
 interface ComplianceDashboardProps {
     brandId?: string;
 }
 
 export function ComplianceDashboard({ brandId }: ComplianceDashboardProps) {
+    const [promptState, setPromptState] = React.useState<{
+        isOpen: boolean;
+        title: string;
+        message: string;
+        callback: (value: string) => void;
+    }>({
+        isOpen: false,
+        title: '',
+        message: '',
+        callback: () => { }
+    });
+
     const { data: dashboardData, isLoading, refetch } = useQuery({
         queryKey: ['compliance-dashboard', brandId],
         queryFn: async () => {
@@ -37,20 +50,28 @@ export function ComplianceDashboard({ brandId }: ComplianceDashboardProps) {
         }
     });
 
-    const handleResolve = async (violationId: string) => {
-        const resolution = prompt('Enter resolution notes:');
-        if (resolution) {
-            await resolveViolationAction(violationId, 'current-user-id', resolution);
-            refetch();
-        }
+    const handleResolve = (violationId: string) => {
+        setPromptState({
+            isOpen: true,
+            title: 'Selesaikan Pelanggaran',
+            message: 'Masukkan catatan resolusi untuk menutup isu ini secara permanen.',
+            callback: async (resolution: string) => {
+                await resolveViolationAction(violationId, 'current-user-id', resolution);
+                refetch();
+            }
+        });
     };
 
-    const handleWaive = async (violationId: string) => {
-        const reason = prompt('Enter waiver reason:');
-        if (reason) {
-            await waiveViolationAction(violationId, 'current-user-id', reason);
-            refetch();
-        }
+    const handleWaive = (violationId: string) => {
+        setPromptState({
+            isOpen: true,
+            title: 'Pengecualian Isu',
+            message: 'Masukkan alasan mengapa pelanggaran ini harus diabaikan (waived).',
+            callback: async (reason: string) => {
+                await waiveViolationAction(violationId, 'current-user-id', reason);
+                refetch();
+            }
+        });
     };
 
     const getScoreColor = (score: number) => {
@@ -260,6 +281,14 @@ export function ComplianceDashboard({ brandId }: ComplianceDashboardProps) {
                     </div>
                 </div>
             )}
+
+            <PromptModal
+                isOpen={promptState.isOpen}
+                onClose={() => setPromptState(prev => ({ ...prev, isOpen: false }))}
+                onConfirm={promptState.callback}
+                title={promptState.title}
+                message={promptState.message}
+            />
         </div>
     );
 }

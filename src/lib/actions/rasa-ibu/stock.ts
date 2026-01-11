@@ -15,10 +15,11 @@ export async function adjustStock(data: {
     expiryDate?: string;
     unitCost?: number;
     sourceAccountId?: string; // Optional: Dynamic source for payment
+    brandId: string;
 }) {
     try {
         const variant = await prisma.frozenVariant.findUnique({
-            where: { id: data.variantId },
+            where: { id: data.variantId, brandId: data.brandId },
             include: {
                 product: {
                     include: {
@@ -33,12 +34,12 @@ export async function adjustStock(data: {
         if (!variant) throw new Error('Variant not found');
 
         // @ts-ignore
-        const brandId = variant.product.category?.brandId || variant.product.inventoryCategory?.brandId;
-        if (!brandId) throw new Error('Brand ID not found for this product');
+        const brandId = data.brandId;
+        if (!brandId) throw new Error('Brand ID required');
 
         const roundedAdjustment = Math.round(data.adjustment);
 
-        const mutation = await prisma.$transaction(async (tx) => {
+        const mutation = await prisma.$transaction(async (tx: any) => {
             const variantData: any = {
                 stockOnHand: { increment: roundedAdjustment }
             };
@@ -48,7 +49,7 @@ export async function adjustStock(data: {
             }
 
             const updatedVariant = await tx.frozenVariant.update({
-                where: { id: data.variantId },
+                where: { id: data.variantId, brandId },
                 data: variantData,
                 include: { product: true }
             });
@@ -78,15 +79,20 @@ export async function adjustStock(data: {
                 }
             });
 
-            // 4. Handle Batch/Expiry
-            if (data.type === 'IN' && data.expiryDate) {
+            // 4. Handle Batch/Expiry (HARDENED: Always create batch for IN)
+            if (data.type === 'IN') {
+                const shelfLife = variant.product.shelfLife || 365;
+                const expiryDate = data.expiryDate
+                    ? new Date(data.expiryDate)
+                    : new Date(Date.now() + (shelfLife * 24 * 60 * 60 * 1000));
+
                 await tx.inventoryBatch.create({
                     data: {
                         variantId: data.variantId,
                         warehouseId: defaultWarehouse.id,
                         batchCode: `BATCH-${Date.now()}`,
                         quantity: roundedAdjustment,
-                        expiryDate: new Date(data.expiryDate),
+                        expiryDate: expiryDate,
                     }
                 });
             }
@@ -269,9 +275,10 @@ export async function registerIngredientAction(data: {
     try {
         const slug = `${data.name.toLowerCase().replace(/ /g, '-')}-${Date.now()}`;
 
-        const res = await prisma.$transaction(async (tx) => {
+        const res = await prisma.$transaction(async (tx: any) => {
             const product = await tx.frozenProduct.create({
                 data: {
+                    brandId: data.brandId,
                     // @ts-ignore
                     inventoryCategoryId: data.inventoryCategoryId, // Use inventory category
                     name: data.name,
@@ -285,6 +292,7 @@ export async function registerIngredientAction(data: {
 
             const variant = await tx.frozenVariant.create({
                 data: {
+                    brandId: data.brandId,
                     productId: product.id,
                     name: 'Default',
                     sku: `INV-${slug.toUpperCase()}`,
@@ -295,6 +303,36 @@ export async function registerIngredientAction(data: {
                     stockOnHand: data.initialStock || 0
                 }
             });
+
+            // 3. Create Initial Batch (HARDENED)
+            if (data.initialStock && data.initialStock > 0) {
+                const brandRes = await tx.frozenCategory.findUnique({
+                    where: { id: data.inventoryCategoryId },
+                    select: { brandId: true }
+                });
+
+                const brandId = brandRes?.brandId || data.brandId;
+
+                let defaultWarehouse = await tx.warehouse.findFirst({
+                    where: { brandId, isDefault: true }
+                });
+
+                if (!defaultWarehouse) {
+                    defaultWarehouse = await tx.warehouse.create({
+                        data: { name: 'Gudang Utama', brandId, isDefault: true, address: 'Default' }
+                    });
+                }
+
+                await tx.inventoryBatch.create({
+                    data: {
+                        variantId: variant.id,
+                        warehouseId: defaultWarehouse.id,
+                        batchCode: `INITIAL-${Date.now()}`,
+                        quantity: data.initialStock,
+                        expiryDate: new Date(Date.now() + (365 * 24 * 60 * 60 * 1000)), // Default 1 year
+                    }
+                });
+            }
 
             return { product, variant };
         });
@@ -474,7 +512,7 @@ export async function getPriceAnalysisAction(variantId: string) {
             return { success: true, data: [] };
         }
 
-        const mutationIds = mutations.map(m => m.id);
+        const mutationIds = mutations.map((m: any) => m.id);
 
         const journals = await prisma.journalTransaction.findMany({
             where: {
@@ -489,8 +527,8 @@ export async function getPriceAnalysisAction(variantId: string) {
             }
         });
 
-        const analysisData = mutations.map(m => {
-            const journal = journals.find(j => j.referenceId === m.id);
+        const analysisData = mutations.map((m: any) => {
+            const journal = journals.find((j: any) => j.referenceId === m.id);
             const price = journal?.entries[0] ? Number(journal.entries[0].debit) : null;
 
             return {
@@ -498,7 +536,7 @@ export async function getPriceAnalysisAction(variantId: string) {
                 price: price,
                 notes: m.notes
             };
-        }).filter(d => d.price !== null);
+        }).filter((d: any) => d.price !== null);
 
         return { success: true, data: analysisData };
     } catch (error: any) {
@@ -530,7 +568,7 @@ export async function getBrandPriceAnalysisAction(brandId: string) {
             }
         });
 
-        const variantIds = variants.map(v => v.id);
+        const variantIds = variants.map((v: any) => v.id);
 
         const mutations = await prisma.stockMutation.findMany({
             where: {
@@ -546,7 +584,7 @@ export async function getBrandPriceAnalysisAction(brandId: string) {
             }
         });
 
-        const mutationIds = mutations.map(m => m.id);
+        const mutationIds = mutations.map((m: any) => m.id);
 
         const journals = await prisma.journalTransaction.findMany({
             where: {
@@ -559,10 +597,10 @@ export async function getBrandPriceAnalysisAction(brandId: string) {
             }
         });
 
-        const rawData = mutations.map(m => {
-            const journal = journals.find(j => j.referenceId === m.id);
+        const rawData = mutations.map((m: any) => {
+            const journal = journals.find((j: any) => j.referenceId === m.id);
             const price = journal?.entries[0] ? Number(journal.entries[0].debit) : null;
-            const variant = variants.find(v => v.id === m.variantId);
+            const variant = variants.find((v: any) => v.id === m.variantId);
 
             return {
                 date: m.createdAt.toISOString().split('T')[0],
@@ -570,11 +608,11 @@ export async function getBrandPriceAnalysisAction(brandId: string) {
                 variantId: m.variantId,
                 name: variant ? `${variant.product.name}${variant.name !== 'Default' ? ` - ${variant.name}` : ''}` : 'Unknown'
             };
-        }).filter(d => d.price !== null);
+        }).filter((d: any) => d.price !== null);
 
         // Calculate "Top Movers" (highest % change from first to last recorded price)
         const moversMap: Record<string, { name: string, startPrice: number, endPrice: number }> = {};
-        rawData.forEach(d => {
+        rawData.forEach((d: any) => {
             if (!moversMap[d.variantId]) {
                 moversMap[d.variantId] = { name: d.name, startPrice: d.price!, endPrice: d.price! };
             } else {
@@ -583,7 +621,7 @@ export async function getBrandPriceAnalysisAction(brandId: string) {
         });
 
         const topMovers = Object.values(moversMap)
-            .map(m => {
+            .map((m: any) => {
                 const change = m.startPrice > 0
                     ? ((m.endPrice - m.startPrice) / m.startPrice) * 100
                     : 0;
@@ -598,16 +636,16 @@ export async function getBrandPriceAnalysisAction(brandId: string) {
 
         // Group by date for an "Aggregate Index" (Average price change across all items)
         const dateGroups: Record<string, number[]> = {};
-        rawData.forEach(d => {
+        rawData.forEach((d: any) => {
             if (!dateGroups[d.date]) dateGroups[d.date] = [];
             dateGroups[d.date].push(d.price!);
         });
 
         const aggregateTrend = Object.entries(dateGroups).map(([date, prices]) => {
-            const sum = prices.reduce((a, b) => a + b, 0);
+            const sum = (prices as number[]).reduce((a, b) => a + b, 0);
             return {
                 date,
-                avgPrice: prices.length > 0 ? sum / prices.length : 0
+                avgPrice: (prices as number[]).length > 0 ? sum / (prices as number[]).length : 0
             };
         }).sort((a, b) => a.date.localeCompare(b.date));
 

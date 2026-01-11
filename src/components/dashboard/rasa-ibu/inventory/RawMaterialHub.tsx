@@ -178,7 +178,8 @@ export default function RawMaterialHub({ brandId, onClose }: RawMaterialHubProps
                 operatorId: 'SYSTEM',
                 expiryDate: expiryDate || undefined,
                 unitCost: calculatedUnitPrice,
-                sourceAccountId
+                sourceAccountId,
+                brandId
             });
 
             if (res.success) {

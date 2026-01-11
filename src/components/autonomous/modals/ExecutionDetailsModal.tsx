@@ -7,6 +7,8 @@ import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { RiskBadge } from '@/components/autonomous/ui/CoreComponents';
+import PromptModal from '@/components/ui/PromptModal';
+import ConfirmModal from '@/components/ui/ConfirmModal';
 
 interface ExecutionDetailsModalProps {
     execution: {
@@ -38,6 +40,10 @@ interface ExecutionDetailsModalProps {
 
 export function ExecutionDetailsModal({ execution, onClose }: ExecutionDetailsModalProps) {
     const [showSnapshot, setShowSnapshot] = useState(false);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [isPromptOpen, setIsPromptOpen] = useState(false);
+    const [rollbackReason, setRollbackReason] = useState('');
+
     const queryClient = useQueryClient();
 
     // Rollback mutation
@@ -63,16 +69,21 @@ export function ExecutionDetailsModal({ execution, onClose }: ExecutionDetailsMo
         }
     });
 
-    const handleRollback = () => {
-        const reason = prompt('Reason for rollback (required):');
-        if (!reason || reason.length < 10) {
+    const handleRollbackTrigger = () => {
+        setIsPromptOpen(true);
+    };
+
+    const handlePromptConfirm = (reason: string) => {
+        if (reason.length < 10) {
             toast.error('Mohon berikan alasan (minimal 10 karakter)');
             return;
         }
+        setRollbackReason(reason);
+        setIsConfirmOpen(true);
+    };
 
-        if (confirm(`Rollback execution: ${execution.ruleName}?`)) {
-            rollbackMutation.mutate(reason);
-        }
+    const handleFinalConfirm = () => {
+        rollbackMutation.mutate(rollbackReason);
     };
 
     const getStatusColor = (status: string) => {
@@ -223,7 +234,7 @@ export function ExecutionDetailsModal({ execution, onClose }: ExecutionDetailsMo
                     <div className="sticky bottom-0 bg-gray-50 px-6 py-4 border-t border-gray-200">
                         <div className="flex gap-3">
                             <button
-                                onClick={handleRollback}
+                                onClick={handleRollbackTrigger}
                                 disabled={rollbackMutation.isPending}
                                 className="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 font-medium disabled:opacity-50"
                             >
@@ -239,6 +250,24 @@ export function ExecutionDetailsModal({ execution, onClose }: ExecutionDetailsMo
                     </div>
                 )}
             </div>
+
+            <ConfirmModal
+                isOpen={isConfirmOpen}
+                onClose={() => setIsConfirmOpen(false)}
+                onConfirm={handleFinalConfirm}
+                title="Konfirmasi Rollback"
+                description={`Apakah Bunda yakin ingin membatalkan (rollback) eksekusi ${execution.ruleName}? Tindakan ini tidak dapat dibatalkan.`}
+                type="danger"
+            />
+
+            <PromptModal
+                isOpen={isPromptOpen}
+                onClose={() => setIsPromptOpen(false)}
+                onConfirm={handlePromptConfirm}
+                title="Alasan Rollback"
+                message="Berikan alasan mengapa eksekusi ini harus dibatalkan. Alasan ini akan tercatat dalam audit trail."
+                placeholder="Masukkan alasan (minimal 10 karakter)..."
+            />
         </div>
     );
 }

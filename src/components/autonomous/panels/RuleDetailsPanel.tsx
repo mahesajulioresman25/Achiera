@@ -7,6 +7,8 @@ import React from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { StatusBadge, ProgressBar } from '@/components/autonomous/ui/CoreComponents';
+import PromptModal from '@/components/ui/PromptModal';
+import ConfirmModal from '@/components/ui/ConfirmModal';
 
 interface RuleDetailsProps {
     rule: {
@@ -31,6 +33,18 @@ interface RuleDetailsProps {
 
 export function RuleDetailsPanel({ rule, onClose }: RuleDetailsProps) {
     const queryClient = useQueryClient();
+    const [isConfirmOpen, setIsConfirmOpen] = React.useState(false);
+    const [promptState, setPromptState] = React.useState<{
+        isOpen: boolean;
+        title: string;
+        message: string;
+        callback: (value: string) => void;
+    }>({
+        isOpen: false,
+        title: '',
+        message: '',
+        callback: () => { }
+    });
 
     // Expand rule mutation
     const expandMutation = useMutation({
@@ -87,27 +101,37 @@ export function RuleDetailsPanel({ rule, onClose }: RuleDetailsProps) {
     });
 
     const handleExpand = () => {
-        if (confirm(`Expand ${rule.ruleName} to Level ${rule.expansionTargetLevel}?`)) {
-            expandMutation.mutate();
-        }
+        setIsConfirmOpen(true);
     };
 
     const handleDemote = () => {
-        const reason = prompt('Reason for demotion (required):');
-        if (reason && reason.length >= 10) {
-            demoteMutation.mutate(reason);
-        } else {
-            toast.error('Mohon berikan alasan (minimal 10 karakter)');
-        }
+        setPromptState({
+            isOpen: true,
+            title: 'Turunkan Level Aturan',
+            message: 'Berikan alasan teknis atau performa mengapa aturan ini harus diturunkan levelnya (demoted).',
+            callback: (reason: string) => {
+                if (reason.length >= 10) {
+                    demoteMutation.mutate(reason);
+                } else {
+                    toast.error('Mohon berikan alasan (minimal 10 karakter)');
+                }
+            }
+        });
     };
 
     const handlePause = () => {
-        const reason = prompt('Reason for pausing (required):');
-        if (reason && reason.length >= 10) {
-            pauseMutation.mutate(reason);
-        } else {
-            toast.error('Mohon berikan alasan (minimal 10 karakter)');
-        }
+        setPromptState({
+            isOpen: true,
+            title: 'Jeda Operasi Aturan',
+            message: 'Berikan alasan mengapa eksekusi otomatis untuk aturan ini harus dijeda sementara.',
+            callback: (reason: string) => {
+                if (reason.length >= 10) {
+                    pauseMutation.mutate(reason);
+                } else {
+                    toast.error('Mohon berikan alasan (minimal 10 karakter)');
+                }
+            }
+        });
     };
 
     const getRecommendationColor = (rec: string) => {
@@ -263,6 +287,23 @@ export function RuleDetailsPanel({ rule, onClose }: RuleDetailsProps) {
                     {pauseMutation.isPending ? 'Pausing...' : 'Pause Rule'}
                 </button>
             </div>
+
+            <ConfirmModal
+                isOpen={isConfirmOpen}
+                onClose={() => setIsConfirmOpen(false)}
+                onConfirm={() => expandMutation.mutate()}
+                title="Perluas Aturan"
+                description={`Apakah Bunda yakin ingin memperluas ${rule.ruleName} ke Level ${rule.expansionTargetLevel}?`}
+                type="success"
+            />
+
+            <PromptModal
+                isOpen={promptState.isOpen}
+                onClose={() => setPromptState(prev => ({ ...prev, isOpen: false }))}
+                onConfirm={promptState.callback}
+                title={promptState.title}
+                message={promptState.message}
+            />
         </div>
     );
 }

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Utensils, ChefHat, Clock, Flame, Plus } from 'lucide-react';
 import CategoryFilter from '@/components/filters/CategoryFilter';
 import RecipeLikeButton from '@/components/content/RecipeLikeButton';
+import RecipeSearch from '@/components/content/RecipeSearch';
 
 import { prisma } from '@/lib/prisma';
 import { getPublishedRecipes, getRecipeCategories } from '@/lib/actions/rasa-ibu/recipes';
@@ -14,11 +15,12 @@ export const revalidate = 0;
 export default async function RecipesPage({
     searchParams
 }: {
-    searchParams: Promise<{ category?: string; author?: string }>
+    searchParams: Promise<{ category?: string; author?: string; q?: string }>
 }) {
     const params = await searchParams;
     const selectedCategory = params.category;
     const selectedAuthor = params.author;
+    const searchQuery = params.q;
 
     // Fetch brand
     const brand = await prisma.brand.findUnique({
@@ -29,7 +31,7 @@ export default async function RecipesPage({
 
     // Fetch recipes, categories and config
     const [recipes, categories, config] = await Promise.all([
-        getPublishedRecipes(brand.id, selectedCategory, selectedAuthor),
+        getPublishedRecipes(brand.id, selectedCategory, selectedAuthor, searchQuery),
         getRecipeCategories(brand.id),
         prisma.brandConfig.findUnique({ where: { brandId: brand.id } })
     ]);
@@ -133,10 +135,10 @@ export default async function RecipesPage({
                                 </p>
 
                                 <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
-                                    <button className="px-6 md:px-8 py-3 bg-[#B2BCA2] hover:bg-[#A3AD94] text-[#2D3A2D] rounded-xl font-bold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 text-sm md:text-base">
+                                    <Link href="/rasa-ibu/recipes/submit" className="px-6 md:px-8 py-3 bg-[#B2BCA2] hover:bg-[#A3AD94] text-[#2D3A2D] rounded-xl font-bold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 text-sm md:text-base">
                                         <Plus className="w-4 h-4 md:w-5 md:h-5" />
                                         Bagikan Resep Saya
-                                    </button>
+                                    </Link>
                                 </div>
                             </>
                         )}
@@ -152,14 +154,7 @@ export default async function RecipesPage({
                         categories={displayCategories}
                         initialCategory={selectedCategory || 'Semua'}
                     />
-                    <div className="relative w-full md:w-80">
-                        <input
-                            type="text"
-                            placeholder="Cari resep sarden..."
-                            className="w-full pl-5 pr-12 py-3 rounded-xl bg-[#F9F7F2] border border-[#E5E1D8] focus:outline-none focus:ring-2 focus:ring-[#B2BCA2] text-sm"
-                        />
-                        <Utensils className="absolute right-4 top-1/2 -translate-y-1/2 text-[#B2BCA2] w-5 h-5" />
-                    </div>
+                    <RecipeSearch />
                 </div>
 
                 {/* Grid */}

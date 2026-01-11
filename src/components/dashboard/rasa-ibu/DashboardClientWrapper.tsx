@@ -56,12 +56,14 @@ import { syncDemandAccuracyAction } from '@/lib/actions/rasa-ibu/demandForecast'
 import AssetManagementHub from './AssetManagementHub';
 const InventoryBalancingHub = dynamic(() => import('./inventory/InventoryBalancingHub'), { ssr: false });
 const PricingAdvantageHub = dynamic(() => import('./intelligence/PricingAdvantageHub'), { ssr: false });
+import RecipeManager from './RecipeManager';
 
 
 interface DashboardClientWrapperProps {
     brandId: string;
     initialOrders?: any[];
     initialProducts?: any[];
+    initialRecipes?: any[];
     activities?: any[];
     intelligence?: any;
 }
@@ -70,6 +72,7 @@ export default function DashboardClientWrapper({
     brandId,
     initialOrders = [],
     initialProducts = [],
+    initialRecipes = [],
     activities = [],
     intelligence
 }: DashboardClientWrapperProps) {
@@ -104,7 +107,7 @@ export default function DashboardClientWrapper({
     const [showPricingAdvantage, setShowPricingAdvantage] = React.useState(false);
     const [showQRISPayment, setShowQRISPayment] = React.useState<any>(null);
     const [showPaymentVerification, setShowPaymentVerification] = React.useState(false);
-    const [viewMode, setViewMode] = React.useState<'OPERATIONAL' | 'FINANCE' | 'INTELLIGENCE' | 'PRODUCTION' | 'CATALOG' | 'RAW_MATERIAL' | 'MARKETING' | 'MARKETING_CAMPAIGNS' | 'MARKETING_CAMPAIGN_FORM' | 'MARKETING_FLASHSALE' | 'MARKETING_SUBSCRIPTIONS' | 'MARKETING_SUBSCRIPTION_DATA' | 'MARKETING_BUNDLE_MANAGER' | 'ORDER_LEDGER'>('OPERATIONAL');
+    const [viewMode, setViewMode] = React.useState<'OPERATIONAL' | 'FINANCE' | 'INTELLIGENCE' | 'PRODUCTION' | 'CATALOG' | 'RAW_MATERIAL' | 'RECIPES' | 'MARKETING' | 'MARKETING_CAMPAIGNS' | 'MARKETING_CAMPAIGN_FORM' | 'MARKETING_FLASHSALE' | 'MARKETING_SUBSCRIPTIONS' | 'MARKETING_SUBSCRIPTION_DATA' | 'MARKETING_BUNDLE_MANAGER' | 'ORDER_LEDGER'>('OPERATIONAL');
 
     const [pulseActivities, setPulseActivities] = React.useState<any[]>(activities || []);
     const [categories, setCategories] = React.useState<any[]>([]);
@@ -148,7 +151,7 @@ export default function DashboardClientWrapper({
         setSelectedReceiptOrder(null);
     }, []);
 
-    const openOperationalHub = (mode: 'PRODUCTION' | 'CATALOG' | 'RAW_MATERIAL') => {
+    const openOperationalHub = (mode: 'PRODUCTION' | 'CATALOG' | 'RAW_MATERIAL' | 'RECIPES') => {
         closeAllModals();
         setViewMode(mode);
     };
@@ -162,6 +165,7 @@ export default function DashboardClientWrapper({
         (window as any).openCatalog = () => openOperationalHub('CATALOG');
         (window as any).openPlatformSettings = () => { closeAllModals(); setShowPlatformSettings(true); };
         (window as any).openProduction = () => openOperationalHub('PRODUCTION');
+        (window as any).openRecipes = () => openOperationalHub('RECIPES');
         (window as any).openRawMaterial = () => openOperationalHub('RAW_MATERIAL');
         (window as any).openReceipt = (order: any) => { closeAllModals(); setSelectedReceiptOrder(order); };
         (window as any).openIntel = () => setViewMode('INTELLIGENCE');
@@ -251,7 +255,7 @@ export default function DashboardClientWrapper({
             {showReports && <FinancialReportsModal brandId={brandId} onClose={() => setShowReports(false)} />}
             {showReconciliation && <PaymentReconciliationModal brandId={brandId} onClose={() => setShowReconciliation(false)} />}
             {showWarehouse && <WarehouseManager brandId={brandId} onClose={() => setShowWarehouse(false)} />}
-            {showAudit && <StockAuditHub products={initialProducts} onClose={() => setShowAudit(false)} />}
+            {showAudit && <StockAuditHub brandId={brandId} products={initialProducts} onClose={() => setShowAudit(false)} />}
             {showIngestion && <SmartIngestionPanel brandId={brandId} onClose={() => setShowIngestion(false)} />}
             {showOrderEntry && <OrderEntryModal brandId={brandId} products={initialProducts} onClose={() => setShowOrderEntry(false)} />}
             {showExpenseEntry && <ExpenseEntryModal brandId={brandId} onClose={() => setShowExpenseEntry(false)} />}
@@ -680,6 +684,23 @@ export default function DashboardClientWrapper({
                         categories={categories}
                         onClose={() => setViewMode('OPERATIONAL')}
                     />
+                ) : viewMode === 'RECIPES' ? (
+                    <div className="space-y-6">
+                        <div className="flex items-center justify-between mb-2">
+                            <div className="space-y-1">
+                                <h2 className="text-3xl font-black text-[#2D3A2D] font-serif italic">Manajemen Resep Ibu</h2>
+                                <p className="text-[#8B7E66] text-sm">Moderasi resep dari Bunda dan kelola ulasan komunitas.</p>
+                            </div>
+                            <button
+                                onClick={() => setViewMode('OPERATIONAL')}
+                                className="px-6 py-2.5 bg-white border border-[#E5E1D8] rounded-xl text-[10px] font-black uppercase tracking-widest text-[#8B7E66] hover:bg-stone-50 transition-all flex items-center gap-2"
+                            >
+                                <ChevronRight className="w-4 h-4 rotate-180" />
+                                Kembali ke Dashboard
+                            </button>
+                        </div>
+                        <RecipeManager brandId={brandId} recipes={initialRecipes} />
+                    </div>
                 ) : viewMode === 'RAW_MATERIAL' ? (
                     <RawMaterialHub
                         brandId={brandId}

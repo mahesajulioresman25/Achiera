@@ -127,11 +127,23 @@ export default async function RasaIbuOpsDashboard() {
         const serializedOrders = (brand as any).orders.map(serializeOrder);
         const serializedProducts = frozenProducts.map(serializeProduct);
 
+        // 5. Fetch Recipes for Management
+        const recipes = await (prisma as any).recipePost.findMany({
+            where: { brandId: brand.id },
+            include: {
+                comments: {
+                    orderBy: { createdAt: 'desc' }
+                }
+            },
+            orderBy: { createdAt: 'desc' }
+        });
+
         return (
             <DashboardClientWrapper
                 brandId={brand.id}
                 initialOrders={serializedOrders}
                 initialProducts={serializedProducts}
+                initialRecipes={recipes}
                 activities={MOCK_ACTIVITIES}
                 intelligence={{ rhythm, anticipations, finance }} // Added finance
             />

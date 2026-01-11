@@ -26,11 +26,12 @@ export class WarehouseService {
         warehouseId: string,
         variantId: string,
         quantity: number,
-        referenceId?: string
+        referenceId?: string,
+        tx?: any
     ) {
-        return prisma.$transaction(async (tx: any) => {
+        const execute = async (client: any) => {
             // 1. Get batches sorted by expiry (FIFO)
-            const batches = await tx.inventoryBatch.findMany({
+            const batches = await client.inventoryBatch.findMany({
                 where: {
                     warehouseId,
                     variantId,
@@ -50,13 +51,13 @@ export class WarehouseService {
 
                 const deduction = Math.min(batch.quantity, remaining);
 
-                await tx.inventoryBatch.update({
+                await client.inventoryBatch.update({
                     where: { id: batch.id },
                     data: { quantity: { decrement: deduction } }
                 });
 
                 // Log mutation
-                await tx.stockMutation.create({
+                await client.stockMutation.create({
                     data: {
                         warehouseId,
                         variantId,
@@ -80,13 +81,16 @@ export class WarehouseService {
             }
 
             // 4. Update aggregate stock
-            await tx.frozenVariant.update({
+            await client.frozenVariant.update({
                 where: { id: variantId },
                 data: { stockOnHand: { decrement: quantity } }
             });
 
             return deductions;
-        });
+        };
+
+        if (tx) return await execute(tx);
+        return await prisma.$transaction(async (tx: any) => await execute(tx));
     }
 
     /**
@@ -98,11 +102,12 @@ export class WarehouseService {
         variantId: string,
         quantity: number,
         batchCode: string,
-        expiryDate: Date
+        expiryDate: Date,
+        tx?: any
     ) {
-        return prisma.$transaction(async (tx: any) => {
+        const execute = async (client: any) => {
             // 1. Create inventory batch
-            const batch = await tx.inventoryBatch.create({
+            const batch = await client.inventoryBatch.create({
                 data: {
                     warehouseId,
                     variantId,
@@ -114,7 +119,7 @@ export class WarehouseService {
             });
 
             // 2. Log mutation
-            await tx.stockMutation.create({
+            await client.stockMutation.create({
                 data: {
                     warehouseId,
                     variantId,
@@ -126,13 +131,16 @@ export class WarehouseService {
             });
 
             // 3. Update aggregate stock
-            await tx.frozenVariant.update({
+            await client.frozenVariant.update({
                 where: { id: variantId },
                 data: { stockOnHand: { increment: quantity } }
             });
 
             return batch;
-        });
+        };
+
+        if (tx) return await execute(tx);
+        return await prisma.$transaction(async (tx: any) => await execute(tx));
     }
 
     /**

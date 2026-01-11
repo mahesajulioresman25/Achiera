@@ -90,7 +90,7 @@ export async function updateProduct(data: {
 }) {
     try {
         const product = await prisma.frozenProduct.update({
-            where: { id: data.id },
+            where: { id: data.id, brandId: (data as any).brandId },
             data: {
                 name: data.name,
                 description: data.description,
@@ -105,7 +105,7 @@ export async function updateProduct(data: {
                 featuredOrder: data.featuredOrder,
                 variants: {
                     updateMany: {
-                        where: { productId: data.id },
+                        where: { productId: data.id, brandId: (data as any).brandId },
                         data: {
                             price: data.price,
                             weight: data.weight,
@@ -129,11 +129,11 @@ export async function updateProduct(data: {
  * Deletes a product.
  * NOTE: In production, consider soft-delete if there are order histories.
  */
-export async function deleteProduct(id: string) {
+export async function deleteProduct(id: string, brandId: string) {
     try {
         // First delete variants due to foreign key constraints if not Cascade
-        await prisma.frozenVariant.deleteMany({ where: { productId: id } });
-        await prisma.frozenProduct.delete({ where: { id } });
+        await prisma.frozenVariant.deleteMany({ where: { productId: id, brandId } });
+        await prisma.frozenProduct.delete({ where: { id, brandId } });
 
         revalidatePath('/dashboard/rasa-ibu');
         return { success: true };
@@ -312,11 +312,11 @@ export async function upsertInventoryCategory(data: {
 /**
  * Delete a category (with usage check)
  */
-export async function deleteIbuCategory(id: string) {
+export async function deleteIbuCategory(id: string, brandId: string) {
     try {
         // Check if category has products
         const productsCount = await prisma.frozenProduct.count({
-            where: { categoryId: id }
+            where: { categoryId: id, brandId }
         });
 
         if (productsCount > 0) {
@@ -326,7 +326,7 @@ export async function deleteIbuCategory(id: string) {
             };
         }
 
-        await prisma.frozenCategory.delete({ where: { id } });
+        await prisma.frozenCategory.delete({ where: { id, brandId } });
         revalidatePath('/dashboard/rasa-ibu');
         return { success: true };
     } catch (error: any) {
@@ -337,10 +337,10 @@ export async function deleteIbuCategory(id: string) {
 /**
  * Delete an INVENTORY category
  */
-export async function deleteInventoryCategory(id: string) {
+export async function deleteInventoryCategory(id: string, brandId: string) {
     try {
         const productsCount = await prisma.frozenProduct.count({
-            where: { inventoryCategoryId: id } as any
+            where: { inventoryCategoryId: id, brandId } as any
         });
 
         if (productsCount > 0) {
@@ -350,7 +350,7 @@ export async function deleteInventoryCategory(id: string) {
             };
         }
 
-        await (prisma as any).inventoryCategory.delete({ where: { id } });
+        await (prisma as any).inventoryCategory.delete({ where: { id, brandId } });
         revalidatePath('/dashboard/rasa-ibu');
         return { success: true };
     } catch (error: any) {

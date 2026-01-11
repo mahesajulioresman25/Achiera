@@ -7,6 +7,7 @@ import { getPlatformSettingsAction, updatePlatformSettingsAction } from '@/lib/a
 import QRISSettingsPanel from './QRISSettingsPanel';
 import BankSettingsPanel from './BankSettingsPanel';
 import LoyaltySettingsPanel from './LoyaltySettingsPanel';
+import PromptModal from '@/components/ui/PromptModal';
 
 interface PlatformSettingsModalProps {
     brandId: string;
@@ -16,6 +17,7 @@ interface PlatformSettingsModalProps {
 export default function PlatformSettingsModal({ brandId, onClose }: PlatformSettingsModalProps) {
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
+    const [isPromptOpen, setIsPromptOpen] = useState(false);
     const [settings, setSettings] = useState<any>({
         marketplaceFees: {
             WHATSAPP: 0,
@@ -107,7 +109,10 @@ export default function PlatformSettingsModal({ brandId, onClose }: PlatformSett
     };
 
     const addCampaignFee = () => {
-        const tag = prompt('Masukkan Nama Kampanye (contoh: #PROMO)');
+        setIsPromptOpen(true);
+    };
+
+    const handleAddCampaignFee = (tag: string) => {
         if (tag) {
             const cleanTag = tag.toUpperCase().startsWith('#') ? tag.toUpperCase() : '#' + tag.toUpperCase();
             setSettings({
@@ -316,6 +321,15 @@ export default function PlatformSettingsModal({ brandId, onClose }: PlatformSett
                     </button>
                 </div>
             </div>
+
+            <PromptModal
+                isOpen={isPromptOpen}
+                onClose={() => setIsPromptOpen(false)}
+                onConfirm={handleAddCampaignFee}
+                title="Tambah Tag Kampanye"
+                message="Masukkan nama kampanye (hashtag) untuk melacak biaya operasional khusus (contoh: #PROMO12)."
+                placeholder="#PROMO..."
+            />
         </div>
     );
 }

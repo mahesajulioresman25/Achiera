@@ -1,10 +1,10 @@
-
 import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Clock, ChefHat, Flame, Share2, Plus, ArrowLeft } from 'lucide-react';
 import RecipeLikeButton from '@/components/content/RecipeLikeButton';
-import AddToCartButton from '@/components/commerce/AddToCartButton';
+import RecipeComments from '@/components/content/RecipeComments';
+import SocialShare from '@/components/content/SocialShare';
 
 import { prisma } from '@/lib/prisma';
 import { getRecipeBySlug, getRelatedRecipes } from '@/lib/actions/rasa-ibu/recipes';
@@ -50,6 +50,9 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ s
     // Fetch related recipes
     const relatedRecipes = await getRelatedRecipes(brand.id, recipe.category, recipe.id);
 
+    // Canonical URL for sharing
+    const currentUrl = `https://rasaibu.id/recipes/${recipe.slug}`;
+
     return (
         <div className="min-h-screen bg-[#FDFBF7] pb-20">
             {/* Header / Hero Image */}
@@ -61,44 +64,49 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ s
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-                <div className="absolute top-6 left-6 z-20">
+                <div className="absolute top-6 left-6 z-40">
                     <Link
                         href="/rasa-ibu/recipes"
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md text-white rounded-full hover:bg-white/20 transition-all text-sm font-bold"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md text-white rounded-full hover:bg-white/20 transition-all text-sm font-bold border border-white/20"
                     >
                         <ArrowLeft className="w-4 h-4" /> Kembali ke Resep
                     </Link>
                 </div>
 
                 <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12 z-20 max-w-7xl mx-auto">
-                    <div className="bg-[#2D3A2D] inline-block px-3 py-1 rounded-lg text-xs font-bold text-[#FDFBF7] uppercase tracking-wider mb-4">
-                        {recipe.category}
-                    </div>
-                    <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white mb-6 font-serif leading-tight">
-                        {recipe.title}
-                    </h1>
-
-                    <div className="flex flex-wrap items-center gap-6 text-white/90">
-                        <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                                <ChefHat className="w-4 h-4" />
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                        <div>
+                            <div className="bg-[#B2BCA2] inline-block px-3 py-1 rounded-lg text-xs font-black text-[#2D3A2D] uppercase tracking-wider mb-4">
+                                {recipe.category}
                             </div>
-                            <span className="font-bold">{recipe.authorName}</span>
+                            <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white mb-6 font-serif leading-tight max-w-4xl">
+                                {recipe.title}
+                            </h1>
+
+                            <div className="flex flex-wrap items-center gap-6 text-white/90">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center border border-white/20">
+                                        <ChefHat className="w-4 h-4" />
+                                    </div>
+                                    <span className="font-bold">{recipe.authorName}</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-sm font-bold">
+                                    <Clock className="w-4 h-4" /> {recipe.duration} Menit
+                                </div>
+                                <div className="flex items-center gap-2 text-sm font-bold bg-white/10 px-3 py-1 rounded-full border border-white/20">
+                                    <RecipeLikeButton
+                                        brandId={brand.id}
+                                        recipeId={recipe.id}
+                                        initialLikes={recipe.likesCount}
+                                        className="text-white hover:text-pink-200"
+                                        iconClassName="w-4 h-4"
+                                    />
+                                </div>
+                            </div>
                         </div>
-                        <div className="flex items-center gap-2 text-sm font-bold">
-                            <Clock className="w-4 h-4" /> {recipe.duration} Menit
-                        </div>
-                        <div className="flex items-center gap-2 text-sm font-bold">
-                            <RecipeLikeButton
-                                brandId={brand.id}
-                                recipeId={recipe.id}
-                                initialLikes={recipe.likes}
-                                className="text-white hover:text-pink-200"
-                                iconClassName="w-4 h-4"
-                            /> Suka
-                        </div>
-                        <div className="flex items-center gap-2 text-sm font-bold">
-                            Level: {recipe.difficulty}
+
+                        <div className="flex md:flex-col gap-4">
+                            <SocialShare title={recipe.title} url={currentUrl} />
                         </div>
                     </div>
                 </div>
@@ -121,9 +129,9 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ s
                                 <span className="w-8 h-8 rounded-lg bg-[#F9F7F2] flex items-center justify-center text-[#8B7E66] text-lg">📝</span>
                                 Bahan-bahan
                             </h2>
-                            <div className="space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {Array.isArray(recipe.ingredients) && recipe.ingredients.map((item: string, idx: number) => (
-                                    <div key={idx} className="flex items-start gap-4 p-3 hover:bg-[#F9F7F2] rounded-xl transition-colors border-b border-gray-50 last:border-0">
+                                    <div key={idx} className="flex items-start gap-4 p-3 hover:bg-[#F9F7F2] rounded-xl transition-colors border-b border-gray-50 last:border-0 md:border-0 md:bg-gray-50/30">
                                         <div className="w-6 h-6 rounded-full border-2 border-[#B2BCA2] flex items-center justify-center mt-0.5 shrink-0">
                                             <div className="w-2.5 h-2.5 rounded-full bg-[#B2BCA2]" />
                                         </div>
@@ -132,9 +140,12 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ s
                                 ))}
                             </div>
                             {recipe.servings && (
-                                <div className="mt-6 pt-6 border-t border-gray-100 text-sm text-gray-500 font-bold flex items-center gap-2">
-                                    <div className="px-3 py-1 bg-gray-100 rounded-full">
+                                <div className="mt-6 pt-6 border-t border-gray-100 text-sm text-gray-400 font-bold flex items-center justify-between">
+                                    <div className="px-3 py-1 bg-gray-50 rounded-full border border-gray-100">
                                         Untuk {recipe.servings} Porsi
+                                    </div>
+                                    <div className="text-xs italic">
+                                        * Estimasi porsi cukup untuk keluarga
                                     </div>
                                 </div>
                             )}
@@ -162,70 +173,78 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ s
 
                         {/* Tips */}
                         {recipe.tips && (
-                            <div className="bg-amber-50 rounded-2xl p-6 md:p-8 border border-amber-100">
-                                <h3 className="text-amber-800 font-black mb-3 flex items-center gap-2">
+                            <div className="bg-amber-50 rounded-2xl p-6 md:p-8 border border-amber-100 relative overflow-hidden">
+                                <div className="absolute -right-4 -top-4 w-24 h-24 bg-amber-100/50 rounded-full blur-2xl"></div>
+                                <h3 className="text-amber-800 font-black mb-3 flex items-center gap-2 relative z-10">
                                     💡 Tips dari {recipe.authorName}
                                 </h3>
-                                <p className="text-amber-900/80 leading-relaxed">
+                                <p className="text-amber-900/80 leading-relaxed relative z-10 font-medium">
                                     {recipe.tips}
                                 </p>
                             </div>
                         )}
+
+                        {/* Comments Section */}
+                        <RecipeComments recipeId={recipe.id} initialComments={recipe.comments || []} />
                     </div>
 
                     {/* Sidebar */}
                     <div className="space-y-8">
                         {/* Chef Profile (Simple) */}
-                        <div className="bg-white rounded-2xl p-6 shadow-xl border border-[#E5E1D8] text-center">
-                            <div className="w-20 h-20 rounded-full bg-[#E5E1D8] mx-auto mb-4 flex items-center justify-center text-3xl">
-                                👩‍🍳
+                        <div className="bg-white rounded-2xl p-6 shadow-xl border border-[#E5E1D8] text-center group">
+                            <div className="relative w-24 h-24 mx-auto mb-4">
+                                <div className="absolute inset-0 bg-[#B2BCA2] rounded-full animate-pulse-slow opacity-20 group-hover:opacity-40 transition-opacity"></div>
+                                <div className="relative w-full h-full rounded-full bg-[#E5E1D8] flex items-center justify-center text-4xl border-4 border-white shadow-md">
+                                    👩‍🍳
+                                </div>
                             </div>
                             <h3 className="text-xl font-black text-[#2D3A2D] mb-1">{recipe.authorName}</h3>
-                            <p className="text-sm text-gray-500 mb-6">Pecinta masakan rumahan</p>
+                            <p className="text-sm text-gray-500 mb-6 font-medium italic">"Masakan adalah bahasa cinta"</p>
                             <Link href={`/rasa-ibu/recipes?author=${encodeURIComponent(recipe.authorName)}`} className="block w-full">
-                                <button className="w-full py-3 bg-[#F9F7F2] text-[#8B7E66] font-bold rounded-xl hover:bg-[#F0EEE9] transition-colors">
+                                <button className="w-full py-3 bg-[#F9F7F2] text-[#8B7E66] font-bold rounded-xl hover:bg-[#F0EEE9] transition-all border border-[#E5E1D8]">
                                     Lihat Resep Lainnya
                                 </button>
                             </Link>
                         </div>
 
                         {/* Call to Action - Product */}
-                        <div className="bg-[#2D3A2D] rounded-2xl p-6 shadow-xl text-center text-[#FDFBF7] relative overflow-hidden">
+                        <div className="bg-[#2D3A2D] rounded-2xl p-6 shadow-xl text-center text-[#FDFBF7] relative overflow-hidden group">
                             <div className="relative z-10">
                                 <h3 className="text-xl font-black mb-2">Mau Masak Ini?</h3>
-                                <p className="text-sm text-white/80 mb-6">Kami siapkan bahannya, Bunda tinggal masak!</p>
+                                <p className="text-sm text-white/80 mb-6 font-light">Kami siapkan bahannya, Bunda tinggal masak santai!</p>
                                 <Link
                                     href={(recipe as any).relatedProductSlug ? `/rasa-ibu/products/${(recipe as any).relatedProductSlug}` : '/rasa-ibu/products'}
-                                    className="inline-block w-full py-3 bg-[#B2BCA2] text-[#2D3A2D] font-bold rounded-xl hover:bg-[#A3AD94] transition-colors shadow-lg"
+                                    className="inline-block w-full py-4 bg-[#B2BCA2] text-[#2D3A2D] font-black rounded-xl hover:bg-white hover:scale-[1.02] transition-all shadow-xl"
                                 >
-                                    {(recipe as any).relatedProductSlug ? 'Belanja Bahannya' : 'Lihat Katalog Produk'}
+                                    {(recipe as any).relatedProductSlug ? '🛒 BELANJA BAHANNYA' : '📂 LIHAT KATALOG'}
                                 </Link>
                             </div>
                             {/* Decorative */}
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -mr-10 -mt-10"></div>
-                            <div className="absolute bottom-0 left-0 w-24 h-24 bg-amber-500/10 rounded-full blur-xl -ml-10 -mb-10"></div>
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -mr-10 -mt-10 group-hover:scale-150 transition-transform duration-1000"></div>
+                            <div className="absolute bottom-0 left-0 w-24 h-24 bg-amber-500/5 rounded-full blur-xl -ml-10 -mb-10"></div>
                         </div>
 
                         {/* Related Recipes */}
                         {relatedRecipes.length > 0 && (
                             <div>
-                                <h3 className="font-black text-[#2D3A2D] mb-4 text-lg">Resep Terkait</h3>
+                                <h3 className="font-black text-[#2D3A2D] mb-4 text-lg border-b-2 border-[#B2BCA2] inline-block">Resep Terkait</h3>
                                 <div className="space-y-4">
                                     {relatedRecipes.map((related: any) => (
                                         <Link
                                             key={related.id}
                                             href={`/rasa-ibu/recipes/${related.slug}`}
-                                            className="group bg-white rounded-xl p-3 shadow-sm border border-[#E5E1D8] flex gap-3 hover:shadow-md transition-all"
+                                            className="group bg-white rounded-xl p-3 shadow-md border border-[#E5E1D8] flex gap-4 hover:border-[#B2BCA2] transition-all"
                                         >
                                             <div className="w-20 h-20 rounded-lg bg-gray-100 shrink-0 overflow-hidden">
-                                                <img src={related.image || '/placeholder-recipe.jpg'} alt={related.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
+                                                <img src={related.image || '/placeholder-recipe.jpg'} alt={related.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                             </div>
-                                            <div>
+                                            <div className="pt-1">
                                                 <h4 className="font-bold text-[#2D3A2D] text-sm leading-tight mb-2 line-clamp-2 group-hover:text-[#B2BCA2] transition-colors">
                                                     {related.title}
                                                 </h4>
-                                                <div className="flex items-center gap-2 text-xs text-gray-500">
-                                                    <Clock className="w-3 h-3" /> {related.duration}m
+                                                <div className="flex items-center gap-3 text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                                                    <span className="flex items-center gap-1"><Clock className="w-3 h-3 text-[#B2BCA2]" /> {related.duration}m</span>
+                                                    <span className="flex items-center gap-1"><Flame className="w-3 h-3 text-pink-400" /> {related.likesCount}</span>
                                                 </div>
                                             </div>
                                         </Link>

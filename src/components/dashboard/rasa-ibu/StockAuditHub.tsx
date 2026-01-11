@@ -5,7 +5,7 @@ import { adjustStock } from '@/lib/actions/rasa-ibu/stock';
 import { X } from 'lucide-react';
 import { toast } from 'sonner';
 
-export default function StockAuditHub({ products, onClose }: { products: any[]; onClose: () => void }) {
+export default function StockAuditHub({ brandId, products, onClose }: { brandId: string; products: any[]; onClose: () => void }) {
     const [selectedVariantId, setSelectedVariantId] = useState('');
     const [adjustment, setAdjustment] = useState(0);
     const [reason, setReason] = useState('');
@@ -28,7 +28,8 @@ export default function StockAuditHub({ products, onClose }: { products: any[]; 
             adjustment,
             reason: reason || 'Audit Rutin Dapur',
             type: adjustment > 0 ? 'IN' : 'ADJUSTMENT',
-            operatorId: 'SYSTEM_AUDIT'
+            operatorId: 'SYSTEM_AUDIT',
+            brandId
         });
 
         if (res.success) {

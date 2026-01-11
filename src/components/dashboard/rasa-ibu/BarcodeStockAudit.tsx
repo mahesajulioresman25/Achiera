@@ -54,7 +54,8 @@ export default function BarcodeStockAudit({ brandId, onClose }: BarcodeStockAudi
             adjustment: adjustment,
             reason: 'Audit Barcode Gudang',
             type: adjustment > 0 ? 'IN' : 'OUT',
-            operatorId: 'GUDANG_OP' // Placeholder
+            operatorId: 'GUDANG_OP', // Placeholder
+            brandId
         });
 
         if (res.success) {
@@ -161,8 +162,8 @@ export default function BarcodeStockAudit({ brandId, onClose }: BarcodeStockAudi
                                         onClick={handleAdjust}
                                         disabled={adjustment === 0 || isSubmitting}
                                         className={`w-full py-3 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 transition-all shadow-lg active:scale-95 disabled:opacity-50 ${adjustment > 0 ? 'bg-emerald-500 text-white shadow-emerald-500/20 hover:bg-emerald-600' :
-                                                adjustment < 0 ? 'bg-rose-500 text-white shadow-rose-500/20 hover:bg-rose-600' :
-                                                    'bg-slate-200 text-slate-400'
+                                            adjustment < 0 ? 'bg-rose-500 text-white shadow-rose-500/20 hover:bg-rose-600' :
+                                                'bg-slate-200 text-slate-400'
                                             }`}
                                     >
                                         {isSubmitting ? (
