@@ -13,7 +13,7 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "tsx prisma/seed.ts",
-    "postinstall": "prisma generate"
+    "postinstall": "npx prisma db push --accept-data-loss && prisma generate"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
