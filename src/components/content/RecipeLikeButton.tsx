@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import { Flame } from 'lucide-react';
 import { toggleRecipeLike } from '@/lib/actions/rasa-ibu/recipes';
