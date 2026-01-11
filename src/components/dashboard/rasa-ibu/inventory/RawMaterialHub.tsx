@@ -351,11 +351,12 @@ export default function RawMaterialHub({ brandId, onClose }: RawMaterialHubProps
             m.name?.toLowerCase().includes(searchQuery.toLowerCase())
         )
     );
+    const isMobileDetailOpen = isRegistering || !!selectedId;
 
     return (
         <div className="flex flex-col h-full bg-[#FDFBF7] rounded-[3rem] shadow-2xl border border-[#E5E1D8] overflow-hidden animate-in fade-in zoom-in duration-500">
             {/* Header */}
-            <div className="px-5 md:px-10 py-6 border-b border-[#E5E1D8] bg-white flex justify-between items-center">
+            <div className={`px-5 md:px-10 py-6 border-b border-[#E5E1D8] bg-white flex justify-between items-center ${isMobileDetailOpen ? 'hidden md:flex' : 'flex'}`}>
                 <div className="flex items-center gap-5">
                     <div className="p-3 bg-blue-50 rounded-2xl">
                         <ShoppingBasket className="w-6 h-6 text-blue-600" />
@@ -372,7 +373,7 @@ export default function RawMaterialHub({ brandId, onClose }: RawMaterialHubProps
 
             <div className="flex-1 overflow-hidden flex flex-col md:flex-row">
                 {/* Left Sidebar: List */}
-                <div className="w-full md:w-80 border-b md:border-b-0 md:border-r border-[#E5E1D8] flex flex-col bg-[#F9F7F2]/50 h-[400px] md:h-auto shrink-0">
+                <div className={`w-full md:w-80 border-b md:border-b-0 md:border-r border-[#E5E1D8] flex-col bg-[#F9F7F2]/50 md:h-auto shrink-0 ${isMobileDetailOpen ? 'hidden md:flex' : 'flex h-full'}`}>
                     <div className="p-4 border-b border-[#E5E1D8] space-y-3">
                         <div className="flex p-1 bg-slate-100/50 rounded-xl">
                             {[
@@ -458,20 +459,25 @@ export default function RawMaterialHub({ brandId, onClose }: RawMaterialHubProps
                 </div>
 
                 {/* Main Content Area */}
-                <div className="flex-1 bg-white overflow-y-auto">
+                <div className={`bg-white overflow-y-auto ${isMobileDetailOpen ? 'flex-1 w-full h-full' : 'hidden md:flex md:flex-1'}`}>
                     {isRegistering ? (
-                        <div className="p-10 space-y-8 animate-in slide-in-from-left-4">
+                        <div className="p-6 md:p-10 space-y-8 animate-in slide-in-from-left-4 w-full">
                             <div className="flex justify-between items-center">
-                                <h3 className="text-xl font-black text-[#2D3A2D] uppercase tracking-wider">
-                                    {isEditing ? 'Edit Bahan Baku' : 'Bahan Baku Baru'}
-                                </h3>
+                                <div className="flex items-center gap-3">
+                                    <button onClick={() => setIsRegistering(false)} className="md:hidden p-2 hover:bg-slate-100 rounded-full">
+                                        <ChevronRight className="w-5 h-5 rotate-180" />
+                                    </button>
+                                    <h3 className="text-xl font-black text-[#2D3A2D] uppercase tracking-wider">
+                                        {isEditing ? 'Edit Bahan Baku' : 'Bahan Baku Baru'}
+                                    </h3>
+                                </div>
                                 <button
                                     onClick={() => {
                                         setIsRegistering(false);
                                         setIsEditing(false);
                                         resetForm();
                                     }}
-                                    className="p-2 hover:bg-slate-100 rounded-full transition-colors"
+                                    className="p-2 hover:bg-slate-100 rounded-full transition-colors hidden md:block"
                                 >
                                     <X className="w-5 h-5 text-slate-400" />
                                 </button>

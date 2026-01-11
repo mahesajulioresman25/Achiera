@@ -168,9 +168,9 @@ export default async function RecipesPage({
 
                             <div className="p-4 md:p-6 flex flex-col flex-grow">
                                 <div className="flex justify-between items-start mb-3">
-                                    import RecipeLikeButton from '@/components/content/RecipeLikeButton';
 
-                                    // ... (in grid render)
+
+
                                     <div className="bg-[#F9F7F2] px-3 py-1 rounded-lg text-xs font-bold text-[#8B7E66] uppercase tracking-wider">
                                         {recipe.difficulty}
                                     </div>
