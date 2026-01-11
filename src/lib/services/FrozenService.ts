@@ -50,7 +50,8 @@ export class FrozenService {
                 where: {
                     variantId,
                     quantity: { gt: 0 },
-                    isExpired: false
+                    isExpired: false,
+                    warehouse: { brandId: ctx.brandId }
                 },
                 orderBy: { expiryDate: 'asc' }
             });

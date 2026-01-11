@@ -48,8 +48,7 @@ export async function getWarehouseInventoryAction(warehouseId: string) {
         // Get all variants that have stock mutations in this warehouse
         const mutations = await prisma.stockMutation.findMany({
             where: { warehouseId },
-            select: {
-                variantId: true,
+            include: {
                 variant: {
                     include: {
                         product: true,
@@ -81,10 +80,10 @@ export async function getWarehouseInventoryAction(warehouseId: string) {
             .filter(v => v.stockOnHand > 0) // Only show variants with stock
             .map(v => ({
                 variantId: v.id,
-                variantName: v.name,
-                productName: v.product.name,
-                sku: v.sku,
-                unit: v.unit || v.product.storageType || 'unit',
+                variantName: v.name || 'Default',
+                productName: v.product?.name || 'Produk Tidak Terdaftar',
+                sku: v.sku || '-',
+                unit: v.unit || v.product?.storageType || 'unit',
                 totalStock: v.stockOnHand, // Use stockOnHand from variant
                 batches: v.batches.map(b => ({
                     id: b.id,
@@ -122,8 +121,8 @@ export async function getStockMutationsAction(warehouseId: string) {
             createdAt: m.createdAt,
             createdBy: m.createdBy,
             notes: m.notes,
-            variantName: m.variant.name,
-            productName: m.variant.product.name
+            variantName: m.variant?.name || 'Default',
+            productName: m.variant?.product?.name || 'Bahan Dapur'
         }));
 
         return { success: true, data: formatted };

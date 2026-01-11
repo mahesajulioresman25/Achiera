@@ -1,7 +1,7 @@
 // ACHIERA Platform - Warehouse Service
 // FIFO stock management with expiry tracking
 
-import { prisma } from '@/lib/prisma';
+import { prisma, unisolatedPrisma } from '@/lib/prisma';
 import { StockMutationType } from '@prisma/client';
 
 export type ServiceContext = {
@@ -35,7 +35,8 @@ export class WarehouseService {
                     warehouseId,
                     variantId,
                     quantity: { gt: 0 },
-                    isExpired: false
+                    isExpired: false,
+                    warehouse: { brandId: ctx.brandId }
                 },
                 orderBy: { expiryDate: 'asc' } // Oldest first
             });
@@ -158,7 +159,8 @@ export class WarehouseService {
                     warehouseId: fromWarehouseId,
                     variantId,
                     quantity: { gt: 0 },
-                    isExpired: false
+                    isExpired: false,
+                    warehouse: { brandId: ctx.brandId }
                 },
                 orderBy: { expiryDate: 'asc' }
             });
@@ -229,13 +231,14 @@ export class WarehouseService {
     /**
      * Get stock level for variant in warehouse
      */
-    async getStockLevel(warehouseId: string, variantId: string) {
+    async getStockLevel(brandId: string, warehouseId: string, variantId: string) {
         const batches = await prisma.inventoryBatch.findMany({
             where: {
                 warehouseId,
                 variantId,
                 quantity: { gt: 0 },
-                isExpired: false
+                isExpired: false,
+                warehouse: { brandId }
             }
         });
 
@@ -278,7 +281,7 @@ export class WarehouseService {
     async markExpiredBatches() {
         const now = new Date();
 
-        return prisma.$transaction(async (tx) => {
+        return unisolatedPrisma.$transaction(async (tx) => {
             const expiredBatches = await tx.inventoryBatch.findMany({
                 where: {
                     expiryDate: { lt: now },

@@ -76,7 +76,7 @@ export async function createWebsiteOrderAction(data: {
             item.price = Number(variant.price);
             serverSubtotal += item.price * Number(item.quantity);
 
-            const currentStock = await warehouseService.getStockLevel(warehouse.id, item.variantId);
+            const currentStock = await warehouseService.getStockLevel(brandId, warehouse.id, item.variantId);
 
             if (currentStock < item.quantity) {
                 return {

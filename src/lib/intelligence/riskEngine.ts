@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma';
+import { prisma, unisolatedPrisma } from '@/lib/prisma';
 import { AnomalyType, AnomalySeverity, AnomalyStatus } from '@prisma/client';
 
 /**
@@ -12,7 +12,7 @@ export async function scanForAnomalies() {
     const probePeriod = new Date(now.getTime() - 48 * 60 * 60 * 1000); // Scan last 48h
 
     // 1. High-Value Cancellations (Greater than Rp 1.000.000)
-    const highValueCancellations = await prisma.order.findMany({
+    const highValueCancellations = await unisolatedPrisma.order.findMany({
         where: {
             status: 'CANCELLED',
             totalAmount: { gte: 1000000 },
@@ -81,7 +81,7 @@ export async function scanForAnomalies() {
     }
 
     // 3. Unauthorized Holding Access (Patterns of forbidden attempts in Audit Logs)
-    const securityAlerts = await prisma.auditLog.findMany({
+    const securityAlerts = await unisolatedPrisma.auditLog.findMany({
         where: {
             action: { in: ['UNAUTHORIZED_ACCESS', 'FORBIDDEN_ATTEMPT', 'HOLDING_ACCESS_DENIED'] },
             createdAt: { gte: probePeriod }
@@ -128,7 +128,7 @@ export async function scanForAnomalies() {
 
     // 5. Expiring Inventory Risk (Detection as batches expiring within 30 days)
     const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
-    const expiringBatches = await prisma.inventoryBatch.findMany({
+    const expiringBatches = await unisolatedPrisma.inventoryBatch.findMany({
         where: {
             expiryDate: { gte: now, lte: thirtyDaysFromNow },
             quantity: { gt: 0 }

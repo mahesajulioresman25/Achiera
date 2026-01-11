@@ -45,6 +45,7 @@ export const DEFAULT_CHART_OF_ACCOUNTS = [
     // EXPENSES & COGS (5-xxxx)
     { code: '5-1000', name: 'Harga Pokok Penjualan (COGS)', type: 'EXPENSE' as AccountType },
     { code: '5-1100', name: 'Biaya Kemasan (Packaging)', type: 'EXPENSE' as AccountType },
+    { code: '5-7000', name: 'Beban Penyusutan Aset', type: 'EXPENSE' as AccountType },
     { code: '5-2000', name: 'Biaya Gaji & Tunjangan', type: 'EXPENSE' as AccountType },
     { code: '5-2100', name: 'Biaya Lembur', type: 'EXPENSE' as AccountType },
     { code: '5-2200', name: 'THR & Bonus', type: 'EXPENSE' as AccountType },

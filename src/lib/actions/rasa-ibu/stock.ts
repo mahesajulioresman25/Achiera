@@ -314,19 +314,27 @@ export async function getStockMutationsAction(variantId: string) {
         // Fetch variant first to get brandId for isolation
         const variant = await prisma.frozenVariant.findUnique({
             where: { id: variantId },
-            include: { product: { include: { category: true } } }
+            include: {
+                product: {
+                    include: {
+                        category: true,
+                        inventoryCategory: true
+                    }
+                }
+            }
         });
 
         if (!variant) throw new Error('Variant not found');
-        const brandId = (variant.product.category as any)?.brandId;
+        // @ts-ignore
+        const brandId = variant.product.category?.brandId || variant.product.inventoryCategory?.brandId;
 
         const mutations = await prisma.stockMutation.findMany({
             where: {
                 variantId,
-                warehouse: { brandId } // Added for isolation
+                brandId // Using brandId directly from mutation instead of joining warehouse
             },
             orderBy: { createdAt: 'desc' },
-            take: 10
+            take: 20
         });
         return { success: true, data: JSON.parse(JSON.stringify(mutations)) };
     } catch (error: any) {
@@ -575,11 +583,16 @@ export async function getBrandPriceAnalysisAction(brandId: string) {
         });
 
         const topMovers = Object.values(moversMap)
-            .map(m => ({
-                name: m.name,
-                change: ((m.endPrice - m.startPrice) / m.startPrice) * 100,
-                currentPrice: m.endPrice
-            }))
+            .map(m => {
+                const change = m.startPrice > 0
+                    ? ((m.endPrice - m.startPrice) / m.startPrice) * 100
+                    : 0;
+                return {
+                    name: m.name,
+                    change: change,
+                    currentPrice: m.endPrice
+                };
+            })
             .sort((a, b) => Math.abs(b.change) - Math.abs(a.change))
             .slice(0, 5);
 
@@ -590,10 +603,13 @@ export async function getBrandPriceAnalysisAction(brandId: string) {
             dateGroups[d.date].push(d.price!);
         });
 
-        const aggregateTrend = Object.entries(dateGroups).map(([date, prices]) => ({
-            date,
-            avgPrice: prices.reduce((a, b) => a + b, 0) / prices.length
-        })).sort((a, b) => a.date.localeCompare(b.date));
+        const aggregateTrend = Object.entries(dateGroups).map(([date, prices]) => {
+            const sum = prices.reduce((a, b) => a + b, 0);
+            return {
+                date,
+                avgPrice: prices.length > 0 ? sum / prices.length : 0
+            };
+        }).sort((a, b) => a.date.localeCompare(b.date));
 
         return {
             success: true,
