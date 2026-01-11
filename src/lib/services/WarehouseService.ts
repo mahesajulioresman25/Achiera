@@ -51,8 +51,11 @@ export class WarehouseService {
 
                 const deduction = Math.min(batch.quantity, remaining);
 
-                await client.inventoryBatch.update({
-                    where: { id: batch.id },
+                await client.inventoryBatch.updateMany({
+                    where: {
+                        id: batch.id,
+                        warehouse: { brandId: ctx.brandId }
+                    },
                     data: { quantity: { decrement: deduction } }
                 });
 
@@ -82,9 +85,12 @@ export class WarehouseService {
             }
 
             // 4. Update aggregate stock
-            await client.frozenVariant.update({
-                where: { id: variantId },
-                data: { stockOnHand: { decrement: quantity } }
+            await client.frozenVariant.updateMany({
+                where: {
+                    id: variantId,
+                    brandId: ctx.brandId
+                },
+                data: { stockOnHand: { decrement: quantity } } // Corrected: variable is 'quantity', not 'totalDeducted'
             });
 
             return deductions;
@@ -134,8 +140,11 @@ export class WarehouseService {
             });
 
             // 3. Update aggregate stock
-            await client.frozenVariant.update({
-                where: { id: variantId },
+            await client.frozenVariant.updateMany({
+                where: {
+                    id: variantId,
+                    brandId: ctx.brandId
+                },
                 data: { stockOnHand: { increment: quantity } }
             });
 
@@ -185,8 +194,11 @@ export class WarehouseService {
                 const moveQty = Math.min(batch.quantity, remaining);
 
                 // Deduct from source batch
-                await tx.inventoryBatch.update({
-                    where: { id: batch.id },
+                await tx.inventoryBatch.updateMany({
+                    where: {
+                        id: batch.id,
+                        warehouse: { brandId: ctx.brandId }
+                    },
                     data: { quantity: { decrement: moveQty } }
                 });
 
