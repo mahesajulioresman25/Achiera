@@ -13,10 +13,11 @@ export const revalidate = 0;
 export default async function RecipesPage({
     searchParams
 }: {
-    searchParams: Promise<{ category?: string }>
+    searchParams: Promise<{ category?: string; author?: string }>
 }) {
     const params = await searchParams;
     const selectedCategory = params.category;
+    const selectedAuthor = params.author;
 
     // Fetch brand
     const brand = await prisma.brand.findUnique({
@@ -27,7 +28,7 @@ export default async function RecipesPage({
 
     // Fetch recipes and categories
     const [recipes, categories] = await Promise.all([
-        getPublishedRecipes(brand.id, selectedCategory),
+        getPublishedRecipes(brand.id, selectedCategory, selectedAuthor),
         getRecipeCategories(brand.id)
     ]);
 
@@ -92,19 +93,38 @@ export default async function RecipesPage({
                         <span className="inline-block px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#FDFBF7] text-[10px] md:text-xs font-bold tracking-[0.2em] mb-4 uppercase">
                             Komunitas Rasa Ibu
                         </span>
-                        <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-[#FDFBF7] mb-4 md:mb-6 leading-tight font-serif px-2">
-                            Kreasi Rasa <br className="hidden sm:block" /> <span className="text-[#B2BCA2] italic">Dapur Bunda</span>
-                        </h1>
-                        <p className="text-[#E5E1D8] text-sm sm:text-base md:text-lg mb-6 md:mb-8 max-w-xl mx-auto font-light leading-relaxed px-4">
-                            Temukan inspirasi masakan lezat dari ribuan Ibu hebat lainnya. Punya resep rahasia? Bagikan dan jadilah inspirasi!
-                        </p>
 
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
-                            <button className="px-6 md:px-8 py-3 bg-[#B2BCA2] hover:bg-[#A3AD94] text-[#2D3A2D] rounded-xl font-bold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 text-sm md:text-base">
-                                <Plus className="w-4 h-4 md:w-5 md:h-5" />
-                                Bagikan Resep Saya
-                            </button>
-                        </div>
+                        {selectedAuthor ? (
+                            <>
+                                <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-[#FDFBF7] mb-4 md:mb-6 leading-tight font-serif px-2">
+                                    Resep Spesial <br className="hidden sm:block" /> <span className="text-[#B2BCA2] italic">{selectedAuthor}</span>
+                                </h1>
+                                <p className="text-[#E5E1D8] text-sm sm:text-base md:text-lg mb-6 md:mb-8 max-w-xl mx-auto font-light leading-relaxed px-4">
+                                    Koleksi masakan rumahan autentik yang dibuat dengan cinta oleh {selectedAuthor}.
+                                </p>
+                                <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
+                                    <Link href="/rasa-ibu/recipes" className="px-6 md:px-8 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition-all backdrop-blur-md flex items-center justify-center gap-2 text-sm md:text-base border border-white/20">
+                                        Lihat Semua Resep
+                                    </Link>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-[#FDFBF7] mb-4 md:mb-6 leading-tight font-serif px-2">
+                                    Kreasi Rasa <br className="hidden sm:block" /> <span className="text-[#B2BCA2] italic">Dapur Bunda</span>
+                                </h1>
+                                <p className="text-[#E5E1D8] text-sm sm:text-base md:text-lg mb-6 md:mb-8 max-w-xl mx-auto font-light leading-relaxed px-4">
+                                    Temukan inspirasi masakan lezat dari ribuan Ibu hebat lainnya. Punya resep rahasia? Bagikan dan jadilah inspirasi!
+                                </p>
+
+                                <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
+                                    <button className="px-6 md:px-8 py-3 bg-[#B2BCA2] hover:bg-[#A3AD94] text-[#2D3A2D] rounded-xl font-bold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 text-sm md:text-base">
+                                        <Plus className="w-4 h-4 md:w-5 md:h-5" />
+                                        Bagikan Resep Saya
+                                    </button>
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>

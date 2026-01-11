@@ -5,13 +5,14 @@ import { prisma } from '@/lib/prisma';
 /**
  * Get all published recipes for a brand
  */
-export async function getPublishedRecipes(brandId: string, category?: string) {
+export async function getPublishedRecipes(brandId: string, category?: string, author?: string) {
     try {
         const recipes = await (prisma as any).recipePost.findMany({
             where: {
                 brandId,
                 isPublished: true,
-                ...(category && category !== 'Semua' ? { category } : {})
+                ...(category && category !== 'Semua' ? { category } : {}),
+                ...(author ? { authorName: { contains: author, mode: 'insensitive' } } : {})
             },
             orderBy: [
                 { isFeatured: 'desc' },
