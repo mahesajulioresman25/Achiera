@@ -1,9 +1,0 @@
---- SUSPICIOUS ITEMS REPORT ---
-Found 6 items that might have incorrect Pack Price as Unit Price.
-
-[Bawang Putih - Default] Price: Rp 5.000 / gram
-[Sphagetti Carbonara - Reguler] Price: Rp 15.000 / gram
-[Kraft Keju Cheadar - Default] Price: Rp 25.000 / gram
-[Onion - Default] Price: Rp 6.000 / gram
-[Ladaku Merica Hitam Bubuk - Default] Price: Rp 2.000 / gram
-[Maizenaku Tepung Maizena - Default] Price: Rp 8.800 / gram

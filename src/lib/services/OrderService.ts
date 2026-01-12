@@ -81,7 +81,7 @@ export class OrderService {
 
             // 4. Create order items
             for (const item of input.items) {
-                const variant = await tx.productVariant.findUnique({
+                const variant = await tx.frozenVariant.findUnique({
                     where: { id: item.variantId },
                     include: { product: true }
                 });
@@ -163,8 +163,8 @@ export class OrderService {
             });
 
             // 2. Update order status
-            await tx.order.update({
-                where: { id: input.orderId },
+            await tx.order.updateMany({
+                where: { id: input.orderId, brandId: ctx.brandId },
                 data: {
                     paymentStatus: PaymentStatus.PAID,
                     status: OrderStatus.PROCESSING,
@@ -238,8 +238,8 @@ export class OrderService {
             }
 
             // 1. Update order status
-            await tx.order.update({
-                where: { id: orderId },
+            await tx.order.updateMany({
+                where: { id: orderId, brandId: ctx.brandId },
                 data: {
                     status: OrderStatus.CANCELLED,
                     cancelledAt: new Date()
@@ -254,8 +254,8 @@ export class OrderService {
 
                 if (warehouse) {
                     for (const item of order.items) {
-                        await tx.productVariant.update({
-                            where: { id: item.variantId },
+                        await tx.frozenVariant.updateMany({
+                            where: { id: item.variantId, brandId: ctx.brandId },
                             data: { stockOnHand: { increment: item.quantity } }
                         });
 

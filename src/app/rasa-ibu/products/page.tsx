@@ -1,9 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
 import AddToCartButton from '@/components/commerce/AddToCartButton';
-import { ShoppingBag, Utensils, Star } from 'lucide-react';
+import { ShoppingBag, Utensils, Star, Package } from 'lucide-react';
 import PromoBadge from '@/components/commerce/PromoBadge';
 import CategoryFilter from '@/components/filters/CategoryFilter';
+import ProductWishlistButton from '@/components/commerce/ProductWishlistButton';
+import BestForYou from '@/components/commerce/BestForYou';
+import AnimatedSection from '@/components/commerce/AnimatedSection';
 
 import { unisolatedPrisma as prisma } from '@/lib/prisma';
 import { FlashSaleService } from '@/lib/services/FlashSaleService';
@@ -30,8 +33,8 @@ export default async function RasaIbuProductListPage({
 
     const brandId = brand.id;
 
-    // Fetch categories and products in parallel
-    const [categories, products, activeFlashSale] = await Promise.all([
+    // Fetch categories, products, and bundles in parallel
+    const [categories, products, activeFlashSale, activeBundles] = await Promise.all([
         prisma.frozenCategory.findMany({
             where: { brandId, isActive: true },
             orderBy: { name: 'asc' }
@@ -39,7 +42,7 @@ export default async function RasaIbuProductListPage({
         prisma.frozenProduct.findMany({
             where: {
                 category: {
-                    brandId: brand.id,
+                    brandId: brand.id, // Fetch ALL products first, filter later for "Semua" view
                     ...(selectedCategory ? { slug: selectedCategory } : {})
                 },
                 inventoryType: 'FINISHED_GOOD'
@@ -50,10 +53,17 @@ export default async function RasaIbuProductListPage({
             },
             orderBy: { name: 'asc' }
         }),
-        FlashSaleService.getActiveFlashSale(brandId)
+        FlashSaleService.getActiveFlashSale(brandId),
+        prisma.productBundle.findMany({
+            where: {
+                campaign: { brandId, isActive: true },
+                isActive: true
+            },
+            include: { items: true }
+        })
     ]);
 
-    // Map to simple structure for UI
+    // Map Products
     const mappedProducts = products.map((p: any) => {
         const firstVariant = p.variants[0];
         const totalStock = p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0);
@@ -61,6 +71,7 @@ export default async function RasaIbuProductListPage({
             id: p.id,
             slug: p.slug,
             name: p.name,
+            categoryId: p.categoryId, // Needed for filtering
             category: p.category?.name || 'Menu',
             price: Number(firstVariant?.price || 0),
             shortDesc: p.description || '',
@@ -68,7 +79,7 @@ export default async function RasaIbuProductListPage({
             image: p.image || undefined,
             variantId: firstVariant?.id,
             variantName: firstVariant?.name || 'Porsi Keluarga',
-            rating: 4.8 + (Math.random() * 0.2) // Mock rating for visual consistency
+            rating: 4.8 + (Math.random() * 0.2)
         };
     });
 
@@ -96,136 +107,276 @@ export default async function RasaIbuProductListPage({
 
     const config = brand.brandConfig as any;
 
+    // Custom Component for Product Card to avoid repetition
+    const ProductCard = ({ product }: { product: any }) => (
+        <div className="group bg-white rounded-[2rem] overflow-hidden border border-[#E5E1D8] hover:shadow-2xl hover:shadow-[#2D3A2D]/10 transition-all duration-500 flex flex-col h-full relative">
+
+            {/* Wishlist Button Overlay */}
+            <div className="absolute top-4 left-4 z-20">
+                <ProductWishlistButton
+                    productId={product.id}
+                    productName={product.name}
+                    className="p-2 w-10 h-10 shadow-md bg-white/90 backdrop-blur-sm"
+                />
+            </div>
+
+            <Link href={`/rasa-ibu/products/${product.slug}`} className="block relative h-64 overflow-hidden shrink-0">
+                {product.image ? (
+                    <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                    />
+                ) : (
+                    <div className="w-full h-full bg-[#F9F7F2] flex items-center justify-center text-[#E5E1D8] italic">
+                        No Image
+                    </div>
+                )}
+
+                {!product.inStock && (
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-sm">
+                        <span className="px-3 py-1 bg-white/90 rounded-full text-xs font-bold text-gray-500 uppercase tracking-wider">
+                            Habis
+                        </span>
+                    </div>
+                )}
+
+                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-black tracking-widest text-[#2D3A2D] flex items-center gap-1 shadow-sm">
+                    <Star className="w-3 h-3 text-amber-500 fill-current" /> {product.rating.toFixed(1)}
+                </div>
+
+                {getProductPrice(product).discount > 0 && (
+                    <PromoBadge type="FLASH_SALE" className="absolute top-4 left-4" />
+                )}
+            </Link>
+
+            <div className="p-6 flex flex-col flex-grow">
+                <div className="flex justify-between items-start mb-3">
+                    <div className="bg-[#F9F7F2] px-3 py-1 rounded-[10px] text-[10px] font-black text-[#8B7E66] uppercase tracking-[0.1em]">
+                        {product.category}
+                    </div>
+                    <div className="text-right">
+                        {getProductPrice(product).discount > 0 ? (
+                            <div className="flex flex-col items-end">
+                                <span className="text-[10px] text-gray-400 line-through">
+                                    Rp {product.price.toLocaleString('id-ID')}
+                                </span>
+                                <div className="flex items-center gap-1">
+                                    <span className="text-[10px] bg-red-100 text-red-600 px-1 rounded font-black">
+                                        -{getProductPrice(product).discount}%
+                                    </span>
+                                    <span className="text-sm font-black text-amber-600">
+                                        Rp {getProductPrice(product).final.toLocaleString('id-ID')}
+                                    </span>
+                                </div>
+                            </div>
+                        ) : (
+                            <span className="text-sm font-black text-[#2D3A2D] bg-[#F0EEE9] px-2 py-1 rounded-[10px]">
+                                Rp {product.price.toLocaleString('id-ID')}
+                            </span>
+                        )}
+                    </div>
+                </div>
+
+                <Link href={`/rasa-ibu/products/${product.slug}`} className="group-hover:text-[#B2BCA2] transition-colors">
+                    <h3 className="text-xl font-black text-[#1A241A] mb-2 leading-tight line-clamp-2">
+                        {product.name}
+                    </h3>
+                </Link>
+
+                <p className="text-xs font-medium text-[#8B7E66] line-clamp-2 mb-6 h-8 leading-relaxed">
+                    {product.shortDesc || "Menu spesial keluarga yang praktis dan lezat."}
+                </p>
+
+                <div className="mt-auto pt-4 border-t border-[#F3F1ED]">
+                    <AddToCartButton
+                        product={product}
+                        className="w-full bg-[#2D3A2D] hover:bg-[#1A241A] text-[#FDFBF7] py-3 rounded-xl font-black shadow-md transition-all flex items-center justify-center gap-2"
+                        label={product.inStock ? 'Pesan Sekarang' : 'Habis'}
+                    />
+                </div>
+            </div>
+        </div>
+    );
+
+    const BundleCard = ({ bundle }: { bundle: any }) => (
+        <div className="group bg-gradient-to-br from-amber-50 to-orange-50 rounded-[2.5rem] overflow-hidden border border-amber-100/50 hover:shadow-2xl hover:shadow-amber-900/10 transition-all duration-500 flex flex-col h-full relative">
+            <div className="absolute top-0 right-0 bg-amber-500 text-white px-5 py-2 rounded-bl-[1.5rem] text-[10px] font-black uppercase tracking-widest z-10 transition-all group-hover:px-7">
+                Paket Hemat
+            </div>
+
+            <div className="p-8 flex flex-col flex-grow">
+                <div className="mb-6 flex justify-center">
+                    <div className="bg-white p-5 rounded-[1.5rem] shadow-lg shadow-amber-200/20 group-hover:scale-110 transition-transform duration-500">
+                        <Package className="w-10 h-10 text-amber-600" />
+                    </div>
+                </div>
+
+                <h3 className="text-2xl font-black text-[#1A241A] mb-2 text-center">
+                    {bundle.name}
+                </h3>
+                <p className="text-xs font-medium text-[#8B7E66] text-center mb-8 line-clamp-2 italic">
+                    {bundle.description || "Paket spesial untuk keluarga tercinta."}
+                </p>
+
+                <div className="space-y-4 mb-8 bg-white/80 backdrop-blur-sm p-6 rounded-[2rem] border border-amber-100/50 shadow-inner">
+                    <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
+                        <span className="text-[#8B7E66]">Hemat Bunda</span>
+                        <span className="bg-emerald-100 text-emerald-600 px-2 py-0.5 rounded-full">
+                            Rp {(Number(bundle.basePrice) - Number(bundle.price)).toLocaleString('id-ID')}
+                        </span>
+                    </div>
+                    <div className="h-px bg-amber-100" />
+                    <div className="flex justify-between items-end">
+                        <span className="text-[#1A241A] text-xs font-black uppercase tracking-widest pb-1">Total</span>
+                        <div className="text-right">
+                            <div className="text-[10px] text-gray-400 line-through mb-0.5">
+                                Rp {Number(bundle.basePrice).toLocaleString('id-ID')}
+                            </div>
+                            <div className="text-2xl font-black text-[#1A241A] tracking-tighter">
+                                Rp {Number(bundle.price).toLocaleString('id-ID')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mt-auto">
+                    <button className="w-full bg-[#1A241A] hover:bg-[#8B7E66] text-white py-4 rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-slate-900/10 transition-all flex items-center justify-center gap-3">
+                        Siapkan Paket Ini
+                    </button>
+                    <p className="text-[9px] text-center text-amber-700/60 mt-4 font-black uppercase tracking-[0.2em] opacity-40">
+                        Detail paket di dalam
+                    </p>
+                </div>
+            </div>
+        </div>
+    );
+
     return (
         <div className="min-h-screen bg-[#FDFBF7] pb-20">
             {/* Header Section (Recipe Style) */}
-            <div className="relative min-h-[450px] md:h-[50vh] bg-[#2D3A2D] overflow-hidden">
-                <div className="absolute inset-0 bg-black/40 z-10" />
+            <div className="relative min-h-[450px] md:h-[60vh] bg-[#2D3A2D] overflow-hidden">
+                <div className="absolute inset-0 bg-black/30 z-10" />
                 <img
                     src={config?.productListHeroImage || config?.heroImage || "https://images.unsplash.com/photo-1543362906-ac1b452601e0?w=1600&q=80"}
                     alt="Dining Table"
-                    className="absolute inset-0 w-full h-full object-cover opacity-80"
+                    className="absolute inset-0 w-full h-full object-cover"
                 />
 
                 <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4 pt-16 md:pt-0">
-                    <div className="max-w-3xl animate-fade-in-up">
-                        <span className="inline-block px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#FDFBF7] text-[10px] md:text-xs font-bold tracking-[0.2em] mb-4 uppercase">
+                    <AnimatedSection direction="down" className="max-w-3xl">
+                        <span className="inline-block px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#FDFBF7] text-[10px] md:text-xs font-black tracking-[0.3em] mb-6 uppercase">
                             {config?.productListHeroTagline || config?.heroTagline || "Dapur Rasa Ibu"}
                         </span>
-                        <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-[#FDFBF7] mb-6 leading-tight font-serif px-2">
+                        <h1 className="text-4xl md:text-7xl font-black text-[#FDFBF7] mb-8 leading-tight tracking-tight px-2 drop-shadow-2xl">
                             {config?.productListHeroTitle || config?.publicTitle || "Hidangan Rumah"}
                         </h1>
-                        <p className="text-[#E5E1D8] text-sm sm:text-base md:text-lg mb-8 max-w-2xl mx-auto font-light leading-relaxed">
+                        <p className="text-[#E5E1D8] text-sm md:text-xl mb-8 max-w-2xl mx-auto font-medium leading-relaxed opacity-90">
                             {config?.productListHeroSubtitle || "Tanpa pengawet, bumbu alami, dan porsi pas untuk keluarga. Praktis tinggal hangatkan."}
                         </p>
-                    </div>
+                    </AnimatedSection>
                 </div>
+
+                {/* Bottom Curve Decor */}
+                <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#FDFBF7] to-transparent z-20" />
             </div>
 
             {/* Content Section */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 -mt-12 md:-mt-10 relative z-30">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 -mt-16 relative z-30">
+                <AnimatedSection delay={0.2}>
+                    <BestForYou />
+                </AnimatedSection>
+
                 {/* Filter / Search Bar */}
-                <div className="bg-white rounded-2xl p-4 md:p-6 shadow-xl border border-[#E5E1D8] mb-12 flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4">
-                    <CategoryFilter
-                        categories={categories.map((c: any) => ({ name: c.name, slug: c.slug }))}
-                        initialCategory={selectedCategory ? categories.find((c: any) => c.slug === selectedCategory)?.name || 'Semua' : 'Semua'}
-                    />
-                    <div className="relative w-full md:w-80">
-                        <input
-                            type="text"
-                            placeholder="Cari menu favorit..."
-                            className="w-full pl-5 pr-12 py-3 rounded-xl bg-[#F9F7F2] border border-[#E5E1D8] focus:outline-none focus:ring-2 focus:ring-[#B2BCA2]"
+                <AnimatedSection delay={0.3}>
+                    <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-5 md:p-6 shadow-2xl shadow-slate-200 border border-white mb-16 flex flex-col md:flex-row justify-between items-stretch md:items-center gap-6">
+                        <CategoryFilter
+                            categories={categories.map((c: any) => ({ name: c.name, slug: c.slug }))}
+                            initialCategory={selectedCategory ? categories.find((c: any) => c.slug === selectedCategory)?.name || 'Semua' : 'Semua'}
                         />
-                        <Utensils className="absolute right-4 top-1/2 -translate-y-1/2 text-[#B2BCA2] w-5 h-5" />
-                    </div>
-                </div>
-
-                {/* Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {mappedProducts.map((product: any) => (
-                        <div
-                            key={product.id}
-                            className="group bg-white rounded-2xl overflow-hidden border border-[#E5E1D8] hover:shadow-2xl hover:shadow-[#2D3A2D]/10 transition-all duration-300 animate-fade-in flex flex-col h-full"
-                        >
-                            <Link href={`/rasa-ibu/products/${product.slug}`} className="block relative h-64 overflow-hidden shrink-0">
-                                {product.image ? (
-                                    <img
-                                        src={product.image}
-                                        alt={product.name}
-                                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
-                                    />
-                                ) : (
-                                    <div className="w-full h-full bg-[#F9F7F2] flex items-center justify-center text-[#E5E1D8] italic">
-                                        No Image
-                                    </div>
-                                )}
-
-                                {!product.inStock && (
-                                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-sm">
-                                        <span className="px-3 py-1 bg-white/90 rounded-full text-xs font-bold text-gray-500 uppercase tracking-wider">
-                                            Habis
-                                        </span>
-                                    </div>
-                                )}
-
-                                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-[#2D3A2D] flex items-center gap-1 shadow-sm">
-                                    <Star className="w-3 h-3 text-amber-500 fill-current" /> {product.rating.toFixed(1)}
-                                </div>
-
-                                {getProductPrice(product).discount > 0 && (
-                                    <PromoBadge type="FLASH_SALE" className="absolute top-4 left-4" />
-                                )}
-                            </Link>
-
-                            <div className="p-6 flex flex-col flex-grow">
-                                <div className="flex justify-between items-start mb-3">
-                                    <div className="bg-[#F9F7F2] px-3 py-1 rounded-lg text-xs font-bold text-[#8B7E66] uppercase tracking-wider">
-                                        {product.category}
-                                    </div>
-                                    <div className="text-right">
-                                        {getProductPrice(product).discount > 0 ? (
-                                            <div className="flex flex-col items-end">
-                                                <span className="text-[10px] text-gray-400 line-through">
-                                                    Rp {product.price.toLocaleString('id-ID')}
-                                                </span>
-                                                <div className="flex items-center gap-1">
-                                                    <span className="text-[10px] bg-red-100 text-red-600 px-1 rounded font-black">
-                                                        -{getProductPrice(product).discount}%
-                                                    </span>
-                                                    <span className="text-sm font-black text-amber-600">
-                                                        Rp {getProductPrice(product).final.toLocaleString('id-ID')}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <span className="text-sm font-black text-[#2D3A2D] bg-[#F0EEE9] px-2 py-1 rounded">
-                                                Rp {product.price.toLocaleString('id-ID')}
-                                            </span>
-                                        )}
-                                    </div>
-                                </div>
-
-                                <Link href={`/rasa-ibu/products/${product.slug}`} className="group-hover:text-[#B2BCA2] transition-colors">
-                                    <h3 className="text-xl font-bold text-[#2D3A2D] mb-2 font-serif line-clamp-2">
-                                        {product.name}
-                                    </h3>
-                                </Link>
-
-                                <p className="text-sm text-[#8B7E66] line-clamp-2 mb-6 h-10">
-                                    {product.shortDesc || "Menu spesial keluarga yang praktis dan lezat."}
-                                </p>
-
-                                <div className="mt-auto pt-4 border-t border-[#F3F1ED]">
-                                    <AddToCartButton
-                                        product={product}
-                                        className="w-full bg-[#2D3A2D] hover:bg-[#1A241A] text-[#FDFBF7] py-3 rounded-xl font-bold shadow-md transition-all flex items-center justify-center gap-2"
-                                        label={product.inStock ? 'Pesan Sekarang' : 'Habis'}
-                                    />
-                                </div>
+                        <div className="relative w-full md:w-96">
+                            <input
+                                type="text"
+                                placeholder="Cari menu favorit Bunda..."
+                                className="w-full pl-6 pr-14 py-4 rounded-2xl bg-[#F9F7F2] border border-[#E5E1D8] focus:outline-none focus:ring-4 focus:ring-[#B2BCA2]/20 font-medium transition-all"
+                            />
+                            <div className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-[#2D3A2D] rounded-xl flex items-center justify-center text-white shadow-lg">
+                                <Utensils className="w-4 h-4" />
                             </div>
                         </div>
-                    ))}
-                </div>
+                    </div>
+                </AnimatedSection>
+
+                {/* If Specific Category Selected -> Show Standard Grid */}
+                {selectedCategory ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                        {mappedProducts.map((product: any, idx: number) => (
+                            <AnimatedSection key={product.id} delay={idx * 0.05}>
+                                <ProductCard product={product} />
+                            </AnimatedSection>
+                        ))}
+                    </div>
+                ) : (
+                    /* If "Semua" -> Show Grouped Sections */
+                    <div className="space-y-32">
+
+                        {/* 1. Bundles / Paket Hemat Section */}
+                        {activeBundles.length > 0 && (
+                            <section>
+                                <AnimatedSection className="flex items-center gap-5 mb-10">
+                                    <div className="w-14 h-14 bg-amber-500 rounded-[1.25rem] flex items-center justify-center text-white shadow-xl shadow-amber-200">
+                                        <Package className="w-7 h-7" />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-3xl font-black text-[#1A241A] tracking-tight">Paket Hemat Bunda</h2>
+                                        <p className="text-xs font-black text-amber-600 uppercase tracking-widest">Pilihan cerdas untuk stok mingguan.</p>
+                                    </div>
+                                </AnimatedSection>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                                    {activeBundles.map((bundle: any, idx: number) => (
+                                        <AnimatedSection key={bundle.id} delay={idx * 0.1}>
+                                            <BundleCard bundle={bundle} />
+                                        </AnimatedSection>
+                                    ))}
+                                </div>
+                            </section>
+                        )}
+
+                        {/* 2. Category Groups */}
+                        {categories.map((category: any) => {
+                            const categoryProducts = mappedProducts.filter((p: any) => p.categoryId === category.id);
+                            if (categoryProducts.length === 0) return null;
+
+                            return (
+                                <section key={category.id}>
+                                    <AnimatedSection className="flex items-center gap-6 mb-12">
+                                        <div className="h-px flex-grow bg-gradient-to-r from-transparent to-[#E5E1D8]"></div>
+                                        <h2 className="text-2xl font-black text-[#1A241A] uppercase tracking-widest px-8 py-3 rounded-[1.25rem] bg-white border border-[#E5E1D8] shadow-sm">
+                                            {category.name}
+                                        </h2>
+                                        <div className="h-px flex-grow bg-gradient-to-l from-transparent to-[#E5E1D8]"></div>
+                                    </AnimatedSection>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                                        {categoryProducts.map((product: any, idx: number) => (
+                                            <AnimatedSection key={product.id} delay={idx * 0.05}>
+                                                <ProductCard product={product} />
+                                            </AnimatedSection>
+                                        ))}
+                                    </div>
+                                </section>
+                            );
+                        })}
+
+                        {mappedProducts.length === 0 && (
+                            <AnimatedSection className="py-32 text-center">
+                                <div className="w-20 h-20 bg-[#F9F7F2] rounded-full flex items-center justify-center mx-auto mb-6">
+                                    <ShoppingBag className="w-8 h-8 text-[#B2BCA2]" />
+                                </div>
+                                <p className="text-[#8B7E66] font-bold uppercase tracking-[0.2em]">Belum ada menu di kategori ini, Bunda.</p>
+                            </AnimatedSection>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );

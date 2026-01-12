@@ -1,9 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
-import { Utensils, ChefHat, Clock, Flame, Plus } from 'lucide-react';
+import { ChefHat, Clock, Plus } from 'lucide-react';
 import CategoryFilter from '@/components/filters/CategoryFilter';
 import RecipeLikeButton from '@/components/content/RecipeLikeButton';
 import RecipeSearch from '@/components/content/RecipeSearch';
+import AnimatedSection from '@/components/commerce/AnimatedSection';
 
 import { prisma } from '@/lib/prisma';
 import { getPublishedRecipes, getRecipeCategories } from '@/lib/actions/rasa-ibu/recipes';
@@ -27,7 +28,7 @@ export default async function RecipesPage({
         where: { slug: 'rasa-ibu' }
     });
 
-    if (!brand) return <div className="py-24 text-center">Brand not found</div>;
+    if (!brand) return <div className="py-24 text-center text-stone-400 font-black">Brand not found</div>;
 
     // Fetch recipes, categories and config
     const [recipes, categories, config] = await Promise.all([
@@ -52,7 +53,7 @@ export default async function RecipesPage({
             duration: 15,
             difficulty: 'Mudah',
             description: 'Cara asik menikmati sarden kaleng agar lebih wangi dan menggugah selera keluarga.',
-            likes: 124,
+            likesCount: 124,
             slug: 'sarden-tumis-pete'
         },
         {
@@ -63,7 +64,7 @@ export default async function RecipesPage({
             duration: 20,
             difficulty: 'Sedang',
             description: 'Kreasi rendang sisa lebaran yang digoreng kering, cocok buat lauk tahan lama.',
-            likes: 89,
+            likesCount: 89,
             slug: 'rendang-suwir-crispy'
         },
         {
@@ -74,7 +75,7 @@ export default async function RecipesPage({
             duration: 10,
             difficulty: 'Mudah',
             description: 'Sarapan praktis cuma modal nasi kemarin dan sarden Rasa Ibu.',
-            likes: 215,
+            likesCount: 215,
             slug: 'nasi-goreng-sarden'
         }
     ];
@@ -88,147 +89,135 @@ export default async function RecipesPage({
     ];
 
     return (
-        <div className="min-h-screen bg-[#FDFBF7] pb-20">
+        <div className="min-h-screen bg-[#FDFBF7] pb-24">
             {/* Header Section */}
-            <div className="relative h-[300px] sm:h-[400px] md:h-[500px] lg:h-[60vh] bg-[#2D3A2D] overflow-hidden flex items-center justify-center">
-                <div className="absolute inset-0 bg-black/50 z-10" />
+            <div className="relative h-[60vh] md:h-[70vh] bg-[#2D3A2D] overflow-hidden flex items-center justify-center">
+                <div className="absolute inset-0 bg-black/40 z-10" />
                 <img
                     src={heroImage}
                     alt="Cooking Background"
-                    className="absolute inset-0 w-full h-full object-cover object-center opacity-70"
+                    className="absolute inset-0 w-full h-full object-cover object-center opacity-70 scale-105"
                 />
 
-                <div className="relative z-20 w-full max-w-4xl mx-auto text-center px-4 py-12 md:py-0">
-                    <div className="animate-fade-in-up">
-                        <span className="inline-block px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#FDFBF7] text-[10px] md:text-xs font-bold tracking-[0.2em] mb-4 uppercase">
+                <div className="relative z-20 w-full max-w-5xl mx-auto text-center px-4">
+                    <AnimatedSection direction="up">
+                        <span className="inline-block px-4 py-2 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 text-[#FDFBF7] text-[10px] md:text-sm font-black tracking-[0.3em] mb-8 uppercase">
                             {heroTagline}
                         </span>
 
-                        {selectedAuthor ? (
-                            <>
-                                <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-[#FDFBF7] mb-4 md:mb-6 leading-tight font-serif px-2">
-                                    Resep Spesial <br className="hidden sm:block" /> <span className="text-[#B2BCA2] italic">{selectedAuthor}</span>
-                                </h1>
-                                <p className="text-[#E5E1D8] text-sm sm:text-base md:text-lg mb-6 md:mb-8 max-w-xl mx-auto font-light leading-relaxed px-4">
-                                    Koleksi masakan rumahan autentik yang dibuat dengan cinta oleh {selectedAuthor}.
-                                </p>
-                                <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
-                                    <Link href="/rasa-ibu/recipes" className="px-6 md:px-8 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition-all backdrop-blur-md flex items-center justify-center gap-2 text-sm md:text-base border border-white/20">
-                                        Lihat Semua Resep
-                                    </Link>
-                                </div>
-                            </>
-                        ) : (
-                            <>
-                                <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-[#FDFBF7] mb-4 md:mb-6 leading-tight font-serif px-2">
-                                    {heroTitle.includes(' ') ? (
-                                        <>
-                                            {heroTitle.split(' ').slice(0, -2).join(' ')} <br className="hidden sm:block" />
-                                            <span className="text-[#B2BCA2] italic">{heroTitle.split(' ').slice(-2).join(' ')}</span>
-                                        </>
-                                    ) : (
-                                        heroTitle
-                                    )}
-                                </h1>
-                                <p className="text-[#E5E1D8] text-sm sm:text-base md:text-lg mb-6 md:mb-8 max-w-2xl mx-auto font-light leading-relaxed px-4">
-                                    {heroSubtitle}
-                                </p>
+                        <h1 className="text-4xl sm:text-6xl md:text-8xl font-black text-[#FDFBF7] mb-8 leading-none tracking-tighter">
+                            {selectedAuthor ? (
+                                <>Resep <span className="text-[#B2BCA2] italic">{selectedAuthor}</span></>
+                            ) : heroTitle.includes(' ') ? (
+                                <>
+                                    {heroTitle.split(' ').slice(0, -2).join(' ')} <br className="hidden sm:block" />
+                                    <span className="text-[#B2BCA2] italic">{heroTitle.split(' ').slice(-2).join(' ')}</span>
+                                </>
+                            ) : heroTitle}
+                        </h1>
 
-                                <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
-                                    <Link href="/rasa-ibu/recipes/submit" className="px-6 md:px-8 py-3 bg-[#B2BCA2] hover:bg-[#A3AD94] text-[#2D3A2D] rounded-xl font-bold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 text-sm md:text-base">
-                                        <Plus className="w-4 h-4 md:w-5 md:h-5" />
-                                        Bagikan Resep Saya
-                                    </Link>
-                                </div>
-                            </>
+                        <p className="text-[#E5E1D8] text-lg sm:text-xl md:text-2xl mb-12 max-w-2xl mx-auto font-black leading-tight opacity-90">
+                            {selectedAuthor ? `Koleksi masakan rumahan autentik yang dibuat dengan cinta oleh ${selectedAuthor}.` : heroSubtitle}
+                        </p>
+
+                        {!selectedAuthor && (
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                                <Link href="/rasa-ibu/recipes/submit" className="px-10 py-4 bg-[#B2BCA2] hover:bg-white text-[#2D3A2D] rounded-2xl font-black transition-all shadow-2xl hover:scale-105 flex items-center justify-center gap-3 text-sm md:text-base uppercase tracking-widest">
+                                    <Plus className="w-5 h-5" />
+                                    Bagikan Resep Saya
+                                </Link>
+                            </div>
                         )}
-                    </div>
+                    </AnimatedSection>
                 </div>
             </div>
 
             {/* Content Section */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 -mt-12 md:-mt-10 relative z-30">
+            <div className="max-w-7xl mx-auto px-6 -mt-20 relative z-30">
                 {/* Search & Filter */}
-                <div className="bg-white rounded-2xl p-4 md:p-6 shadow-xl border border-[#E5E1D8] mb-12 flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4">
-                    <CategoryFilter
-                        categories={displayCategories}
-                        initialCategory={selectedCategory || 'Semua'}
-                    />
-                    <RecipeSearch />
-                </div>
+                <AnimatedSection delay={0.2}>
+                    <div className="bg-white/80 backdrop-blur-2xl rounded-[2.5rem] p-6 md:p-10 shadow-2xl border border-white/50 mb-16 flex flex-col md:flex-row justify-between items-stretch md:items-center gap-6">
+                        <CategoryFilter
+                            categories={displayCategories}
+                            initialCategory={selectedCategory || 'Semua'}
+                        />
+                        <RecipeSearch />
+                    </div>
+                </AnimatedSection>
 
                 {/* Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
-                    {displayRecipes.map((recipe: any) => (
-                        <div
-                            key={recipe.id}
-                            className="group bg-white rounded-2xl overflow-hidden border border-[#E5E1D8] hover:shadow-2xl hover:shadow-[#2D3A2D]/10 transition-all duration-300 animate-fade-in flex flex-col h-full"
-                        >
-                            <div className="relative h-56 md:h-64 overflow-hidden shrink-0">
-                                <img
-                                    src={recipe.image || '/placeholder-recipe.jpg'}
-                                    alt={recipe.title}
-                                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
-                                />
-                                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-[#2D3A2D] flex items-center gap-1 shadow-sm">
-                                    <Clock className="w-3 h-3" /> {recipe.duration} Menit
-                                </div>
-                            </div>
-
-                            <div className="p-4 md:p-6 flex flex-col flex-grow">
-                                <div className="flex justify-between items-start mb-3">
-
-
-
-                                    <div className="bg-[#F9F7F2] px-3 py-1 rounded-lg text-xs font-bold text-[#8B7E66] uppercase tracking-wider">
-                                        {recipe.difficulty}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+                    {displayRecipes.map((recipe: any, idx: number) => (
+                        <AnimatedSection key={recipe.id} delay={0.1 * (idx % 3)} direction="up">
+                            <div className="group bg-white rounded-[2.5rem] overflow-hidden border border-[#E5E1D8] hover:shadow-2xl hover:shadow-[#2D3A2D]/10 transition-all duration-500 flex flex-col h-full">
+                                <div className="relative h-64 md:h-72 overflow-hidden shrink-0">
+                                    <img
+                                        src={recipe.image || '/placeholder-recipe.jpg'}
+                                        alt={recipe.title}
+                                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-1000"
+                                    />
+                                    <div className="absolute top-6 left-6 bg-white/95 backdrop-blur-xl px-4 py-2 rounded-2xl text-[10px] font-black text-[#2D3A2D] flex items-center gap-2 shadow-xl border border-white">
+                                        <Clock className="w-4 h-4 text-amber-500" /> {recipe.duration} Menit
                                     </div>
-                                    <div className="flex items-center gap-1">
+                                    <div className="absolute bottom-6 right-6">
                                         <RecipeLikeButton
-                                            brandId={brand?.id || 'clsq7t0p6000008jt5p5y6u7v'} // rasa-ibu ID fallback
+                                            brandId={brand.id}
                                             recipeId={recipe.id}
-                                            initialLikes={recipe.likes}
+                                            initialLikes={recipe.likesCount || 0}
                                             showCount
-                                            className="text-pink-500 hover:text-pink-600 text-xs font-medium"
-                                            iconClassName="w-4 h-4"
+                                            className="bg-white/95 backdrop-blur-xl p-3 rounded-2xl shadow-xl border border-white group-hover:scale-110 transition-transform"
+                                            iconClassName="w-5 h-5"
                                         />
                                     </div>
                                 </div>
 
-                                <h3 className="text-lg md:text-xl font-bold text-[#2D3A2D] mb-2 font-serif group-hover:text-[#B2BCA2] transition-colors line-clamp-2">
-                                    {recipe.title}
-                                </h3>
-
-                                <p className="text-xs md:text-sm text-[#8B7E66] line-clamp-2 mb-4 min-h-[2.5rem] flex-grow">
-                                    "{recipe.description || 'Resep lezat dari dapur Rasa Ibu'}"
-                                </p>
-
-                                <div className="flex items-center justify-between pt-4 border-t border-[#F3F1ED] mt-auto">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-8 h-8 rounded-full bg-[#E5E1D8] flex items-center justify-center text-[#8B7E66]">
-                                            <ChefHat className="w-5 h-5" />
+                                <div className="p-8 flex flex-col flex-grow bg-gradient-to-b from-white to-[#FDFBF7]">
+                                    <div className="flex justify-between items-start mb-4">
+                                        <div className="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">
+                                            {recipe.difficulty}
                                         </div>
-                                        <span className="text-xs font-bold text-[#2D3A2D] truncate max-w-[100px] sm:max-w-[120px]">
-                                            {recipe.authorName}
-                                        </span>
                                     </div>
 
-                                    <Link
-                                        href={`/rasa-ibu/recipes/${recipe.slug}`}
-                                        className="text-xs font-bold text-[#2D3A2D] underline decoration-[#B2BCA2] decoration-2 underline-offset-4 hover:text-[#B2BCA2] transition-colors whitespace-nowrap"
-                                    >
-                                        Lihat Resep →
-                                    </Link>
+                                    <h3 className="text-2xl font-black text-[#1A241A] mb-3 leading-tight group-hover:text-[#8B7E66] transition-colors line-clamp-2">
+                                        {recipe.title}
+                                    </h3>
+
+                                    <p className="text-sm text-gray-500 line-clamp-2 mb-6 min-h-[2.5rem] flex-grow font-black opacity-60">
+                                        "{recipe.description || 'Resep lezat dari dapur Rasa Ibu'}"
+                                    </p>
+
+                                    <div className="flex items-center justify-between pt-6 border-t border-[#E5E1D8] mt-auto">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-2xl bg-[#F9F7F2] flex items-center justify-center text-[#8B7E66] border border-[#E5E1D8]">
+                                                <ChefHat className="w-6 h-6" />
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Author</span>
+                                                <span className="text-xs font-black text-[#1A241A] truncate max-w-[100px]">
+                                                    {recipe.authorName}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <Link
+                                            href={`/rasa-ibu/recipes/${recipe.slug}`}
+                                            className="px-6 py-3 bg-[#2D3A2D] text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[#8B7E66] transition-all shadow-lg shadow-green-900/10"
+                                        >
+                                            Lihat Resep →
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </AnimatedSection>
                     ))}
                 </div>
 
                 {displayRecipes.length === 0 && (
-                    <div className="text-center py-20 text-slate-400 italic">
-                        Belum ada resep yang dipublikasikan.
-                    </div>
+                    <AnimatedSection delay={0.5}>
+                        <div className="text-center py-32 text-slate-300 font-black italic text-2xl">
+                            Belum ada resep yang dipublikasikan.
+                        </div>
+                    </AnimatedSection>
                 )}
             </div>
         </div>

@@ -202,7 +202,7 @@ export async function addRecipeComment(recipeId: string, data: { content: string
                 content: data.content,
                 authorName: data.authorName,
                 rating: data.rating,
-                isApproved: false // Requires admin moderation
+                isApproved: true // Auto-approved as per user request (Customer Freedom)
             }
         });
         return { success: true };

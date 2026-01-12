@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChefHat, ArrowLeft } from 'lucide-react';
+import { ChefHat, ArrowLeft, Gift } from 'lucide-react';
 import Link from 'next/link';
 import RecipeSubmissionForm from '@/components/content/RecipeSubmissionForm';
 import { prisma } from '@/lib/prisma';
@@ -37,14 +37,17 @@ export default async function RecipeSubmitPage() {
             </div>
 
             <div className="max-w-3xl mx-auto px-4 mt-12 text-center">
-                <div className="inline-flex items-center gap-4 p-4 bg-white rounded-2xl border border-[#E5E1D8] shadow-sm">
-                    <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center text-amber-500">
-                        ✨
+                <div className="inline-flex flex-col md:flex-row items-center gap-6 p-8 bg-white/80 backdrop-blur-xl rounded-[2.5rem] border border-white shadow-2xl max-w-2xl mx-auto">
+                    <div className="w-16 h-16 rounded-2xl bg-[#B2BCA2]/20 flex items-center justify-center text-[#2D3A2D] shrink-0">
+                        <Gift className="w-8 h-8" />
                     </div>
-                    <p className="text-xs text-gray-500 font-medium text-left">
-                        Resep Bunda akan diperiksa oleh tim Rasa Ibu untuk memastikan <br />
-                        kualitas dan kesesuaian bahan sebelum diterbitkan secara publik.
-                    </p>
+                    <div className="text-center md:text-left">
+                        <h4 className="text-lg font-black text-[#2D3A2D] mb-1">Program Apresiasi Resep Bunda</h4>
+                        <p className="text-xs text-gray-500 font-medium leading-relaxed">
+                            Resep yang Bunda kirimkan berkesempatan dipilih menjadi <span className="text-[#2D3A2D] font-black italic">Menu Resmi Rasa Ibu</span>.
+                            Dapatkan <span className="text-emerald-600 font-black">50.000 Poin Loyalty</span> jika resep Bunda terpilih!
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

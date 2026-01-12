@@ -8,10 +8,60 @@ import PlatformLinks from '@/components/commerce/PlatformLinks';
 
 interface CheckoutFlowProps {
     platformLinks?: any;
+    upsellProducts?: any[];
 }
 
-export default function CheckoutFlow({ platformLinks }: CheckoutFlowProps) {
-    const { items, cartTotal } = useCart();
+export default function CheckoutFlow({ platformLinks, upsellProducts = [] }: CheckoutFlowProps) {
+    const { items, cartTotal, addToCart } = useCart();
+
+    const renderUpsell = () => {
+        if (!upsellProducts || upsellProducts.length === 0) return null;
+
+        // Filter out products already in cart
+        const cartIds = items.map(i => i.productId);
+        const availableUpsells = upsellProducts.filter(p => !cartIds.includes(p.id));
+
+        if (availableUpsells.length === 0) return null;
+
+        return (
+            <div className="mt-12 space-y-6">
+                <div className="flex items-center gap-3">
+                    <div className="flex-1 h-px bg-[#E5E1D8]"></div>
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8B7E66] px-4">Bunda Mungkin Lupa Ini?</span>
+                    <div className="flex-1 h-px bg-[#E5E1D8]"></div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {availableUpsells.map((product) => (
+                        <div key={product.id} className="bg-white border border-[#E5E1D8] p-4 rounded-2xl flex gap-4 hover:shadow-md transition-shadow group">
+                            <div className="w-16 h-16 rounded-xl bg-gray-100 shrink-0 overflow-hidden">
+                                <img src={product.image || '/placeholder-recipe.jpg'} alt={product.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
+                            </div>
+                            <div className="flex-1 flex flex-col justify-between py-0.5">
+                                <div>
+                                    <h4 className="text-[11px] font-black text-[#2D3A2D] line-clamp-1">{product.name}</h4>
+                                    <p className="text-[10px] font-bold text-[#8B7E66]">Rp {product.price.toLocaleString('id-ID')}</p>
+                                </div>
+                                <button
+                                    onClick={() => addToCart({
+                                        productId: product.id,
+                                        variantId: product.variantId,
+                                        name: product.name,
+                                        price: product.price,
+                                        image: product.image,
+                                        quantity: 1,
+                                        variantName: 'Porsi Keluarga'
+                                    })}
+                                    className="text-[9px] font-black uppercase tracking-widest text-[#B2BCA2] hover:text-[#2D3A2D] transition-colors flex items-center gap-1"
+                                >
+                                    ＋ Tambah Menu
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    };
 
     return (
         <div className="min-h-screen pt-32 pb-40 bg-[#FDFBF7]">
@@ -27,6 +77,7 @@ export default function CheckoutFlow({ platformLinks }: CheckoutFlowProps) {
 
                         <div className="space-y-6">
                             {items.length === 0 ? (
+                                // ... empty cart view ...
                                 <div className="p-12 border-2 border-[#E5E1D8] border-dashed rounded-3xl text-center space-y-6 bg-gradient-to-br from-white to-[#FDFBF7] shadow-sm">
                                     <div className="w-16 h-16 bg-[#E5E1D8] rounded-2xl flex items-center justify-center mx-auto text-3xl">🍽️</div>
                                     <p className="text-sm text-gray-600 font-medium">Belum ada menu yang dipilih, Bunda.</p>
@@ -93,6 +144,9 @@ export default function CheckoutFlow({ platformLinks }: CheckoutFlowProps) {
                                             </p>
                                         </div>
                                     </div>
+
+                                    {/* UPSell Section */}
+                                    {renderUpsell()}
                                 </>
                             )}
                         </div>

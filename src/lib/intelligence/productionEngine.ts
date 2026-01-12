@@ -174,8 +174,11 @@ export class ProductionEngine {
                 // AUTO-HPP: Update costPrice of the finished good based on current ingredient costs
                 const hppData = await this.calculateRecipeHPP(item.plan.brandId, item.recipe.id, tx);
                 if (hppData.success) {
-                    await tx.frozenVariant.update({
-                        where: { id: item.recipe.frozenVariantId },
+                    await tx.frozenVariant.updateMany({
+                        where: {
+                            id: item.recipe.frozenVariantId,
+                            brandId: item.plan.brandId
+                        },
                         data: { costPrice: hppData.totalHPP }
                     });
                 }

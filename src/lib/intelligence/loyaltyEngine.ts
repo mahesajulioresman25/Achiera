@@ -211,6 +211,49 @@ export class LoyaltyEngine {
     }
 
     /**
+     * Award a manual bonus (e.g., for Recipe Contribution)
+     */
+    async awardManualBonus(
+        brandId: string,
+        customerPhone: string,
+        points: number,
+        description: string
+    ) {
+        // 1. Get or create member
+        // We use a blank email/marketing opt-in as we only have phone
+        const member = await this.getOrCreateMember(brandId, customerPhone, "Bunda Penulis");
+
+        // 2. Update member stats
+        const newAvailablePoints = (member.availablePoints || 0) + points;
+        const newTotalPoints = (member.totalPoints || 0) + points;
+        const newLifetimePoints = (member.lifetimePoints || 0) + points;
+
+        await (unisolatedPrisma as any).loyaltyMember.update({
+            where: { id: member.id },
+            data: {
+                totalPoints: newTotalPoints,
+                availablePoints: newAvailablePoints,
+                lifetimePoints: newLifetimePoints
+            } as any
+        });
+
+        // 3. Record transaction
+        await (unisolatedPrisma as any).loyaltyTransaction.create({
+            data: {
+                brandId,
+                memberId: member.id,
+                type: 'EARN',
+                points,
+                description,
+                balanceBefore: member.availablePoints || 0,
+                balanceAfter: newAvailablePoints
+            } as any
+        });
+
+        return { success: true, newBalance: newAvailablePoints };
+    }
+
+    /**
      * Redeem points for reward
      */
     async redeemPoints(

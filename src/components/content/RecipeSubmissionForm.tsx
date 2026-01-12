@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ChefHat, Plus, Minus, Image as ImageIcon, Send, CheckCircle2 } from 'lucide-react';
+import { ChefHat, Plus, Minus, Image as ImageIcon, Send, CheckCircle2, ShieldCheck, Gift } from 'lucide-react';
 import { createRecipePost } from '@/lib/actions/rasa-ibu/recipes';
 import { toast } from 'sonner';
 
@@ -17,6 +17,7 @@ export default function RecipeSubmissionForm({ brandId }: RecipeSubmissionFormPr
         title: '',
         description: '',
         authorName: '',
+        authorPhone: '',
         category: 'Sarapan',
         duration: 30,
         difficulty: 'Mudah',
@@ -61,8 +62,8 @@ export default function RecipeSubmissionForm({ brandId }: RecipeSubmissionFormPr
         e.preventDefault();
 
         // Validation
-        if (!formData.title || !formData.authorName || formData.ingredients.some(i => !i) || formData.steps.some(s => !s)) {
-            toast.error('Mohon lengkapi semua data wajib (Judul, Nama, Bahan, & Cara Buat)');
+        if (!formData.title || !formData.authorName || !formData.authorPhone || formData.ingredients.some(i => !i) || formData.steps.some(s => !s)) {
+            toast.error('Mohon lengkapi data wajib (Judul, Nama, No. WhatsApp, Bahan, & Cara Buat)');
             return;
         }
 
@@ -100,7 +101,8 @@ export default function RecipeSubmissionForm({ brandId }: RecipeSubmissionFormPr
                             image: '',
                             ingredients: [''],
                             steps: [''],
-                            tips: ''
+                            tips: '',
+                            authorPhone: ''
                         });
                     }}
                     className="px-8 py-3 bg-[#2D3A2D] text-white rounded-xl font-bold hover:bg-[#1A241A] transition-all"
@@ -146,6 +148,18 @@ export default function RecipeSubmissionForm({ brandId }: RecipeSubmissionFormPr
                             className="w-full px-5 py-3 rounded-xl bg-gray-50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-[#B2BCA2] text-sm"
                             required
                         />
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-xs font-black text-gray-400 uppercase tracking-widest">No. WhatsApp Bunda *</label>
+                        <input
+                            type="tel"
+                            placeholder="Contoh: 08123456789"
+                            value={formData.authorPhone}
+                            onChange={(e) => setFormData({ ...formData, authorPhone: e.target.value })}
+                            className="w-full px-5 py-3 rounded-xl bg-gray-50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-[#B2BCA2] text-sm"
+                            required
+                        />
+                        <p className="text-[10px] text-gray-400 italic">Digunakan untuk pengiriman reward 50.000 Poin</p>
                     </div>
                 </div>
 
@@ -299,6 +313,38 @@ export default function RecipeSubmissionForm({ brandId }: RecipeSubmissionFormPr
                         className="w-full px-5 py-3 rounded-xl bg-gray-50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-[#B2BCA2] text-sm min-h-[60px]"
                     />
                 </div>
+            </div>
+
+            {/* Ethics & Rewards Notice */}
+            <div className="bg-stone-50 rounded-3xl p-8 border border-stone-100 space-y-4">
+                <div className="flex items-center gap-3 text-[#2D3A2D]">
+                    <ShieldCheck className="w-6 h-6 text-[#B2BCA2]" />
+                    <h4 className="font-black uppercase tracking-widest text-sm">Etika & Apresiasi Resep Bunda</h4>
+                </div>
+                <p className="text-xs text-stone-500 font-medium leading-relaxed">
+                    Dengan mempublikasikan resep di platform Rasa Ibu, Bunda setuju bahwa Rasa Ibu dapat menggunakan/mengadaptasi resep ini untuk dijadikan <span className="text-[#2D3A2D] font-black italic">Menu Resmi Rasa Ibu</span>.
+                    <br /><br />
+                    Jika resep Bunda terpilih, kami akan memberikan apresiasi berupa:
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                    <div className="flex items-center gap-3 p-4 bg-white rounded-2xl border border-stone-100 shadow-sm">
+                        <Gift className="w-8 h-8 text-amber-500" />
+                        <div>
+                            <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest leading-none mb-1">Rewards</p>
+                            <p className="text-sm font-black text-[#2D3A2D]">50.000 Poin Loyalty</p>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-3 p-4 bg-white rounded-2xl border border-stone-100 shadow-sm">
+                        <CheckCircle2 className="w-8 h-8 text-emerald-500" />
+                        <div>
+                            <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest leading-none mb-1">Pengakuan</p>
+                            <p className="text-sm font-black text-[#2D3A2D]">Author Credits di Menu</p>
+                        </div>
+                    </div>
+                </div>
+                <p className="text-[10px] text-stone-400 font-medium italic pt-2">
+                    * Poin dapat digunakan secara langsung untuk berbelanja produk Rasa Ibu lainnya.
+                </p>
             </div>
 
             <button

@@ -108,7 +108,6 @@ export default function IntentCheckoutForm() {
         setError(null);
         setIsRedirecting(true);
 
-        // 1. Persist to Database First
         const orderResult = await createWebsiteOrderAction({
             brandId: brandConfig?.id || 'rasa-ibu',
             customerName,
@@ -122,20 +121,19 @@ export default function IntentCheckoutForm() {
                 quantity: i.quantity,
                 price: i.price,
                 variantName: i.variantName,
-                note: i.note // Include customer notes
+                note: i.note
             })),
             totalAmount: cartTotal,
             redeemedPoints: usePoints ? availableToUse : 0,
             deliveryOption: delivery,
             courierType: delivery === 'Kurir Instan' ? courierType : undefined,
-            paymentMethod: paymentMethod, // Pass the selected payment method
+            paymentMethod: paymentMethod,
             isGift,
             giftMessage,
             recipientName,
             recipientEmail,
             isMarketingAllowed
         });
-        // ... (remaining checkout logic handled by existing code)
 
         if (!orderResult.success) {
             setError(orderResult.error || 'Gagal menyimpan pesanan.');
@@ -273,7 +271,6 @@ export default function IntentCheckoutForm() {
                     </div>
                 </div>
 
-                {/* 2. Pengiriman */}
                 {/* 2. Gifting Section (Optional) */}
                 <div className="space-y-4">
                     <h3 className="text-[10px] font-black uppercase tracking-widest text-[#B2BCA2] border-b border-[#F0EEE9] pb-2">2. Pilihan Hadiah</h3>
@@ -332,7 +329,6 @@ export default function IntentCheckoutForm() {
                     </div>
                 </div>
 
-                {/* 3. Pengiriman */}
                 {/* 3. Pengiriman */}
                 <div className="space-y-4">
                     <h3 className="text-[10px] font-black uppercase tracking-widest text-[#B2BCA2] border-b border-[#F0EEE9] pb-2">3. Pengiriman</h3>
@@ -467,6 +463,28 @@ export default function IntentCheckoutForm() {
                             <p className="text-[11px] font-black text-[#2D3A2D] uppercase tracking-wider">Total Akhir</p>
                             <p className="text-2xl font-black text-[#2D3A2D]">Rp {finalTotal.toLocaleString('id-ID')}</p>
                         </div>
+                    </div>
+
+                    {/* Membership Perks Nudge */}
+                    <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 rounded-2xl p-5 space-y-3 shadow-inner">
+                        <div className="flex items-center gap-2">
+                            <div className="w-6 h-6 bg-amber-500 rounded-lg flex items-center justify-center text-white text-[10px] font-black italic">RI</div>
+                            <h4 className="text-[10px] font-black uppercase tracking-widest text-amber-800">Benefit Berlangganan Rasa Ibu</h4>
+                        </div>
+                        <ul className="grid grid-cols-2 gap-x-4 gap-y-2">
+                            <li className="flex items-center gap-1.5 text-[9px] font-medium text-amber-900/70">
+                                <span className="text-amber-500">✨</span> 2x Poin Loyalty
+                            </li>
+                            <li className="flex items-center gap-1.5 text-[9px] font-medium text-amber-900/70">
+                                <span className="text-amber-500">📖</span> Resep Eksklusif Mingguan
+                            </li>
+                            <li className="flex items-center gap-1.5 text-[9px] font-medium text-amber-900/70">
+                                <span className="text-amber-500">🚚</span> Prioritas Pengiriman
+                            </li>
+                            <li className="flex items-center gap-1.5 text-[9px] font-medium text-amber-900/70">
+                                <span className="text-amber-500">🎁</span> Diskon Paket Hemat
+                            </li>
+                        </ul>
                     </div>
 
                     <button

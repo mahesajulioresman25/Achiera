@@ -3935,6 +3935,7 @@ model RecipePost {
   
   // Author
   authorName   String
+  authorPhone  String?
   authorAvatar String?
   
   // Recipe Details

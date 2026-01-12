@@ -67,8 +67,6 @@ export async function smartMatchProduct(brandId: string, externalName: string, p
  */
 export async function processAutonomousOrder(orderData: AutomatedOrderData) {
     try {
-        console.log(`[AAE] Processing autonomous order ${orderData.externalOrderId} from ${orderData.platform}`);
-
         // 1. Map all items
         const mappedItems: any[] = [];
         const unmappedItems: string[] = [];
@@ -122,8 +120,8 @@ export async function processAutonomousOrder(orderData: AutomatedOrderData) {
         if (isFullyMapped) {
             // A. Deduct Stock
             for (const item of mappedItems) {
-                await prisma.frozenVariant.update({
-                    where: { id: item.variantId },
+                await prisma.frozenVariant.updateMany({
+                    where: { id: item.variantId, brandId: orderData.brandId },
                     data: { stockOnHand: { decrement: item.quantity } }
                 });
             }
@@ -151,7 +149,6 @@ export async function processAutonomousOrder(orderData: AutomatedOrderData) {
                         orderData.grandTotal,
                         order.id
                     );
-                    console.log(`[AAE] ✅ Loyalty points awarded for ${order.id}`);
                 } catch (loyaltyErr) {
                     console.error("[AAE] Loyalty points error (non-critical):", loyaltyErr);
                 }

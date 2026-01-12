@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useCart } from '@/lib/contexts/CartContext';
-import { ShoppingBag } from 'lucide-react';
+import { ShoppingBag, Check } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface AddToCartButtonProps {
     product: {
@@ -20,6 +21,7 @@ interface AddToCartButtonProps {
 
 export default function AddToCartButton({ product, className, label = 'Siapkan Untuk Keluarga', disabled = false }: AddToCartButtonProps) {
     const { addToCart } = useCart();
+    const [isAdded, setIsAdded] = useState(false);
 
     const handleAdd = () => {
         if (disabled) return;
@@ -32,20 +34,49 @@ export default function AddToCartButton({ product, className, label = 'Siapkan U
             price: product.price,
             image: product.image || ''
         });
+
+        setIsAdded(true);
+        setTimeout(() => setIsAdded(false), 2000);
     };
 
     return (
-        <button
+        <motion.button
+            whileTap={{ scale: 0.95 }}
             onClick={handleAdd}
             disabled={disabled}
-            className={`flex items-center justify-center gap-3 px-8 py-4 rounded-full text-[10px] font-black uppercase tracking-widest transition-all shadow-xl 
+            className={`relative flex items-center justify-center gap-3 px-8 py-4 rounded-full text-[10px] font-black uppercase tracking-widest transition-all shadow-xl overflow-hidden
                 ${disabled
                     ? 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none'
-                    : `${className || 'bg-[#2D3A2D] text-[#FDFBF7] shadow-slate-900/10'} hover:scale-105 active:scale-95`
+                    : isAdded
+                        ? 'bg-emerald-500 text-white shadow-emerald-200'
+                        : `${className || 'bg-[#2D3A2D] text-[#FDFBF7] shadow-slate-900/10'} hover:scale-105`
                 }`}
         >
-            <ShoppingBag className="w-4 h-4" />
-            {label}
-        </button>
+            <AnimatePresence mode="wait">
+                {isAdded ? (
+                    <motion.div
+                        key="check"
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: -20, opacity: 0 }}
+                        className="flex items-center gap-2"
+                    >
+                        <Check className="w-4 h-4" />
+                        <span>Selesai Kita Siapkan</span>
+                    </motion.div>
+                ) : (
+                    <motion.div
+                        key="label"
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: -20, opacity: 0 }}
+                        className="flex items-center gap-2"
+                    >
+                        <ShoppingBag className="w-4 h-4" />
+                        <span>{label}</span>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </motion.button>
     );
 }

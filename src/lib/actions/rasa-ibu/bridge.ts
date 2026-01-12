@@ -3,6 +3,7 @@
 
 import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
+import { loyaltyEngine } from '@/lib/intelligence/loyaltyEngine';
 
 export async function createProductionRecipeFromPost(brandId: string, recipePostId: string) {
     try {
@@ -61,30 +62,39 @@ export async function createProductionRecipeFromPost(brandId: string, recipePost
                     include: { product: true }
                 });
 
+                // Sort variants by length DESC so the most specific name matches first
+                // e.g. "Sarden Kaleng" matches before "Sarden"
+                const sortedVariants = [...variants].sort((a, b) => b.name.length - a.name.length);
+
                 let bestMatch = null;
                 // Find matching variant
-                for (const v of variants) {
+                for (const v of sortedVariants) {
                     const vName = v.name.toLowerCase();
                     const pName = v.product.name.toLowerCase();
                     const rawLower = raw.toLowerCase();
 
                     // Check if variant name or product name is inside the raw string
+                    // We check vName first as it's more specific than pName usually
                     if (rawLower.includes(vName) || rawLower.includes(pName)) {
                         bestMatch = v;
-                        break; // Take first match
+                        break;
                     }
                 }
 
                 if (bestMatch) {
-                    // Extract Quantity (heuristic: first number found)
+                    // Extract Quantity (handle decimals like 0.5 or 1.5)
                     const numberMatch = raw.match(/(\d+(\.\d+)?)/);
-                    const qty = numberMatch ? parseFloat(numberMatch[0]) : 1;
+                    let qty = numberMatch ? parseFloat(numberMatch[0]) : 1;
+
+                    // Specific logic for common units (simple heuristic)
+                    // If raw contains "kg", and we default to "gram", multiply by 1000
+                    if (raw.toLowerCase().includes('kg')) qty *= 1000;
 
                     matches.push({
                         recipeId: newRecipe.id,
                         ingredientId: bestMatch.id,
                         quantity: qty,
-                        unit: 'gram' // Defaulting to unit, user must verify
+                        unit: 'gram' // Defaulting, user verifies in dashboard
                     });
                 }
             }
@@ -97,8 +107,31 @@ export async function createProductionRecipeFromPost(brandId: string, recipePost
             });
         }
 
+        // 6. Award Loyalty Points if Author Phone is present
+        let rewardGiven = false;
+        if (post.authorPhone) {
+            try {
+                await loyaltyEngine.awardManualBonus(
+                    brandId,
+                    post.authorPhone,
+                    50000,
+                    `Apresiasi Resep: ${post.title} terpilih jadi Menu Resmi!`
+                );
+                rewardGiven = true;
+            } catch (err) {
+                console.error('[Reward] Gagal memberikan poin:', err);
+            }
+        }
+
         revalidatePath('/dashboard/rasa-ibu/production');
-        return { success: true, data: { recipeId: newRecipe.id, matchesCount: matches.length } };
+        return {
+            success: true,
+            data: {
+                recipeId: newRecipe.id,
+                matchesCount: matches.length,
+                rewardGiven
+            }
+        };
 
     } catch (error) {
         console.error('Bridge Error:', error);

@@ -29,17 +29,18 @@ export async function getBestSellers(brandId: string, limit: number = 6) {
             take: limit
         });
 
-        return products.map(p => ({
+        return products.map((p: any) => ({
             id: p.id,
             slug: p.slug,
             name: p.name,
             category: p.category?.name || '',
             price: Number(p.variants[0]?.price || 0),
+            variantId: p.variants[0]?.id,
             description: p.description || '',
             image: p.image || undefined,
             orderCount: p.orderCount,
-            totalStock: p.variants.reduce((sum, v) => sum + v.stockOnHand, 0),
-            inStock: p.variants.reduce((sum, v) => sum + v.stockOnHand, 0) > 0
+            totalStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0),
+            inStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0) > 0
         }));
     } catch (error) {
         console.error('Error fetching best sellers:', error);
@@ -89,7 +90,7 @@ export async function getFeaturedProducts(brandId: string) {
                 take: 6
             });
 
-            return latestProducts.map(p => ({
+            return latestProducts.map((p: any) => ({
                 id: p.id,
                 slug: p.slug,
                 name: p.name,
@@ -97,12 +98,12 @@ export async function getFeaturedProducts(brandId: string) {
                 price: Number(p.variants[0]?.price || 0),
                 description: p.description || '',
                 image: p.image || undefined,
-                totalStock: p.variants.reduce((sum, v) => sum + v.stockOnHand, 0),
-                inStock: p.variants.reduce((sum, v) => sum + v.stockOnHand, 0) > 0
+                totalStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0),
+                inStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0) > 0
             }));
         }
 
-        return products.map(p => ({
+        return products.map((p: any) => ({
             id: p.id,
             slug: p.slug,
             name: p.name,
@@ -110,8 +111,8 @@ export async function getFeaturedProducts(brandId: string) {
             price: Number(p.variants[0]?.price || 0),
             description: p.description || '',
             image: p.image || undefined,
-            totalStock: p.variants.reduce((sum, v) => sum + v.stockOnHand, 0),
-            inStock: p.variants.reduce((sum, v) => sum + v.stockOnHand, 0) > 0
+            totalStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0),
+            inStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0) > 0
         }));
     } catch (error) {
         console.error('Error fetching featured products:', error);
@@ -158,7 +159,7 @@ export async function getRecommendedProducts(productId: string, limit: number = 
             take: limit
         });
 
-        return products.map(p => ({
+        return products.map((p: any) => ({
             id: p.id,
             slug: p.slug,
             name: p.name,
@@ -166,8 +167,8 @@ export async function getRecommendedProducts(productId: string, limit: number = 
             price: Number(p.variants[0]?.price || 0),
             description: p.description || '',
             image: p.image || undefined,
-            totalStock: p.variants.reduce((sum, v) => sum + v.stockOnHand, 0),
-            inStock: p.variants.reduce((sum, v) => sum + v.stockOnHand, 0) > 0
+            totalStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0),
+            inStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0) > 0
         }));
     } catch (error) {
         console.error('Error fetching recommendations:', error);
@@ -197,7 +198,7 @@ export async function getProductsByCategory(brandId: string, categorySlug: strin
             }
         });
 
-        return products.map(p => ({
+        return products.map((p: any) => ({
             id: p.id,
             slug: p.slug,
             name: p.name,
@@ -205,8 +206,8 @@ export async function getProductsByCategory(brandId: string, categorySlug: strin
             price: Number(p.variants[0]?.price || 0),
             description: p.description || '',
             image: p.image || undefined,
-            totalStock: p.variants.reduce((sum, v) => sum + v.stockOnHand, 0),
-            inStock: p.variants.reduce((sum, v) => sum + v.stockOnHand, 0) > 0
+            totalStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0),
+            inStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0) > 0
         }));
     } catch (error) {
         console.error('Error fetching products by category:', error);
@@ -260,7 +261,7 @@ export async function getCategories(brandId: string) {
             }
         });
 
-        return categories.map(c => ({
+        return categories.map((c: any) => ({
             id: c.id,
             name: c.name,
             slug: c.slug,
@@ -271,5 +272,35 @@ export async function getCategories(brandId: string) {
     } catch (error) {
         console.error('Error fetching categories:', error);
         return [];
+    }
+}
+
+export async function getProductsByIdsAction(ids: string[]) {
+    try {
+        const products = await prisma.frozenProduct.findMany({
+            where: {
+                id: { in: ids }
+            },
+            include: {
+                variants: {
+                    take: 1
+                },
+                category: true
+            }
+        });
+
+        return {
+            success: true,
+            data: products.map((p: any) => ({
+                id: p.id,
+                slug: p.slug,
+                name: p.name,
+                price: Number(p.variants[0]?.price || 0),
+                image: p.image
+            }))
+        };
+    } catch (error) {
+        console.error('[getProductsByIdsAction] Error:', error);
+        return { success: false, error: 'Gagal memuat produk' };
     }
 }

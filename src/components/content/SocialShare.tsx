@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Share2, Instagram, MessageCircle, Link2 } from 'lucide-react';
+import { Share2, Instagram, MessageCircle, Link2, Mail } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface SocialShareProps {
@@ -21,29 +21,40 @@ export default function SocialShare({ title, url }: SocialShareProps) {
         window.open(`https://wa.me/?text=${encodeURIComponent(title + ' ' + shareUrl)}`, '_blank');
     };
 
+    const shareEmail = () => {
+        window.location.href = `mailto:?subject=${encodeURIComponent('Resep Enak: ' + title)}&body=${encodeURIComponent('Halo, lihat resep enak ini dari Rasa Ibu:\n\n' + title + '\n' + shareUrl)}`;
+    };
+
     return (
         <div className="flex items-center gap-3">
             <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mr-2">Bagikan:</span>
             <button
                 onClick={shareWhatsApp}
-                className="w-8 h-8 rounded-full bg-[#25D366] text-white flex items-center justify-center hover:scale-110 transition-transform shadow-lg shadow-[#25D366]/20"
+                className="w-10 h-10 rounded-full bg-[#25D366] text-white flex items-center justify-center hover:scale-110 transition-all shadow-lg shadow-[#25D366]/20"
                 title="Bagikan ke WhatsApp"
             >
-                <MessageCircle className="w-4 h-4" />
+                <MessageCircle className="w-5 h-5" />
+            </button>
+            <button
+                onClick={shareEmail}
+                className="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center hover:scale-110 transition-all shadow-lg shadow-blue-500/20"
+                title="Kirim ke Email"
+            >
+                <Mail className="w-5 h-5" />
             </button>
             <button
                 onClick={() => window.open('https://instagram.com', '_blank')}
-                className="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 text-white flex items-center justify-center hover:scale-110 transition-transform shadow-lg"
+                className="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 text-white flex items-center justify-center hover:scale-110 transition-all shadow-lg"
                 title="Instagram"
             >
-                <Instagram className="w-4 h-4" />
+                <Instagram className="w-5 h-5" />
             </button>
             <button
                 onClick={copyToClipboard}
-                className="w-8 h-8 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center hover:scale-110 transition-transform"
+                className="w-10 h-10 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center hover:scale-110 transition-all"
                 title="Salin Link"
             >
-                <Link2 className="w-4 h-4" />
+                <Link2 className="w-5 h-5" />
             </button>
         </div>
     );

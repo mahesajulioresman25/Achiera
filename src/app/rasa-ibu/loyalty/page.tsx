@@ -377,7 +377,8 @@ export default function PublicLoyaltyPage() {
                             {(brandConfig?.loyaltySteps || [
                                 { step: '01', title: 'Belanja Enak', desc: 'Setiap pesanan yang lunas akan otomatis menambah poin dan progress tier Bunda secara real-time.' },
                                 { step: '02', title: 'Kumpulkan Poin', desc: `Gunakan poin untuk potongan diskon di pesanan berikutnya. 1 Poin setara Rp ${pointMultiplier} diskon belanja.` },
-                                { step: '03', title: 'Nikmati Benefit', desc: 'Makin tinggi tier, makin cepat poin terkumpul. Nikmati juga bonus 2x poin di bulan ulang tahun Bunda!' }
+                                { step: '03', title: 'Nikmati Benefit', desc: 'Makin tinggi tier, makin cepat poin terkumpul. Nikmati juga bonus 2x poin di bulan ulang tahun Bunda!' },
+                                { step: '04', title: 'Reward Kontribusi', desc: 'Dapatkan 50.000 Poin instan jika resep Bunda terpilih jadi Menu Resmi. Poin masuk otomatis via nomor WhatsApp Bunda.' }
                             ]).map((step: any, i: number) => (
                                 <div key={i} className="space-y-4">
                                     <div className="w-12 h-12 rounded-2xl bg-white border border-[#E5E1D8] flex items-center justify-center text-xl font-black text-[#2D3A2D]">{step.step}</div>
