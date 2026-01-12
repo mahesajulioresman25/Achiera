@@ -46,20 +46,20 @@ export async function smartMatchProduct(brandId: string, externalName: string, p
     });
 
     const target = externalName.toLowerCase();
-    const matches = variants.map(v => {
+    const matches = (variants as any[]).map((v: any) => {
         const name = `${v.product.name} ${v.name}`.toLowerCase();
         let score = 0;
         if (name === target) score = 100;
         else if (name.includes(target) || target.includes(name)) score = 80;
 
         return { variant: v, score };
-    }).sort((a, b) => b.score - a.score);
+    }).sort((a: any, b: any) => b.score - a.score);
 
     if (matches.length > 0 && matches[0].score >= 80) {
         return { success: true, variant: matches[0].variant, isExactMapping: false, score: matches[0].score };
     }
 
-    return { success: false, suggestedVariants: matches.slice(0, 3).map(m => m.variant) };
+    return { success: false, suggestedVariants: matches.slice(0, 3).map((m: any) => m.variant) };
 }
 
 /**
