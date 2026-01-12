@@ -93,11 +93,25 @@ export async function createSubscriptionAction(data: {
                 data: {
                     email: data.email,
                     name: data.name || "Customer",
+                    phone: data.phone,
+                    address: data.address,
                     passwordHash: hashedPassword,
                     globalRole: 'USER'
                 }
             });
             finalUserId = newUser.id;
+        }
+    } else if (finalUserId) {
+        // Update existing user if phone/address are missing
+        const user = await prisma.user.findUnique({ where: { id: finalUserId } });
+        if (user && (!user.phone || !user.address)) {
+            await prisma.user.update({
+                where: { id: finalUserId },
+                data: {
+                    phone: user.phone || data.phone,
+                    address: user.address || data.address
+                }
+            });
         }
     }
 

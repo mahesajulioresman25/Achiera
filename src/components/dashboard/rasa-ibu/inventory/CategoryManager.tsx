@@ -54,7 +54,7 @@ export default function CategoryManager({ brandId, categories, onClose, onRefres
         if (!confirmed) return;
 
         setIsSubmitting(true);
-        const res = await deleteIbuCategory(id);
+        const res = await deleteIbuCategory(id, brandId);
         if (res.success) {
             onRefresh();
         } else {

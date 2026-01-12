@@ -47,7 +47,7 @@ export async function getAccountDetailsAction(brandId: string, accountCode: stri
 
         const entries = await prisma.journalEntry.findMany({
             where: {
-                accountId: account.id,
+                account: { id: account.id, brandId },
                 createdAt: {
                     gte: startDate,
                     lte: endDate

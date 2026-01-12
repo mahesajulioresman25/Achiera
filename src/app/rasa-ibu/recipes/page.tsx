@@ -94,7 +94,7 @@ export default async function RecipesPage({
     return (
         <div className="min-h-screen bg-[#FDFBF7] pb-24">
             {/* Header Section */}
-            <div className="relative h-[60vh] md:h-[70vh] bg-[#2D3A2D] overflow-hidden flex items-center justify-center">
+            <div className="relative min-h-[60vh] md:min-h-[75vh] bg-[#2D3A2D] overflow-hidden flex items-center justify-center pt-24 pb-32">
                 <div className="absolute inset-0 bg-black/40 z-10" />
                 <img
                     src={heroImage}
@@ -102,7 +102,7 @@ export default async function RecipesPage({
                     className="absolute inset-0 w-full h-full object-cover object-center opacity-70 scale-105"
                 />
 
-                <div className="relative z-20 w-full max-w-5xl mx-auto text-center px-4">
+                <div className="relative z-20 w-full max-w-5xl mx-auto text-center px-6">
                     <AnimatedSection direction="up">
                         <span className="inline-block px-4 py-2 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 text-[#FDFBF7] text-[10px] md:text-sm font-black tracking-[0.3em] mb-8 uppercase">
                             {heroTagline}
@@ -119,7 +119,7 @@ export default async function RecipesPage({
                             ) : heroTitle}
                         </h1>
 
-                        <p className="text-[#E5E1D8] text-lg sm:text-xl md:text-2xl mb-8 max-w-2xl mx-auto font-black leading-tight opacity-90">
+                        <p className="text-[#E5E1D8] text-lg sm:text-xl md:text-2xl mb-8 max-w-3xl mx-auto font-black leading-tight opacity-90 balance">
                             {selectedAuthor ? `Koleksi masakan rumahan autentik yang dibuat dengan cinta oleh ${selectedAuthor}.` : heroSubtitle}
                         </p>
                     </AnimatedSection>
@@ -132,10 +132,12 @@ export default async function RecipesPage({
                 <AnimatedSection delay={0.2}>
                     <div className="bg-white/90 backdrop-blur-2xl rounded-[2.5rem] p-6 shadow-2xl border border-white/50 mb-16 flex flex-col gap-6">
                         <div className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-6">
-                            <CategoryFilter
-                                categories={displayCategories}
-                                initialCategory={selectedCategory || 'Semua'}
-                            />
+                            <div className="overflow-x-auto custom-scrollbar-hide pb-2 md:pb-0">
+                                <CategoryFilter
+                                    categories={displayCategories}
+                                    initialCategory={selectedCategory || 'Semua'}
+                                />
+                            </div>
                             <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
                                 <RecipeSearch />
                                 {!selectedAuthor && (

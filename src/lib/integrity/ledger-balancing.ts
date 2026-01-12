@@ -53,7 +53,8 @@ export class LedgerBalancingService {
                     brandId: params.brandId,
                     description: params.description,
                     referenceId: params.referenceId,
-                    date: new Date()
+                    date: new Date(),
+                    createdBy: 'SYSTEM'
                 }
             });
 
@@ -74,11 +75,12 @@ export class LedgerBalancingService {
                 // Create entry
                 await tx.journalEntry.create({
                     data: {
+                        brandId: params.brandId,
                         transactionId: transaction.id,
                         accountId: account.id,
                         debit: entry.debit,
                         credit: entry.credit
-                    }
+                    } as any
                 });
             }
 

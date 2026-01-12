@@ -25,7 +25,7 @@ export async function createManualOrder(data: {
         // Validate stock availability
         for (const item of data.items) {
             const variant = await prisma.frozenVariant.findUnique({
-                where: { id: item.variantId }
+                where: { id: item.variantId, brandId: data.brandId }
             });
 
             if (!variant) {
@@ -170,7 +170,7 @@ export async function createManualOrder(data: {
 
             // 🚨 LOW STOCK ALERT (Optimization)
             const updatedVariant = await prisma.frozenVariant.findUnique({
-                where: { id: item.variantId },
+                where: { id: item.variantId, brandId: data.brandId },
                 include: { product: true }
             });
 

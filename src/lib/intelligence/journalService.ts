@@ -64,6 +64,7 @@ export class JournalService {
                 // Create Entry
                 await tx.journalEntry.create({
                     data: {
+                        brandId,
                         transactionId: transaction.id,
                         accountId: account.id,
                         debit: entry.debit,

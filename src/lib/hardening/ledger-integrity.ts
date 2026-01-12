@@ -52,7 +52,8 @@ export async function postLedgerEntry(
                 brandId,
                 description,
                 referenceId,
-                date: new Date()
+                date: new Date(),
+                createdBy: 'SYSTEM'
             }
         });
 
@@ -73,11 +74,12 @@ export async function postLedgerEntry(
             // Create entry
             await client.journalEntry.create({
                 data: {
+                    brandId,
                     transactionId: transaction.id,
                     accountId: account.id,
                     debit: entry.debit,
                     credit: entry.credit
-                }
+                } as any
             });
         }
 

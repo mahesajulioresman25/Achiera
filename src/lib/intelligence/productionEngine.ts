@@ -204,7 +204,7 @@ export class ProductionEngine {
             return await tx.productionPlanItem.update({
                 where: {
                     id: planItemId,
-                    productionPlan: {
+                    plan: {
                         brandId: item.plan.brandId
                     }
                 },

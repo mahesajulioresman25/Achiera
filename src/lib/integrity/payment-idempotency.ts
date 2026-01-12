@@ -318,21 +318,23 @@ export class IdempotentPaymentService {
         // Debit: Cash
         await tx.journalEntry.create({
             data: {
+                brandId,
                 transactionId: transaction.id,
                 accountId: cashAccount.id,
                 debit: amount,
                 credit: 0
-            }
+            } as any
         });
 
         // Credit: Revenue
         await tx.journalEntry.create({
             data: {
+                brandId,
                 transactionId: transaction.id,
                 accountId: revenueAccount.id,
                 debit: 0,
                 credit: amount
-            }
+            } as any
         });
     }
 }

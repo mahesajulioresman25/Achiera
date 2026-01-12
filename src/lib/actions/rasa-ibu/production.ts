@@ -148,7 +148,7 @@ export async function startProductionAction(itemId: string) {
         // 1. Fetch item using unisolated client to bypass isolation check for read-only metadata
         const item = await unisolatedPrisma.productionPlanItem.findUnique({
             where: { id: itemId },
-            include: { productionPlan: true }
+            include: { plan: true }
         });
 
         if (!item) return { success: false, error: 'Item not found' };
@@ -157,8 +157,8 @@ export async function startProductionAction(itemId: string) {
         await prisma.productionPlanItem.update({
             where: {
                 id: itemId,
-                productionPlan: {
-                    brandId: item.productionPlan.brandId
+                plan: {
+                    brandId: item.plan.brandId
                 }
             },
             data: {

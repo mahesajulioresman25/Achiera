@@ -154,7 +154,7 @@ function getBrandIdFromWhere(where: any): string | null {
     const nestedPaths = [
         'order', 'product', 'category', 'item', 'batch', 'inventoryCategory',
         'transaction', 'orderItem', 'account', 'warehouse', 'variant', 'plan',
-        'productionPlan', 'productionPlanItem', 'recipe', 'suggestion', 'member',
+        'productionPlans', 'recipe', 'suggestion', 'member', 'items',
         'asset', 'subscription', 'brandRoles', 'user'
     ];
     for (const path of nestedPaths) {
@@ -242,10 +242,19 @@ export const brandIsolationExtension =
                                     );
                                 }
 
-                                // SPECIAL CASE: InventoryBatch is brand-scoped via Warehouse, not direct column.
+                                // SPECIAL CASE: Models that are brand-scoped via relations but don't have direct brandId column.
                                 // We validate strictness above (that brandId was passed), but must remove it 
                                 // before sending to DB to avoid "Unknown Argument".
-                                if (model === 'InventoryBatch' && data?.brandId) {
+                                const modelsWithoutBrandIdColumn = [
+                                    'InventoryBatch',
+                                    'JournalEntry',
+                                    'ProductionPlanItem',
+                                    'RecipeItem',
+                                    'BundleItem',
+                                    'FlashSaleItem',
+                                    'SettlementItem'
+                                ];
+                                if (modelsWithoutBrandIdColumn.includes(model) && data?.brandId) {
                                     delete data.brandId;
                                 }
                             }

@@ -51,6 +51,7 @@ export class FinanceService {
         // Debit: Cash (increase asset)
         await tx.journalEntry.create({
             data: {
+                brandId,
                 transactionId: transaction.id,
                 accountId: cashAccount.id,
                 debit: input.amount,
@@ -61,6 +62,7 @@ export class FinanceService {
         // Credit: Revenue (increase revenue)
         await tx.journalEntry.create({
             data: {
+                brandId,
                 transactionId: transaction.id,
                 accountId: revenueAccount.id,
                 debit: 0,
@@ -112,6 +114,7 @@ export class FinanceService {
             // Debit: Expense (increase expense)
             await tx.journalEntry.create({
                 data: {
+                    brandId: ctx.brandId,
                     transactionId: transaction.id,
                     accountId: expenseAccount.id,
                     debit: input.amount,
@@ -122,6 +125,7 @@ export class FinanceService {
             // Credit: Cash (decrease asset)
             await tx.journalEntry.create({
                 data: {
+                    brandId: ctx.brandId,
                     transactionId: transaction.id,
                     accountId: cashAccount.id,
                     debit: 0,

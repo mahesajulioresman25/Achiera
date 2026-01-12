@@ -160,7 +160,7 @@ export class FinancialReports {
         const balances = await prisma.journalEntry.groupBy({
             by: ['accountId'],
             where: {
-                accountId: { in: accountIds },
+                account: { id: { in: accountIds }, brandId },
                 createdAt: { lte: asOfDate }
             },
             _sum: { debit: true, credit: true }
