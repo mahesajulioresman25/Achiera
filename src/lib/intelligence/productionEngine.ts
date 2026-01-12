@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma';
+import { prisma, unisolatedPrisma } from '@/lib/prisma';
 import { Decimal } from '@prisma/client/runtime/library';
 
 /**
@@ -126,7 +126,8 @@ export class ProductionEngine {
      * Execute production completion: Increases finished goods, decreases ingredients
      */
     static async completeProduction(planItemId: string, actualQuantity: number, operatorId: string) {
-        const item = await prisma.productionPlanItem.findUnique({
+        // Bypass isolation for initial metadata fetch
+        const item = await unisolatedPrisma.productionPlanItem.findUnique({
             where: { id: planItemId },
             include: {
                 recipe: {

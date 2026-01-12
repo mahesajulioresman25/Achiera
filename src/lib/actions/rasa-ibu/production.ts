@@ -1,6 +1,6 @@
 'use server';
 
-import { prisma } from '@/lib/prisma';
+import { prisma, unisolatedPrisma } from '@/lib/prisma';
 import { ProductionEngine } from '@/lib/intelligence/productionEngine';
 import { revalidatePath } from 'next/cache';
 
@@ -145,8 +145,8 @@ export async function createProductionPlanAction(data: {
  */
 export async function startProductionAction(itemId: string) {
     try {
-        // 1. Fetch item to get brandId (needed for isolation)
-        const item = await prisma.productionPlanItem.findUnique({
+        // 1. Fetch item using unisolated client to bypass isolation check for read-only metadata
+        const item = await unisolatedPrisma.productionPlanItem.findUnique({
             where: { id: itemId },
             include: { productionPlan: true }
         });

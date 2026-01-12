@@ -119,32 +119,36 @@ export default async function RecipesPage({
                             ) : heroTitle}
                         </h1>
 
-                        <p className="text-[#E5E1D8] text-lg sm:text-xl md:text-2xl mb-12 max-w-2xl mx-auto font-black leading-tight opacity-90">
+                        <p className="text-[#E5E1D8] text-lg sm:text-xl md:text-2xl mb-8 max-w-2xl mx-auto font-black leading-tight opacity-90">
                             {selectedAuthor ? `Koleksi masakan rumahan autentik yang dibuat dengan cinta oleh ${selectedAuthor}.` : heroSubtitle}
                         </p>
-
-                        {!selectedAuthor && (
-                            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                <Link href="/rasa-ibu/recipes/submit" className="px-10 py-4 bg-[#B2BCA2] hover:bg-white text-[#2D3A2D] rounded-2xl font-black transition-all shadow-2xl hover:scale-105 flex items-center justify-center gap-3 text-sm md:text-base uppercase tracking-widest">
-                                    <Plus className="w-5 h-5" />
-                                    Bagikan Resep Saya
-                                </Link>
-                            </div>
-                        )}
                     </AnimatedSection>
                 </div>
             </div>
 
             {/* Content Section */}
             <div className="max-w-7xl mx-auto px-6 -mt-20 relative z-30">
-                {/* Search & Filter */}
+                {/* Search & Filter Bar */}
                 <AnimatedSection delay={0.2}>
-                    <div className="bg-white/80 backdrop-blur-2xl rounded-[2.5rem] p-6 md:p-10 shadow-2xl border border-white/50 mb-16 flex flex-col md:flex-row justify-between items-stretch md:items-center gap-6">
-                        <CategoryFilter
-                            categories={displayCategories}
-                            initialCategory={selectedCategory || 'Semua'}
-                        />
-                        <RecipeSearch />
+                    <div className="bg-white/90 backdrop-blur-2xl rounded-[2.5rem] p-6 shadow-2xl border border-white/50 mb-16 flex flex-col gap-6">
+                        <div className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-6">
+                            <CategoryFilter
+                                categories={displayCategories}
+                                initialCategory={selectedCategory || 'Semua'}
+                            />
+                            <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
+                                <RecipeSearch />
+                                {!selectedAuthor && (
+                                    <Link
+                                        href="/rasa-ibu/recipes/submit"
+                                        className="h-12 px-6 bg-[#2D3A2D] hover:bg-[#8B7E66] text-white rounded-xl font-black transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-widest shrink-0 shadow-lg shadow-green-900/10"
+                                    >
+                                        <Plus className="w-4 h-4" />
+                                        Bagikan Resep
+                                    </Link>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 </AnimatedSection>
 
