@@ -145,8 +145,22 @@ export async function createProductionPlanAction(data: {
  */
 export async function startProductionAction(itemId: string) {
     try {
-        await prisma.productionPlanItem.update({
+        // 1. Fetch item to get brandId (needed for isolation)
+        const item = await prisma.productionPlanItem.findUnique({
             where: { id: itemId },
+            include: { productionPlan: true }
+        });
+
+        if (!item) return { success: false, error: 'Item not found' };
+
+        // 2. Update with brandId in where clause
+        await prisma.productionPlanItem.update({
+            where: {
+                id: itemId,
+                productionPlan: {
+                    brandId: item.productionPlan.brandId
+                }
+            },
             data: {
                 status: 'IN_PROGRESS',
                 startedAt: new Date()
@@ -155,6 +169,7 @@ export async function startProductionAction(itemId: string) {
         revalidatePath('/dashboard/rasa-ibu');
         return { success: true };
     } catch (error: any) {
+        console.error('[Production] Start error:', error);
         return { success: false, error: error.message };
     }
 }

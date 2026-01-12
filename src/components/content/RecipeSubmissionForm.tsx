@@ -347,20 +347,23 @@ export default function RecipeSubmissionForm({ brandId }: RecipeSubmissionFormPr
                 </p>
             </div>
 
-            <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full py-4 bg-[#2D3A2D] text-white rounded-2xl font-black text-lg hover:bg-[#1A241A] transition-all flex items-center justify-center gap-3 shadow-2xl shadow-[#2D3A2D]/30 disabled:opacity-50"
-            >
-                {isSubmitting ? (
-                    <span className="animate-pulse">Mengirim Resep...</span>
-                ) : (
-                    <>
-                        <Send className="w-5 h-5" />
-                        PUBLIKASIKAN RESEP SAYA
-                    </>
-                )}
-            </button>
+            {/* Sticky Submit Button */}
+            <div className="sticky bottom-0 left-0 right-0 -mx-5 md:mx-0 p-5 md:p-0 bg-white/80 backdrop-blur-xl border-t border-[#E5E1D8] md:border-none md:bg-transparent md:backdrop-blur-none md:static z-[60]">
+                <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full py-4 bg-[#2D3A2D] text-white rounded-2xl font-black text-lg hover:bg-[#1A241A] transition-all flex items-center justify-center gap-3 shadow-2xl shadow-[#2D3A2D]/30 disabled:opacity-50"
+                >
+                    {isSubmitting ? (
+                        <span className="animate-pulse">Mengirim Resep...</span>
+                    ) : (
+                        <>
+                            <Send className="w-5 h-5" />
+                            PUBLIKASIKAN RESEP SAYA
+                        </>
+                    )}
+                </button>
+            </div>
         </form>
     );
 }
