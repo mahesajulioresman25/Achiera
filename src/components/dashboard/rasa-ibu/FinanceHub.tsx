@@ -76,7 +76,7 @@ export default function FinanceHub({ brandId, pulse, onBack, onOpenExpenseEntry,
                     setPriceAnalysis(res.data.aggregateTrend);
                 }
             } else if (selectedMaterialId) {
-                const res = await getPriceAnalysisAction(selectedMaterialId);
+                const res = await getPriceAnalysisAction(brandId, selectedMaterialId);
                 if (res.success) setPriceAnalysis(res.data || []);
             }
             setIsLoadingAnalysis(false);

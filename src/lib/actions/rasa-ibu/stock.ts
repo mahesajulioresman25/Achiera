@@ -356,6 +356,9 @@ export async function registerIngredientAction(data: {
  * Get mutation history for a variant
  */
 export async function getStockMutationsAction(brandId: string, variantId: string) {
+    if (!variantId) {
+        return { success: false, error: 'Variant ID is required' };
+    }
     try {
         // Fetch variant first to get brandId for isolation compatibility check
         const variant = await prisma.frozenVariant.findUnique({
@@ -386,6 +389,47 @@ export async function getStockMutationsAction(brandId: string, variantId: string
             take: 20
         });
         return { success: true, data: JSON.parse(JSON.stringify(mutations)) };
+    } catch (error: any) {
+        return { success: false, error: error.message };
+    }
+}
+
+/**
+ * Get mutation history for a warehouse (all variants)
+ */
+export async function getWarehouseMutationsAction(brandId: string, warehouseId: string) {
+    if (!warehouseId) {
+        return { success: false, error: 'Warehouse ID is required' };
+    }
+    try {
+        const mutations = await prisma.stockMutation.findMany({
+            where: {
+                warehouseId,
+                warehouse: { brandId }
+            },
+            include: {
+                variant: {
+                    include: {
+                        product: true
+                    }
+                }
+            },
+            orderBy: { createdAt: 'desc' },
+            take: 50
+        });
+
+        const formatted = mutations.map((m: any) => ({
+            id: m.id,
+            createdAt: m.createdAt,
+            type: m.type,
+            quantity: m.quantity,
+            productName: m.variant?.product?.name || 'Unknown',
+            variantName: m.variant?.name || 'Unknown',
+            createdBy: m.createdBy || 'SYSTEM',
+            notes: m.notes
+        }));
+
+        return { success: true, data: formatted };
     } catch (error: any) {
         return { success: false, error: error.message };
     }
@@ -496,6 +540,9 @@ export async function updateIngredientAction(data: {
  * Based on 'IN' mutations and their corresponding journal entries
  */
 export async function getPriceAnalysisAction(brandId: string, variantId: string) {
+    if (!variantId) {
+        return { success: false, error: 'Variant ID is required' };
+    }
     try {
         // Fetch variant with Brand Isolation
         const variant = await prisma.frozenVariant.findUnique({

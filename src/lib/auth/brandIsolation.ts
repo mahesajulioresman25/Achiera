@@ -252,7 +252,8 @@ export const brandIsolationExtension =
                                     'RecipeItem',
                                     'BundleItem',
                                     'FlashSaleItem',
-                                    'SettlementItem'
+                                    'SettlementItem',
+                                    'Order'
                                 ];
                                 if (modelsWithoutBrandIdColumn.includes(model) && data?.brandId) {
                                     delete data.brandId;

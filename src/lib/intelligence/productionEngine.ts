@@ -207,7 +207,10 @@ export class ProductionEngine {
 
             // 3. Mark item as completed
             return await tx.productionPlanItem.update({
-                where: { id: planItemId },
+                where: {
+                    id: planItemId,
+                    plan: { brandId: item.plan.brandId }
+                },
                 data: {
                     actualQuantity,
                     status: 'COMPLETED',
