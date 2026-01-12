@@ -132,7 +132,12 @@ export class ProductionEngine {
             include: {
                 recipe: {
                     include: {
-                        items: true
+                        items: true,
+                        frozenVariant: {
+                            include: {
+                                product: true
+                            }
+                        }
                     }
                 },
                 plan: true
@@ -202,12 +207,7 @@ export class ProductionEngine {
 
             // 3. Mark item as completed
             return await tx.productionPlanItem.update({
-                where: {
-                    id: planItemId,
-                    plan: {
-                        brandId: item.plan.brandId
-                    }
-                },
+                where: { id: planItemId },
                 data: {
                     actualQuantity,
                     status: 'COMPLETED',

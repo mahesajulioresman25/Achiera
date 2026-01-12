@@ -51,13 +51,17 @@ export class WarehouseService {
 
                 const deduction = Math.min(batch.quantity, remaining);
 
-                await client.inventoryBatch.updateMany({
+                const updateRes = await client.inventoryBatch.updateMany({
                     where: {
                         id: batch.id,
                         warehouse: { brandId: ctx.brandId }
                     },
                     data: { quantity: { decrement: deduction } }
                 });
+
+                if (updateRes.count === 0) {
+                    console.warn(`[WarehouseService] Warning: inventoryBatch.updateMany affected 0 rows. ID: ${batch.id}, Brand: ${ctx.brandId}`);
+                }
 
                 // Log mutation
                 await client.stockMutation.create({
@@ -85,13 +89,17 @@ export class WarehouseService {
             }
 
             // 4. Update aggregate stock
-            await client.frozenVariant.updateMany({
+            const aggregateRes = await client.frozenVariant.updateMany({
                 where: {
                     id: variantId,
                     brandId: ctx.brandId
                 },
                 data: { stockOnHand: { decrement: quantity } } // Corrected: variable is 'quantity', not 'totalDeducted'
             });
+
+            if (aggregateRes.count === 0) {
+                console.warn(`[WarehouseService] Warning: frozenVariant.updateMany affected 0 rows. Variant: ${variantId}, Brand: ${ctx.brandId}`);
+            }
 
             return deductions;
         };
@@ -140,13 +148,17 @@ export class WarehouseService {
             });
 
             // 3. Update aggregate stock
-            await client.frozenVariant.updateMany({
+            const aggregateRes = await client.frozenVariant.updateMany({
                 where: {
                     id: variantId,
                     brandId: ctx.brandId
                 },
                 data: { stockOnHand: { increment: quantity } }
             });
+
+            if (aggregateRes.count === 0) {
+                console.warn(`[WarehouseService] Warning: frozenVariant.updateMany affected 0 rows during addStock. Variant: ${variantId}, Brand: ${ctx.brandId}`);
+            }
 
             return batch;
         };

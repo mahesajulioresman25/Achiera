@@ -152,6 +152,7 @@ export async function createWebsiteOrderAction(data: {
 
         const order = await prisma.order.create({
             data: {
+                brandId, // Explicit brandId for isolation middleware
                 brand: { connect: { id: brandId } },
                 invoiceNo: invoiceNo,
                 manualRef: manualRef,
