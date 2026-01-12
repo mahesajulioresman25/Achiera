@@ -154,8 +154,8 @@ function getBrandIdFromWhere(where: any): string | null {
     const nestedPaths = [
         'order', 'product', 'category', 'item', 'batch', 'inventoryCategory',
         'transaction', 'orderItem', 'account', 'warehouse', 'variant', 'plan',
-        'recipe', 'suggestion', 'member', 'asset', 'subscription', 'brandRoles',
-        'user'
+        'productionPlan', 'productionPlanItem', 'recipe', 'suggestion', 'member',
+        'asset', 'subscription', 'brandRoles', 'user'
     ];
     for (const path of nestedPaths) {
         if (where[path]) {
