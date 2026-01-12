@@ -43,7 +43,6 @@ export default function CampaignForm({ brandId, initialData, onCancel, onSuccess
                 })
             });
 
-            console.log('[CampaignForm] Sending payload:', { ...formData, id: initialData?.id, brandId });
 
             const result = await res.json();
 

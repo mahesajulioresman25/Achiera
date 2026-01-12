@@ -76,7 +76,6 @@ export default function DashboardClientWrapper({
     activities = [],
     intelligence
 }: DashboardClientWrapperProps) {
-    console.log('[DashboardClientWrapper] brandId:', brandId);
     const [showLedger, setShowLedger] = React.useState(false);
     const [showReports, setShowReports] = React.useState(false);
     const [showReconciliation, setShowReconciliation] = React.useState(false);

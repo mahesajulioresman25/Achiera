@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
+import { checkRateLimit } from '@/lib/middleware/rateLimit';
 
 export async function middleware(request: NextRequest) {
     const token = await getToken({
@@ -10,6 +11,34 @@ export async function middleware(request: NextRequest) {
 
     const isAuthPage = request.nextUrl.pathname.startsWith('/login');
     const isDashboard = request.nextUrl.pathname.startsWith('/dashboard');
+    const isApiRequest = request.nextUrl.pathname.startsWith('/api');
+
+    // 0. RATE LIMITING (Security Hardening)
+    if (isApiRequest || isAuthPage) {
+        const identifier = request.headers.get('x-forwarded-for')?.split(',')[0] || (request as any).ip || 'anonymous';
+        // Auth page: 5 req/min | API: 60 req/min
+        const limit = isAuthPage ? 5 : 100;
+        const rateLimitResult = await checkRateLimit(identifier, limit, 60);
+
+        if (!rateLimitResult.success) {
+            return new NextResponse(
+                JSON.stringify({
+                    success: false,
+                    error: 'Rate limit exceeded',
+                    retryAfter: rateLimitResult.reset
+                }),
+                {
+                    status: 429,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Retry-After': rateLimitResult.reset.toString(),
+                        'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+                        'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+                    }
+                }
+            );
+        }
+    }
 
     // Redirect to login if accessing dashboard without auth
     if (isDashboard) {
@@ -58,7 +87,6 @@ export async function middleware(request: NextRequest) {
     // --- SECURITY HEADERS & API PROTECTION ---
 
     // 1. Protect all /api/ routes (except auth, public, debug, and test)
-    const isApiRequest = request.nextUrl.pathname.startsWith('/api');
     const isPublicApi = request.nextUrl.pathname.startsWith('/api/auth') ||
         request.nextUrl.pathname.startsWith('/api/public');
 

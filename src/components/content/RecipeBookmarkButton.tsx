@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Bookmark } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -61,8 +61,8 @@ export default function RecipeBookmarkButton({
         <button
             onClick={handleBookmark}
             className={`p-3 rounded-full transition-all flex items-center justify-center gap-2 ${isBookmarked
-                    ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20'
-                    : 'bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/20'
+                ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20'
+                : 'bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/20'
                 } ${className}`}
             title={isBookmarked ? "Hapus dari koleksi" : "Simpan Resep"}
         >

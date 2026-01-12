@@ -31,11 +31,14 @@ export default async function RecipesPage({
     if (!brand) return <div className="py-24 text-center text-stone-400 font-black">Brand not found</div>;
 
     // Fetch recipes, categories and config
-    const [recipes, categories, config] = await Promise.all([
+    const [rawRecipes, categories, config] = await Promise.all([
         getPublishedRecipes(brand.id, selectedCategory, selectedAuthor, searchQuery),
         getRecipeCategories(brand.id),
         prisma.brandConfig.findUnique({ where: { brandId: brand.id } })
     ]);
+
+    // Sanitize recipes to POJOs for safe hydration
+    const recipes = JSON.parse(JSON.stringify(rawRecipes));
 
     // CMS Values with fallbacks
     const heroTitle = config?.recipeListHeroTitle || 'Kreasi Rasa Dapur Bunda';

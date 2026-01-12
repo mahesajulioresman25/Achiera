@@ -63,7 +63,11 @@ export default function CookingList({ brandId, plans, recipes, onRefresh }: Cook
 
     const handleStart = async (itemId: string) => {
         const res = await startProductionAction(itemId);
-        if (res.success) onRefresh();
+        if (res.success) {
+            onRefresh();
+        } else {
+            toast.error('Gagal memulai masak: ' + res.error);
+        }
     };
 
     const handleComplete = async (itemId: string, targetQuantity: number, unit: string, recipeName: string) => {

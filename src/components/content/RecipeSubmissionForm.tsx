@@ -114,7 +114,7 @@ export default function RecipeSubmissionForm({ brandId }: RecipeSubmissionFormPr
     }
 
     return (
-        <form onSubmit={handleSubmit} className="bg-white rounded-3xl p-6 md:p-10 shadow-2xl border border-[#E5E1D8] space-y-10 group">
+        <form onSubmit={handleSubmit} className="bg-white rounded-3xl p-5 md:p-10 shadow-2xl border border-[#E5E1D8] space-y-8 md:space-y-10 group mb-24 pb-24">
             <div className="text-center">
                 <div className="w-16 h-16 bg-[#F9F7F2] rounded-2xl flex items-center justify-center text-[#B2BCA2] mx-auto mb-4 border border-[#E5E1D8]">
                     <ChefHat className="w-8 h-8" />
@@ -316,10 +316,10 @@ export default function RecipeSubmissionForm({ brandId }: RecipeSubmissionFormPr
             </div>
 
             {/* Ethics & Rewards Notice */}
-            <div className="bg-stone-50 rounded-3xl p-8 border border-stone-100 space-y-4">
+            <div className="bg-stone-50 rounded-2xl p-5 md:p-8 border border-stone-100 space-y-4">
                 <div className="flex items-center gap-3 text-[#2D3A2D]">
                     <ShieldCheck className="w-6 h-6 text-[#B2BCA2]" />
-                    <h4 className="font-black uppercase tracking-widest text-sm">Etika & Apresiasi Resep Bunda</h4>
+                    <h4 className="font-black uppercase tracking-widest text-[10px] md:text-sm">Etika & Apresiasi Resep Bunda</h4>
                 </div>
                 <p className="text-xs text-stone-500 font-medium leading-relaxed">
                     Dengan mempublikasikan resep di platform Rasa Ibu, Bunda setuju bahwa Rasa Ibu dapat menggunakan/mengadaptasi resep ini untuk dijadikan <span className="text-[#2D3A2D] font-black italic">Menu Resmi Rasa Ibu</span>.

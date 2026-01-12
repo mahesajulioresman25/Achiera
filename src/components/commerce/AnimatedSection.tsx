@@ -1,7 +1,7 @@
 'use client';
 
+import React, { ReactNode } from 'react';
 import { motion } from 'framer-motion';
-import { ReactNode } from 'react';
 
 interface AnimatedSectionProps {
     children: ReactNode;
@@ -29,7 +29,7 @@ export default function AnimatedSection({
             transition: {
                 duration: 0.8,
                 delay,
-                ease: [0.21, 0.47, 0.32, 0.98]
+                ease: [0.21, 0.47, 0.32, 0.98] as any
             }
         }
     };

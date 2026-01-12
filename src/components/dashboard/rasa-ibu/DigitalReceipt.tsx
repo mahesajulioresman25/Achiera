@@ -46,7 +46,7 @@ export default function DigitalReceipt({ order, onClose }: DigitalReceiptProps) 
             </div>
 
             {/* Receipt Paper */}
-            <div className="bg-white w-full max-w-[400px] p-8 shadow-2xl print:shadow-none print:max-w-none print:w-[80mm] print:mx-auto font-mono text-slate-800 animate-in fade-in zoom-in duration-300">
+            <div id="receipt-content" className="bg-white w-full max-w-[400px] p-8 shadow-2xl print:shadow-none print:max-w-none print:w-[80mm] print:mx-auto font-mono text-slate-800 animate-in fade-in zoom-in duration-300">
 
                 {/* Brand Header */}
                 <div className="text-center space-y-2 mb-8">

@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { Order, OrderItem, StockMutation, Subscription, SubscriptionPlan, MockupVariant } from '@prisma/client';
 import { unstable_cache } from 'next/cache';
+import { withCache, CacheKeys } from '@/lib/redis';
 
 export interface FinancialPulse {
     periodicSales: {
@@ -119,15 +120,19 @@ async function getMonthlyExpenses(brandId: string, monthDate: Date) {
 }
 
 /**
- * Calculates financial metrics for RASA IBU with Caching.
+ * Calculates financial metrics for RASA IBU with Redis & Next.js Caching.
  */
-export const getFinancialPulse = unstable_cache(
-    async (brandId: string): Promise<FinancialPulse> => {
-        return await calculateFinancialPulse(brandId);
-    },
-    ['financial-pulse'],
-    { revalidate: 3600, tags: ['finance'] }
-);
+export async function getFinancialPulse(brandId: string): Promise<FinancialPulse> {
+    // 1. Level 1: Redis Caching (Distributed)
+    return withCache(
+        CacheKeys.financialPulse(brandId),
+        async () => {
+            // 2. Level 2: calculate fresh data
+            return await calculateFinancialPulse(brandId);
+        },
+        3600 // 1 hour
+    );
+}
 
 async function calculateFinancialPulse(brandId: string): Promise<FinancialPulse> {
     const now = new Date();
