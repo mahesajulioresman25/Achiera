@@ -167,6 +167,15 @@ export class ProductionEngine {
                 const expiryDate = new Date(Date.now() + (shelfLife * 24 * 60 * 60 * 1000));
                 const batchCode = `PROD-${Date.now()}`;
 
+                console.log(`[ProductionEngine] Adding stock for production completion:`, {
+                    variantId: item.recipe.frozenVariantId,
+                    variantName: item.recipe.frozenVariant?.name,
+                    productName: item.recipe.frozenVariant?.product?.name,
+                    quantity: actualQuantity,
+                    brandId: item.plan.brandId,
+                    warehouseId: defaultWarehouse.id
+                });
+
                 await warehouseService.addStock(
                     ctx,
                     defaultWarehouse.id,
@@ -176,6 +185,8 @@ export class ProductionEngine {
                     expiryDate,
                     tx
                 );
+
+                console.log(`[ProductionEngine] Stock added successfully for variant ${item.recipe.frozenVariantId}`);
 
                 // AUTO-HPP: Update costPrice of the finished good based on current ingredient costs
                 const hppData = await this.calculateRecipeHPP(item.plan.brandId, item.recipe.id, tx);

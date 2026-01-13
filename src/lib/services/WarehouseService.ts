@@ -148,12 +148,23 @@ export class WarehouseService {
             });
 
             // 3. Update aggregate stock
+            console.log(`[WarehouseService] Updating aggregate stock:`, {
+                variantId,
+                brandId: ctx.brandId,
+                incrementBy: quantity
+            });
+
             const aggregateRes = await client.frozenVariant.updateMany({
                 where: {
                     id: variantId,
                     brandId: ctx.brandId
                 },
                 data: { stockOnHand: { increment: quantity } }
+            });
+
+            console.log(`[WarehouseService] Aggregate stock update result:`, {
+                variantId,
+                affectedRows: aggregateRes.count
             });
 
             if (aggregateRes.count === 0) {

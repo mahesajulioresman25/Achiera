@@ -1,6 +1,7 @@
 
+
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { unisolatedPrisma } from '@/lib/prisma';
 
 export async function GET(
     req: NextRequest,
@@ -42,14 +43,14 @@ export async function GET(
         } as const;
 
         // Try finding by ID first
-        let order = await prisma.order.findUnique({
+        let order = await unisolatedPrisma.order.findUnique({
             where: { id },
             include: includeConfig
         });
 
         if (!order) {
             // Fallback to Invoice lookup
-            order = await prisma.order.findUnique({
+            order = await unisolatedPrisma.order.findUnique({
                 where: { invoiceNo: id },
                 include: includeConfig
             });
