@@ -16,7 +16,8 @@ import {
     ShoppingCart,
     AlertCircle,
     CheckCircle2,
-    Eye
+    Eye,
+    ScrollText
 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
