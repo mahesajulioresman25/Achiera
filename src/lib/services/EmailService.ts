@@ -89,7 +89,9 @@ export class EmailService {
             console.error(`[EmailService] Failed to fetch bank/brand settings:`, error);
         }
 
-        const html = `
+        try {
+
+            const html = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -124,9 +126,9 @@ export class EmailService {
         <div class="content">
             <p>Halo <strong>${order.isGift ? (order.recipientName || 'Sahabat') : order.customerName}</strong>!</p>
             <p>${order.isGift
-                ? `Anda menerima hadiah istimewa dari <strong>${order.customerName}</strong>! Pesanan sudah kami terima dan sedang disiapkan dengan penuh cinta.`
-                : 'Terima kasih sudah jajan di Rasa Ibu. Kami sudah menerima pesanan Bunda dan sedang menyiapkan yang terbaik untuk diantarkan.'
-            }</p>
+                    ? `Anda menerima hadiah istimewa dari <strong>${order.customerName}</strong>! Pesanan sudah kami terima dan sedang disiapkan dengan penuh cinta.`
+                    : 'Terima kasih sudah jajan di Rasa Ibu. Kami sudah menerima pesanan Bunda dan sedang menyiapkan yang terbaik untuk diantarkan.'
+                }</p>
             
             <div class="invoice-box">
                 <table width="100%">
@@ -241,61 +243,61 @@ export class EmailService {
 </html>
         `.trim();
 
-        await this.transporter.sendMail({
-            from: this.getFromAddress(),
-            to: recipientEmail,
-            subject: order.isGift
-                ? `[Achiera] 🎁 Hadiah Spesial Untuk Anda! #${order.invoiceNo}`
-                : `[Achiera] Konfirmasi Pesanan #${order.invoiceNo}`,
-            html: html,
-            attachments: [{
-                filename: 'rasa-ibu-logo.png',
-                path: path.join(process.cwd(), 'public', 'images', 'logos', 'rasa-ibu-logo.png'),
-                cid: 'rasa-ibu-logo'
-            }]
-        });
-        console.log(`[EmailService] Order confirmation sent to ${recipientEmail}${order.isGift ? ' (gift recipient)' : ''}`);
+            await this.transporter.sendMail({
+                from: this.getFromAddress(),
+                to: recipientEmail,
+                subject: order.isGift
+                    ? `[Achiera] 🎁 Hadiah Spesial Untuk Anda! #${order.invoiceNo}`
+                    : `[Achiera] Konfirmasi Pesanan #${order.invoiceNo}`,
+                html: html,
+                attachments: [{
+                    filename: 'rasa-ibu-logo.png',
+                    path: path.join(process.cwd(), 'public', 'images', 'logos', 'rasa-ibu-logo.png'),
+                    cid: 'rasa-ibu-logo'
+                }]
+            });
+            console.log(`[EmailService] Order confirmation sent to ${recipientEmail}${order.isGift ? ' (gift recipient)' : ''}`);
 
-        // System Log
-        const { logSystemActivity } = await import('@/lib/logger');
-        await logSystemActivity(
-            'EMAIL_SEND',
-            'INFO',
-            `Order confirmation sent to ${recipientEmail}`,
-            { invoiceNo: order.invoiceNo, recipientEmail, isGift: order.isGift },
-            order.brandId
-        );
-
-        return true;
-    } catch(error) {
-        console.error('[EmailService] Send Error:', error);
-
-        // System Log Error
-        try {
+            // System Log
             const { logSystemActivity } = await import('@/lib/logger');
             await logSystemActivity(
                 'EMAIL_SEND',
-                'ERROR',
-                `Failed to send order confirmation to ${recipientEmail}`,
-                { invoiceNo: order.invoiceNo, error: String(error) },
+                'INFO',
+                `Order confirmation sent to ${recipientEmail}`,
+                { invoiceNo: order.invoiceNo, recipientEmail, isGift: order.isGift },
                 order.brandId
             );
-        } catch (e) { /* ignore log error */ }
 
-        return false;
+            return true;
+        } catch (error) {
+            console.error('[EmailService] Send Error:', error);
+
+            // System Log Error
+            try {
+                const { logSystemActivity } = await import('@/lib/logger');
+                await logSystemActivity(
+                    'EMAIL_SEND',
+                    'ERROR',
+                    `Failed to send order confirmation to ${recipientEmail}`,
+                    { invoiceNo: order.invoiceNo, error: String(error) },
+                    order.brandId
+                );
+            } catch (e) { /* ignore log error */ }
+
+            return false;
+        }
     }
-}
 
     static async sendStatusUpdate(order: EmailOrderInfo, newStatus: string) {
-    if (!order.customerEmail) {
-        console.warn('[EmailService] Skipping Status Update: No customer email provided');
-        return false;
-    }
+        if (!order.customerEmail) {
+            console.warn('[EmailService] Skipping Status Update: No customer email provided');
+            return false;
+        }
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-    const trackingUrl = `${appUrl}/order/track/${order.invoiceNo}`;
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+        const trackingUrl = `${appUrl}/order/track/${order.invoiceNo}`;
 
-    const html = `
+        const html = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -343,66 +345,66 @@ export class EmailService {
 </html>
         `.trim();
 
-    try {
-        // Clean sender name
-        const rawFromName = process.env.SMTP_FROM_NAME || 'Achiera Platform';
-        const cleanFromName = rawFromName.replace(/>/g, '').trim();
+        try {
+            // Clean sender name
+            const rawFromName = process.env.SMTP_FROM_NAME || 'Achiera Platform';
+            const cleanFromName = rawFromName.replace(/>/g, '').trim();
 
-        await this.transporter.sendMail({
-            from: `"${cleanFromName}" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
-            to: order.customerEmail,
-            subject: `[Achiera] Update Pesanan #${order.invoiceNo}: ${newStatus}`,
-            html: html,
-            attachments: [{
-                filename: 'rasa-ibu-logo.png',
-                path: path.join(process.cwd(), 'public', 'images', 'logos', 'rasa-ibu-logo.png'),
-                cid: 'rasa-ibu-logo'
-            }]
-        });
-        console.log(`[EmailService] Status update sent to ${order.customerEmail}`);
-        return true;
-    } catch (error) {
-        console.error('[EmailService] Status Update Error:', error);
-        return false;
+            await this.transporter.sendMail({
+                from: `"${cleanFromName}" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+                to: order.customerEmail,
+                subject: `[Achiera] Update Pesanan #${order.invoiceNo}: ${newStatus}`,
+                html: html,
+                attachments: [{
+                    filename: 'rasa-ibu-logo.png',
+                    path: path.join(process.cwd(), 'public', 'images', 'logos', 'rasa-ibu-logo.png'),
+                    cid: 'rasa-ibu-logo'
+                }]
+            });
+            console.log(`[EmailService] Status update sent to ${order.customerEmail}`);
+            return true;
+        } catch (error) {
+            console.error('[EmailService] Status Update Error:', error);
+            return false;
+        }
     }
-}
 
-    static async sendAdminAlert(subject: string, message: string, attachments ?: any[]) {
-    const adminEmail = process.env.WA_ADMIN_EMAIL || process.env.SMTP_USER;
-    if (!adminEmail) return false;
+    static async sendAdminAlert(subject: string, message: string, attachments?: any[]) {
+        const adminEmail = process.env.WA_ADMIN_EMAIL || process.env.SMTP_USER;
+        if (!adminEmail) return false;
 
-    try {
-        await this.transporter.sendMail({
-            from: `"${process.env.SMTP_FROM_NAME || 'Achiera Alert'}" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
-            to: adminEmail,
-            subject: `⚠️ Alert: ${subject}`,
-            html: `<div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+        try {
+            await this.transporter.sendMail({
+                from: `"${process.env.SMTP_FROM_NAME || 'Achiera Alert'}" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+                to: adminEmail,
+                subject: `⚠️ Alert: ${subject}`,
+                html: `<div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
                     <h2 style="color: #d32f2f;">Admin Alert</h2>
                     <p>${message.replace(/\n/g, '<br>')}</p>
                 </div>`,
-            attachments: attachments
-        });
-        return true;
-    } catch (error) {
-        console.error('[EmailService] Admin Alert Error:', error);
-        return false;
+                attachments: attachments
+            });
+            return true;
+        } catch (error) {
+            console.error('[EmailService] Admin Alert Error:', error);
+            return false;
+        }
     }
-}
 
     /**
      * Send OTP email for authentication
      */
     static async sendOTPEmail(email: string, code: string, type: string) {
-    const typeLabels: Record<string, string> = {
-        'OTP_LOGIN': 'Login',
-        'OTP_REGISTER': 'Registrasi',
-        'OTP_FORGOT_PASSWORD': 'Reset Password',
-        'OTP_PROFILE_UPDATE': 'Update Profil',
-    };
+        const typeLabels: Record<string, string> = {
+            'OTP_LOGIN': 'Login',
+            'OTP_REGISTER': 'Registrasi',
+            'OTP_FORGOT_PASSWORD': 'Reset Password',
+            'OTP_PROFILE_UPDATE': 'Update Profil',
+        };
 
-    const label = typeLabels[type] || 'Verifikasi';
+        const label = typeLabels[type] || 'Verifikasi';
 
-    const html = `
+        const html = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -450,85 +452,85 @@ export class EmailService {
 </html>
         `.trim();
 
-    try {
-        // Clean sender name
-        const rawFromName = process.env.SMTP_FROM_NAME || 'Achiera Platform';
-        const cleanFromName = rawFromName.replace(/>/g, '').trim();
+        try {
+            // Clean sender name
+            const rawFromName = process.env.SMTP_FROM_NAME || 'Achiera Platform';
+            const cleanFromName = rawFromName.replace(/>/g, '').trim();
 
-        await this.transporter.sendMail({
-            from: `"${cleanFromName}" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
-            to: email,
-            subject: `[Achiera] Kode OTP ${label}: ${code}`,
-            html: html,
-            attachments: [{
-                filename: 'rasa-ibu-logo.png',
-                path: path.join(process.cwd(), 'public', 'images', 'logos', 'rasa-ibu-logo.png'),
-                cid: 'rasa-ibu-logo'
-            }]
-        });
-        console.log(`[EmailService] OTP email sent to ${email} for ${type}`);
-        return true;
-    } catch (error) {
-        console.error('[EmailService] OTP Email Error:', error);
-        return false;
+            await this.transporter.sendMail({
+                from: `"${cleanFromName}" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+                to: email,
+                subject: `[Achiera] Kode OTP ${label}: ${code}`,
+                html: html,
+                attachments: [{
+                    filename: 'rasa-ibu-logo.png',
+                    path: path.join(process.cwd(), 'public', 'images', 'logos', 'rasa-ibu-logo.png'),
+                    cid: 'rasa-ibu-logo'
+                }]
+            });
+            console.log(`[EmailService] OTP email sent to ${email} for ${type}`);
+            return true;
+        } catch (error) {
+            console.error('[EmailService] OTP Email Error:', error);
+            return false;
+        }
     }
-}
 
     /**
      * Send subscription invoice email
      */
     static async sendSubscriptionInvoice(subscription: any) {
-    if (!subscription.customerEmail) {
-        console.warn('[EmailService] Skipping subscription invoice: No customer email');
-        return false;
-    }
-
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-    const profileUrl = `${appUrl}/rasa-ibu/profile?tab=subscription`;
-
-    // Calculate total from items
-    const items = subscription.items || [];
-    const total = items.reduce((sum: number, item: any) => {
-        return sum + (Number(item.variant?.price || 0) * item.quantity);
-    }, 0);
-
-    // Default bank info
-    let bankInfo = { bankName: 'BCA', accountNo: '2330620385', accountName: 'MAHESA JULIO RESMAN' };
-    let qrisUrl: string | undefined = undefined;
-
-    // Fetch brand settings and bank info
-    try {
-        const { prisma } = await import('@/lib/prisma');
-
-        // Fetch bank info from database
-        const brandBank = await prisma.bankAccount.findFirst({
-            where: { brandId: subscription.brandId || undefined, isActive: true },
-            orderBy: { createdAt: 'desc' }
-        });
-
-        if (brandBank) {
-            bankInfo = {
-                bankName: brandBank.bankName,
-                accountNo: brandBank.accountNumber,
-                accountName: brandBank.accountHolder
-            };
+        if (!subscription.customerEmail) {
+            console.warn('[EmailService] Skipping subscription invoice: No customer email');
+            return false;
         }
 
-        if (subscription.brandId) {
-            const brand = await prisma.brand.findUnique({
-                where: { id: subscription.brandId },
-                select: { paymentSettings: true }
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+        const profileUrl = `${appUrl}/rasa-ibu/profile?tab=subscription`;
+
+        // Calculate total from items
+        const items = subscription.items || [];
+        const total = items.reduce((sum: number, item: any) => {
+            return sum + (Number(item.variant?.price || 0) * item.quantity);
+        }, 0);
+
+        // Default bank info
+        let bankInfo = { bankName: 'BCA', accountNo: '2330620385', accountName: 'MAHESA JULIO RESMAN' };
+        let qrisUrl: string | undefined = undefined;
+
+        // Fetch brand settings and bank info
+        try {
+            const { prisma } = await import('@/lib/prisma');
+
+            // Fetch bank info from database
+            const brandBank = await prisma.bankAccount.findFirst({
+                where: { brandId: subscription.brandId || undefined, isActive: true },
+                orderBy: { createdAt: 'desc' }
             });
-            const settings = brand?.paymentSettings as any;
-            if (settings) {
-                qrisUrl = settings.qrisImageUrl;
-            }
-        }
-    } catch (error) {
-        console.error(`[EmailService] Failed to fetch brand/bank settings for subscription:`, error);
-    }
 
-    const html = `
+            if (brandBank) {
+                bankInfo = {
+                    bankName: brandBank.bankName,
+                    accountNo: brandBank.accountNumber,
+                    accountName: brandBank.accountHolder
+                };
+            }
+
+            if (subscription.brandId) {
+                const brand = await prisma.brand.findUnique({
+                    where: { id: subscription.brandId },
+                    select: { paymentSettings: true }
+                });
+                const settings = brand?.paymentSettings as any;
+                if (settings) {
+                    qrisUrl = settings.qrisImageUrl;
+                }
+            }
+        } catch (error) {
+            console.error(`[EmailService] Failed to fetch brand/bank settings for subscription:`, error);
+        }
+
+        const html = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -646,26 +648,26 @@ export class EmailService {
                 <strong>📅 Jadwal Pengiriman:</strong><br/>
                 <span style="font-size: 14px;">
                     ${(() => {
-                try {
-                    const days = typeof subscription.deliveryDays === 'string'
-                        ? JSON.parse(subscription.deliveryDays)
-                        : subscription.deliveryDays;
+                    try {
+                        const days = typeof subscription.deliveryDays === 'string'
+                            ? JSON.parse(subscription.deliveryDays)
+                            : subscription.deliveryDays;
 
-                    if (!Array.isArray(days)) return 'Jadwal oleh Rasa Ibu';
+                        if (!Array.isArray(days)) return 'Jadwal oleh Rasa Ibu';
 
-                    const dayMap: Record<string, string> = {
-                        'MON': 'Senin', 'TUE': 'Selasa', 'WED': 'Rabu',
-                        'THU': 'Kamis', 'FRI': 'Jumat', 'SAT': 'Sabtu', 'SUN': 'Minggu'
-                    };
+                        const dayMap: Record<string, string> = {
+                            'MON': 'Senin', 'TUE': 'Selasa', 'WED': 'Rabu',
+                            'THU': 'Kamis', 'FRI': 'Jumat', 'SAT': 'Sabtu', 'SUN': 'Minggu'
+                        };
 
-                    return days.map((d: any) => {
-                        const dayName = dayMap[d.day] || d.day;
-                        return `${dayName} (${d.timeSlot})`;
-                    }).join(', ');
-                } catch (e) {
-                    return 'Sesuai Jadwal Rasa Ibu';
-                }
-            })()}
+                        return days.map((d: any) => {
+                            const dayName = dayMap[d.day] || d.day;
+                            return `${dayName} (${d.timeSlot})`;
+                        }).join(', ');
+                    } catch (e) {
+                        return 'Sesuai Jadwal Rasa Ibu';
+                    }
+                })()}
                 </span>
             </div>
             ` : ''}
@@ -685,28 +687,28 @@ export class EmailService {
 </html>
         `.trim();
 
-    try {
-        // Clean sender name
-        const rawFromName = process.env.SMTP_FROM_NAME || 'Achiera Platform';
-        const cleanFromName = rawFromName.replace(/>/g, '').trim();
+        try {
+            // Clean sender name
+            const rawFromName = process.env.SMTP_FROM_NAME || 'Achiera Platform';
+            const cleanFromName = rawFromName.replace(/>/g, '').trim();
 
-        await this.transporter.sendMail({
-            from: `"${cleanFromName}" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
-            to: subscription.customerEmail,
-            subject: `[Achiera] Langganan Bunda Aktif - ${subscription.plan?.name || 'Custom'}`,
-            html: html,
-            attachments: [{
-                filename: 'rasa-ibu-logo.png',
-                path: path.join(process.cwd(), 'public', 'images', 'logos', 'rasa-ibu-logo.png'),
-                cid: 'rasa-ibu-logo'
-            }]
-        });
-        console.log(`[EmailService] Subscription invoice sent to ${subscription.customerEmail}`);
-        return true;
-    } catch (error) {
-        console.error('[EmailService] Subscription Invoice Error:', error);
-        return false;
+            await this.transporter.sendMail({
+                from: `"${cleanFromName}" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+                to: subscription.customerEmail,
+                subject: `[Achiera] Langganan Bunda Aktif - ${subscription.plan?.name || 'Custom'}`,
+                html: html,
+                attachments: [{
+                    filename: 'rasa-ibu-logo.png',
+                    path: path.join(process.cwd(), 'public', 'images', 'logos', 'rasa-ibu-logo.png'),
+                    cid: 'rasa-ibu-logo'
+                }]
+            });
+            console.log(`[EmailService] Subscription invoice sent to ${subscription.customerEmail}`);
+            return true;
+        } catch (error) {
+            console.error('[EmailService] Subscription Invoice Error:', error);
+            return false;
+        }
     }
-}
 }
 
