@@ -477,8 +477,8 @@ function LogViewer({ brandId, refreshTrigger }: { brandId: string, refreshTrigge
                             </td>
                             <td className="px-4 py-3">
                                 <span className={`px-2 py-1 rounded text-xs font-bold ${log.severity === 'ERROR' ? 'bg-red-100 text-red-700' :
-                                        log.severity === 'WARN' ? 'bg-yellow-100 text-yellow-700' :
-                                            'bg-blue-100 text-blue-700'
+                                    log.severity === 'WARN' ? 'bg-yellow-100 text-yellow-700' :
+                                        'bg-blue-100 text-blue-700'
                                     }`}>
                                     {log.severity}
                                 </span>
