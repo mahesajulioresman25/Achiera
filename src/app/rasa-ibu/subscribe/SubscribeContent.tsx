@@ -813,6 +813,13 @@ export default function SubscribePageContent({ user, plans, initialData, isAuthe
                                                 </>
                                             )}
                                         </button>
+
+                                        <div className="mt-6 flex items-start gap-3 text-left px-2 animate-in fade-in slide-in-from-bottom-2">
+                                            <div className="min-w-[4px] h-[4px] mt-1.5 rounded-full bg-amber-500" />
+                                            <p className="text-[10px] text-white/50 font-medium italic leading-relaxed">
+                                                <span className="font-black text-amber-500 uppercase tracking-wider">Penting:</span> Setelah aktivasi, mohon unggah bukti pembayaran di menu <span className="font-bold text-white border-b border-white/30">Profil &gt; Riwayat Langganan</span>.
+                                            </p>
+                                        </div>
                                     </div>
 
                                     <div className="mt-8 flex items-center justify-center gap-3 text-[10px] text-white/20 font-black tracking-widest uppercase text-center">
