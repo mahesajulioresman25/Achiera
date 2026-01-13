@@ -193,7 +193,7 @@ export default function OrderTrackingResultPage({ params }: { params: Promise<{ 
                             <div className="flex justify-between items-start mb-4">
                                 <div>
                                     <h1 className="text-xl font-bold text-stone-900">Order #{order.invoiceNo}</h1>
-                                    <p className="text-sm text-stone-500">Placed on {new Date(order.createdAt).toLocaleDateString()}</p>
+                                    <p className="text-sm text-stone-500">Placed on {order?.createdAt ? new Date(order.createdAt).toLocaleDateString() : '-'}</p>
                                 </div>
                                 <span className="px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full">
                                     {order.status.replace('_', ' ')}
@@ -277,7 +277,7 @@ export default function OrderTrackingResultPage({ params }: { params: Promise<{ 
                                                 {(() => {
                                                     // Loose matching for logs
                                                     const log = order.logs?.find((l: any) => l.status === step.key);
-                                                    return log ? <div className="text-xs text-stone-500">{new Date(log.createdAt).toLocaleDateString()}</div> : null;
+                                                    return (log && log.createdAt) ? <div className="text-xs text-stone-500">{new Date(log.createdAt).toLocaleDateString()}</div> : null;
                                                 })()}
                                             </div>
                                         );

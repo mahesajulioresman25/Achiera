@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Warehouse, Package, Plus, History, ArrowDownToLine,
     AlertCircle, CheckCircle2, Search, Calendar, X
