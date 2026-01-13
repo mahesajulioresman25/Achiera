@@ -292,17 +292,53 @@ export default function RecipeSubmissionForm({ brandId }: RecipeSubmissionFormPr
             <div className="space-y-6">
                 <h3 className="text-xl font-bold text-[#2D3A2D] border-l-4 border-[#B2BCA2] pl-4">4. Tambahan</h3>
                 <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest">URL Gambar (Opsional)</label>
+                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest">Foto Masakan (Opsional)</label>
                     <div className="relative">
                         <input
-                            type="url"
-                            placeholder="https://..."
-                            value={formData.image}
-                            onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                            className="w-full pl-12 pr-5 py-3 rounded-xl bg-gray-50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-[#B2BCA2] text-sm"
+                            type="file"
+                            accept="image/*"
+                            onChange={async (e) => {
+                                const file = e.target.files?.[0];
+                                if (!file) return;
+
+                                // Upload logic
+                                const data = new FormData();
+                                data.append('file', file);
+
+                                const toastId = toast.loading('Mengupload foto...');
+                                try {
+                                    const res = await fetch('/api/upload/recipe-image', {
+                                        method: 'POST',
+                                        body: data
+                                    });
+                                    const result = await res.json();
+
+                                    if (result.success) {
+                                        setFormData({ ...formData, image: result.url });
+                                        toast.success('Foto berhasil diupload', { id: toastId });
+                                    } else {
+                                        toast.error('Gagal mengupload foto', { id: toastId });
+                                    }
+                                } catch (err) {
+                                    toast.error('Terjadi kesalahan saat upload', { id: toastId });
+                                }
+                            }}
+                            className="w-full pl-12 pr-5 py-3 rounded-xl bg-gray-50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-[#B2BCA2] text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#B2BCA2] file:text-white hover:file:bg-[#2D3A2D]"
                         />
                         <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 w-5 h-5" />
                     </div>
+                    {formData.image && (
+                        <div className="mt-2 relative w-full h-48 rounded-xl overflow-hidden border border-gray-200">
+                            <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
+                            <button
+                                type="button"
+                                onClick={() => setFormData({ ...formData, image: '' })}
+                                className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                            >
+                                <Minus className="w-4 h-4" />
+                            </button>
+                        </div>
+                    )}
                 </div>
                 <div className="space-y-2">
                     <label className="text-xs font-black text-gray-400 uppercase tracking-widest">Tips Spesial</label>

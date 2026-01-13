@@ -33,21 +33,29 @@ class SchedulerService {
         console.log('[Scheduler] Starting Automated Reporting System...');
 
         // 1. Daily Insight: Every day at 21:00 (9 PM)
-        cron.schedule('0 21 * * *', async () => {
-            console.log('[Scheduler] Triggering Daily Insight...');
-            await this.runDailyInsight();
+        // 1. Daily Insight: Every day at 21:00 (9 PM)
+        cron.schedule('0 21 * * *', () => {
+            // Detach execution to prevent blocking the scheduler check
+            setImmediate(async () => {
+                console.log('[Scheduler] Triggering Daily Insight...');
+                await this.runDailyInsight();
+            });
         });
 
         // 2. Weekly Trend: Every Monday at 08:00
-        cron.schedule('0 8 * * 1', async () => {
-            console.log('[Scheduler] Triggering Weekly Trend...');
-            await this.runWeeklyTrend();
+        cron.schedule('0 8 * * 1', () => {
+            setImmediate(async () => {
+                console.log('[Scheduler] Triggering Weekly Trend...');
+                await this.runWeeklyTrend();
+            });
         });
 
         // 3. Monthly Report: Every 1st of the month at 08:00
-        cron.schedule('0 8 1 * *', async () => {
-            console.log('[Scheduler] Triggering Monthly Report...');
-            await this.runMonthlyReport();
+        cron.schedule('0 8 1 * *', () => {
+            setImmediate(async () => {
+                console.log('[Scheduler] Triggering Monthly Report...');
+                await this.runMonthlyReport();
+            });
         });
 
         // 4. Emergency Alerts: Every 15 minutes

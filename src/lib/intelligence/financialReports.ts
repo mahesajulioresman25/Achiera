@@ -298,7 +298,8 @@ export class FinancialReports {
     private static categorizeCashFlow(type: AccountType, code: string): 'operating' | 'investing' | 'financing' {
         if (type === 'REVENUE' || type === 'EXPENSE') return 'operating';
 
-        // Fixed Assets: Standard range (1-2xxx) OR Asset Category codes (1-EQUIPMENT, 1-VEHICLE, etc.)
+        // Fixed Assets: Standard range (1-2xxx) OR Asset Category codes
+        // Also include Accumulated Depreciation (1-2xxx-ACCUM or similar) as it relates to asset value
         if (code.startsWith('1-2') ||
             code.startsWith('1-EQUIPMENT') ||
             code.startsWith('1-VEHICLE') ||
@@ -308,7 +309,12 @@ export class FinancialReports {
             return 'investing';
         }
 
-        if (type === 'EQUITY' || code.startsWith('2-2')) return 'financing'; // Equity or Long-term Loans
+        // Equity or Long-term Loans
+        if (type === 'EQUITY' || code.startsWith('2-2')) return 'financing';
+
+        // Prive / Drawing (3-3xxx) is also financing
+        if (code.startsWith('3-3')) return 'financing';
+
         return 'operating'; // Default to operating for things like AR/AP shifts
     }
 

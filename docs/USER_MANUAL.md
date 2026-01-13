@@ -37,6 +37,15 @@
    - **Products Used**: Pilih produk jualan kita yang dipakai di resep ini (agar muncul tombol "Beli Bahan").
 4. Publish. Resep akan muncul di halaman `/rasa-ibu/recipes`.
 
+### Cara Mencatat Prive (Pengambilan Pribadi)
+1. Masuk ke menu **Finance Hub > Record Expense**.
+2. Pilih akun **3-3000 - Prive Pemilik**.
+3. Masukkan jumlah uang yang diambil.
+4. Berikan keterangan (opsional).
+5. Klik **Save**.
+   - Saldo Kas akan berkurang.
+   - Ekuitas Pemilik akan berkurang (tercatat sebagai penarikan modal).
+
 ---
 
 ## 🧑‍🍳 Untuk Pelanggan (Customer)
