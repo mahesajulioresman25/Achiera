@@ -54,6 +54,7 @@ export default async function SubscribePage() {
     // 3. Fetch Existing Subscription Data (if user logged in)
     let existingData = null;
     if (session?.user?.id) {
+        // First try to get from latest subscription (most recent address)
         const latestSub = await prisma.subscription.findFirst({
             where: {
                 userId: session.user.id,
@@ -68,6 +69,19 @@ export default async function SubscribePage() {
                 phone: latestSub.customerPhone,
                 address: latestSub.customerAddress
             };
+        } else {
+            // Fallback to User Profile
+            const userProfile = await prisma.user.findUnique({
+                where: { id: session.user.id }
+            });
+
+            if (userProfile) {
+                existingData = {
+                    name: userProfile.name,
+                    phone: userProfile.phone, // This now fetches the "Nomor WhatsApp" from profile
+                    address: userProfile.address
+                };
+            }
         }
     }
 

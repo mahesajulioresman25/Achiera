@@ -718,6 +718,26 @@ export default function SubscribePageContent({ user, plans, initialData, isAuthe
                                         )}
                                     </div>
 
+                                    <div className="space-y-3 pt-6 border-t border-white/5">
+                                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Metode Pembayaran</span>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <button
+                                                onClick={() => setPaymentMethod('BANK_TRANSFER')}
+                                                className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 ${paymentMethod === 'BANK_TRANSFER' ? 'bg-white border-white' : 'bg-white/5 border-white/10 hover:bg-white/10'}`}
+                                            >
+                                                <CreditCard className={`w-6 h-6 ${paymentMethod === 'BANK_TRANSFER' ? 'text-[#2D3A2D]' : 'text-white'}`} />
+                                                <span className={`text-[10px] font-black uppercase tracking-widest ${paymentMethod === 'BANK_TRANSFER' ? 'text-[#2D3A2D]' : 'text-white'}`}>Transfer</span>
+                                            </button>
+                                            <button
+                                                onClick={() => setPaymentMethod('QRIS')}
+                                                className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 ${paymentMethod === 'QRIS' ? 'bg-white border-white' : 'bg-white/5 border-white/10 hover:bg-white/10'}`}
+                                            >
+                                                <div className={`w-6 h-6 rounded flex items-center justify-center font-black text-xs ${paymentMethod === 'QRIS' ? 'bg-[#2D3A2D] text-white' : 'bg-white text-[#2D3A2D]'}`}>QR</div>
+                                                <span className={`text-[10px] font-black uppercase tracking-widest ${paymentMethod === 'QRIS' ? 'text-[#2D3A2D]' : 'text-white'}`}>QRIS</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
                                     <div className="space-y-6 pt-10 border-t border-white/20">
                                         <div className="flex justify-between items-end">
                                             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#B2BCA2]">Total Investasi Kasih</span>
