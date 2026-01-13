@@ -19,7 +19,6 @@ export default function ProfileEditPage() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
-    const [whatsappNumber, setWhatsappNumber] = useState('');
     const [address, setAddress] = useState('');
     const [profileImage, setProfileImage] = useState('');
 
@@ -56,7 +55,6 @@ export default function ProfileEditPage() {
                 setName(data.data.name || '');
                 setEmail(data.data.email || '');
                 setPhone(data.data.phone || '');
-                setWhatsappNumber(data.data.whatsappNumber || '');
                 setAddress(data.data.address || '');
                 setProfileImage(data.data.profileImage || '');
             }
@@ -211,7 +209,6 @@ export default function ProfileEditPage() {
         const changes: any = {
             name,
             phone,
-            whatsappNumber,
             address
         };
 
@@ -342,9 +339,9 @@ export default function ProfileEditPage() {
                             <p className="text-xs text-gray-400 mt-1">Email tidak dapat diubah</p>
                         </div>
 
-                        {/* Phone */}
+                        {/* WhatsApp / Phone */}
                         <div>
-                            <label className="block text-sm font-bold text-[#2D3A2D] mb-1">No. Telepon</label>
+                            <label className="block text-sm font-bold text-[#2D3A2D] mb-1">Nomor WhatsApp</label>
                             <div className="relative">
                                 <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                                 <input
@@ -355,21 +352,7 @@ export default function ProfileEditPage() {
                                     placeholder="0812XXXXXXXX"
                                 />
                             </div>
-                        </div>
-
-                        {/* WhatsApp */}
-                        <div className="mt-4">
-                            <label className="block text-sm font-bold text-[#2D3A2D] mb-1">No. WhatsApp</label>
-                            <div className="relative">
-                                <MessageCircle className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                                <input
-                                    type="tel"
-                                    value={whatsappNumber}
-                                    onChange={(e) => setWhatsappNumber(e.target.value)}
-                                    className="w-full pl-12 pr-4 py-3 rounded-xl bg-[#F9F7F2] border border-[#E5E1D8] focus:ring-2 focus:ring-[#B2BCA2]"
-                                    placeholder="0812XXXXXXXX"
-                                />
-                            </div>
+                            <p className="text-xs text-gray-400 mt-1">Nomor ini akan digunakan untuk konfirmasi pesanan</p>
                         </div>
 
                         {/* Address */}
