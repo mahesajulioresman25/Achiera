@@ -34,8 +34,10 @@ interface EmailIntelligenceHubProps {
     onClose?: () => void;
 }
 
+type TabState = 'overview' | 'sales' | 'campaigns' | 'reviews' | 'insights' | 'logs';
+
 export default function EmailIntelligenceHub({ brandId, onClose }: EmailIntelligenceHubProps) {
-    const [activeTab, setActiveTab] = useState<'overview' | 'sales' | 'campaigns' | 'reviews' | 'insights'>('overview');
+    const [activeTab, setActiveTab] = useState<TabState>('overview');
     const [isLoading, setIsLoading] = useState(true);
     const [summary, setSummary] = useState<any>(null);
     const [salesData, setSalesData] = useState<any[]>([]);
@@ -43,6 +45,7 @@ export default function EmailIntelligenceHub({ brandId, onClose }: EmailIntellig
     const [reviews, setReviews] = useState<any>({ reviews: [], stats: {} });
     const [insights, setInsights] = useState<any>({ insights: [], grouped: {} });
     const [platformFilter, setPlatformFilter] = useState<'ALL' | 'SHOPEE' | 'TOKOPEDIA'>('ALL');
+    const [activeLogRefresh, setActiveLogRefresh] = useState(false);
 
     const loadData = async () => {
         setIsLoading(true);
@@ -180,7 +183,8 @@ export default function EmailIntelligenceHub({ brandId, onClose }: EmailIntellig
                     { id: 'sales', label: 'Sales Harian', icon: TrendingUp },
                     { id: 'campaigns', label: 'Kampanye', icon: Target },
                     { id: 'reviews', label: 'Review', icon: Star },
-                    { id: 'insights', label: 'Insights', icon: Lightbulb }
+                    { id: 'insights', label: 'Insights', icon: Lightbulb },
+                    { id: 'logs', label: 'Logs', icon: ScrollText }
                 ].map(tab => (
                     <button
                         key={tab.id}
@@ -377,8 +381,8 @@ export default function EmailIntelligenceHub({ brandId, onClose }: EmailIntellig
                             <div className="space-y-3">
                                 {insights.insights.slice(0, 10).map((insight: any, idx: number) => (
                                     <div key={idx} className={`p-4 rounded-lg border-l-4 ${insight.priority === 'HIGH' ? 'bg-red-50 border-red-500' :
-                                            insight.priority === 'MEDIUM' ? 'bg-amber-50 border-amber-500' :
-                                                'bg-blue-50 border-blue-500'
+                                        insight.priority === 'MEDIUM' ? 'bg-amber-50 border-amber-500' :
+                                            'bg-blue-50 border-blue-500'
                                         }`}>
                                         <div className="flex items-start justify-between mb-2">
                                             <div className="flex-1">
@@ -396,8 +400,8 @@ export default function EmailIntelligenceHub({ brandId, onClose }: EmailIntellig
                                         </div>
                                         <div className="flex items-center gap-2 text-xs">
                                             <span className={`px-2 py-1 rounded font-bold ${insight.status === 'NEW' ? 'bg-green-100 text-green-700' :
-                                                    insight.status === 'REVIEWED' ? 'bg-blue-100 text-blue-700' :
-                                                        'bg-gray-100 text-gray-700'
+                                                insight.status === 'REVIEWED' ? 'bg-blue-100 text-blue-700' :
+                                                    'bg-gray-100 text-gray-700'
                                                 }`}>
                                                 {insight.status}
                                             </span>
@@ -406,10 +410,85 @@ export default function EmailIntelligenceHub({ brandId, onClose }: EmailIntellig
                                     </div>
                                 ))}
                             </div>
-                        )}
+                    </div>
+                )}
+
+                {activeTab === 'logs' && (
+                    <div className="p-6">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-lg font-bold text-gray-800">System Logs</h3>
+                            <button
+                                onClick={() => setActiveLogRefresh(prev => !prev)}
+                                className="text-sm text-blue-600 hover:underline"
+                            >
+                                Refresh
+                            </button>
+                        </div>
+                        <LogViewer brandId={brandId} refreshTrigger={activeLogRefresh} />
                     </div>
                 )}
             </div>
+        </div>
+    );
+}
+
+function LogViewer({ brandId, refreshTrigger }: { brandId: string, refreshTrigger: boolean }) {
+    const [logs, setLogs] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchLogs = async () => {
+            setLoading(true);
+            try {
+                const res = await fetch(`/api/logs/system?brandId=${brandId}&limit=100`);
+                const data = await res.json();
+                if (data.success) {
+                    setLogs(data.data);
+                }
+            } catch (error) {
+                console.error('Failed to fetch logs', error);
+                toast.error('Gagal memuat logs');
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchLogs();
+    }, [brandId, refreshTrigger]);
+
+    if (loading) return <div className="text-center py-8 text-gray-500">Memuat logs...</div>;
+    if (logs.length === 0) return <div className="text-center py-8 text-gray-500">Belum ada logs sistem.</div>;
+
+    return (
+        <div className="overflow-x-auto max-h-[500px] overflow-y-auto">
+            <table className="w-full text-sm text-left">
+                <thead className="text-xs text-gray-500 uppercase bg-gray-50 sticky top-0">
+                    <tr>
+                        <th className="px-4 py-3">Waktu</th>
+                        <th className="px-4 py-3">Severity</th>
+                        <th className="px-4 py-3">Type</th>
+                        <th className="px-4 py-3">Pesan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {logs.map((log) => (
+                        <tr key={log.id} className="border-b hover:bg-gray-50">
+                            <td className="px-4 py-3 whitespace-nowrap text-gray-500">
+                                {new Date(log.createdAt).toLocaleString('id-ID')}
+                            </td>
+                            <td className="px-4 py-3">
+                                <span className={`px-2 py-1 rounded text-xs font-bold ${log.severity === 'ERROR' ? 'bg-red-100 text-red-700' :
+                                        log.severity === 'WARN' ? 'bg-yellow-100 text-yellow-700' :
+                                            'bg-blue-100 text-blue-700'
+                                    }`}>
+                                    {log.severity}
+                                </span>
+                            </td>
+                            <td className="px-4 py-3 text-gray-600 font-medium">{log.type}</td>
+                            <td className="px-4 py-3 text-gray-800">{log.message}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </div>
     );
 }

@@ -4007,3 +4007,19 @@ model RecipeLike {
   @@index([recipeId])
   @@map("recipe_likes")
 }
+
+model AppLog {
+  id        String   @id @default(cuid())
+  brandId   String?
+  type      String   // "EMAIL_SEND", "EMAIL_PARSE", "CRON"
+  severity  String   // "INFO", "WARN", "ERROR"
+  message   String
+  metadata  Json?    // Store invoiceNo, recipient, error details
+  createdAt DateTime @default(now())
+
+  // brand     Brand?   @relation(fields: [brandId], references: [id])
+  @@index([brandId])
+  @@index([type])
+  @@index([createdAt])
+  @@map("app_logs")
+}
