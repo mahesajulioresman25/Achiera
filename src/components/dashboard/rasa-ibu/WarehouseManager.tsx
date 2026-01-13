@@ -121,11 +121,11 @@ export default function WarehouseManager({ brandId, onClose }: WarehouseManagerP
         }
     }
 
-    const filteredInventory = inventory.filter(item =>
-        item.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.variantName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.sku.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredInventory = Array.isArray(inventory) ? inventory.filter(item =>
+        (item.productName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (item.variantName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (item.sku || '').toLowerCase().includes(searchTerm.toLowerCase())
+    ) : [];
 
     return (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">

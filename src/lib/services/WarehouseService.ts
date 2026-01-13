@@ -3,6 +3,7 @@
 
 import { prisma, unisolatedPrisma } from '@/lib/prisma';
 import { StockMutationType } from '@prisma/client';
+import { logSystemActivity } from '@/lib/logger';
 
 export type ServiceContext = {
     brandId: string;
@@ -101,6 +102,21 @@ export class WarehouseService {
                 console.warn(`[WarehouseService] Warning: frozenVariant.updateMany affected 0 rows. Variant: ${variantId}, Brand: ${ctx.brandId}`);
             }
 
+            // Log successful deduction
+            await logSystemActivity(
+                'SYSTEM',
+                'INFO',
+                `Stock Deducted: ${quantity} for variant ${variantId}`,
+                {
+                    warehouseId,
+                    variantId,
+                    quantity,
+                    referenceId,
+                    deductions
+                },
+                ctx.brandId
+            );
+
             return deductions;
         };
 
@@ -170,6 +186,21 @@ export class WarehouseService {
             if (aggregateRes.count === 0) {
                 console.warn(`[WarehouseService] Warning: frozenVariant.updateMany affected 0 rows during addStock. Variant: ${variantId}, Brand: ${ctx.brandId}`);
             }
+
+            // Log successful addition
+            await logSystemActivity(
+                'SYSTEM',
+                'INFO',
+                `Stock Added: ${quantity} for variant ${variantId}`,
+                {
+                    warehouseId,
+                    variantId,
+                    quantity,
+                    batchCode,
+                    batchId: batch.id
+                },
+                ctx.brandId
+            );
 
             return batch;
         };

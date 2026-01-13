@@ -3,6 +3,7 @@
 import { prisma, unisolatedPrisma } from '@/lib/prisma';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
+import { logSystemActivity } from '@/lib/logger';
 
 // MOCK: In production, get userId from session
 const MOCK_USER_ID = 'user-demo-id';
@@ -249,10 +250,14 @@ export async function createSubscriptionAction(data: {
             );
         }
 
+        // Success Log
+        await logSystemActivity('SYSTEM', 'INFO', `Subscription Created: ${sub.id}`, { customerEmail: data.email, planId: data.planId, interval: data.interval }, brand.id);
+
         return { success: true, subscriptionId: sub.id, isNewUser, generatedPassword };
 
     } catch (error) {
         console.error("Create Sub Error:", error);
+        await logSystemActivity('SYSTEM', 'ERROR', `Create Subscription Failed`, { error: (error as any).message, email: data.email }, 'rasa-ibu');
         return { success: false, error: "Gagal membuat langganan: " + (error as any).message };
     }
 }

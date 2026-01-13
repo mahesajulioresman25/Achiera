@@ -736,6 +736,50 @@ export default function SubscribePageContent({ user, plans, initialData, isAuthe
                                                 <span className={`text-[10px] font-black uppercase tracking-widest ${paymentMethod === 'QRIS' ? 'text-[#2D3A2D]' : 'text-white'}`}>QRIS</span>
                                             </button>
                                         </div>
+
+                                        {/* Payment Details Section */}
+                                        <AnimatePresence mode="wait">
+                                            {paymentMethod === 'BANK_TRANSFER' && (
+                                                <motion.div
+                                                    key="bank-details"
+                                                    initial={{ opacity: 0, height: 0 }}
+                                                    animate={{ opacity: 1, height: 'auto' }}
+                                                    exit={{ opacity: 0, height: 0 }}
+                                                    className="mt-6 bg-white/5 p-5 rounded-2xl border border-white/10"
+                                                >
+                                                    <div className="flex justify-between items-center mb-2">
+                                                        <span className="text-[10px] font-black uppercase tracking-widest text-white/60">Bank BCA</span>
+                                                        <div className="w-8 h-4 bg-blue-600 rounded"></div>
+                                                    </div>
+                                                    <div className="text-xl font-black text-white tracking-widest font-mono mb-1">123 456 7890</div>
+                                                    <div className="text-xs text-white/60 font-medium">a.n. PT Rasa Ibu Indonesia</div>
+                                                    <div className="mt-4 pt-4 border-t border-dashed border-white/10 text-[10px] text-amber-500 italic">
+                                                        *Silakan transfer sesuai total tagihan. Unggah bukti di halaman profil.
+                                                    </div>
+                                                </motion.div>
+                                            )}
+
+                                            {paymentMethod === 'QRIS' && (
+                                                <motion.div
+                                                    key="qris-details"
+                                                    initial={{ opacity: 0, height: 0 }}
+                                                    animate={{ opacity: 1, height: 'auto' }}
+                                                    exit={{ opacity: 0, height: 0 }}
+                                                    className="mt-6 bg-white p-6 rounded-2xl border border-white/10 flex flex-col items-center text-center"
+                                                >
+                                                    <img
+                                                        src="/assets/qris-placeholder.png"
+                                                        alt="Scan QRIS"
+                                                        className="w-48 h-48 object-contain mix-blend-multiply mb-4"
+                                                        onError={(e) => {
+                                                            (e.target as HTMLImageElement).src = 'https://placehold.co/200x200?text=QRIS+CODE';
+                                                        }}
+                                                    />
+                                                    <p className="text-[10px] font-black uppercase tracking-widest text-[#2D3A2D] mb-1">Scan untuk Bayar</p>
+                                                    <p className="text-xs text-[#8B7E66]">NMID: ID102003004005</p>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
                                     </div>
 
                                     <div className="space-y-6 pt-10 border-t border-white/20">

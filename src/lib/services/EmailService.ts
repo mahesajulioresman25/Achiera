@@ -362,9 +362,19 @@ export class EmailService {
                 }]
             });
             console.log(`[EmailService] Status update sent to ${order.customerEmail}`);
+
+            // System Log
+            const { logSystemActivity } = await import('@/lib/logger');
+            await logSystemActivity('EMAIL_SEND', 'INFO', `Order Status Update sent to ${order.customerEmail}`, { invoiceNo: order.invoiceNo, status: newStatus }, order.brandId);
+
             return true;
         } catch (error) {
             console.error('[EmailService] Status Update Error:', error);
+            try {
+                const { logSystemActivity } = await import('@/lib/logger');
+                await logSystemActivity('EMAIL_SEND', 'ERROR', `Failed to send status update to ${order.customerEmail}`, { invoiceNo: order.invoiceNo, error: String(error) }, order.brandId);
+            } catch (e) { }
+
             return false;
         }
     }
@@ -469,9 +479,20 @@ export class EmailService {
                 }]
             });
             console.log(`[EmailService] OTP email sent to ${email} for ${type}`);
+
+            // System Log
+            try {
+                const { logSystemActivity } = await import('@/lib/logger');
+                await logSystemActivity('EMAIL_SEND', 'INFO', `OTP sent to ${email}`, { type }, undefined);
+            } catch (e) { }
+
             return true;
         } catch (error) {
             console.error('[EmailService] OTP Email Error:', error);
+            try {
+                const { logSystemActivity } = await import('@/lib/logger');
+                await logSystemActivity('EMAIL_SEND', 'ERROR', `Failed to send OTP to ${email}`, { error: String(error) }, undefined);
+            } catch (e) { }
             return false;
         }
     }
@@ -704,9 +725,18 @@ export class EmailService {
                 }]
             });
             console.log(`[EmailService] Subscription invoice sent to ${subscription.customerEmail}`);
+
+            // System Log
+            const { logSystemActivity } = await import('@/lib/logger');
+            await logSystemActivity('EMAIL_SEND', 'INFO', `Subscription invoice sent to ${subscription.customerEmail}`, { subscriptionId: subscription.id, plan: subscription.plan?.name }, subscription.brandId);
+
             return true;
         } catch (error) {
             console.error('[EmailService] Subscription Invoice Error:', error);
+            try {
+                const { logSystemActivity } = await import('@/lib/logger');
+                await logSystemActivity('EMAIL_SEND', 'ERROR', `Failed to send subscription invoice to ${subscription.customerEmail}`, { subscriptionId: subscription.id, error: String(error) }, subscription.brandId);
+            } catch (e) { }
             return false;
         }
     }

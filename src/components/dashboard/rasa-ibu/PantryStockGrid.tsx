@@ -47,7 +47,7 @@ export default function PantryStockGrid({ products, canAudit, onOpenAudit, onOpe
                     .filter(p => !p.inventoryType || p.inventoryType === 'FINISHED_GOOD' || p.inventoryType === 'SUPPLY')
                     .map((product) => {
                         // Calculate total stock across all variants for this product
-                        const variants = product.variants || [];
+                        const variants = product?.variants || [];
                         const totalStock = variants.reduce((sum: number, v: any) => sum + (v.stockOnHand || 0), 0);
                         const isLow = totalStock <= 10;
 

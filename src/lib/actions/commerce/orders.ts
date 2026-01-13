@@ -2,6 +2,7 @@
 
 import { prisma, unisolatedPrisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
+import { logSystemActivity } from '@/lib/logger';
 
 export async function createWebsiteOrderAction(data: {
     brandId: string;
@@ -79,6 +80,7 @@ export async function createWebsiteOrderAction(data: {
             const currentStock = await warehouseService.getStockLevel(brandId, warehouse.id, item.variantId);
 
             if (currentStock < item.quantity) {
+                await logSystemActivity('SYSTEM', 'WARN', `Create Order Failed: Insufficient Stock for ${item.name}`, { brandId, variantId: item.variantId, currentStock, requested: item.quantity }, brandId);
                 return {
                     success: false,
                     error: `Stok "${item.name}" saat ini tidak tersedia di gudang pengiriman.`
@@ -268,6 +270,9 @@ export async function createWebsiteOrderAction(data: {
             await IncentiveEngine.processOrderIncentive(order.id, order.operatorId);
         }
 
+        // Success Log
+        await logSystemActivity('SYSTEM', 'INFO', `Website Order Created: ${order.invoiceNo}`, { orderId: order.id, total: finalTotal }, brandId);
+
         return {
             success: true,
             orderId: order.id,
@@ -275,6 +280,7 @@ export async function createWebsiteOrderAction(data: {
         };
     } catch (error: any) {
         console.error('Create Website Order Error:', error);
+        await logSystemActivity('SYSTEM', 'ERROR', `Create Website Order Failed`, { error: error.message, stack: error.stack }, data.brandId);
         return {
             success: false,
             error: error.message || 'Gagal menyimpan pesanan. Silakan coba lagi.'

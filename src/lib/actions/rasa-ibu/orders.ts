@@ -2,6 +2,7 @@
 
 import { prisma, unisolatedPrisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
+import { logSystemActivity } from '@/lib/logger';
 
 /**
  * Creates a manual order record.
@@ -36,6 +37,7 @@ export async function createManualOrder(data: {
             }
 
             if (variant.stockOnHand < item.quantity) {
+                await logSystemActivity('SYSTEM', 'WARN', `Manual Order Failed: Insufficient Stock for ${item.name}`, { brandId: data.brandId, variantId: item.variantId, currentStock: variant.stockOnHand, requested: item.quantity }, data.brandId);
                 return {
                     success: false,
                     error: `Stok "${item.name}" tidak mencukupi. Tersedia: ${variant.stockOnHand}, Diminta: ${item.quantity}`
@@ -211,9 +213,14 @@ export async function createManualOrder(data: {
         }
 
         revalidatePath(`/dashboard/rasa-ibu`);
+
+        // Success Log
+        await logSystemActivity('SYSTEM', 'INFO', `Manual Order Created: ${order.invoiceNo}`, { orderId: order.id, total: data.totalAmount, channel: data.channel }, data.brandId);
+
         return { success: true, data: JSON.parse(JSON.stringify(order)) };
     } catch (error: any) {
         console.error('Create Order Error:', error);
+        await logSystemActivity('SYSTEM', 'ERROR', `Create Manual Order Failed`, { error: error.message, stack: error.stack }, data.brandId);
         return {
             success: false,
             error: error.message || 'Gagal menyimpan pesanan. Silakan coba lagi.'
