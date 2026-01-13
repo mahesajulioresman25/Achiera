@@ -410,6 +410,7 @@ export default function EmailIntelligenceHub({ brandId, onClose }: EmailIntellig
                                     </div>
                                 ))}
                             </div>
+                        )}
                     </div>
                 )}
 
