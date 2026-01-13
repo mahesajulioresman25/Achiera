@@ -9,9 +9,11 @@ import { Lock } from 'lucide-react';
 interface SubscribeAuthWrapperProps {
     plans: any[];
     existingData?: any;
+    bankAccounts: any[];
+    paymentSettings: any;
 }
 
-export default function SubscribeAuthWrapper({ plans, existingData }: SubscribeAuthWrapperProps) {
+export default function SubscribeAuthWrapper({ plans, existingData, bankAccounts, paymentSettings }: SubscribeAuthWrapperProps) {
     const { data: session, status } = useSession();
 
     if (status === 'loading') {
@@ -19,5 +21,12 @@ export default function SubscribeAuthWrapper({ plans, existingData }: SubscribeA
     }
 
     // Simplified: Authentication will be handled via OTP inside the content if not logged in
-    return <SubscribePageContent user={session?.user} plans={plans} initialData={existingData} isAuthenticated={!!session} />;
+    return <SubscribePageContent
+        user={session?.user}
+        plans={plans}
+        initialData={existingData}
+        isAuthenticated={!!session}
+        bankAccounts={bankAccounts}
+        paymentSettings={paymentSettings}
+    />;
 }

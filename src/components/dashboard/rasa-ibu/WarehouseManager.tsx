@@ -210,7 +210,7 @@ export default function WarehouseManager({ brandId, onClose }: WarehouseManagerP
                                 <div className="flex justify-between items-center bg-white p-6 rounded-[2rem] border border-[#E5E1D8] shadow-sm">
                                     <div className="space-y-1">
                                         <h3 className="text-xl font-black text-[#2D3A2D]">Ringkasan Inventaris</h3>
-                                        <p className="text-xs text-[#8B7E66]">Status stok real-time di {warehouses.find(w => w.id === selectedWarehouse)?.name}</p>
+                                        <p className="text-xs text-[#8B7E66]">Status stok real-time di {(warehouses && warehouses.find(w => w.id === selectedWarehouse)?.name) || 'Gudang'}</p>
                                     </div>
                                     <div className="p-2.5 bg-[#F9F7F2] border border-[#E5E1D8] rounded-2xl flex items-center gap-3 px-5 focus-within:ring-2 focus-within:ring-[#B2BCA2] transition-all">
                                         <Search className="w-4 h-4 text-[#8B7E66]" />
@@ -260,7 +260,7 @@ export default function WarehouseManager({ brandId, onClose }: WarehouseManagerP
                                                                 <div className="flex items-center gap-2">
                                                                     <div className={`w-1.5 h-1.5 rounded-full ${item.totalStock > 20 ? 'bg-emerald-400' : item.totalStock > 0 ? 'bg-amber-400' : 'bg-rose-400'}`} />
                                                                     <span className="text-[10px] font-black uppercase tracking-wider text-[#8B7E66]">
-                                                                        {item.batches.length} Batch(es)
+                                                                        {Array.isArray(item.batches) ? item.batches.length : 0} Batch(es)
                                                                     </span>
                                                                 </div>
                                                             </td>
@@ -274,9 +274,10 @@ export default function WarehouseManager({ brandId, onClose }: WarehouseManagerP
                                                                     <div className="py-6 border-l-2 border-[#2D3A2D] ml-4 pl-4 space-y-4 animate-in slide-in-from-top-2">
                                                                         <p className="text-[10px] font-black uppercase tracking-widest text-[#2D3A2D]">Rincian Batch (FIFO Order)</p>
                                                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                                                            {item.batches.map((batch: any) => {
-                                                                                const isExpired = new Date(batch.expiry) < new Date();
-                                                                                const isExpiringSoon = !isExpired && new Date(batch.expiry) < new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+                                                                            {Array.isArray(item.batches) && item.batches.map((batch: any) => {
+                                                                                const expiry = batch.expiry ? new Date(batch.expiry) : new Date();
+                                                                                const isExpired = expiry < new Date();
+                                                                                const isExpiringSoon = !isExpired && expiry < new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
                                                                                 return (
                                                                                     <div key={batch.id} className="bg-white p-4 rounded-2xl border border-[#E5E1D8] shadow-sm relative overflow-hidden">
                                                                                         {isExpired && <div className="absolute top-0 right-0 bg-rose-500 text-white text-[8px] font-black px-2 py-1 rounded-bl-xl uppercase">Expired</div>}
@@ -288,7 +289,7 @@ export default function WarehouseManager({ brandId, onClose }: WarehouseManagerP
                                                                                         </div>
                                                                                         <div className="flex items-center gap-2 text-[9px] font-bold text-[#8B7E66] uppercase">
                                                                                             <Calendar size={10} />
-                                                                                            Expire: {new Date(batch.expiry).toLocaleDateString('id-ID')}
+                                                                                            Expire: {batch.expiry ? new Date(batch.expiry).toLocaleDateString('id-ID') : '-'}
                                                                                         </div>
                                                                                     </div>
                                                                                 );
@@ -423,8 +424,8 @@ export default function WarehouseManager({ brandId, onClose }: WarehouseManagerP
                                                 mutations.map((m) => (
                                                     <tr key={m.id} className="hover:bg-stone-50/50 transition-colors">
                                                         <td className="px-8 py-5">
-                                                            <div className="text-xs font-black text-[#2D3A2D]">{new Date(m.createdAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</div>
-                                                            <div className="text-[9px] font-bold text-stone-400 uppercase tracking-tighter">{new Date(m.createdAt).toLocaleDateString('id-ID')}</div>
+                                                            <div className="text-xs font-black text-[#2D3A2D]">{m.createdAt ? new Date(m.createdAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '-'}</div>
+                                                            <div className="text-[9px] font-bold text-stone-400 uppercase tracking-tighter">{m.createdAt ? new Date(m.createdAt).toLocaleDateString('id-ID') : '-'}</div>
                                                         </td>
                                                         <td className="px-8 py-5">
                                                             <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-[0.1em] ${m.type === 'IN' ? 'bg-emerald-50 text-emerald-700' :
@@ -435,20 +436,20 @@ export default function WarehouseManager({ brandId, onClose }: WarehouseManagerP
                                                             </span>
                                                         </td>
                                                         <td className="px-8 py-5">
-                                                            <div className="text-[10px] font-black text-[#2D3A2D] uppercase">{m.productName}</div>
-                                                            <div className="text-[9px] font-bold text-[#8B7E66] uppercase tracking-widest">{m.variantName}</div>
+                                                            <div className="text-[10px] font-black text-[#2D3A2D] uppercase">{m.productName || '-'}</div>
+                                                            <div className="text-[9px] font-bold text-[#8B7E66] uppercase tracking-widest">{m.variantName || '-'}</div>
                                                         </td>
                                                         <td className="px-8 py-5">
-                                                            <div className={`text-sm font-black ${m.quantity > 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
-                                                                {m.quantity > 0 ? '+' : ''}{m.quantity}
+                                                            <div className={`text-sm font-black ${(m.quantity || 0) > 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                                                                {(m.quantity || 0) > 0 ? '+' : ''}{m.quantity || 0}
                                                             </div>
                                                         </td>
                                                         <td className="px-8 py-5">
                                                             <div className="flex items-center gap-2">
                                                                 <div className="w-6 h-6 rounded-full bg-stone-100 flex items-center justify-center text-[10px] font-black text-stone-500 uppercase">
-                                                                    {m.createdBy.charAt(0)}
+                                                                    {(m.createdBy || '?').charAt(0)}
                                                                 </div>
-                                                                <div className="text-[9px] font-black text-stone-500 uppercase tracking-widest">{m.createdBy}</div>
+                                                                <div className="text-[9px] font-black text-stone-500 uppercase tracking-widest">{m.createdBy || 'System'}</div>
                                                             </div>
                                                         </td>
                                                     </tr>

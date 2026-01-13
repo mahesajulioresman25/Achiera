@@ -28,6 +28,9 @@ export default async function SubscribePage() {
                     }
                 },
                 orderBy: { price: 'asc' }
+            },
+            bankAccounts: {
+                where: { isActive: true }
             }
         }
     });
@@ -86,5 +89,10 @@ export default async function SubscribePage() {
     }
 
     // 4. Pass to Client Wrapper (Auth Check)
-    return <SubscribeAuthWrapper plans={plans} existingData={existingData} />;
+    return <SubscribeAuthWrapper
+        plans={plans}
+        existingData={existingData}
+        bankAccounts={brand?.bankAccounts || []}
+        paymentSettings={brand?.paymentSettings || {}}
+    />;
 }

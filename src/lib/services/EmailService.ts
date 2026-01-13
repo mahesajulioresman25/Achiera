@@ -40,11 +40,11 @@ export class EmailService {
     }
 
     static async sendOrderConfirmation(order: EmailOrderInfo, loyalty?: LoyaltyInfo) {
-        // For gift orders, send to recipient email if available
-        const recipientEmail = order.isGift && order.recipientEmail ? order.recipientEmail : order.customerEmail;
+        // Always send Order Confirmation (Invoice) to the CUSTOMER (Buyer)
+        const recipientEmail = order.customerEmail;
 
         if (!recipientEmail) {
-            console.warn('[EmailService] Skipping: No email provided');
+            console.warn('[EmailService] Skipping: No customer email provided');
             return false;
         }
 
@@ -121,12 +121,12 @@ export class EmailService {
         <div class="header">
             <img src="cid:rasa-ibu-logo" alt="Rasa Ibu" style="height: 60px; margin-bottom: 20px;">
             <span class="accent" style="color: #B2BCA2; display: block;">Achiera Rasa Ibu</span>
-            <h1>${order.isGift ? '🎁 Hadiah Spesial Untuk Bunda!' : 'Pesanan Bunda Sudah Kami Terima! 🥘✨'}</h1>
+            <h1>${order.isGift ? 'Pesanan Hadiah Diterima! 🎁' : 'Pesanan Bunda Sudah Kami Terima! 🥘✨'}</h1>
         </div>
         <div class="content">
-            <p>Halo <strong>${order.isGift ? (order.recipientName || 'Sahabat') : order.customerName}</strong>!</p>
+            <p>Halo <strong>${order.customerName}</strong>!</p>
             <p>${order.isGift
-                    ? `Anda menerima hadiah istimewa dari <strong>${order.customerName}</strong>! Pesanan sudah kami terima dan sedang disiapkan dengan penuh cinta.`
+                    ? `Pesanan hadiah spesial Anda untuk <strong>${order.recipientName || 'Sahabat'}</strong> sudah kami terima dan sedang disiapkan dengan penuh cinta.`
                     : 'Terima kasih sudah jajan di Rasa Ibu. Kami sudah menerima pesanan Bunda dan sedang menyiapkan yang terbaik untuk diantarkan.'
                 }</p>
             
@@ -147,7 +147,7 @@ export class EmailService {
             ${order.isGift ? `
             <div style="margin: 24px 0; background-color: #FDFBF7; border: 1px dashed #E5E1D8; border-radius: 16px; padding: 24px;">
                 <div style="text-align: center; margin-bottom: 16px;">
-                    <span style="display: inline-block; background-color: #FCE7F3; color: #DB2777; padding: 4px 12px; border-radius: 100px; font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;">Gift Order</span>
+                    <span style="display: inline-block; background-color: #FCE7F3; color: #DB2777; padding: 4px 12px; border-radius: 100px; font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;">Preview Kartu Ucapan</span>
                 </div>
                 <h3 style="margin: 0 0 16px 0; color: #2D3A2D; font-size: 16px; font-weight: 800; text-align: center; letter-spacing: -0.02em;">
                     Dikirim dengan penuh cinta dari ${order.customerName}
@@ -186,8 +186,8 @@ export class EmailService {
                 </tbody>
             </table>
 
-            <!-- Payment Instructions (Conditional) - Only show to customer, not gift recipient -->
-            ${!order.isGift && ['WAITING_PAYMENT', 'DIPESAN'].includes(order.status || '') ? `
+            <!-- Payment Instructions (Conditional) - Show for everyone (Buyer pays) -->
+            ${['WAITING_PAYMENT', 'DIPESAN'].includes(order.status || '') ? `
             <div class="payment-box">
                 <div class="payment-title">⚠️ Petunjuk Pembayaran</div>
                 
@@ -232,7 +232,7 @@ export class EmailService {
 
             <div style="text-align: center;">
                 <p style="font-size: 14px; color: #8B7E66;">${order.isGift ? 'Lacak status pengiriman hadiah Anda di sini:' : 'Bunda bisa melacak status pesanan secara real-time di sini:'}</p>
-                <a href="${trackingUrl}" class="button">Lacak Pesanan ${order.isGift ? 'Hadiah' : 'Bunda'}</a>
+                <a href="${trackingUrl}" class="button">Lacak Pesanan</a>
             </div>
         </div>
         <div class="footer">
@@ -247,7 +247,7 @@ export class EmailService {
                 from: this.getFromAddress(),
                 to: recipientEmail,
                 subject: order.isGift
-                    ? `[Achiera] 🎁 Hadiah Spesial Untuk Anda! #${order.invoiceNo}`
+                    ? `[Achiera] Konfirmasi Pesanan Hadiah #${order.invoiceNo}`
                     : `[Achiera] Konfirmasi Pesanan #${order.invoiceNo}`,
                 html: html,
                 attachments: [{

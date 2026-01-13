@@ -8,7 +8,7 @@ import { CheckCircle, ShieldCheck, CreditCard, Loader2, ArrowRight, ArrowLeft, U
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 
-export default function SubscribePageContent({ user, plans, initialData, isAuthenticated }: { user: any, plans: any[], initialData?: any, isAuthenticated: boolean }) {
+export default function SubscribePageContent({ user, plans, initialData, isAuthenticated, bankAccounts = [], paymentSettings = {} }: { user: any, plans: any[], initialData?: any, isAuthenticated: boolean, bankAccounts?: any[], paymentSettings?: any }) {
     const router = useRouter();
 
     // Form Data State
@@ -745,15 +745,23 @@ export default function SubscribePageContent({ user, plans, initialData, isAuthe
                                                     initial={{ opacity: 0, height: 0 }}
                                                     animate={{ opacity: 1, height: 'auto' }}
                                                     exit={{ opacity: 0, height: 0 }}
-                                                    className="mt-6 bg-white/5 p-5 rounded-2xl border border-white/10"
+                                                    className="mt-6 space-y-4"
                                                 >
-                                                    <div className="flex justify-between items-center mb-2">
-                                                        <span className="text-[10px] font-black uppercase tracking-widest text-white/60">Bank BCA</span>
-                                                        <div className="w-8 h-4 bg-blue-600 rounded"></div>
-                                                    </div>
-                                                    <div className="text-xl font-black text-white tracking-widest font-mono mb-1">123 456 7890</div>
-                                                    <div className="text-xs text-white/60 font-medium">a.n. PT Rasa Ibu Indonesia</div>
-                                                    <div className="mt-4 pt-4 border-t border-dashed border-white/10 text-[10px] text-amber-500 italic">
+                                                    {bankAccounts.length > 0 ? bankAccounts.map((bank: any) => (
+                                                        <div key={bank.id} className="bg-white/5 p-5 rounded-2xl border border-white/10">
+                                                            <div className="flex justify-between items-center mb-2">
+                                                                <span className="text-[10px] font-black uppercase tracking-widest text-white/60">{bank.bankName}</span>
+                                                                {bank.logo && <img src={bank.logo} alt={bank.bankName} className="h-4 object-contain opacity-80" />}
+                                                            </div>
+                                                            <div className="text-xl font-black text-white tracking-widest font-mono mb-1">{bank.accountNumber}</div>
+                                                            <div className="text-xs text-white/60 font-medium">a.n. {bank.accountHolder}</div>
+                                                        </div>
+                                                    )) : (
+                                                        <div className="bg-white/5 p-5 rounded-2xl border border-white/10">
+                                                            <p className="text-xs text-white/60 italic">Belum ada rekening bank tersedia.</p>
+                                                        </div>
+                                                    )}
+                                                    <div className="pt-2 border-t border-dashed border-white/10 text-[10px] text-amber-500 italic">
                                                         *Silakan transfer sesuai total tagihan. Unggah bukti di halaman profil.
                                                     </div>
                                                 </motion.div>
@@ -768,7 +776,7 @@ export default function SubscribePageContent({ user, plans, initialData, isAuthe
                                                     className="mt-6 bg-white p-6 rounded-2xl border border-white/10 flex flex-col items-center text-center"
                                                 >
                                                     <img
-                                                        src="/assets/qris-placeholder.png"
+                                                        src={paymentSettings?.qrisImageUrl || "/assets/qris-placeholder.png"}
                                                         alt="Scan QRIS"
                                                         className="w-48 h-48 object-contain mix-blend-multiply mb-4"
                                                         onError={(e) => {
@@ -776,7 +784,7 @@ export default function SubscribePageContent({ user, plans, initialData, isAuthe
                                                         }}
                                                     />
                                                     <p className="text-[10px] font-black uppercase tracking-widest text-[#2D3A2D] mb-1">Scan untuk Bayar</p>
-                                                    <p className="text-xs text-[#8B7E66]">NMID: ID102003004005</p>
+                                                    <p className="text-xs text-[#8B7E66]">{paymentSettings?.qrisNmid ? `NMID: ${paymentSettings.qrisNmid}` : 'Scan menggunakan e-wallet favorit Anda'}</p>
                                                 </motion.div>
                                             )}
                                         </AnimatePresence>
