@@ -15,6 +15,7 @@ export const maxDuration = 300; // 5 minutes (max for Vercel Hobby/Pro)
 
 /**
  * UNIFIED CRON WORKER
+ * Last Deploy: 2026-01-15 00:43 WIB
  * Consolidates multiple background tasks into a single execution to stay within Vercel plan limits.
  */
 export async function GET(req: NextRequest) {
