@@ -94,7 +94,7 @@ export class FrozenService {
      * Creates an Order from a Subscription (Renewal)
      */
     async processSubscriptionRenewal(ctx: ServiceContext, subscriptionId: string) {
-        const sub = await prisma.subscription.findUnique({
+        const sub = await prisma.subscription.findFirst({
             where: { id: subscriptionId, brandId: ctx.brandId },
             include: { items: { include: { variant: true } }, user: true }
         });

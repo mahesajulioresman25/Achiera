@@ -12,8 +12,8 @@ export async function PATCH(
         const { status, deliveryDays } = body;
 
         // 1. Fetch current subscription to check previous status and get value
-        const currentSub = await prisma.subscription.findUnique({
-            where: { id },
+        const currentSub = await prisma.subscription.findFirst({
+            where: { id, brandId },
             include: {
                 plan: true,
                 items: { include: { variant: true } }
