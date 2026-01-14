@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Loader2, CheckCircle, Package, Truck, CreditCard, Upload, Utensils, Box } from 'lucide-react';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import { safeFormatDate, safeFormatTime } from '@/utils/date-safe';
 
 const STATUS_STEPS_ID = [
@@ -176,7 +175,6 @@ export default function OrderTrackingResultClient({ id }: OrderTrackingClientPro
                         </button>
                     </div>
                 </main>
-                <Footer />
             </div>
         );
     }
@@ -497,8 +495,6 @@ export default function OrderTrackingResultClient({ id }: OrderTrackingClientPro
                     </div>
                 </div>
             </main>
-
-            <Footer />
         </div>
     );
 }

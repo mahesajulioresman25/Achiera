@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prisma, unisolatedPrisma } from '@/lib/prisma';
 import { supabase } from '@/lib/supabase';
 
 export async function POST(
@@ -11,8 +11,8 @@ export async function POST(
         const resolvedParams = await params;
         const { id } = resolvedParams;
 
-        // Verify order exists
-        const order = await prisma.order.findUnique({ where: { id } });
+        // Verify order exists - use unisolated for public lookup if brandId isn't available yet
+        const order = await unisolatedPrisma.order.findUnique({ where: { id } });
         if (!order) {
             return NextResponse.json({ error: 'Order not found' }, { status: 404 });
         }
@@ -96,9 +96,9 @@ export async function POST(
             }
         });
 
-        // Update Order Status if it's QRIS
+        // Update Order Status if it's QRIS - ensure brandId is included for isolation
         if (paymentType === 'QRIS') {
-            await prisma.order.update({
+            await unisolatedPrisma.order.update({
                 where: { id: order.id },
                 data: { status: newStatus }
             });
