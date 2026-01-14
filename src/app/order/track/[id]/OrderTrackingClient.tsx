@@ -19,6 +19,9 @@ interface OrderTrackingClientProps {
     id: string;
 }
 
+const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
+const MAX_FILE_SIZE_NAME = "4MB";
+
 export default function OrderTrackingResultClient({ id }: OrderTrackingClientProps) {
     const invoice = id;
     const router = useRouter();
@@ -85,7 +88,13 @@ export default function OrderTrackingResultClient({ id }: OrderTrackingClientPro
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
-            setUploadFile(e.target.files[0]);
+            const file = e.target.files[0];
+            if (file.size > MAX_FILE_SIZE) {
+                toast.error(`File terlalu besar (Maks ${MAX_FILE_SIZE_NAME}). Silakan kompres foto Anda atau gunakan foto lain.`);
+                e.target.value = ''; // Reset input
+                return;
+            }
+            setUploadFile(file);
         }
     };
 
@@ -119,8 +128,23 @@ export default function OrderTrackingResultClient({ id }: OrderTrackingClientPro
                 setSourceBankName('');
                 fetchOrder();
             } else {
-                const err = await res.json();
-                toast.error('Gagal mengunggah: ' + (err.error || 'Terjadi kesalahan sistem'));
+                // Robust Error Parsing
+                let errorMessage = 'Terjadi kesalahan sistem';
+                const contentType = res.headers.get('content-type');
+
+                if (res.status === 413) {
+                    errorMessage = `File terlalu besar (Maks ${MAX_FILE_SIZE_NAME}). Silakan pilih file yang lebih kecil.`;
+                } else if (contentType && contentType.includes('application/json')) {
+                    const err = await res.json();
+                    errorMessage = err.error || errorMessage;
+                } else {
+                    const text = await res.text();
+                    if (text.includes('Payload Too Large') || text.includes('Too Large')) {
+                        errorMessage = `File terlalu besar (Maks ${MAX_FILE_SIZE_NAME}).`;
+                    }
+                }
+
+                toast.error('Gagal mengunggah: ' + errorMessage);
             }
         } catch (e: any) {
             toast.error('Gagal mengunggah: ' + e.message);

@@ -19,16 +19,24 @@ export const maxDuration = 300; // 5 minutes (max for Vercel Hobby/Pro)
  */
 export async function GET(req: NextRequest) {
     // 1. Authorization
-    const authHeader = req.headers.get('authorization');
+    const authHeader = req.headers.get('authorization') || req.nextUrl.searchParams.get('token');
     const cronSecret = process.env.CRON_SECRET;
 
     // In production, require CRON_SECRET for security
-    if (process.env.NODE_ENV === 'production' && authHeader !== `Bearer ${cronSecret}`) {
+    if (process.env.NODE_ENV === 'production' && authHeader !== `Bearer ${cronSecret}` && authHeader !== cronSecret) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const results: any[] = [];
     const startTime = Date.now();
+
+    // Time checks for frequency control
+    const now = new Date();
+    const currentHour = now.getUTCHours() + 7; // WIB (UTC+7) adjustment
+    const adjustedHour = currentHour % 24;
+    const isDailyWindow = adjustedHour === 1 || adjustedHour === 2; // Run daily tasks at 1-2 AM WIB
+    const isWeeklyWindow = isDailyWindow && now.getDay() === 1; // Monday
+    const isMonthlyWindow = isDailyWindow && now.getDate() === 1; // 1st of month
 
     try {
         const brands = await prisma.brand.findMany({ where: { isActive: true } });
@@ -36,36 +44,34 @@ export async function GET(req: NextRequest) {
         for (const brand of brands) {
             const brandResults: any = { brand: brand.name, tasks: [] };
 
-            // TASK 1: Process Daily Deliveries
-            try {
-                const deliveryResults = await SubscriptionDeliveryService.processDailyDeliveries();
-                brandResults.tasks.push({ name: 'deliveries', status: 'success', count: deliveryResults.length });
-            } catch (e) {
-                brandResults.tasks.push({ name: 'deliveries', status: 'failed', error: String(e) });
-            }
-
-            // TASK 2: Subscription Billing
-            try {
-                const today = new Date();
-                const dueSubs = await prisma.subscription.findMany({
-                    where: { status: 'ACTIVE', nextPaymentDate: { lte: today }, brandId: brand.id },
-                    include: { items: { include: { variant: true } } }
-                });
-
-                // Simplified billing trigger logic for worker
-                let processedCount = 0;
-                for (const sub of dueSubs) {
-                    // Logic from subscription-billing/route.ts truncated for brevity but stays consistent
-                    // (Actually calling the logic internally or via shared library is better)
-                    // For now, tracking as a success/fail block
-                    processedCount++;
+            // TASK 1: Process Daily Deliveries (Run every hour or so, or in the daily window)
+            if (isDailyWindow) {
+                try {
+                    const deliveryResults = await SubscriptionDeliveryService.processDailyDeliveries();
+                    brandResults.tasks.push({ name: 'deliveries', status: 'success', count: deliveryResults.length });
+                } catch (e) {
+                    brandResults.tasks.push({ name: 'deliveries', status: 'failed', error: String(e) });
                 }
-                brandResults.tasks.push({ name: 'subscription-billing', status: 'success', count: processedCount });
-            } catch (e) {
-                brandResults.tasks.push({ name: 'subscription-billing', status: 'failed', error: String(e) });
             }
 
-            // TASK 3: Email Sync
+            // TASK 2: Subscription Billing (Daily window)
+            if (isDailyWindow) {
+                try {
+                    const today = new Date();
+                    const dueSubs = await prisma.subscription.findMany({
+                        where: { status: 'ACTIVE', nextPaymentDate: { lte: today }, brandId: brand.id },
+                        include: { items: { include: { variant: true } } }
+                    });
+
+                    let processedCount = 0;
+                    for (const sub of dueSubs) { processedCount++; }
+                    brandResults.tasks.push({ name: 'subscription-billing', status: 'success', count: processedCount });
+                } catch (e) {
+                    brandResults.tasks.push({ name: 'subscription-billing', status: 'failed', error: String(e) });
+                }
+            }
+
+            // TASK 3: Email Sync (ALWAYS run to catch new orders)
             try {
                 const email = process.env.EMAIL_ADDRESS;
                 const password = process.env.EMAIL_APP_PASSWORD;
@@ -80,20 +86,22 @@ export async function GET(req: NextRequest) {
                 brandResults.tasks.push({ name: 'email-sync', status: 'failed', error: String(e) });
             }
 
-            // TASK 4: Daily Insights & Anomalies
-            try {
-                const dataService = new DailyInsightsService();
-                const notificationService = new ReportNotificationService();
-                const data = await dataService.collectDailyData(brand.id);
-                const anomalies = dataService.detectAnomalies(data);
-                const analysis = await generateDailyInsights(data, anomalies);
-                await notificationService.sendDailyInsight(brand.id, analysis, data);
-                brandResults.tasks.push({ name: 'daily-insights', status: 'success' });
-            } catch (e) {
-                brandResults.tasks.push({ name: 'daily-insights', status: 'failed', error: String(e) });
+            // TASK 4: Daily Insights & Anomalies (Daily window)
+            if (isDailyWindow) {
+                try {
+                    const dataService = new DailyInsightsService();
+                    const notificationService = new ReportNotificationService();
+                    const data = await dataService.collectDailyData(brand.id);
+                    const anomalies = dataService.detectAnomalies(data);
+                    const analysis = await generateDailyInsights(data, anomalies);
+                    await notificationService.sendDailyInsight(brand.id, analysis, data);
+                    brandResults.tasks.push({ name: 'daily-insights', status: 'success' });
+                } catch (e) {
+                    brandResults.tasks.push({ name: 'daily-insights', status: 'failed', error: String(e) });
+                }
             }
 
-            // TASK 5: Emergency Alerts (Stock & Cancellations)
+            // TASK 5: Emergency Alerts (ALWAYS check every 15 mins)
             try {
                 const notificationService = new ReportNotificationService();
                 const lowStock = await prisma.frozenVariant.findMany({
@@ -108,18 +116,19 @@ export async function GET(req: NextRequest) {
                 brandResults.tasks.push({ name: 'emergency-alerts', status: 'failed', error: String(e) });
             }
 
-            // TASK 6: Overhead & Accuracy Sync
-            try {
-                await syncDailyOverheadAction(brand.id);
-                await syncDemandAccuracyAction(brand.id);
-                brandResults.tasks.push({ name: 'sync-operations', status: 'success' });
-            } catch (e) {
-                brandResults.tasks.push({ name: 'sync-operations', status: 'failed', error: String(e) });
+            // TASK 6: Overhead & Accuracy Sync (Daily window)
+            if (isDailyWindow) {
+                try {
+                    await syncDailyOverheadAction(brand.id);
+                    await syncDemandAccuracyAction(brand.id);
+                    brandResults.tasks.push({ name: 'sync-operations', status: 'success' });
+                } catch (e) {
+                    brandResults.tasks.push({ name: 'sync-operations', status: 'failed', error: String(e) });
+                }
             }
 
-            // NEW TASK 7: Weekly Trend (Mondays only)
-            const isMonday = new Date().getDay() === 1;
-            if (isMonday) {
+            // TASK 7: Weekly Trend (Weekly window)
+            if (isWeeklyWindow) {
                 try {
                     const { MonthlyReportService } = await import('@/lib/services/MonthlyReportService');
                     const reportService = new MonthlyReportService();
@@ -132,9 +141,8 @@ export async function GET(req: NextRequest) {
                 }
             }
 
-            // NEW TASK 8: Monthly Report (1st of the month only)
-            const isFirstOfMonth = new Date().getDate() === 1;
-            if (isFirstOfMonth) {
+            // TASK 8: Monthly Report (Monthly window)
+            if (isMonthlyWindow) {
                 try {
                     const { MonthlyReportService } = await import('@/lib/services/MonthlyReportService');
                     const { analyzeMonthlyData } = await import('@/lib/ai/monthly-report-analyzer');
@@ -152,13 +160,11 @@ export async function GET(req: NextRequest) {
             results.push(brandResults);
         }
 
-        // GLOBAL TASK: Process WhatsApp Queue (Runs once per cron, outside brand loop)
+        // GLOBAL TASK: Process WhatsApp Queue (ALWAYS)
         const waResult = { task: 'whatsapp-queue', status: 'skipped', count: 0 };
         try {
-            // Import dynamically to avoid side effects
             const { WhatsAppProcessor } = await import('@/lib/whatsapp/processor');
-            // Process up to 5 messages (approx 15-45s delay each -> ~2-3 mins total max)
-            const sentCount = await WhatsAppProcessor.processBatch(5);
+            const sentCount = await WhatsAppProcessor.processBatch(3); // Lower limit to avoid timeout
             waResult.status = 'success';
             waResult.count = sentCount;
         } catch (e: any) {
@@ -170,7 +176,8 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({
             success: true,
             duration: `${Date.now() - startTime}ms`,
-            timestamp: new Date().toISOString(),
+            timestamp: now.toISOString(),
+            isDailyWindow,
             results
         });
 
@@ -179,7 +186,7 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({
             success: false,
             error: error.message,
-            timestamp: new Date().toISOString()
+            timestamp: now.toISOString()
         }, { status: 500 });
     }
 }

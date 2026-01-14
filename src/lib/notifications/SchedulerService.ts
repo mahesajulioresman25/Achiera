@@ -29,6 +29,14 @@ class SchedulerService {
 
     public start() {
         if (this.isRunning) return;
+
+        // Disable node-cron in production (Vercel) as it won't persist
+        // Tasks are consolidated in unified-worker API
+        if (process.env.NODE_ENV === 'production') {
+            console.log('[Scheduler] Skipping node-cron start in production environment.');
+            return;
+        }
+
         this.isRunning = true;
         console.log('[Scheduler] Starting Automated Reporting System...');
 

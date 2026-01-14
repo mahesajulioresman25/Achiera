@@ -29,9 +29,9 @@ export async function POST(
             return NextResponse.json({ error: 'File must be an image' }, { status: 400 });
         }
 
-        // Validate file size (max 5MB)
-        if (file.size > 5 * 1024 * 1024) {
-            return NextResponse.json({ error: 'File size must be less than 5MB' }, { status: 400 });
+        // Validate file size (max 4MB)
+        if (file.size > 4 * 1024 * 1024) {
+            return NextResponse.json({ error: 'File size must be less than 4MB' }, { status: 400 });
         }
 
         const bytes = await file.arrayBuffer();
