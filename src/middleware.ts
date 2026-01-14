@@ -131,6 +131,6 @@ export const config = {
     matcher: [
         '/dashboard/:path*',
         '/login',
-        '/api/((?!debug-).*)'
+        '/api/:path*'
     ],
 };
