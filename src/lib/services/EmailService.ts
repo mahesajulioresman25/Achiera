@@ -119,7 +119,7 @@ export class EmailService {
 <body>
     <div class="container">
         <div class="header">
-            <img src="cid:rasa-ibu-logo" alt="Rasa Ibu" style="height: 60px; margin-bottom: 20px;">
+            <img src="${appUrl}/images/logos/rasa-ibu-logo.png" alt="Rasa Ibu" style="height: 60px; margin-bottom: 20px;">
             <span class="accent" style="color: #B2BCA2; display: block;">Achiera Rasa Ibu</span>
             <h1>${order.isGift ? 'Pesanan Hadiah Diterima! 🎁' : 'Pesanan Bunda Sudah Kami Terima! 🥘✨'}</h1>
         </div>
@@ -250,11 +250,7 @@ export class EmailService {
                     ? `[Achiera] Konfirmasi Pesanan Hadiah #${order.invoiceNo}`
                     : `[Achiera] Konfirmasi Pesanan #${order.invoiceNo}`,
                 html: html,
-                attachments: [{
-                    filename: 'rasa-ibu-logo.png',
-                    path: path.join(process.cwd(), 'public', 'images', 'logos', 'rasa-ibu-logo.png'),
-                    cid: 'rasa-ibu-logo'
-                }]
+                html: html
             });
             console.log(`[EmailService] Order confirmation sent to ${recipientEmail}${order.isGift ? ' (gift recipient)' : ''}`);
 
@@ -317,7 +313,7 @@ export class EmailService {
 <body>
     <div class="container">
         <div class="header">
-            <img src="cid:rasa-ibu-logo" alt="Rasa Ibu" style="height: 60px; margin-bottom: 20px;">
+            <img src="${appUrl}/images/logos/rasa-ibu-logo.png" alt="Rasa Ibu" style="height: 60px; margin-bottom: 20px;">
             <span class="accent" style="color: #B2BCA2; display: block;">Achiera Rasa Ibu</span>
             <h1>Update Pesanan Bunda 🚀</h1>
         </div>
@@ -355,11 +351,7 @@ export class EmailService {
                 to: order.customerEmail,
                 subject: `[Achiera] Update Pesanan #${order.invoiceNo}: ${newStatus}`,
                 html: html,
-                attachments: [{
-                    filename: 'rasa-ibu-logo.png',
-                    path: path.join(process.cwd(), 'public', 'images', 'logos', 'rasa-ibu-logo.png'),
-                    cid: 'rasa-ibu-logo'
-                }]
+                html: html
             });
             console.log(`[EmailService] Status update sent to ${order.customerEmail}`);
 
@@ -405,6 +397,7 @@ export class EmailService {
      * Send OTP email for authentication
      */
     static async sendOTPEmail(email: string, code: string, type: string) {
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
         const typeLabels: Record<string, string> = {
             'OTP_LOGIN': 'Login',
             'OTP_REGISTER': 'Registrasi',
@@ -434,7 +427,7 @@ export class EmailService {
 <body>
     <div class="container">
         <div class="header">
-            <img src="cid:rasa-ibu-logo" alt="Rasa Ibu" style="height: 60px; margin-bottom: 20px;">
+            <img src="${appUrl}/images/logos/rasa-ibu-logo.png" alt="Rasa Ibu" style="height: 60px; margin-bottom: 20px;">
             <span class="accent" style="color: #B2BCA2; display: block;">Achiera Rasa Ibu</span>
             <h1>Kode Verifikasi ${label} 🔐</h1>
         </div>
@@ -472,11 +465,7 @@ export class EmailService {
                 to: email,
                 subject: `[Achiera] Kode OTP ${label}: ${code}`,
                 html: html,
-                attachments: [{
-                    filename: 'rasa-ibu-logo.png',
-                    path: path.join(process.cwd(), 'public', 'images', 'logos', 'rasa-ibu-logo.png'),
-                    cid: 'rasa-ibu-logo'
-                }]
+                html: html
             });
             console.log(`[EmailService] OTP email sent to ${email} for ${type}`);
 
@@ -577,7 +566,7 @@ export class EmailService {
 <body>
     <div class="container">
         <div class="header">
-            <img src="cid:rasa-ibu-logo" alt="Rasa Ibu" style="height: 60px; margin-bottom: 20px;">
+            <img src="${appUrl}/images/logos/rasa-ibu-logo.png" alt="Rasa Ibu" style="height: 60px; margin-bottom: 20px;">
             <span class="accent" style="color: #B2BCA2; display: block;">Achiera Rasa Ibu</span>
             <h1>Langganan Katering Aktif! 🎉</h1>
         </div>
@@ -718,11 +707,7 @@ export class EmailService {
                 to: subscription.customerEmail,
                 subject: `[Achiera] Langganan Bunda Aktif - ${subscription.plan?.name || 'Custom'}`,
                 html: html,
-                attachments: [{
-                    filename: 'rasa-ibu-logo.png',
-                    path: path.join(process.cwd(), 'public', 'images', 'logos', 'rasa-ibu-logo.png'),
-                    cid: 'rasa-ibu-logo'
-                }]
+                html: html
             });
             console.log(`[EmailService] Subscription invoice sent to ${subscription.customerEmail}`);
 
