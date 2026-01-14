@@ -33,9 +33,10 @@ export async function PATCH(
             }
         });
 
-        // 3. If Status Changed to ACTIVE -> Record Revenue
+        // 3. If Status Changed to ACTIVE -> Record Revenue & Deduct Stock
         if (status === 'ACTIVE' && currentSub.status !== 'ACTIVE') {
             try {
+                // A. RECORD REVENUE
                 // Calculate Subscription Value
                 let amount = 0;
                 if (currentSub.plan) {
@@ -55,8 +56,17 @@ export async function PATCH(
                     );
                     console.log(`[Subscription Revenue] Recorded Rp ${amount} for ${currentSub.id}`);
                 }
+
+                // B. DEDUCT STOCK (Create first delivery)
+                const { SubscriptionDeliveryService } = await import('@/lib/services/SubscriptionDeliveryService');
+                const nextDeliveryDate = SubscriptionDeliveryService.getNextDeliveryDate(currentSub.deliveryDays);
+
+                console.log(`[Subscription Activation] Scheduling first delivery for ${nextDeliveryDate.toISOString().split('T')[0]}`);
+
+                await SubscriptionDeliveryService.createDeliveryAndDeductStock(currentSub, nextDeliveryDate);
+
             } catch (err) {
-                console.error("[Subscription Revenue] Failed to record ledger entry:", err);
+                console.error("[Subscription Activation] Failed to record ledger or deduct stock:", err);
                 // Don't fail the request, just log error
             }
         }

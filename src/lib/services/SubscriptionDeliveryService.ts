@@ -59,19 +59,20 @@ export class SubscriptionDeliveryService {
     /**
      * Create delivery record and deduct stock
      */
-    static async createDeliveryAndDeductStock(subscription: any) {
-        // Check if delivery already created for today
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
+    static async createDeliveryAndDeductStock(subscription: any, customDate?: Date) {
+        // Check if delivery already created for today or customDate
+        const targetDate = customDate || new Date();
+        const startOfDay = new Date(targetDate);
+        startOfDay.setHours(0, 0, 0, 0);
+        const endOfDay = new Date(startOfDay);
+        endOfDay.setDate(endOfDay.getDate() + 1);
 
         const existing = await prisma.subscriptionDelivery.findFirst({
             where: {
                 subscriptionId: subscription.id,
                 deliveryDate: {
-                    gte: today,
-                    lt: tomorrow
+                    gte: startOfDay,
+                    lt: endOfDay
                 }
             }
         });
@@ -94,7 +95,7 @@ export class SubscriptionDeliveryService {
         const delivery = await prisma.subscriptionDelivery.create({
             data: {
                 subscriptionId: subscription.id,
-                deliveryDate: today,
+                deliveryDate: startOfDay,
                 status: 'SCHEDULED',
                 warehouseId: warehouse.id
             }
@@ -152,5 +153,44 @@ export class SubscriptionDeliveryService {
                 }
             }
         });
+    }
+
+    /**
+     * Calculate the next upcoming delivery date based on scheduled days
+     */
+    static getNextDeliveryDate(deliveryDays: any): Date {
+        const today = new Date();
+        const daysOrder = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+
+        let days: string[] = [];
+        try {
+            const parsed = typeof deliveryDays === 'string' ? JSON.parse(deliveryDays) : deliveryDays;
+            if (Array.isArray(parsed)) {
+                days = parsed.map((d: any) => d.day);
+            }
+        } catch (e) {
+            console.error("[SubscriptionDelivery] Failed to parse deliveryDays:", e);
+        }
+
+        if (days.length === 0) return today; // Default to today if no schedule
+
+        // Find the earliest next day
+        let minDiff = 8;
+        let nextDate = new Date(today);
+
+        for (const dayName of days) {
+            const dayIndex = daysOrder.indexOf(dayName);
+            if (dayIndex === -1) continue;
+
+            let diff = dayIndex - today.getDay();
+            if (diff <= 0) diff += 7; // If today or earlier in the week, move to next week
+
+            if (diff < minDiff) {
+                minDiff = diff;
+            }
+        }
+
+        nextDate.setDate(today.getDate() + minDiff);
+        return nextDate;
     }
 }
