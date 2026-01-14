@@ -2,7 +2,7 @@
     "crons": [
         {
             "path": "/api/cron/unified-worker",
-            "schedule": "*/15 * * * *"
+            "schedule": "0 1 * * *"
         }
     ]
 }
