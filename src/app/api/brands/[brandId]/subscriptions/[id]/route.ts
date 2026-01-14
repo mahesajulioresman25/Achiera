@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prisma, unisolatedPrisma } from '@/lib/prisma';
 import { JournalService } from '@/lib/intelligence/journalService';
 
 export async function PATCH(
@@ -24,8 +24,8 @@ export async function PATCH(
             return NextResponse.json({ success: false, error: "Subscription not found" }, { status: 404 });
         }
 
-        // 2. Update Subscription
-        const updated = await prisma.subscription.update({
+        // 2. Update Subscription (Using unisolated because we verified brand access above)
+        const updated = await unisolatedPrisma.subscription.update({
             where: { id },
             data: {
                 ...(status && { status }),
