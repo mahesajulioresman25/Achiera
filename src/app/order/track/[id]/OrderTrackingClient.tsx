@@ -6,6 +6,7 @@ import { ArrowLeft, Loader2, CheckCircle, Package, Truck, CreditCard, Upload, Ut
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { safeFormatDate, safeFormatTime } from '@/utils/date-safe';
 
 const STATUS_STEPS_ID = [
     { key: 'WAITING_PAYMENT', label: 'Menunggu Pembayaran', icon: CreditCard },
@@ -279,7 +280,7 @@ export default function OrderTrackingResultClient({ id }: OrderTrackingClientPro
                             <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-8">
                                 <div>
                                     <h1 className="text-2xl font-black text-[#2D3A2D] uppercase tracking-tight">Pesanan #{order.invoiceNo}</h1>
-                                    <p className="text-sm text-[#8B7E66] font-medium mt-1">Dipesan pada {order.createdAt ? new Date(order.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '-'}</p>
+                                    <p className="text-sm text-[#8B7E66] font-medium mt-1">Dipesan pada {safeFormatDate(order.createdAt)}</p>
                                 </div>
                                 <span className="px-5 py-2 bg-[#F9F7F2] text-[#2D3A2D] text-[10px] font-black rounded-full border border-[#E5E1D8] uppercase tracking-widest">
                                     {(order.status || '').replace('_', ' ')}
@@ -363,7 +364,7 @@ export default function OrderTrackingResultClient({ id }: OrderTrackingClientPro
                                                 <div className={`text-sm font-black uppercase tracking-widest ${isCurrent ? 'text-[#2D3A2D]' : 'text-[#8B7E66]'}`}>{step.label}</div>
                                                 {(() => {
                                                     const log = order.logs?.find((l: any) => l.status === step.key);
-                                                    return (log && log.createdAt) ? <div className="text-[10px] font-bold text-stone-400 mt-1 uppercase tracking-tighter">{new Date(log.createdAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} • {new Date(log.createdAt).toLocaleDateString('id-ID')}</div> : null;
+                                                    return (log && log.createdAt) ? <div className="text-[10px] font-bold text-stone-400 mt-1 uppercase tracking-tighter">{safeFormatTime(log.createdAt)} • {safeFormatDate(log.createdAt)}</div> : null;
                                                 })()}
                                             </div>
                                         );
