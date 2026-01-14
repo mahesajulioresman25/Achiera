@@ -51,14 +51,16 @@ export class EmailParserService {
                 ]
             });
 
-            if (!messages || (Array.isArray(messages) && messages.length === 0)) {
+            const count = messages ? (Array.isArray(messages) ? messages.length : 0) : 0;
+
+            // Log checking status
+            try {
+                await logSystemActivity('EMAIL_PARSE', 'INFO', `Checked inbox: ${count} new emails found`, { count }, brandId);
+            } catch (e) { }
+
+            if (count === 0) {
                 return;
             }
-
-            // Log found messages
-            try {
-                await logSystemActivity('EMAIL_PARSE', 'INFO', `Found ${messages.length} new emails to process`, { count: messages.length }, brandId);
-            } catch (e) { }
 
             for (const uid of messages) {
                 const message = await this.client.fetchOne(uid, { source: true });
