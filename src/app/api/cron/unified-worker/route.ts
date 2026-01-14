@@ -152,6 +152,21 @@ export async function GET(req: NextRequest) {
             results.push(brandResults);
         }
 
+        // GLOBAL TASK: Process WhatsApp Queue (Runs once per cron, outside brand loop)
+        const waResult = { task: 'whatsapp-queue', status: 'skipped', count: 0 };
+        try {
+            // Import dynamically to avoid side effects
+            const { WhatsAppProcessor } = await import('@/lib/whatsapp/processor');
+            // Process up to 5 messages (approx 15-45s delay each -> ~2-3 mins total max)
+            const sentCount = await WhatsAppProcessor.processBatch(5);
+            waResult.status = 'success';
+            waResult.count = sentCount;
+        } catch (e: any) {
+            waResult.status = 'failed';
+            (waResult as any).error = e.message;
+        }
+        results.push(waResult);
+
         return NextResponse.json({
             success: true,
             duration: `${Date.now() - startTime}ms`,
