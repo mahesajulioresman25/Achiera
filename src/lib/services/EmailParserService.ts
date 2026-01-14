@@ -2,6 +2,7 @@ import { ImapFlow } from 'imapflow';
 import { simpleParser } from 'mailparser';
 import { prisma } from '@/lib/prisma';
 import * as xlsx from 'xlsx';
+import { logSystemActivity } from '@/lib/logger';
 // pdf-parse will be dynamically imported when needed to avoid build-time issues
 
 type EmailType = 'ORDER' | 'DAILY_SALES' | 'CAMPAIGN_REPORT' | 'REVIEW' | 'INSIGHT' | 'UNKNOWN';
@@ -54,6 +55,11 @@ export class EmailParserService {
                 return;
             }
 
+            // Log found messages
+            try {
+                await logSystemActivity('EMAIL_PARSE', 'INFO', `Found ${messages.length} new emails to process`, { count: messages.length }, brandId);
+            } catch (e) { }
+
             for (const uid of messages) {
                 const message = await this.client.fetchOne(uid, { source: true });
                 await this.processEmail(message, brandId);
@@ -73,7 +79,14 @@ export class EmailParserService {
         const html = parsed.html || parsed.text || '';
 
         const platform = this.detectPlatform(fromAddress, subject, html);
-        if (!platform) return;
+        if (!platform) {
+            console.log(`[EmailParser] Skipped: Unknown platform (${fromAddress})`);
+            return;
+        }
+
+        try {
+            await logSystemActivity('EMAIL_PARSE', 'INFO', `Processing email from ${fromAddress}`, { subject, platform }, brandId);
+        } catch (e) { }
 
         const emailType = this.detectEmailType(subject, html);
 
@@ -174,6 +187,9 @@ export class EmailParserService {
             });
         }
         console.log(`[EmailParser] GrabFood sales data processed from CSV`);
+        try {
+            await logSystemActivity('EMAIL_PARSE', 'INFO', `GrabFood CSV Sales Parsed`, { brandId }, brandId);
+        } catch (e) { }
     }
 
     async parseExcelAttachment(buffer: Buffer, brandId: string, platform: string) {
@@ -262,6 +278,9 @@ export class EmailParserService {
                 }
             });
             console.log(`[EmailParser] GrabFood sales processed from PDF: ${reportDate.toDateString()} - Revenue: ${revenue}`);
+            try {
+                await logSystemActivity('EMAIL_PARSE', 'INFO', `GrabFood PDF Sales Parsed`, { date: reportDate, revenue }, brandId);
+            } catch (e) { }
         } catch (e) {
             console.error(`[EmailParser] DB Error saving GrabFood sales:`, e);
         }
@@ -341,6 +360,10 @@ export class EmailParserService {
             }],
             grandTotal: orderData.grandTotal
         });
+
+        try {
+            await logSystemActivity('EMAIL_PARSE', 'INFO', `Order Processed: ${orderData.externalOrderId}`, { platform, total: orderData.grandTotal }, brandId);
+        } catch (e) { }
     }
 
     parseShopeeEmail(html: string) {
@@ -404,6 +427,9 @@ export class EmailParserService {
                 }
             });
             console.log(`[EmailParser] Daily sales saved for ${platform} on ${salesData.reportDate}`);
+            try {
+                await logSystemActivity('EMAIL_PARSE', 'INFO', `Daily Sales Saved: ${platform}`, { date: salesData.reportDate, revenue: salesData.totalRevenue }, brandId);
+            } catch (e) { }
         } catch (error) {
             console.error('[EmailParser] Failed to save daily sales:', error);
         }
@@ -452,6 +478,9 @@ export class EmailParserService {
                 }
             });
             console.log(`[EmailParser] Campaign report saved: ${campaignData.campaignName}`);
+            try {
+                await logSystemActivity('EMAIL_PARSE', 'INFO', `Campaign Report Saved`, { name: campaignData.campaignName, revenue: campaignData.totalRevenue }, brandId);
+            } catch (e) { }
         } catch (error) {
             console.error('[EmailParser] Failed to save campaign report:', error);
         }
@@ -492,6 +521,9 @@ export class EmailParserService {
                 }
             });
             console.log(`[EmailParser] Review saved: ${reviewData.rating}⭐ for ${reviewData.productName}`);
+            try {
+                await logSystemActivity('EMAIL_PARSE', 'INFO', `Review Saved: ${reviewData.rating}⭐`, { product: reviewData.productName }, brandId);
+            } catch (e) { }
         } catch (error) {
             console.error('[EmailParser] Failed to save review:', error);
         }
@@ -524,6 +556,9 @@ export class EmailParserService {
                 }
             });
             console.log(`[EmailParser] Insight saved: ${insightData.title}`);
+            try {
+                await logSystemActivity('EMAIL_PARSE', 'INFO', `Insight Saved`, { title: insightData.title }, brandId);
+            } catch (e) { }
         } catch (error) {
             console.error('[EmailParser] Failed to save insight:', error);
         }
