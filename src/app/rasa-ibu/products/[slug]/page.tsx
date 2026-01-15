@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Star, MessageCircle, Share2, ArrowLeft } from 'lucide-react';
 import AddToCartButton from '@/components/commerce/AddToCartButton';
 import PlatformLinks from '@/components/commerce/PlatformLinks';
 import ProductRecommendations from '@/components/commerce/ProductRecommendations';
