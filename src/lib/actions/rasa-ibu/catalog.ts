@@ -31,6 +31,7 @@ export async function createProduct(data: {
     try {
         const product = await (prisma.frozenProduct.create as any)({
             data: {
+                brandId: data.brandId,
                 categoryId: data.categoryId || undefined,
                 inventoryCategoryId: data.inventoryCategoryId || undefined,
                 name: data.name,
@@ -45,6 +46,7 @@ export async function createProduct(data: {
                 featuredOrder: data.featuredOrder ?? 0,
                 variants: {
                     create: {
+                        brandId: data.brandId,
                         name: 'Reguler',
                         sku: `RI-${data.slug.toUpperCase()}-REG`,
                         price: data.price,
@@ -89,7 +91,8 @@ export async function updateProduct(data: {
     featuredOrder?: number;
 }) {
     try {
-        const product = await prisma.frozenProduct.update({
+        // First update the product
+        const product = await prisma.frozenProduct.updateMany({
             where: { id: data.id, brandId: (data as any).brandId },
             data: {
                 name: data.name,
@@ -102,24 +105,24 @@ export async function updateProduct(data: {
                 categoryId: data.categoryId,
                 ...(data.inventoryCategoryId ? { inventoryCategoryId: data.inventoryCategoryId } : {}) as any,
                 isFeatured: data.isFeatured,
-                featuredOrder: data.featuredOrder,
-                variants: {
-                    updateMany: {
-                        where: { productId: data.id, brandId: (data as any).brandId },
-                        data: {
-                            price: data.price,
-                            weight: data.weight,
-                            unit: data.unit,
-                            ...({ costPrice: data.costPrice || 0 } as any)
-                        }
-                    }
-                }
+                featuredOrder: data.featuredOrder
+            }
+        });
+
+        // Then update variants separately
+        await prisma.frozenVariant.updateMany({
+            where: { productId: data.id, brandId: (data as any).brandId },
+            data: {
+                price: data.price,
+                weight: data.weight,
+                unit: data.unit,
+                ...({ costPrice: data.costPrice || 0 } as any)
             }
         });
 
         revalidatePath('/dashboard/rasa-ibu');
         revalidatePath(`/rasa-ibu/products`);
-        return { success: true, data: JSON.parse(JSON.stringify(product)) };
+        return { success: true };
     } catch (error: any) {
         return { success: false, error: error.message };
     }
