@@ -192,130 +192,144 @@ export default async function RasaIbuProductDetailPage({
                                 <div className="space-y-2">
                                     <h4 className="text-[10px] font-black uppercase tracking-widest text-[#8B7E66]">Penyimpanan</h4>
                                     <p className="text-sm text-[#2D3A2D] font-medium">
-                                        {product.storageType || "Frozen (-18°C)"}
+                                        {(() => {
+                                            const storageLabels: Record<string, string> = {
+                                                'FROZEN': 'Beku (-18°C)',
+                                                'CHILLED': 'Dingin (2-8°C)',
+                                                'AMBIENT': 'Suhu Ruang',
+                                                'READY_TO_EAT': 'Siap Saji'
+                                            };
+                                            return storageLabels[product.storageType as string] || 'Frozen (-18°C)';
+                                        })()}
                                     </p>
-                                    {product.shelfLife && (
+                                    {product.storageType !== 'READY_TO_EAT' && product.shelfLife && (
                                         <p className="text-[10px] text-[#8B7E66] font-bold">
-                                            Tahan hingga {product.shelfLife} Hari
+                                            Tahan hingga {product.shelfLife} Bulan
+                                        </p>
+                                    )}
+                                    {product.storageType === 'READY_TO_EAT' && (
+                                        <p className="text-[10px] text-amber-600 font-bold">
+                                            ⚡ Konsumsi dalam 1 Hari
                                         </p>
                                     )}
                                 </div>
                             </div>
+                        </div>
 
-                            {/* Nutrition Card if exists */}
-                            {product.nutrition && typeof product.nutrition === 'object' && (
-                                <div className="bg-[#f9f7f2] p-6 rounded-3xl border border-[#E5E1D8] space-y-4">
-                                    <h3 className="text-xs font-black uppercase tracking-[0.2em] text-[#2D3A2D] flex items-center gap-2">
-                                        <span className="w-2 h-2 bg-amber-500 rounded-full" />
-                                        Informasi Nilai Gizi
-                                    </h3>
-                                    <div className="grid grid-cols-3 gap-4">
-                                        {Object.entries(product.nutrition as Record<string, any>).map(([key, value]) => (
-                                            <div key={key} className="text-center">
-                                                <p className="text-[9px] font-black uppercase tracking-widest text-[#8B7E66] mb-1">{key}</p>
-                                                <p className="text-sm font-black text-[#2D3A2D]">{value}</p>
-                                            </div>
-                                        ))}
-                                    </div>
+                        {/* Nutrition Card if exists */}
+                        {product.nutrition && typeof product.nutrition === 'object' && (
+                            <div className="bg-[#f9f7f2] p-6 rounded-3xl border border-[#E5E1D8] space-y-4">
+                                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-[#2D3A2D] flex items-center gap-2">
+                                    <span className="w-2 h-2 bg-amber-500 rounded-full" />
+                                    Informasi Nilai Gizi
+                                </h3>
+                                <div className="grid grid-cols-3 gap-4">
+                                    {Object.entries(product.nutrition as Record<string, any>).map(([key, value]) => (
+                                        <div key={key} className="text-center">
+                                            <p className="text-[9px] font-black uppercase tracking-widest text-[#8B7E66] mb-1">{key}</p>
+                                            <p className="text-sm font-black text-[#2D3A2D]">{value}</p>
+                                        </div>
+                                    ))}
                                 </div>
-                            )}
+                            </div>
+                        )}
 
-                            {/* Variant Selection if more than 1 */}
-                            {product.variants.length > 1 && (
-                                <div className="space-y-4">
-                                    <h3 className="text-xs font-black uppercase tracking-[0.3em] text-[#2D3A2D]">Pilihan Porsi</h3>
-                                    <div className="flex flex-wrap gap-3">
-                                        {product.variants.map((v: any) => (
-                                            <button
-                                                key={v.id}
-                                                className={`px-6 py-3 rounded-xl border-2 transition-all font-bold text-sm ${v.id === primaryVariant?.id
-                                                    ? 'border-[#2D3A2D] bg-[#2D3A2D] text-white shadow-lg'
-                                                    : 'border-[#E5E1D8] bg-white text-[#8B7E66] hover:border-[#8B7E66]'
-                                                    }`}
-                                            >
-                                                {v.name}
-                                            </button>
-                                        ))}
-                                    </div>
+                        {/* Variant Selection if more than 1 */}
+                        {product.variants.length > 1 && (
+                            <div className="space-y-4">
+                                <h3 className="text-xs font-black uppercase tracking-[0.3em] text-[#2D3A2D]">Pilihan Porsi</h3>
+                                <div className="flex flex-wrap gap-3">
+                                    {product.variants.map((v: any) => (
+                                        <button
+                                            key={v.id}
+                                            className={`px-6 py-3 rounded-xl border-2 transition-all font-bold text-sm ${v.id === primaryVariant?.id
+                                                ? 'border-[#2D3A2D] bg-[#2D3A2D] text-white shadow-lg'
+                                                : 'border-[#E5E1D8] bg-white text-[#8B7E66] hover:border-[#8B7E66]'
+                                                }`}
+                                        >
+                                            {v.name}
+                                        </button>
+                                    ))}
                                 </div>
-                            )}
+                            </div>
+                        )}
 
-                            {/* Actions */}
-                            <div className="space-y-4 pt-6">
-                                <AddToCartButton
-                                    product={{
-                                        ...product,
-                                        image: product.image || undefined,
-                                        price,
-                                        variantId: primaryVariant?.id,
-                                        variantName: primaryVariant?.name || 'Porsi Keluarga'
-                                    }}
-                                    label="Simpan di Keranjang Bunda"
-                                    className="w-full py-6 rounded-[2rem] text-sm font-black uppercase tracking-widest shadow-2xl hover:scale-[1.02] transition-all"
-                                />
+                        {/* Actions */}
+                        <div className="space-y-4 pt-6">
+                            <AddToCartButton
+                                product={{
+                                    ...product,
+                                    image: product.image || undefined,
+                                    price,
+                                    variantId: primaryVariant?.id,
+                                    variantName: primaryVariant?.name || 'Porsi Keluarga'
+                                }}
+                                label="Simpan di Keranjang Bunda"
+                                className="w-full py-6 rounded-[2rem] text-sm font-black uppercase tracking-widest shadow-2xl hover:scale-[1.02] transition-all"
+                            />
 
-                                <div className="grid grid-cols-2 gap-4">
-                                    <a
-                                        href={waLink}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="flex items-center justify-center gap-3 py-5 rounded-2xl bg-white border-2 border-[#E5E1D8] text-[#2D3A2D] text-xs font-black uppercase tracking-widest hover:bg-[#F9F7F2] transition-all"
-                                    >
-                                        <MessageCircle className="w-5 h-5 text-emerald-500" />
-                                        Tanya Stok
-                                    </a>
-                                    <button className="flex items-center justify-center gap-3 py-5 rounded-2xl bg-white border-2 border-[#E5E1D8] text-[#2D3A2D] text-xs font-black uppercase tracking-widest hover:bg-[#F9F7F2] transition-all">
-                                        <Share2 className="w-5 h-5" />
-                                        Bagikan
-                                    </button>
-                                </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <a
+                                    href={waLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center justify-center gap-3 py-5 rounded-2xl bg-white border-2 border-[#E5E1D8] text-[#2D3A2D] text-xs font-black uppercase tracking-widest hover:bg-[#F9F7F2] transition-all"
+                                >
+                                    <MessageCircle className="w-5 h-5 text-emerald-500" />
+                                    Tanya Stok
+                                </a>
+                                <button className="flex items-center justify-center gap-3 py-5 rounded-2xl bg-white border-2 border-[#E5E1D8] text-[#2D3A2D] text-xs font-black uppercase tracking-widest hover:bg-[#F9F7F2] transition-all">
+                                    <Share2 className="w-5 h-5" />
+                                    Bagikan
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                {/* Recommendations */}
-                <section className="bg-white py-24 border-y border-[#E5E1D8]">
-                    <div className="max-w-7xl mx-auto px-6">
-                        <div className="flex items-center justify-between mb-16">
-                            <h2 className="text-3xl font-black text-[#1A241A] tracking-tight">Coba Menu Lainnya</h2>
-                            <Link href="/rasa-ibu/products" className="text-xs font-black uppercase tracking-widest text-[#8B7E66] hover:text-[#2D3A2D] transition-colors">Lihat Semua</Link>
-                        </div>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                            {recommendations.map((item: any) => (
-                                <Link key={item.id} href={`/rasa-ibu/products/${item.slug}`} className="group space-y-4">
-                                    <div className="aspect-[4/5] bg-[#FDFBF7] rounded-[2.5rem] overflow-hidden border border-[#E5E1D8] transition-all group-hover:shadow-xl">
-                                        {item.image ? (
-                                            <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                                        ) : (
-                                            <div className="w-full h-full flex items-center justify-center text-slate-100 text-3xl">🍲</div>
-                                        )}
-                                    </div>
-                                    <div>
-                                        <h3 className="font-black text-[#1A241A] text-sm group-hover:text-[#8B7E66] transition-colors">{item.name}</h3>
-                                        <p className="text-xs font-bold text-amber-600">Rp {item.price.toLocaleString('id-ID')}</p>
-                                    </div>
-                                </Link>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-
-                {/* Reviews */}
-                <ProductReviews
-                    productName={product.name}
-                    brandId={brandId}
-                    initialReviews={initialReviews}
-                />
-
-                {/* Back Link */}
-                <div className="py-20 text-center">
-                    <Link href="/rasa-ibu/products" className="inline-flex items-center gap-3 text-xs font-black uppercase tracking-widest text-[#8B7E66] hover:text-[#2D3A2D] transition-all group">
-                        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-2 transition-transform" />
-                        Kembali ke Seluruh Menu
-                    </Link>
+            {/* Recommendations */ }
+        <section className="bg-white py-24 border-y border-[#E5E1D8]">
+            <div className="max-w-7xl mx-auto px-6">
+                <div className="flex items-center justify-between mb-16">
+                    <h2 className="text-3xl font-black text-[#1A241A] tracking-tight">Coba Menu Lainnya</h2>
+                    <Link href="/rasa-ibu/products" className="text-xs font-black uppercase tracking-widest text-[#8B7E66] hover:text-[#2D3A2D] transition-colors">Lihat Semua</Link>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                    {recommendations.map((item: any) => (
+                        <Link key={item.id} href={`/rasa-ibu/products/${item.slug}`} className="group space-y-4">
+                            <div className="aspect-[4/5] bg-[#FDFBF7] rounded-[2.5rem] overflow-hidden border border-[#E5E1D8] transition-all group-hover:shadow-xl">
+                                {item.image ? (
+                                    <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center text-slate-100 text-3xl">🍲</div>
+                                )}
+                            </div>
+                            <div>
+                                <h3 className="font-black text-[#1A241A] text-sm group-hover:text-[#8B7E66] transition-colors">{item.name}</h3>
+                                <p className="text-xs font-bold text-amber-600">Rp {item.price.toLocaleString('id-ID')}</p>
+                            </div>
+                        </Link>
+                    ))}
                 </div>
             </div>
+        </section>
+
+        {/* Reviews */ }
+        <ProductReviews
+            productName={product.name}
+            brandId={brandId}
+            initialReviews={initialReviews}
+        />
+
+        {/* Back Link */ }
+        <div className="py-20 text-center">
+            <Link href="/rasa-ibu/products" className="inline-flex items-center gap-3 text-xs font-black uppercase tracking-widest text-[#8B7E66] hover:text-[#2D3A2D] transition-all group">
+                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-2 transition-transform" />
+                Kembali ke Seluruh Menu
+            </Link>
+        </div>
+        </div >
         );
     } catch (e: any) {
         return (
