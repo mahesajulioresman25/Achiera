@@ -1,6 +1,7 @@
 'use server';
 
 import { supabase } from '@/lib/supabase';
+import sharp from 'sharp';
 
 /**
  * Upload product image to Supabase Storage
@@ -21,17 +22,45 @@ export async function uploadProductImage(formData: FormData) {
             };
         }
 
-        // Validate file size (max 5MB)
-        const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+        // Validate file size (max 10MB)
+        const maxSize = 10 * 1024 * 1024; // 10MB in bytes
         if (file.size > maxSize) {
             return {
                 success: false,
-                error: 'File too large. Maximum size is 5MB.'
+                error: 'File terlalu besar. Maksimal ukuran adalah 10MB.'
             };
         }
 
         const bytes = await file.arrayBuffer();
-        const buffer = Buffer.from(bytes);
+        let buffer = Buffer.from(bytes);
+
+        // Auto-compress images larger than 2MB
+        const compressionThreshold = 2 * 1024 * 1024; // 2MB
+        if (file.size > compressionThreshold) {
+            try {
+                console.log(`[Image Upload] Compressing image from ${(file.size / 1024 / 1024).toFixed(2)}MB...`);
+
+                // Compress image using sharp
+                const compressedBuffer = await sharp(buffer)
+                    .resize(1920, 1920, { // Max width/height 1920px
+                        fit: 'inside',
+                        withoutEnlargement: true
+                    })
+                    .jpeg({
+                        quality: 85, // Good balance between quality and size
+                        progressive: true
+                    })
+                    .toBuffer();
+
+                buffer = compressedBuffer;
+
+                const newSize = buffer.length;
+                console.log(`[Image Upload] Compressed to ${(newSize / 1024 / 1024).toFixed(2)}MB (${((1 - newSize / file.size) * 100).toFixed(1)}% reduction)`);
+            } catch (compressionError) {
+                console.error('[Image Upload] Compression failed, uploading original:', compressionError);
+                // If compression fails, continue with original buffer
+            }
+        }
 
         // Generate unique filename
         const ext = file.name.split('.').pop();
