@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Loader2, CheckCircle, Package, Truck, CreditCard, Upload, Utensils, Box } from 'lucide-react';
+import { ArrowLeft, Loader2, CheckCircle, Package, Truck, CreditCard, Upload, Utensils, Box, MessageCircle, Mail } from 'lucide-react';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import { safeFormatDate, safeFormatTime } from '@/utils/date-safe';
+import PaymentVerificationPanel from '@/components/dashboard/rasa-ibu/PaymentVerificationPanel';
 
 const STATUS_STEPS_ID = [
     { key: 'WAITING_PAYMENT', label: 'Menunggu Pembayaran', icon: CreditCard },
@@ -437,10 +438,43 @@ export default function OrderTrackingResultClient({ id }: OrderTrackingClientPro
                                                 </div>
                                             </div>
 
-                                            <div className="pt-6 border-t border-white/10 text-center">
-                                                <p className="text-[10px] font-black text-[#FDFBF7]/40 uppercase tracking-widest leading-relaxed">
-                                                    Jika dalam 15 menit status belum berubah, silakan hubungi kami via WhatsApp.
+                                            <div className="pt-8 border-t border-white/10 space-y-4">
+                                                <p className="text-[9px] font-black text-[#FDFBF7]/40 uppercase tracking-[0.2em] leading-relaxed text-center px-4">
+                                                    Status belum berubah dalam 15 menit? <br /> Hubungi Support kami:
                                                 </p>
+                                                <div className="flex flex-col sm:flex-row gap-3">
+                                                    <a
+                                                        href={`https://wa.me/${order.paymentSettings?.whatsappCrm || "6282215191435"}?text=${encodeURIComponent(`Halo Admin, saya ingin menanyakan status pembayaran untuk invoice ${order.invoiceNo}`)}`}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                        className="flex-1 bg-[#25D366] hover:bg-[#128C7E] text-white py-3 rounded-xl flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-green-900/40"
+                                                    >
+                                                        <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
+                                                    </a>
+                                                    <a
+                                                        href={`mailto:support@achiera.com?subject=Tanya Status Pembayaran - ${order.invoiceNo}`}
+                                                        className="flex-1 bg-white/10 hover:bg-white/20 text-white py-3 rounded-xl flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest border border-white/10 transition-all"
+                                                    >
+                                                        <Mail className="w-3.5 h-3.5" /> Email
+                                                    </a>
+                                                </div>
+                                            </div>
+
+                                            {/* Staff Action Corner (Hidden from pure customer but visible if staff is logged in/tracking) */}
+                                            <div className="pt-10 border-t border-white/10">
+                                                <div className="bg-white/5 p-6 rounded-[2rem] border border-white/10">
+                                                    <div className="flex items-center gap-3 mb-4">
+                                                        <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                                                        <p className="text-[9px] font-black uppercase tracking-[0.2em] text-[#FDFBF7]/60">Staff Dashboard Context</p>
+                                                    </div>
+                                                    <div className="text-[#2D3A2D]">
+                                                        <PaymentVerificationPanel
+                                                            brandId={order.brandId}
+                                                            invoiceNo={order.invoiceNo}
+                                                            onVerificationSuccess={() => fetchOrder()}
+                                                        />
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     ) : (

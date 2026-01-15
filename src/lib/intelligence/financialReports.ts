@@ -94,6 +94,12 @@ export class FinancialReports {
                     report.cogs.items.push({ code: acc.code, name: acc.name, amount: balance });
                     report.cogs.total += balance;
                 }
+            } else if (acc.code.startsWith('5-7')) { // Depreciation Expense
+                balance = debits - credits;
+                if (balance !== 0) {
+                    report.expenses.items.push({ code: acc.code, name: acc.name, amount: balance });
+                    report.expenses.total += balance;
+                }
             } else {
                 balance = debits - credits;
                 if (balance !== 0) {
@@ -232,16 +238,17 @@ export class FinancialReports {
         const entries = await prisma.journalEntry.findMany({
             where: {
                 accountId: { in: cashAccountIds },
-                createdAt: { gte: range.start, lte: range.end },
-                account: { brandId } // Ensure isolation through relation
+                transaction: {
+                    brandId,
+                    date: { gte: range.start, lte: range.end }
+                }
             },
             include: {
                 transaction: {
                     include: {
                         entries: {
                             where: {
-                                accountId: { notIn: cashAccountIds },
-                                account: { brandId } // Fixed: filter through relation
+                                accountId: { notIn: cashAccountIds }
                             },
                             include: { account: true }
                         }
@@ -305,7 +312,12 @@ export class FinancialReports {
             code.startsWith('1-VEHICLE') ||
             code.startsWith('1-BUILDING') ||
             code.startsWith('1-FURNITURE') ||
-            code.startsWith('1-OTHER')) {
+            code.startsWith('1-OFFICE') ||
+            code.startsWith('1-RENOVATION') ||
+            code.startsWith('1-KITCHEN') ||
+            code.startsWith('1-RESTO') ||
+            code.startsWith('1-OTHER') ||
+            code.includes('-ACCUM')) {
             return 'investing';
         }
 

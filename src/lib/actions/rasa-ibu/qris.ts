@@ -202,7 +202,10 @@ export async function verifyPaymentAction(paymentId: string, verifiedBy: string)
 
         // Update Order
         await prisma.order.update({
-            where: { id: payment.orderId },
+            where: {
+                id: payment.orderId,
+                brandId: (payment.order as any).brandId
+            },
             data: {
                 status: 'DIBAYAR'
             }
@@ -211,6 +214,7 @@ export async function verifyPaymentAction(paymentId: string, verifiedBy: string)
         // Log status change
         await (prisma as any).orderStatusLog.create({
             data: {
+                brandId: (payment.order as any).brandId,
                 orderId: payment.orderId,
                 status: 'DIBAYAR',
                 message: `Pembayaran QRIS diverifikasi oleh ${verifiedBy}`
@@ -248,7 +252,10 @@ export async function rejectPaymentAction(paymentId: string, reason: string) {
 
         // Update Order back to DIPESAN
         await prisma.order.update({
-            where: { id: payment.orderId },
+            where: {
+                id: payment.orderId,
+                brandId: (payment.order as any).brandId
+            },
             data: {
                 status: 'DIPESAN',
                 internalNotes: payment.order.internalNotes
@@ -260,6 +267,7 @@ export async function rejectPaymentAction(paymentId: string, reason: string) {
         // Log rejection
         await (prisma as any).orderStatusLog.create({
             data: {
+                brandId: (payment.order as any).brandId,
                 orderId: payment.orderId,
                 status: 'CANCELLED',
                 message: `Pembayaran QRIS ditolak: ${reason}`
@@ -297,14 +305,20 @@ export async function getQRISInfoAction(brandId: string) {
 /**
  * Get Pending QRIS Payments
  */
-export async function getPendingPaymentsAction(brandId: string) {
+export async function getPendingPaymentsAction(brandId: string, invoiceNo?: string) {
     try {
+        const query: any = {
+            order: { brandId },
+            isVerified: false,
+            proofPath: { not: null }
+        };
+
+        if (invoiceNo) {
+            query.order.invoiceNo = invoiceNo;
+        }
+
         const payments = await prisma.payment.findMany({
-            where: {
-                order: { brandId },
-                isVerified: false,
-                proofPath: { not: null }
-            },
+            where: query,
             include: {
                 order: true
             },
@@ -312,6 +326,81 @@ export async function getPendingPaymentsAction(brandId: string) {
         });
 
         return { success: true, data: JSON.parse(JSON.stringify(payments)) };
+    } catch (error: any) {
+        return { success: false, error: error.message };
+    }
+}
+
+export async function getAllPaymentProofsAction(brandId: string) {
+    try {
+        const payments = await prisma.payment.findMany({
+            where: {
+                order: { brandId },
+                proofPath: { not: null }
+            },
+            include: {
+                order: {
+                    select: {
+                        id: true,
+                        invoiceNo: true,
+                        customerName: true,
+                        totalAmount: true,
+                        status: true
+                    }
+                }
+            },
+            orderBy: { createdAt: 'desc' }
+        });
+
+        // Also fetch from paymentReconciliation which uses bank transfers
+        const bankPayments = await prisma.paymentReconciliation.findMany({
+            where: {
+                order: { brandId },
+                paymentProof: { not: null }
+            },
+            include: {
+                order: {
+                    select: {
+                        id: true,
+                        invoiceNo: true,
+                        customerName: true,
+                        totalAmount: true,
+                        status: true
+                    }
+                }
+            },
+            orderBy: { createdAt: 'desc' }
+        });
+
+        // Merge and normalize
+        const normalizedPayments = [
+            ...payments.map(p => ({
+                id: p.id,
+                orderId: p.orderId,
+                invoiceNo: p.order.invoiceNo,
+                customerName: p.order.customerName,
+                amount: Number(p.order.totalAmount),
+                proof: p.proofPath,
+                method: 'QRIS',
+                isVerified: p.isVerified,
+                createdAt: p.createdAt,
+                type: 'QRIS'
+            })),
+            ...bankPayments.map(bp => ({
+                id: bp.id,
+                orderId: bp.orderId,
+                invoiceNo: bp.order.invoiceNo,
+                customerName: bp.order.customerName,
+                amount: Number(bp.amount),
+                proof: bp.paymentProof,
+                method: bp.paymentMethod || 'Bank Transfer',
+                isVerified: bp.isVerified,
+                createdAt: bp.createdAt,
+                type: 'BANK_TRANSFER'
+            }))
+        ].sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+        return { success: true, data: JSON.parse(JSON.stringify(normalizedPayments)) };
     } catch (error: any) {
         return { success: false, error: error.message };
     }

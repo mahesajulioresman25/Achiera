@@ -115,8 +115,43 @@ export async function getFinancialReportsAction(brandId: string, type: 'PL' | 'B
  */
 export async function getPendingReconciliationsAction(brandId: string) {
     try {
-        const data = await ReconciliationService.getPendingReconciliations(brandId);
-        return { success: true, data: JSON.parse(JSON.stringify(data)) };
+        const bankData = await ReconciliationService.getPendingReconciliations(brandId);
+
+        // Fetch from Payment table too (Proofs uploaded from tracking page)
+        const paymentData = await prisma.payment.findMany({
+            where: {
+                order: { brandId },
+                isVerified: false,
+                proofPath: { not: null }
+            },
+            include: {
+                order: {
+                    select: {
+                        id: true,
+                        invoiceNo: true,
+                        customerName: true,
+                        totalAmount: true,
+                        createdAt: true
+                    }
+                }
+            }
+        });
+
+        const normalizedPayments = [
+            ...bankData.map(b => ({ ...b, sourceType: 'BANK_RECON' })),
+            ...paymentData.map(p => ({
+                id: p.id,
+                paymentProof: p.proofPath,
+                amount: p.amount,
+                bankAccount: p.destinationBankId || 'QRIS/E-Wallet',
+                paymentMethod: p.type,
+                createdAt: p.createdAt,
+                order: p.order,
+                sourceType: 'PAYMENT_PROOF'
+            }))
+        ].sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+        return { success: true, data: JSON.parse(JSON.stringify(normalizedPayments)) };
     } catch (error: any) {
         return { success: false, error: error.message };
     }
@@ -127,6 +162,16 @@ export async function getPendingReconciliationsAction(brandId: string) {
  */
 export async function verifyPaymentAction(reconciliationId: string, verifiedBy: string) {
     try {
+        // Check if it's from Payment table first
+        const payment = await prisma.payment.findUnique({
+            where: { id: reconciliationId }
+        });
+
+        if (payment) {
+            const { verifyPaymentAction: qrisVerify } = await import('./qris');
+            return await qrisVerify(reconciliationId, verifiedBy);
+        }
+
         await ReconciliationService.verifyPayment(reconciliationId, verifiedBy);
         revalidatePath('/dashboard/rasa-ibu');
         return { success: true };
@@ -140,6 +185,16 @@ export async function verifyPaymentAction(reconciliationId: string, verifiedBy: 
  */
 export async function rejectPaymentAction(reconciliationId: string, reason: string, rejectedBy: string) {
     try {
+        // Check if it's from Payment table first
+        const payment = await prisma.payment.findUnique({
+            where: { id: reconciliationId }
+        });
+
+        if (payment) {
+            const { rejectPaymentAction: qrisReject } = await import('./qris');
+            return await qrisReject(reconciliationId, reason);
+        }
+
         await ReconciliationService.rejectPayment(reconciliationId, reason, rejectedBy);
         revalidatePath('/dashboard/rasa-ibu');
         return { success: true };

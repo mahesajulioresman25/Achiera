@@ -135,7 +135,12 @@ export default function PaymentReconciliationModal({ brandId, onClose }: Payment
                                     <div className="flex-1 space-y-4">
                                         <div className="flex justify-between items-start">
                                             <div>
-                                                <p className="text-[10px] font-black uppercase tracking-widest text-[#8B7E66] mb-1">Pesanan #{item.order.invoiceNo}</p>
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <p className="text-[10px] font-black uppercase tracking-widest text-[#8B7E66]">Pesanan #{item.order.invoiceNo}</p>
+                                                    <span className={`px-2 py-0.5 rounded-md text-[8px] font-black uppercase tracking-wider border ${item.sourceType === 'PAYMENT_PROOF' ? 'bg-purple-50 text-purple-600 border-purple-100' : 'bg-blue-50 text-blue-600 border-blue-100'}`}>
+                                                        {item.sourceType === 'PAYMENT_PROOF' ? '📸 Upload Proof' : '🏦 Bank Recon'}
+                                                    </span>
+                                                </div>
                                                 <h3 className="text-2xl font-black text-[#2D3A2D]">{item.order.customerName}</h3>
                                             </div>
                                             <div className="text-right">

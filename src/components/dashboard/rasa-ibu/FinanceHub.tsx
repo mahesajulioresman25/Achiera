@@ -16,8 +16,9 @@ import SettlementParserModal from './finance/SettlementParserModal';
 import { ICTracker } from '../ICTracker';
 import { BudgetTracker } from '../BudgetTracker';
 import { getPriceAnalysisAction, getStockAction, getBrandPriceAnalysisAction } from '@/lib/actions/rasa-ibu/stock';
-import { History, Search, ArrowRight, FileText } from 'lucide-react';
+import { History, Search, ArrowRight, FileText, Landmark as BankIcon } from 'lucide-react';
 import LedgerModal from './LedgerModal';
+import PaymentHistoryModal from './PaymentHistoryModal';
 
 interface FinanceHubProps {
     brandId: string;
@@ -37,6 +38,7 @@ export default function FinanceHub({ brandId, pulse, onBack, onOpenExpenseEntry,
     const [showTaxReport, setShowTaxReport] = React.useState(false);
     const [showSettlementParser, setShowSettlementParser] = React.useState(false);
     const [showLedger, setShowLedger] = React.useState(false);
+    const [showPaymentHistory, setShowPaymentHistory] = React.useState(false);
 
     // Price Intelligence State
     const [materials, setMaterials] = React.useState<any[]>([]);
@@ -175,6 +177,13 @@ export default function FinanceHub({ brandId, pulse, onBack, onOpenExpenseEntry,
                             title="Manajemen Aset"
                         >
                             <Box className="w-3.5 h-3.5 md:w-4 h-4" />
+                        </button>
+                        <button
+                            onClick={() => setShowPaymentHistory(true)}
+                            className="p-2 md:p-2.5 bg-white text-indigo-600 border border-indigo-100 rounded-xl hover:bg-indigo-50 transition-all shadow-sm"
+                            title="Riwayat Bukti Bayar"
+                        >
+                            <History className="w-3.5 h-3.5 md:w-4 h-4" />
                         </button>
                         <button
                             onClick={onOpenSettings}
@@ -768,6 +777,7 @@ export default function FinanceHub({ brandId, pulse, onBack, onOpenExpenseEntry,
             {showTaxReport && <TaxReportModal brandId={brandId} onClose={() => setShowTaxReport(false)} />}
             {showSettlementParser && <SettlementParserModal brandId={brandId} onClose={() => setShowSettlementParser(false)} />}
             {showLedger && <LedgerModal brandId={brandId} onClose={() => setShowLedger(false)} />}
+            {showPaymentHistory && <PaymentHistoryModal brandId={brandId} onClose={() => setShowPaymentHistory(false)} />}
         </div>
     );
 }

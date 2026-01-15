@@ -34,6 +34,7 @@ interface ManualOrderLedgerProps {
     onOpenReceipt: (order: any) => void;
     onOpenQRISPayment: (order: any) => void;
     onOpenPaymentVerification: () => void;
+    onOpenPaymentHistory?: () => void;
     onToggleFullscreen?: () => void;
     isFullscreen?: boolean;
 }
@@ -45,6 +46,7 @@ export default function ManualOrderLedger({
     onOpenReceipt,
     onOpenQRISPayment,
     onOpenPaymentVerification,
+    onOpenPaymentHistory,
     onToggleFullscreen,
     isFullscreen = false
 }: ManualOrderLedgerProps) {
@@ -95,6 +97,14 @@ export default function ManualOrderLedger({
                     >
                         📥 Impor
                     </button>
+                    {onOpenPaymentHistory && (
+                        <button
+                            onClick={onOpenPaymentHistory}
+                            className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-600 border border-indigo-100 px-5 py-2.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 transition-all shadow-sm"
+                        >
+                            📜 Riwayat
+                        </button>
+                    )}
                     <button
                         onClick={onOpenOrderEntry}
                         className="text-[10px] font-black uppercase tracking-[0.2em] text-[#FDFBF7] bg-[#2D3A2D] px-5 py-2.5 rounded-xl hover:shadow-xl hover:bg-[#1A241A] transition-all shadow-lg shadow-green-900/10 flex-1 md:flex-none text-center"

@@ -8,10 +8,11 @@ import { useConfirm } from '@/components/ui/BrandConfirm';
 
 interface PaymentVerificationPanelProps {
     brandId: string;
+    invoiceNo?: string;
     onVerificationSuccess?: () => void;
 }
 
-export default function PaymentVerificationPanel({ brandId, onVerificationSuccess }: PaymentVerificationPanelProps) {
+export default function PaymentVerificationPanel({ brandId, invoiceNo, onVerificationSuccess }: PaymentVerificationPanelProps) {
     const [payments, setPayments] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedPayment, setSelectedPayment] = useState<any | null>(null);
@@ -20,9 +21,14 @@ export default function PaymentVerificationPanel({ brandId, onVerificationSucces
 
     const loadPayments = async () => {
         setIsLoading(true);
-        const res = await getPendingPaymentsAction(brandId);
+        const res = await getPendingPaymentsAction(brandId, invoiceNo);
         if (res.success) {
             setPayments(res.data);
+
+            // If filtering by invoice and exactly one payment found, auto-select it
+            if (invoiceNo && res.data.length === 1) {
+                setSelectedPayment(res.data[0]);
+            }
         }
         setIsLoading(false);
     };
@@ -99,8 +105,10 @@ export default function PaymentVerificationPanel({ brandId, onVerificationSucces
                         <ShieldCheck className="w-5 h-5" />
                     </div>
                     <div className="text-left">
-                        <h3 className="text-sm font-black text-[#2D3A2D] uppercase tracking-widest leading-none">Verifikasi Pembayaran</h3>
-                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Antrean Pembayaran Menunggu</p>
+                        <h3 className="text-sm font-bold text-[#2D3A2D] uppercase tracking-widest leading-none">Verifikasi Pembayaran</h3>
+                        <p className="text-[9px] font-medium text-slate-400 uppercase tracking-widest mt-1">
+                            {invoiceNo ? `Bukti Pesanan ${invoiceNo}` : 'Antrean Pembayaran Menunggu'}
+                        </p>
                     </div>
                 </div>
                 {payments.length > 0 && (
@@ -138,13 +146,13 @@ export default function PaymentVerificationPanel({ brandId, onVerificationSucces
                             </div>
                             <div className="flex-1 min-w-0 text-left">
                                 <div className="flex justify-between items-baseline mb-1">
-                                    <p className="text-sm font-black text-[#1A241A] truncate">{payment.order?.customerName || 'Anonymous'}</p>
+                                    <p className="text-sm font-bold text-[#1A241A] truncate">{payment.order?.customerName || 'Anonymous'}</p>
                                     <span className="text-[9px] font-bold text-slate-400 bg-white px-2 py-0.5 rounded-md border border-slate-100">
                                         #{payment.order?.invoiceNo || payment.order?.id.slice(-6).toUpperCase()}
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-3 mt-1">
-                                    <p className="text-xs font-black text-emerald-700">Rp {Number(payment.amount).toLocaleString('id-ID')}</p>
+                                    <p className="text-xs font-bold text-emerald-700">Rp {Number(payment.amount).toLocaleString('id-ID')}</p>
                                     <div className="h-1 w-1 bg-slate-300 rounded-full" />
                                     <div className="flex items-center gap-1 text-[9px] font-bold text-slate-400 uppercase tracking-tight">
                                         <Clock size={10} />
@@ -172,8 +180,8 @@ export default function PaymentVerificationPanel({ brandId, onVerificationSucces
                                     <User size={24} />
                                 </div>
                                 <div className="text-left">
-                                    <h4 className="text-lg font-black text-[#2D3A2D] tracking-tighter">{selectedPayment.order?.customerName}</h4>
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Verifikasi Pembayaran QRIS</p>
+                                    <h4 className="text-lg font-bold text-[#2D3A2D] tracking-tighter">{selectedPayment.order?.customerName}</h4>
+                                    <p className="text-[10px] font-medium text-slate-400 uppercase tracking-[0.2em]">Verifikasi Pembayaran Pesanan</p>
                                 </div>
                             </div>
                             <button onClick={() => setSelectedPayment(null)} className="p-3 hover:bg-slate-100 rounded-full transition-colors">
@@ -200,8 +208,8 @@ export default function PaymentVerificationPanel({ brandId, onVerificationSucces
                                 <div className="space-y-8">
                                     <div className="space-y-6">
                                         <div className="space-y-1">
-                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Nominal Seharusnya</label>
-                                            <p className="text-3xl font-black text-[#2D3A2D] tracking-tighter">
+                                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Nominal Seharusnya</label>
+                                            <p className="text-3xl font-bold text-[#2D3A2D] tracking-tighter">
                                                 Rp {Number(selectedPayment.amount).toLocaleString('id-ID')}
                                             </p>
                                         </div>

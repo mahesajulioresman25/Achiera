@@ -370,7 +370,7 @@ async function calculateFinancialPulse(brandId: string): Promise<FinancialPulse>
         .reduce((sum: number, o: any) => sum + Number(o.totalAmount || o.total || 0), 0);
 
     const pending = orders
-        .filter((o: any) => o.status === 'DIPESAN')
+        .filter((o: any) => ['DIPESAN', 'MENUNGGU_VERIFIKASI_QRIS'].includes(o.status))
         .reduce((sum: number, o: any) => sum + Number(o.totalAmount || o.total || 0), 0);
 
     // 8. Ledger Expenses & Final Profit
