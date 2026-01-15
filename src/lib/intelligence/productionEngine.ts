@@ -236,7 +236,7 @@ export class ProductionEngine {
      */
     static async calculateRecipeHPP(brandId: string, recipeId: string, client: any = prisma) {
         try {
-            const recipe = await client.recipe.findUnique({
+            const recipe = await client.recipe.findFirst({
                 where: { id: recipeId, brandId },
                 include: {
                     items: {
