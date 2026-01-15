@@ -6,7 +6,7 @@ import BestSellersSection from '@/components/commerce/BestSellersSection';
 import SubscriptionPromoSection from '@/components/commerce/SubscriptionPromoSection';
 import PromoBadge from '@/components/commerce/PromoBadge';
 
-import { prisma } from '@/lib/prisma';
+import { unisolatedPrisma as prisma } from '@/lib/prisma';
 import { getFeaturedProducts, getBestSellers } from '@/lib/actions/rasa-ibu/public-products';
 import { FlashSaleService } from '@/lib/services/FlashSaleService';
 import { getActiveCampaigns } from '@/lib/actions/commerce/campaigns';

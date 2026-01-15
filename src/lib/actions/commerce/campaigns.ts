@@ -1,5 +1,5 @@
 'use server';
-import { prisma } from '@/lib/prisma';
+import { unisolatedPrisma as prisma } from '@/lib/prisma';
 
 export async function upsertCampaignAction(data: any, brandIdInput: string) {
     if (!brandIdInput) {
