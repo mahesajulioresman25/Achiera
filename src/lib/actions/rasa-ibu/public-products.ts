@@ -1,6 +1,6 @@
 'use server';
 
-import { unisolatedPrisma as prisma } from '@/lib/prisma';
+import { unisolatedPrisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 
 /**
@@ -9,7 +9,7 @@ import { revalidatePath } from 'next/cache';
  */
 export async function getBestSellers(brandId: string, limit: number = 6) {
     try {
-        const products = await prisma.frozenProduct.findMany({
+        const products = await unisolatedPrisma.frozenProduct.findMany({
             where: {
                 category: { brandId },
                 inventoryType: 'FINISHED_GOOD',
@@ -53,7 +53,7 @@ export async function getBestSellers(brandId: string, limit: number = 6) {
  */
 export async function getFeaturedProducts(brandId: string) {
     try {
-        const products = await prisma.frozenProduct.findMany({
+        const products = await unisolatedPrisma.frozenProduct.findMany({
             where: {
                 category: { brandId },
                 isFeatured: true,
@@ -74,7 +74,7 @@ export async function getFeaturedProducts(brandId: string) {
             if (bestSellers.length > 0) return bestSellers;
 
             // Final fallback: Get ANY active products (New Arrivals)
-            const latestProducts = await prisma.frozenProduct.findMany({
+            const latestProducts = await unisolatedPrisma.frozenProduct.findMany({
                 where: {
                     category: { brandId },
                     inventoryType: 'FINISHED_GOOD',
@@ -129,7 +129,7 @@ export async function getFeaturedProducts(brandId: string) {
 export async function getRecommendedProducts(brandId: string, productId: string, limit: number = 4) {
     try {
         // Get current product to find its category
-        const currentProduct = await prisma.frozenProduct.findFirst({
+        const currentProduct = await unisolatedPrisma.frozenProduct.findFirst({
             where: {
                 brandId,
                 id: productId
@@ -142,7 +142,7 @@ export async function getRecommendedProducts(brandId: string, productId: string,
         }
 
         // Get products from same category, excluding current product
-        const products = await prisma.frozenProduct.findMany({
+        const products = await unisolatedPrisma.frozenProduct.findMany({
             where: {
                 brandId,
                 categoryId: currentProduct.categoryId,
@@ -186,7 +186,7 @@ export async function getRecommendedProducts(brandId: string, productId: string,
  */
 export async function getProductsByCategory(brandId: string, categorySlug: string) {
     try {
-        const products = await prisma.frozenProduct.findMany({
+        const products = await unisolatedPrisma.frozenProduct.findMany({
             where: {
                 category: {
                     brandId,
@@ -225,7 +225,7 @@ export async function getProductsByCategory(brandId: string, categorySlug: strin
  */
 export async function getCategories(brandId: string) {
     try {
-        const categories = await prisma.frozenCategory.findMany({
+        const categories = await unisolatedPrisma.frozenCategory.findMany({
             where: {
                 brandId,
                 isActive: true
@@ -262,7 +262,7 @@ export async function getCategories(brandId: string) {
 
 export async function getProductsByIdsAction(brandId: string, ids: string[]) {
     try {
-        const products = await prisma.frozenProduct.findMany({
+        const products = await unisolatedPrisma.frozenProduct.findMany({
             where: {
                 brandId,
                 id: { in: ids }
@@ -296,7 +296,7 @@ export async function getProductsByIdsAction(brandId: string, ids: string[]) {
  */
 export async function incrementProductView(brandId: string, productId: string) {
     try {
-        await prisma.frozenProduct.updateMany({
+        await unisolatedPrisma.frozenProduct.updateMany({
             where: {
                 brandId,
                 id: productId

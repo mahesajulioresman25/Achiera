@@ -94,7 +94,7 @@ export class FrozenProductService {
     ) {
         return prisma.$transaction(async (tx: any) => {
             // 1. Verify product belongs to brand
-            const product = await tx.frozenProduct.findUnique({
+            const product = await tx.frozenProduct.findFirst({
                 where: { id: productId, brandId: ctx.brandId },
                 include: { category: true }
             });
@@ -104,7 +104,7 @@ export class FrozenProductService {
             }
 
             // 2. Update product
-            const updated = await tx.frozenProduct.update({
+            const updated = await tx.frozenProduct.updateMany({
                 where: { id: productId, brandId: ctx.brandId },
                 data: {
                     ...(input.name ? { name: input.name } : {}),
@@ -156,9 +156,9 @@ export class FrozenProductService {
     /**
      * Get single product with variants
      */
-    async getProduct(productId: string) {
-        return prisma.frozenProduct.findUnique({
-            where: { id: productId },
+    async getProduct(productId: string, brandId?: string) {
+        return (prisma as any).frozenProduct.findFirst({
+            where: { id: productId, ...(brandId ? { brandId } : {}) },
             include: {
                 category: true,
                 variants: {
@@ -179,9 +179,9 @@ export class FrozenProductService {
     /**
      * Get product by slug (public)
      */
-    async getProductBySlug(slug: string) {
-        return prisma.frozenProduct.findUnique({
-            where: { slug },
+    async getProductBySlug(slug: string, brandId?: string) {
+        return (prisma as any).frozenProduct.findFirst({
+            where: { slug, ...(brandId ? { brandId } : {}) },
             include: {
                 category: {
                     include: {
@@ -210,7 +210,7 @@ export class FrozenProductService {
         newPrice: number
     ) {
         return prisma.$transaction(async (tx: any) => {
-            const variant = await tx.frozenVariant.findUnique({
+            const variant = await tx.frozenVariant.findFirst({
                 where: { id: variantId, brandId: ctx.brandId },
                 include: {
                     product: {
@@ -225,7 +225,7 @@ export class FrozenProductService {
 
             const oldPrice = variant.price;
 
-            const updated = await tx.frozenVariant.update({
+            const updated = await tx.frozenVariant.updateMany({
                 where: { id: variantId, brandId: ctx.brandId },
                 data: { price: newPrice }
             });

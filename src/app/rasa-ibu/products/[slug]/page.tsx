@@ -8,8 +8,8 @@ import ProductReviews from '@/components/commerce/ProductReviews';
 import RecentlyViewedTracker from '@/components/commerce/RecentlyViewedTracker';
 import AnimatedSection from '@/components/commerce/AnimatedSection';
 import { Metadata } from 'next';
-import { prisma, unisolatedPrisma } from '@/lib/prisma';
-import { getRecommendedProducts, incrementProductView } from '@/lib/actions/rasa-ibu/public-products';
+import { unisolatedPrisma } from '@/lib/prisma';
+import { getRecommendedProducts } from '@/lib/actions/rasa-ibu/public-products';
 import { getProductReviewsAction } from '@/lib/actions/commerce/reviews';
 
 export async function generateMetadata(
@@ -245,6 +245,7 @@ export default async function RasaIbuProductDetailPage({
                                 <AddToCartButton
                                     product={{
                                         ...product,
+                                        image: product.image || undefined,
                                         price,
                                         variantId: primaryVariant?.id,
                                         variantName: primaryVariant?.name || 'Porsi Keluarga'

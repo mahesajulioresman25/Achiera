@@ -54,7 +54,7 @@ export async function createWebsiteOrderAction(data: {
         for (const item of data.items) {
             // Fallback for old/default variant IDs
             if (item.variantId === 'default' && item.productId) {
-                const product = await prisma.frozenProduct.findUnique({
+                const product = await prisma.frozenProduct.findFirst({
                     where: { id: item.productId, brandId: brandId },
                     include: { variants: { take: 1 } }
                 });
@@ -64,7 +64,7 @@ export async function createWebsiteOrderAction(data: {
             }
 
             // Fetch current DB price for security
-            const variant = await prisma.frozenVariant.findUnique({
+            const variant = await prisma.frozenVariant.findFirst({
                 where: { id: item.variantId, brandId },
                 select: { price: true, name: true }
             });

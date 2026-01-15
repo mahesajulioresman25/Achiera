@@ -1,6 +1,6 @@
 'use server';
 
-import { prisma } from '@/lib/prisma';
+import { unisolatedPrisma as prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 
 export async function getProductReviewsAction(brandId: string, productName: string) {
