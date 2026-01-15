@@ -9,6 +9,9 @@ const nextConfig = {
     serverExternalPackages: ['imapflow', 'pino'],
     distDir: '.next',
     experimental: {
+        serverActions: {
+            bodySizeLimit: '20mb', // Allow uploads up to 20MB
+        },
     },
 };
 
