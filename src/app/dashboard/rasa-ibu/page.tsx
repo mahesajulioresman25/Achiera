@@ -23,23 +23,11 @@ export default async function RasaIbuOpsDashboard() {
         include: {
             orders: {
                 orderBy: { createdAt: 'desc' },
-                select: {
-                    id: true,
-                    createdAt: true,
-                    customerName: true,
-                    customerAddress: true,
-                    customerNote: true,
-                    manualRef: true,
-                    channel: true,
-                    status: true,
-                    totalAmount: true,
-                    total: true,
-                    subscriptionId: true,
-                    paymentProof: true, // ✅ Add this field
-                    warehouse: {
+                include: {
+                    warehouse: true,
+                    paymentReconciliations: {
                         select: {
-                            id: true,
-                            name: true
+                            paymentProof: true
                         }
                     },
                     orderItems: {
@@ -95,6 +83,7 @@ export default async function RasaIbuOpsDashboard() {
         // 4. Serialize Data (Handle Prisma Decimal)
         const serializeOrder = (order: any) => ({
             ...order,
+            paymentProof: order.paymentReconciliations?.find((r: any) => r.paymentProof)?.paymentProof || null,
             totalAmount: Number(order.totalAmount || 0),
             total: Number(order.total || 0),
             subtotal: Number(order.subtotal || 0),
