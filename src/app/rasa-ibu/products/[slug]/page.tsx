@@ -5,15 +5,19 @@ import ProductRecommendations from '@/components/commerce/ProductRecommendations
 import ProductWishlistButton from '@/components/commerce/ProductWishlistButton';
 import ProductReviews from '@/components/commerce/ProductReviews';
 import RecentlyViewedTracker from '@/components/commerce/RecentlyViewedTracker';
+import AnimatedSection from '@/components/commerce/AnimatedSection';
 import { Metadata } from 'next';
+import { prisma, unisolatedPrisma } from '@/lib/prisma';
+import { getRecommendedProducts, incrementProductView } from '@/lib/actions/rasa-ibu/public-products';
+import { getProductReviewsAction } from '@/lib/actions/commerce/reviews';
 
 export async function generateMetadata(
     { params }: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
     const { slug } = await params;
 
-    // Fetch brand first for isolation
-    const brand = await prisma.brand.findUnique({
+    // Fetch brand first for isolation using unisolated client to avoid context errors in metadata
+    const brand = await unisolatedPrisma.brand.findUnique({
         where: { slug: 'rasa-ibu' },
         select: { id: true }
     });
@@ -33,10 +37,6 @@ export async function generateMetadata(
         description: product?.description || 'Menu lezat dari Rasa Ibu.'
     };
 }
-import AnimatedSection from '@/components/commerce/AnimatedSection';
-import { prisma } from '@/lib/prisma';
-import { getRecommendedProducts, incrementProductView } from '@/lib/actions/rasa-ibu/public-products';
-import { getProductReviewsAction } from '@/lib/actions/commerce/reviews';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';

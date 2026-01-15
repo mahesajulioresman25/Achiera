@@ -129,7 +129,7 @@ export async function getFeaturedProducts(brandId: string) {
 export async function getRecommendedProducts(brandId: string, productId: string, limit: number = 4) {
     try {
         // Get current product to find its category
-        const currentProduct = await prisma.frozenProduct.findUnique({
+        const currentProduct = await prisma.frozenProduct.findFirst({
             where: {
                 brandId,
                 id: productId
@@ -296,7 +296,7 @@ export async function getProductsByIdsAction(brandId: string, ids: string[]) {
  */
 export async function incrementProductView(brandId: string, productId: string) {
     try {
-        await prisma.frozenProduct.update({
+        await prisma.frozenProduct.updateMany({
             where: {
                 brandId,
                 id: productId
