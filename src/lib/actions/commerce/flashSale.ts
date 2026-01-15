@@ -61,7 +61,7 @@ export async function upsertFlashSaleConfig(data: any, brandIdInput: string) {
         let result;
         if (id) {
             result = await prisma.flashSaleConfig.update({
-                where: { id },
+                where: { id, brandId },
                 data: payload
             });
         } else {
@@ -89,7 +89,7 @@ export async function deleteFlashSaleAction(id: string, brandId: string) {
         }
 
         await prisma.flashSaleConfig.delete({
-            where: { id }
+            where: { id, brandId }
         });
 
         return { success: true };

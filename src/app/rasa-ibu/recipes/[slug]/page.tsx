@@ -10,6 +10,7 @@ import AnimatedSection from '@/components/commerce/AnimatedSection';
 
 import { prisma } from '@/lib/prisma';
 import { getRecipeBySlug, getRelatedRecipes } from '@/lib/actions/rasa-ibu/recipes';
+import PrintRecipeButton from '@/components/content/PrintRecipeButton';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -43,14 +44,18 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ s
     if (!brand) return <div className="py-24 text-center font-black">Brand not found</div>;
 
     // Fetch recipe
-    const recipe = await getRecipeBySlug(brand.id, slug);
+    const rawRecipe = await getRecipeBySlug(brand.id, slug);
 
-    if (!recipe) {
+    if (!rawRecipe) {
         return notFound();
     }
 
     // Fetch related recipes
-    const relatedRecipes = await getRelatedRecipes(brand.id, recipe.category, recipe.id);
+    const rawRelatedRecipes = await getRelatedRecipes(brand.id, rawRecipe.category, rawRecipe.id);
+
+    // Sanitize data for Client Components
+    const recipe = JSON.parse(JSON.stringify(rawRecipe));
+    const relatedRecipes = JSON.parse(JSON.stringify(rawRelatedRecipes));
 
     // Canonical URL for sharing
     const currentUrl = `https://rasaibu.id/recipes/${recipe.slug}`;
@@ -152,12 +157,7 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ s
                                         <span className="w-12 h-12 rounded-3xl bg-[#F9F7F2] flex items-center justify-center text-[#8B7E66] border border-[#E5E1D8]">📝</span>
                                         Bahan-bahan Spesial
                                     </h2>
-                                    <button
-                                        onClick={() => window.print()}
-                                        className="text-[10px] font-black uppercase tracking-widest text-[#8B7E66] hover:text-[#2D3A2D] transition-all px-6 py-3 bg-[#F9F7F2] rounded-2xl border border-[#E5E1D8] flex items-center gap-3 print:hidden shadow-sm"
-                                    >
-                                        🖨️ Cetak Resep Bunda
-                                    </button>
+                                    <PrintRecipeButton />
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     {Array.isArray(recipe.ingredients) && recipe.ingredients.map((item: string, idx: number) => (

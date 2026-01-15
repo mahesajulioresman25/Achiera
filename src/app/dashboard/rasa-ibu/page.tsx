@@ -25,6 +25,11 @@ export default async function RasaIbuOpsDashboard() {
                 orderBy: { createdAt: 'desc' },
                 include: {
                     warehouse: true,
+                    payments: {
+                        select: {
+                            proofPath: true
+                        }
+                    },
                     paymentReconciliations: {
                         select: {
                             paymentProof: true
@@ -83,7 +88,9 @@ export default async function RasaIbuOpsDashboard() {
         // 4. Serialize Data (Handle Prisma Decimal)
         const serializeOrder = (order: any) => ({
             ...order,
-            paymentProof: order.paymentReconciliations?.find((r: any) => r.paymentProof)?.paymentProof || null,
+            paymentProof: order.payments?.find((p: any) => p.proofPath)?.proofPath ||
+                order.paymentReconciliations?.find((r: any) => r.paymentProof)?.paymentProof ||
+                null,
             totalAmount: Number(order.totalAmount || 0),
             total: Number(order.total || 0),
             subtotal: Number(order.subtotal || 0),
@@ -144,15 +151,18 @@ export default async function RasaIbuOpsDashboard() {
             orderBy: { createdAt: 'desc' }
         });
 
+        // Final Deep Serialization to prevent "Event handlers" or non-serializable prop errors
+        const dashboardData = JSON.parse(JSON.stringify({
+            brandId: brand.id,
+            initialOrders: serializedOrders,
+            initialProducts: serializedProducts,
+            initialRecipes: recipes,
+            activities: MOCK_ACTIVITIES,
+            intelligence: { rhythm, anticipations, finance }
+        }));
+
         return (
-            <DashboardClientWrapper
-                brandId={brand.id}
-                initialOrders={serializedOrders}
-                initialProducts={serializedProducts}
-                initialRecipes={recipes}
-                activities={MOCK_ACTIVITIES}
-                intelligence={{ rhythm, anticipations, finance }} // Added finance
-            />
+            <DashboardClientWrapper {...dashboardData} />
         );
     } catch (error) {
         console.error('Error loading Rasa Ibu dashboard:', error);

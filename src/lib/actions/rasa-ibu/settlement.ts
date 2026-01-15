@@ -243,6 +243,10 @@ export async function executeSettlementReconciliationAction(
         for (const order of settlementData.orders) {
             try {
                 // 1. Find the internal order
+                if (!order.externalOrderId) {
+                    throw new Error("Order ID missing in settlement data.");
+                }
+
                 let internalOrder = await prisma.order.findFirst({
                     where: {
                         brandId,
@@ -260,6 +264,7 @@ export async function executeSettlementReconciliationAction(
                     internalOrder = await prisma.order.create({
                         data: {
                             brandId,
+                            brand: { connect: { id: brandId } },
                             invoiceNo: generatedInvoice,
                             externalOrderId: order.externalOrderId,
                             customerName: 'Shopee Customer (Auto)',

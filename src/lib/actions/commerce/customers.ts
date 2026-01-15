@@ -15,8 +15,7 @@ export async function getCustomerProfileByPhoneAction(brandId: string, phone: st
         const lastOrder = await prisma.order.findFirst({
             where: {
                 brandId,
-                customerPhone: phone,
-                NOT: { customerName: null }
+                customerPhone: phone
             },
             orderBy: { createdAt: 'desc' },
             select: {

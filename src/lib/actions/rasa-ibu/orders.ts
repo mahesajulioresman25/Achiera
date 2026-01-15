@@ -130,7 +130,8 @@ export async function createManualOrder(data: {
             // CREATE Logic
             order = await prisma.order.create({
                 data: {
-                    brand: data.brandId ? { connect: { id: data.brandId } } : undefined,
+                    brandId: data.brandId,
+                    brand: { connect: { id: data.brandId } },
                     invoiceNo: `INV-${Date.now()}`,
                     quantity: data.items.reduce((sum: number, item: any) => sum + item.quantity, 0),
                     subtotal: data.totalAmount + discountValue, // Gross amount before discount

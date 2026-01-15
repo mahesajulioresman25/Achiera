@@ -231,7 +231,8 @@ export class ConsolidationEngine {
 
                     if (accountType === 'REVENUE') {
                         revenue += entry.type === 'CREDIT' ? amount : -amount;
-                    } else if (accountType === 'COGS') {
+                    } else if (entry.account.code === '5-1000' || entry.account.code.startsWith('5-1')) {
+                        // All 5-1xxx accounts are COGS (Packaging, etc.)
                         cogs += entry.type === 'DEBIT' ? amount : -amount;
                     } else if (accountType === 'EXPENSE') {
                         expenses += entry.type === 'DEBIT' ? amount : -amount;
