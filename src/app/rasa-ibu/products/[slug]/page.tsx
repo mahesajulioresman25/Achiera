@@ -181,6 +181,45 @@ export default async function RasaIbuProductDetailPage({
                                 </p>
                             </div>
 
+                            {/* Additional Attributes Grid */}
+                            <div className="grid grid-cols-2 gap-6 py-8 border-y border-[#E5E1D8]">
+                                <div className="space-y-2">
+                                    <h4 className="text-[10px] font-black uppercase tracking-widest text-[#8B7E66]">Komposisi</h4>
+                                    <p className="text-sm text-[#2D3A2D] font-medium leading-relaxed">
+                                        {product.ingredients || "Rempah Nusantara Pilihan"}
+                                    </p>
+                                </div>
+                                <div className="space-y-2">
+                                    <h4 className="text-[10px] font-black uppercase tracking-widest text-[#8B7E66]">Penyimpanan</h4>
+                                    <p className="text-sm text-[#2D3A2D] font-medium">
+                                        {product.storageType || "Frozen (-18°C)"}
+                                    </p>
+                                    {product.shelfLife && (
+                                        <p className="text-[10px] text-[#8B7E66] font-bold">
+                                            Tahan hingga {product.shelfLife} Hari
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Nutrition Card if exists */}
+                            {product.nutrition && typeof product.nutrition === 'object' && (
+                                <div className="bg-[#f9f7f2] p-6 rounded-3xl border border-[#E5E1D8] space-y-4">
+                                    <h3 className="text-xs font-black uppercase tracking-[0.2em] text-[#2D3A2D] flex items-center gap-2">
+                                        <span className="w-2 h-2 bg-amber-500 rounded-full" />
+                                        Informasi Nilai Gizi
+                                    </h3>
+                                    <div className="grid grid-cols-3 gap-4">
+                                        {Object.entries(product.nutrition as Record<string, any>).map(([key, value]) => (
+                                            <div key={key} className="text-center">
+                                                <p className="text-[9px] font-black uppercase tracking-widest text-[#8B7E66] mb-1">{key}</p>
+                                                <p className="text-sm font-black text-[#2D3A2D]">{value}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
                             {/* Variant Selection if more than 1 */}
                             {product.variants.length > 1 && (
                                 <div className="space-y-4">
