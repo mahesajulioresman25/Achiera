@@ -14,7 +14,11 @@ interface Product {
     image: string | null;
 }
 
-export default function BestForYou() {
+interface BestForYouProps {
+    brandId: string;
+}
+
+export default function BestForYou({ brandId }: BestForYouProps) {
     const [history, setHistory] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -30,7 +34,7 @@ export default function BestForYou() {
 
                 // Get first 4 items from history
                 const targetIds = productIds.slice(0, 4);
-                const res = await getProductsByIdsAction(targetIds);
+                const res = await getProductsByIdsAction(brandId, targetIds);
 
                 if (res.success && res.data) {
                     setHistory(res.data as any);

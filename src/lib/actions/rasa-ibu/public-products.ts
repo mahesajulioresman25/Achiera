@@ -122,14 +122,18 @@ export async function getFeaturedProducts(brandId: string) {
 
 /**
  * Get recommended products based on same category
+ * @param brandId Brand ID
  * @param productId Current product ID
  * @param limit Number of recommendations (default: 4)
  */
-export async function getRecommendedProducts(productId: string, limit: number = 4) {
+export async function getRecommendedProducts(brandId: string, productId: string, limit: number = 4) {
     try {
         // Get current product to find its category
         const currentProduct = await prisma.frozenProduct.findUnique({
-            where: { id: productId },
+            where: {
+                brandId,
+                id: productId
+            },
             select: { categoryId: true }
         });
 
@@ -140,6 +144,7 @@ export async function getRecommendedProducts(productId: string, limit: number = 
         // Get products from same category, excluding current product
         const products = await prisma.frozenProduct.findMany({
             where: {
+                brandId,
                 categoryId: currentProduct.categoryId,
                 id: { not: productId },
                 inventoryType: 'FINISHED_GOOD',
@@ -255,10 +260,11 @@ export async function getCategories(brandId: string) {
     }
 }
 
-export async function getProductsByIdsAction(ids: string[]) {
+export async function getProductsByIdsAction(brandId: string, ids: string[]) {
     try {
         const products = await prisma.frozenProduct.findMany({
             where: {
+                brandId,
                 id: { in: ids }
             },
             include: {
@@ -282,5 +288,26 @@ export async function getProductsByIdsAction(ids: string[]) {
     } catch (error) {
         console.error('[getProductsByIdsAction] Error:', error);
         return { success: false, error: 'Gagal memuat produk' };
+    }
+}
+
+/**
+ * Increment view count for a product
+ */
+export async function incrementProductView(brandId: string, productId: string) {
+    try {
+        await prisma.frozenProduct.update({
+            where: {
+                brandId,
+                id: productId
+            },
+            data: {
+                viewCount: { increment: 1 }
+            }
+        });
+        return { success: true };
+    } catch (error) {
+        console.error('Error incrementing view count:', error);
+        return { success: false };
     }
 }

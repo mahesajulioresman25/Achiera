@@ -42,8 +42,8 @@ export default async function RasaIbuProductListPage({
         }),
         prisma.frozenProduct.findMany({
             where: {
+                brandId,
                 category: {
-                    brandId: brand.id, // Fetch ALL products first, filter later for "Semua" view
                     ...(selectedCategory ? { slug: selectedCategory } : {})
                 },
                 inventoryType: 'FINISHED_GOOD'
@@ -57,7 +57,8 @@ export default async function RasaIbuProductListPage({
         FlashSaleService.getActiveFlashSale(brandId),
         prisma.productBundle.findMany({
             where: {
-                campaign: { brandId, isActive: true },
+                brandId,
+                campaign: { isActive: true },
                 isActive: true
             },
             include: { items: true }
@@ -283,7 +284,7 @@ export default async function RasaIbuProductListPage({
             {/* Content Section */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 -mt-16 relative z-30">
                 <AnimatedSection delay={0.2}>
-                    <BestForYou />
+                    <BestForYou brandId={brandId} />
                 </AnimatedSection>
 
                 {/* Filter / Search Bar */}

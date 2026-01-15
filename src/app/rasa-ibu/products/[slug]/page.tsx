@@ -11,8 +11,20 @@ export async function generateMetadata(
     { params }: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
     const { slug } = await params;
+
+    // Fetch brand first for isolation
+    const brand = await prisma.brand.findUnique({
+        where: { slug: 'rasa-ibu' },
+        select: { id: true }
+    });
+
+    if (!brand) return { title: 'Rasa Ibu' };
+
     const product = await prisma.frozenProduct.findFirst({
-        where: { slug: slug },
+        where: {
+            brandId: brand.id,
+            slug: slug
+        },
         select: { name: true, description: true }
     });
 
@@ -99,14 +111,14 @@ export default async function RasaIbuProductDetailPage({ params }: { params: Pro
 
     // Parallel fetching for recommendations and reviews
     const [recommendedProducts, reviewsRes] = await Promise.all([
-        getRecommendedProducts(product.id, 4),
-        getProductReviewsAction(brand.id, product.name)
+        getRecommendedProducts(brandId, product.id, 4),
+        getProductReviewsAction(brandId, product.name)
     ]);
 
     const initialReviews = reviewsRes.success ? reviewsRes.data : [];
 
     // Increment view count (fire and forget)
-    incrementProductView(product.id).catch(() => {
+    incrementProductView(brandId, product.id).catch(() => {
         // Silently fail
     });
 
