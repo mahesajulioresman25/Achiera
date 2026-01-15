@@ -136,7 +136,7 @@ export async function deleteProduct(id: string, brandId: string) {
     try {
         // First delete variants due to foreign key constraints if not Cascade
         await prisma.frozenVariant.deleteMany({ where: { productId: id, brandId } });
-        await prisma.frozenProduct.delete({ where: { id, brandId } });
+        await prisma.frozenProduct.deleteMany({ where: { id, brandId } });
 
         revalidatePath('/dashboard/rasa-ibu');
         return { success: true };
@@ -224,8 +224,8 @@ export async function upsertIbuCategory(data: {
                 return { success: false, error: 'Kategori tidak ditemukan atau akses ditolak' };
             }
 
-            category = await prisma.frozenCategory.update({
-                where: { id: data.id },
+            await prisma.frozenCategory.updateMany({
+                where: { id: data.id, brandId: data.brandId },
                 data: {
                     name: data.name,
                     slug,
@@ -233,6 +233,11 @@ export async function upsertIbuCategory(data: {
                     isActive: data.isActive,
                     displayOrder: data.displayOrder
                 }
+            });
+
+            // Fetch the updated category
+            category = await prisma.frozenCategory.findFirst({
+                where: { id: data.id, brandId: data.brandId }
             });
         } else {
             // Create new
@@ -248,14 +253,17 @@ export async function upsertIbuCategory(data: {
 
             if (existingBySlug) {
                 // Update existing slug match
-                category = await prisma.frozenCategory.update({
-                    where: { id: existingBySlug.id },
+                await prisma.frozenCategory.updateMany({
+                    where: { id: existingBySlug.id, brandId: data.brandId },
                     data: {
                         name: data.name,
                         description: data.description,
                         isActive: data.isActive,
                         displayOrder: data.displayOrder
                     }
+                });
+                category = await prisma.frozenCategory.findFirst({
+                    where: { id: existingBySlug.id, brandId: data.brandId }
                 });
             } else {
                 // Create completely new
@@ -329,7 +337,7 @@ export async function deleteIbuCategory(id: string, brandId: string) {
             };
         }
 
-        await prisma.frozenCategory.delete({ where: { id, brandId } });
+        await prisma.frozenCategory.deleteMany({ where: { id, brandId } });
         revalidatePath('/dashboard/rasa-ibu');
         return { success: true };
     } catch (error: any) {
@@ -353,7 +361,7 @@ export async function deleteInventoryCategory(id: string, brandId: string) {
             };
         }
 
-        await (prisma as any).inventoryCategory.delete({ where: { id, brandId } });
+        await (prisma as any).inventoryCategory.deleteMany({ where: { id, brandId } });
         revalidatePath('/dashboard/rasa-ibu');
         return { success: true };
     } catch (error: any) {

@@ -173,7 +173,7 @@ export default function CatalogManager({ brandId, products, categories, onClose 
         });
 
         if (!confirmed) return;
-        const res = await deleteProduct(id);
+        const res = await deleteProduct(id, brandId);
         if (res.success) {
             toast.success('Produk berhasil dihapus.');
             onClose(); // Revalidate via server action will update page
