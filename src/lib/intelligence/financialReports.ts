@@ -225,11 +225,14 @@ export class FinancialReports {
      * Generate Cash Flow Statement (Direct Method)
      */
     static async getCashFlow(brandId: string, range: DateRange) {
-        // 1. Identify Cash & Bank Accounts (usually 1-1xxx)
+        // 1. Identify Cash & Bank Accounts (only liquid 1-10xx and 1-11xx)
         const cashAccounts = await prisma.ledgerAccount.findMany({
             where: {
                 brandId,
-                code: { startsWith: '1-1' } // Kas & Bank
+                OR: [
+                    { code: { startsWith: '1-10' } },
+                    { code: { startsWith: '1-11' } }
+                ]
             }
         });
         const cashAccountIds = cashAccounts.map((a: any) => a.id);
@@ -266,12 +269,14 @@ export class FinancialReports {
             closingBalance: 0
         };
 
-        // Get Opening Balance
+        // Get Opening Balance (based on transaction date)
         const openingEntries = await prisma.journalEntry.aggregate({
             where: {
-                account: { brandId }, // Nested for isolation
                 accountId: { in: cashAccountIds },
-                createdAt: { lt: range.start }
+                transaction: {
+                    brandId,
+                    date: { lt: range.start }
+                }
             },
             _sum: { debit: true, credit: true }
         });
@@ -307,7 +312,8 @@ export class FinancialReports {
 
         // Fixed Assets: Standard range (1-2xxx) OR Asset Category codes
         // Also include Accumulated Depreciation (1-2xxx-ACCUM or similar) as it relates to asset value
-        if (code.startsWith('1-2') ||
+        if (type === 'ASSET' && (
+            code.startsWith('1-2') ||
             code.startsWith('1-EQUIPMENT') ||
             code.startsWith('1-VEHICLE') ||
             code.startsWith('1-BUILDING') ||
@@ -317,7 +323,12 @@ export class FinancialReports {
             code.startsWith('1-KITCHEN') ||
             code.startsWith('1-RESTO') ||
             code.startsWith('1-OTHER') ||
-            code.includes('-ACCUM')) {
+            code.startsWith('1-LAPTOP') ||
+            code.startsWith('1-ELECTRONIC') ||
+            code.startsWith('1-TOOL') ||
+            code.startsWith('1-MACHINERY') ||
+            code.includes('-ACCUM')
+        )) {
             return 'investing';
         }
 

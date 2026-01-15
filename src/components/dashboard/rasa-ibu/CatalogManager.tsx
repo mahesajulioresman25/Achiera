@@ -65,6 +65,7 @@ export default function CatalogManager({ brandId, products, categories, onClose 
     const [galleryImages, setGalleryImages] = useState<File[]>([]);
     const [primaryImagePreview, setPrimaryImagePreview] = useState<string>('');
     const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
+    const [existingGalleryImages, setExistingGalleryImages] = useState<string[]>([]);
     const [isUploading, setIsUploading] = useState(false);
 
     const handleEdit = (product: any) => {
@@ -93,12 +94,25 @@ export default function CatalogManager({ brandId, products, categories, onClose 
         if (product.image) {
             setPrimaryImagePreview(product.image);
         }
+        // Set existing gallery images
+        if (product.images) {
+            try {
+                const imgs = typeof product.images === 'string' ? JSON.parse(product.images) : product.images;
+                setExistingGalleryImages(Array.isArray(imgs) ? imgs : []);
+            } catch (e) {
+                setExistingGalleryImages([]);
+            }
+        } else {
+            setExistingGalleryImages([]);
+        }
+        setGalleryImages([]);
+        setGalleryPreviews([]);
         setView('FORM');
 
         // Fetch calculated HPP if product has a variant and possibly a recipe
         const fetchHPP = async () => {
             if (variant.id) {
-                const hppRes = await getRecipeHPPAction(variant.id);
+                const hppRes = await getRecipeHPPAction(brandId, variant.id);
                 if (hppRes.success && typeof hppRes.totalHPP === 'number') {
                     setCalculatedHPP(hppRes.totalHPP);
                     // Automatically update costPrice in form if it's currently 0 or different
@@ -159,7 +173,9 @@ export default function CatalogManager({ brandId, products, categories, onClose 
         setPrimaryImage(null);
         setGalleryImages([]);
         setPrimaryImagePreview('');
+        setPrimaryImagePreview('');
         setGalleryPreviews([]);
+        setExistingGalleryImages([]);
         setView('FORM');
     };
 
@@ -200,8 +216,13 @@ export default function CatalogManager({ brandId, products, categories, onClose 
     };
 
     const removeGalleryImage = (index: number) => {
-        setGalleryImages(galleryImages.filter((_, i) => i !== index));
-        setGalleryPreviews(galleryPreviews.filter((_, i) => i !== index));
+        if (index < existingGalleryImages.length) {
+            setExistingGalleryImages(existingGalleryImages.filter((_, i) => i !== index));
+        } else {
+            const newIndex = index - existingGalleryImages.length;
+            setGalleryImages(galleryImages.filter((_, i) => i !== newIndex));
+            setGalleryPreviews(galleryPreviews.filter((_, i) => i !== newIndex));
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -228,13 +249,16 @@ export default function CatalogManager({ brandId, products, categories, onClose 
                 }
             }
 
+            // Combine existing images with uploaded ones
+            galleryImagePaths = [...existingGalleryImages];
+
             // Upload gallery images if any
             if (galleryImages.length > 0) {
                 const galleryFormData = new FormData();
                 galleryImages.forEach(img => galleryFormData.append('images', img));
                 const galleryRes = await uploadMultipleProductImages(galleryFormData);
                 if (galleryRes.success && 'paths' in galleryRes && galleryRes.paths) {
-                    galleryImagePaths = galleryRes.paths;
+                    galleryImagePaths.push(...galleryRes.paths);
                 }
             }
 
@@ -854,7 +878,7 @@ export default function CatalogManager({ brandId, products, categories, onClose 
                                     <label className="text-[10px] font-black uppercase tracking-widest text-[#8B7E66]">Galeri Produk (Opsional, Max 5)</label>
 
                                     <div className="grid grid-cols-5 gap-4">
-                                        {galleryPreviews.map((preview, index) => (
+                                        {[...existingGalleryImages, ...galleryPreviews].map((preview, index) => (
                                             <div key={index} className="relative aspect-square bg-gray-100 rounded-xl overflow-hidden border border-[#E5E1D8]">
                                                 <img src={preview} alt={`Gallery ${index + 1}`} className="w-full h-full object-cover" />
                                                 <button

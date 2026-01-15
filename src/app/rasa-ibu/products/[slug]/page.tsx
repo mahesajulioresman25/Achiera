@@ -11,6 +11,7 @@ import { Metadata } from 'next';
 import { unisolatedPrisma } from '@/lib/prisma';
 import { getRecommendedProducts } from '@/lib/actions/rasa-ibu/public-products';
 import { getProductReviewsAction } from '@/lib/actions/commerce/reviews';
+import ProductGallery from '@/components/commerce/ProductGallery';
 
 export async function generateMetadata(
     { params }: { params: Promise<{ slug: string }> }
@@ -105,6 +106,26 @@ export default async function RasaIbuProductDetailPage({
         const config = brand.brandConfig as any;
         const buttonColor = config?.primaryColor || "#2D3A2D";
 
+        // Parse multiple images
+        let productImages: string[] = [];
+        if (product.image) productImages.push(product.image);
+
+        if ((product as any).images) {
+            try {
+                const gallery = typeof (product as any).images === 'string'
+                    ? JSON.parse((product as any).images)
+                    : (product as any).images;
+                if (Array.isArray(gallery)) {
+                    productImages = [...productImages, ...gallery];
+                }
+            } catch (e) {
+                console.error("Failed to parse gallery images", e);
+            }
+        }
+
+        // Deduplicate
+        productImages = Array.from(new Set(productImages));
+
         return (
             <div className="min-h-screen bg-[#FDFBF7]">
                 <RecentlyViewedTracker productId={product.id} />
@@ -115,26 +136,14 @@ export default async function RasaIbuProductDetailPage({
 
                         {/* Left: Image Gallery */}
                         <div className="space-y-6">
-                            <div className="aspect-[4/5] bg-white rounded-[3rem] overflow-hidden border border-[#E5E1D8] shadow-2xl shadow-slate-200 relative group">
-                                {product.image ? (
-                                    <img
-                                        src={product.image}
-                                        alt={product.name}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                                    />
-                                ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-slate-200 text-6xl">🍲</div>
-                                )}
-                                <div className="absolute top-8 left-8">
-                                    <div className="bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl flex items-center gap-2 shadow-xl border border-white">
-                                        <Star className="w-4 h-4 text-amber-500 fill-current" />
-                                        <span className="text-sm font-black text-[#2D3A2D]">4.9</span>
-                                    </div>
-                                </div>
-                            </div>
+                            <ProductGallery
+                                images={productImages}
+                                productName={product.name}
+                            />
 
                             {/* Trust Badges Simple */}
                             <div className="grid grid-cols-3 gap-4">
+
                                 <div className="bg-white p-4 rounded-2xl border border-[#E5E1D8] text-center space-y-2">
                                     <div className="text-xl">🛡️</div>
                                     <p className="text-[9px] font-black uppercase tracking-widest text-[#2D3A2D]">Higienis</p>

@@ -38,6 +38,7 @@ export async function createProduct(data: {
                 slug: data.slug,
                 description: data.description,
                 image: data.image,
+                images: data.images ? JSON.stringify(data.images) : undefined,
                 storageType: data.storageType || 'FROZEN',
                 shelfLife: data.shelfLife || 6, // Default 6 months
                 ingredients: data.ingredients,
@@ -98,6 +99,7 @@ export async function updateProduct(data: {
                 name: data.name,
                 description: data.description,
                 image: data.image,
+                images: data.images ? JSON.stringify(data.images) : undefined,
                 storageType: data.storageType || 'FROZEN',
                 shelfLife: data.shelfLife || 6,
                 ingredients: data.ingredients,

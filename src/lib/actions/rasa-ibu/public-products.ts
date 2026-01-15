@@ -142,17 +142,14 @@ export async function getRecommendedProducts(brandId: string, productId: string,
         }
 
         // Get products from same category, excluding current product
-        const products = await unisolatedPrisma.frozenProduct.findMany({
+        // Removed strict stock check to ensure recommendations appear
+        let products = await unisolatedPrisma.frozenProduct.findMany({
             where: {
                 brandId,
                 categoryId: currentProduct.categoryId,
                 id: { not: productId },
                 inventoryType: 'FINISHED_GOOD',
-                variants: {
-                    some: {
-                        stockOnHand: { gt: 0 }
-                    }
-                }
+                // Relaxed stock check for now
             },
             include: {
                 variants: true,
@@ -163,6 +160,30 @@ export async function getRecommendedProducts(brandId: string, productId: string,
             },
             take: limit
         });
+
+        // Fallback: If not enough related products, fetch Best Sellers (random/popular)
+        if (products.length < limit) {
+            const needed = limit - products.length;
+            const existingIds = [productId, ...products.map(p => p.id)];
+
+            const fallbackProducts = await unisolatedPrisma.frozenProduct.findMany({
+                where: {
+                    brandId,
+                    inventoryType: 'FINISHED_GOOD',
+                    id: { notIn: existingIds }
+                },
+                include: {
+                    variants: true,
+                    category: true
+                },
+                orderBy: {
+                    orderCount: 'desc'
+                },
+                take: needed
+            });
+
+            products = [...products, ...fallbackProducts];
+        }
 
         return products.map((p: any) => ({
             id: p.id,

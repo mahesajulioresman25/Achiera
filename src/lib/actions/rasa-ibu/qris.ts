@@ -214,7 +214,6 @@ export async function verifyPaymentAction(paymentId: string, verifiedBy: string)
         // Log status change
         await (prisma as any).orderStatusLog.create({
             data: {
-                brandId: (payment.order as any).brandId,
                 orderId: payment.orderId,
                 status: 'DIBAYAR',
                 message: `Pembayaran QRIS diverifikasi oleh ${verifiedBy}`
@@ -267,7 +266,6 @@ export async function rejectPaymentAction(paymentId: string, reason: string) {
         // Log rejection
         await (prisma as any).orderStatusLog.create({
             data: {
-                brandId: (payment.order as any).brandId,
                 orderId: payment.orderId,
                 status: 'CANCELLED',
                 message: `Pembayaran QRIS ditolak: ${reason}`

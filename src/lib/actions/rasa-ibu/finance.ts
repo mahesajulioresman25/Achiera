@@ -47,17 +47,20 @@ export async function getAccountDetailsAction(brandId: string, accountCode: stri
 
         const entries = await prisma.journalEntry.findMany({
             where: {
-                account: { id: account.id, brandId },
-                createdAt: {
-                    gte: startDate,
-                    lte: endDate
+                accountId: account.id,
+                transaction: {
+                    brandId,
+                    date: {
+                        gte: startDate,
+                        lte: endDate
+                    }
                 }
             },
             include: {
                 transaction: true
             },
             orderBy: {
-                createdAt: 'desc'
+                transaction: { date: 'desc' }
             }
         });
 
