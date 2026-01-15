@@ -106,230 +106,232 @@ export default async function RasaIbuProductDetailPage({
         const buttonColor = config?.primaryColor || "#2D3A2D";
 
         return (
-            <div className="min-h-screen bg-[#FDFBF7]">
-                <RecentlyViewedTracker productId={product.id} />
+            <>
+                <div className="min-h-screen bg-[#FDFBF7]">
+                    <RecentlyViewedTracker productId={product.id} />
 
-                {/* Hero / Header Section */}
-                <div className="max-w-7xl mx-auto px-6 pt-10 pb-20">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+                    {/* Hero / Header Section */}
+                    <div className="max-w-7xl mx-auto px-6 pt-10 pb-20">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
 
-                        {/* Left: Image Gallery */}
-                        <div className="space-y-6">
-                            <div className="aspect-[4/5] bg-white rounded-[3rem] overflow-hidden border border-[#E5E1D8] shadow-2xl shadow-slate-200 relative group">
-                                {product.image ? (
-                                    <img
-                                        src={product.image}
-                                        alt={product.name}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                                    />
-                                ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-slate-200 text-6xl">🍲</div>
-                                )}
-                                <div className="absolute top-8 left-8">
-                                    <div className="bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl flex items-center gap-2 shadow-xl border border-white">
-                                        <Star className="w-4 h-4 text-amber-500 fill-current" />
-                                        <span className="text-sm font-black text-[#2D3A2D]">4.9</span>
+                            {/* Left: Image Gallery */}
+                            <div className="space-y-6">
+                                <div className="aspect-[4/5] bg-white rounded-[3rem] overflow-hidden border border-[#E5E1D8] shadow-2xl shadow-slate-200 relative group">
+                                    {product.image ? (
+                                        <img
+                                            src={product.image}
+                                            alt={product.name}
+                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center text-slate-200 text-6xl">🍲</div>
+                                    )}
+                                    <div className="absolute top-8 left-8">
+                                        <div className="bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl flex items-center gap-2 shadow-xl border border-white">
+                                            <Star className="w-4 h-4 text-amber-500 fill-current" />
+                                            <span className="text-sm font-black text-[#2D3A2D]">4.9</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Trust Badges Simple */}
+                                <div className="grid grid-cols-3 gap-4">
+                                    <div className="bg-white p-4 rounded-2xl border border-[#E5E1D8] text-center space-y-2">
+                                        <div className="text-xl">🛡️</div>
+                                        <p className="text-[9px] font-black uppercase tracking-widest text-[#2D3A2D]">Higienis</p>
+                                    </div>
+                                    <div className="bg-white p-4 rounded-2xl border border-[#E5E1D8] text-center space-y-2">
+                                        <div className="text-xl">🌿</div>
+                                        <p className="text-[9px] font-black uppercase tracking-widest text-[#2D3A2D]">Alami</p>
+                                    </div>
+                                    <div className="bg-white p-4 rounded-2xl border border-[#E5E1D8] text-center space-y-2">
+                                        <div className="text-xl">⏱️</div>
+                                        <p className="text-[9px] font-black uppercase tracking-widest text-[#2D3A2D]">Cepat</p>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Trust Badges Simple */}
-                            <div className="grid grid-cols-3 gap-4">
-                                <div className="bg-white p-4 rounded-2xl border border-[#E5E1D8] text-center space-y-2">
-                                    <div className="text-xl">🛡️</div>
-                                    <p className="text-[9px] font-black uppercase tracking-widest text-[#2D3A2D]">Higienis</p>
-                                </div>
-                                <div className="bg-white p-4 rounded-2xl border border-[#E5E1D8] text-center space-y-2">
-                                    <div className="text-xl">🌿</div>
-                                    <p className="text-[9px] font-black uppercase tracking-widest text-[#2D3A2D]">Alami</p>
-                                </div>
-                                <div className="bg-white p-4 rounded-2xl border border-[#E5E1D8] text-center space-y-2">
-                                    <div className="text-xl">⏱️</div>
-                                    <p className="text-[9px] font-black uppercase tracking-widest text-[#2D3A2D]">Cepat</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Right: Details */}
-                        <div className="space-y-10">
-                            <div className="space-y-4">
-                                <div className="flex items-center gap-3">
-                                    <span className="px-3 py-1 bg-[#8B7E66]/10 text-[#8B7E66] text-[10px] font-black uppercase tracking-[0.2em] rounded-full">
-                                        {product.category?.name || 'Menu Utama'}
-                                    </span>
-                                    {totalStock > 0 && totalStock < 10 && (
-                                        <span className="px-3 py-1 bg-red-50 text-red-600 text-[10px] font-black uppercase tracking-widest rounded-full animate-pulse">
-                                            Sisa {totalStock} Porsi!
+                            {/* Right: Details */}
+                            <div className="space-y-10">
+                                <div className="space-y-4">
+                                    <div className="flex items-center gap-3">
+                                        <span className="px-3 py-1 bg-[#8B7E66]/10 text-[#8B7E66] text-[10px] font-black uppercase tracking-[0.2em] rounded-full">
+                                            {product.category?.name || 'Menu Utama'}
                                         </span>
-                                    )}
+                                        {totalStock > 0 && totalStock < 10 && (
+                                            <span className="px-3 py-1 bg-red-50 text-red-600 text-[10px] font-black uppercase tracking-widest rounded-full animate-pulse">
+                                                Sisa {totalStock} Porsi!
+                                            </span>
+                                        )}
+                                    </div>
+                                    <h1 className="text-4xl md:text-6xl font-black text-[#1A241A] tracking-tight leading-tight">
+                                        {product.name}
+                                    </h1>
+                                    <div className="flex items-baseline gap-4">
+                                        <span className="text-3xl font-black text-[#8B7E66]">
+                                            Rp {price.toLocaleString('id-ID')}
+                                        </span>
+                                        <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">/ {primaryVariant?.name || 'Porsi'}</span>
+                                    </div>
                                 </div>
-                                <h1 className="text-4xl md:text-6xl font-black text-[#1A241A] tracking-tight leading-tight">
-                                    {product.name}
-                                </h1>
-                                <div className="flex items-baseline gap-4">
-                                    <span className="text-3xl font-black text-[#8B7E66]">
-                                        Rp {price.toLocaleString('id-ID')}
-                                    </span>
-                                    <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">/ {primaryVariant?.name || 'Porsi'}</span>
-                                </div>
-                            </div>
 
-                            <div className="space-y-6">
-                                <h3 className="text-xs font-black uppercase tracking-[0.3em] text-[#2D3A2D]">Resep & Cerita</h3>
-                                <p className="text-[#8B7E66] leading-relaxed text-lg font-medium italic border-l-4 border-[#E5E1D8] pl-6 py-2">
-                                    {product.description || "Menu rahasia ibu yang diolah dengan bumbu pilihan nusantara. Setiap gigitannya membawa kenangan akan rumah."}
-                                </p>
-                            </div>
-
-                            {/* Additional Attributes Grid */}
-                            <div className="grid grid-cols-2 gap-6 py-8 border-y border-[#E5E1D8]">
-                                <div className="space-y-2">
-                                    <h4 className="text-[10px] font-black uppercase tracking-widest text-[#8B7E66]">Komposisi</h4>
-                                    <p className="text-sm text-[#2D3A2D] font-medium leading-relaxed">
-                                        {product.ingredients || "Rempah Nusantara Pilihan"}
+                                <div className="space-y-6">
+                                    <h3 className="text-xs font-black uppercase tracking-[0.3em] text-[#2D3A2D]">Resep & Cerita</h3>
+                                    <p className="text-[#8B7E66] leading-relaxed text-lg font-medium italic border-l-4 border-[#E5E1D8] pl-6 py-2">
+                                        {product.description || "Menu rahasia ibu yang diolah dengan bumbu pilihan nusantara. Setiap gigitannya membawa kenangan akan rumah."}
                                     </p>
                                 </div>
-                                <div className="space-y-2">
-                                    <h4 className="text-[10px] font-black uppercase tracking-widest text-[#8B7E66]">Penyimpanan</h4>
-                                    <p className="text-sm text-[#2D3A2D] font-medium">
-                                        {(() => {
-                                            const storageLabels: Record<string, string> = {
-                                                'FROZEN': 'Beku (-18°C)',
-                                                'CHILLED': 'Dingin (2-8°C)',
-                                                'AMBIENT': 'Suhu Ruang',
-                                                'READY_TO_EAT': 'Siap Saji'
-                                            };
-                                            return storageLabels[product.storageType as string] || 'Frozen (-18°C)';
-                                        })()}
-                                    </p>
-                                    {product.storageType !== 'READY_TO_EAT' && product.shelfLife && (
-                                        <p className="text-[10px] text-[#8B7E66] font-bold">
-                                            Tahan hingga {product.shelfLife} Bulan
+
+                                {/* Additional Attributes Grid */}
+                                <div className="grid grid-cols-2 gap-6 py-8 border-y border-[#E5E1D8]">
+                                    <div className="space-y-2">
+                                        <h4 className="text-[10px] font-black uppercase tracking-widest text-[#8B7E66]">Komposisi</h4>
+                                        <p className="text-sm text-[#2D3A2D] font-medium leading-relaxed">
+                                            {product.ingredients || "Rempah Nusantara Pilihan"}
                                         </p>
-                                    )}
-                                    {product.storageType === 'READY_TO_EAT' && (
-                                        <p className="text-[10px] text-amber-600 font-bold">
-                                            ⚡ Konsumsi dalam 1 Hari
+                                    </div>
+                                    <div className="space-y-2">
+                                        <h4 className="text-[10px] font-black uppercase tracking-widest text-[#8B7E66]">Penyimpanan</h4>
+                                        <p className="text-sm text-[#2D3A2D] font-medium">
+                                            {(() => {
+                                                const storageLabels: Record<string, string> = {
+                                                    'FROZEN': 'Beku (-18°C)',
+                                                    'CHILLED': 'Dingin (2-8°C)',
+                                                    'AMBIENT': 'Suhu Ruang',
+                                                    'READY_TO_EAT': 'Siap Saji'
+                                                };
+                                                return storageLabels[product.storageType as string] || 'Frozen (-18°C)';
+                                            })()}
                                         </p>
-                                    )}
+                                        {product.storageType !== 'READY_TO_EAT' && product.shelfLife && (
+                                            <p className="text-[10px] text-[#8B7E66] font-bold">
+                                                Tahan hingga {product.shelfLife} Bulan
+                                            </p>
+                                        )}
+                                        {product.storageType === 'READY_TO_EAT' && (
+                                            <p className="text-[10px] text-amber-600 font-bold">
+                                                ⚡ Konsumsi dalam 1 Hari
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        {/* Nutrition Card if exists */}
-                        {product.nutrition && typeof product.nutrition === 'object' && (
-                            <div className="bg-[#f9f7f2] p-6 rounded-3xl border border-[#E5E1D8] space-y-4">
-                                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-[#2D3A2D] flex items-center gap-2">
-                                    <span className="w-2 h-2 bg-amber-500 rounded-full" />
-                                    Informasi Nilai Gizi
-                                </h3>
-                                <div className="grid grid-cols-3 gap-4">
-                                    {Object.entries(product.nutrition as Record<string, any>).map(([key, value]) => (
-                                        <div key={key} className="text-center">
-                                            <p className="text-[9px] font-black uppercase tracking-widest text-[#8B7E66] mb-1">{key}</p>
-                                            <p className="text-sm font-black text-[#2D3A2D]">{value}</p>
-                                        </div>
-                                    ))}
+                            {/* Nutrition Card if exists */}
+                            {product.nutrition && typeof product.nutrition === 'object' && (
+                                <div className="bg-[#f9f7f2] p-6 rounded-3xl border border-[#E5E1D8] space-y-4">
+                                    <h3 className="text-xs font-black uppercase tracking-[0.2em] text-[#2D3A2D] flex items-center gap-2">
+                                        <span className="w-2 h-2 bg-amber-500 rounded-full" />
+                                        Informasi Nilai Gizi
+                                    </h3>
+                                    <div className="grid grid-cols-3 gap-4">
+                                        {Object.entries(product.nutrition as Record<string, any>).map(([key, value]) => (
+                                            <div key={key} className="text-center">
+                                                <p className="text-[9px] font-black uppercase tracking-widest text-[#8B7E66] mb-1">{key}</p>
+                                                <p className="text-sm font-black text-[#2D3A2D]">{value}</p>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-                        )}
+                            )}
 
-                        {/* Variant Selection if more than 1 */}
-                        {product.variants.length > 1 && (
-                            <div className="space-y-4">
-                                <h3 className="text-xs font-black uppercase tracking-[0.3em] text-[#2D3A2D]">Pilihan Porsi</h3>
-                                <div className="flex flex-wrap gap-3">
-                                    {product.variants.map((v: any) => (
-                                        <button
-                                            key={v.id}
-                                            className={`px-6 py-3 rounded-xl border-2 transition-all font-bold text-sm ${v.id === primaryVariant?.id
-                                                ? 'border-[#2D3A2D] bg-[#2D3A2D] text-white shadow-lg'
-                                                : 'border-[#E5E1D8] bg-white text-[#8B7E66] hover:border-[#8B7E66]'
-                                                }`}
-                                        >
-                                            {v.name}
-                                        </button>
-                                    ))}
+                            {/* Variant Selection if more than 1 */}
+                            {product.variants.length > 1 && (
+                                <div className="space-y-4">
+                                    <h3 className="text-xs font-black uppercase tracking-[0.3em] text-[#2D3A2D]">Pilihan Porsi</h3>
+                                    <div className="flex flex-wrap gap-3">
+                                        {product.variants.map((v: any) => (
+                                            <button
+                                                key={v.id}
+                                                className={`px-6 py-3 rounded-xl border-2 transition-all font-bold text-sm ${v.id === primaryVariant?.id
+                                                    ? 'border-[#2D3A2D] bg-[#2D3A2D] text-white shadow-lg'
+                                                    : 'border-[#E5E1D8] bg-white text-[#8B7E66] hover:border-[#8B7E66]'
+                                                    }`}
+                                            >
+                                                {v.name}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-                        )}
+                            )}
 
-                        {/* Actions */}
-                        <div className="space-y-4 pt-6">
-                            <AddToCartButton
-                                product={{
-                                    ...product,
-                                    image: product.image || undefined,
-                                    price,
-                                    variantId: primaryVariant?.id,
-                                    variantName: primaryVariant?.name || 'Porsi Keluarga'
-                                }}
-                                label="Simpan di Keranjang Bunda"
-                                className="w-full py-6 rounded-[2rem] text-sm font-black uppercase tracking-widest shadow-2xl hover:scale-[1.02] transition-all"
-                            />
+                            {/* Actions */}
+                            <div className="space-y-4 pt-6">
+                                <AddToCartButton
+                                    product={{
+                                        ...product,
+                                        image: product.image || undefined,
+                                        price,
+                                        variantId: primaryVariant?.id,
+                                        variantName: primaryVariant?.name || 'Porsi Keluarga'
+                                    }}
+                                    label="Simpan di Keranjang Bunda"
+                                    className="w-full py-6 rounded-[2rem] text-sm font-black uppercase tracking-widest shadow-2xl hover:scale-[1.02] transition-all"
+                                />
 
-                            <div className="grid grid-cols-2 gap-4">
-                                <a
-                                    href={waLink}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex items-center justify-center gap-3 py-5 rounded-2xl bg-white border-2 border-[#E5E1D8] text-[#2D3A2D] text-xs font-black uppercase tracking-widest hover:bg-[#F9F7F2] transition-all"
-                                >
-                                    <MessageCircle className="w-5 h-5 text-emerald-500" />
-                                    Tanya Stok
-                                </a>
-                                <button className="flex items-center justify-center gap-3 py-5 rounded-2xl bg-white border-2 border-[#E5E1D8] text-[#2D3A2D] text-xs font-black uppercase tracking-widest hover:bg-[#F9F7F2] transition-all">
-                                    <Share2 className="w-5 h-5" />
-                                    Bagikan
-                                </button>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <a
+                                        href={waLink}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center justify-center gap-3 py-5 rounded-2xl bg-white border-2 border-[#E5E1D8] text-[#2D3A2D] text-xs font-black uppercase tracking-widest hover:bg-[#F9F7F2] transition-all"
+                                    >
+                                        <MessageCircle className="w-5 h-5 text-emerald-500" />
+                                        Tanya Stok
+                                    </a>
+                                    <button className="flex items-center justify-center gap-3 py-5 rounded-2xl bg-white border-2 border-[#E5E1D8] text-[#2D3A2D] text-xs font-black uppercase tracking-widest hover:bg-[#F9F7F2] transition-all">
+                                        <Share2 className="w-5 h-5" />
+                                        Bagikan
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            {/* Recommendations */ }
-        <section className="bg-white py-24 border-y border-[#E5E1D8]">
-            <div className="max-w-7xl mx-auto px-6">
-                <div className="flex items-center justify-between mb-16">
-                    <h2 className="text-3xl font-black text-[#1A241A] tracking-tight">Coba Menu Lainnya</h2>
-                    <Link href="/rasa-ibu/products" className="text-xs font-black uppercase tracking-widest text-[#8B7E66] hover:text-[#2D3A2D] transition-colors">Lihat Semua</Link>
+
+                <section className="bg-white py-24 border-y border-[#E5E1D8]">
+                    <div className="max-w-7xl mx-auto px-6">
+                        <div className="flex items-center justify-between mb-16">
+                            <h2 className="text-3xl font-black text-[#1A241A] tracking-tight">Coba Menu Lainnya</h2>
+                            <Link href="/rasa-ibu/products" className="text-xs font-black uppercase tracking-widest text-[#8B7E66] hover:text-[#2D3A2D] transition-colors">Lihat Semua</Link>
+                        </div>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                            {recommendations.map((item: any) => (
+                                <Link key={item.id} href={`/rasa-ibu/products/${item.slug}`} className="group space-y-4">
+                                    <div className="aspect-[4/5] bg-[#FDFBF7] rounded-[2.5rem] overflow-hidden border border-[#E5E1D8] transition-all group-hover:shadow-xl">
+                                        {item.image ? (
+                                            <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center text-slate-100 text-3xl">🍲</div>
+                                        )}
+                                    </div>
+                                    <div>
+                                        <h3 className="font-black text-[#1A241A] text-sm group-hover:text-[#8B7E66] transition-colors">{item.name}</h3>
+                                        <p className="text-xs font-bold text-amber-600">Rp {item.price.toLocaleString('id-ID')}</p>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+
+                <ProductReviews
+                    productName={product.name}
+                    brandId={brandId}
+                    initialReviews={initialReviews}
+                />
+
+
+                <div className="py-20 text-center">
+                    <Link href="/rasa-ibu/products" className="inline-flex items-center gap-3 text-xs font-black uppercase tracking-widest text-[#8B7E66] hover:text-[#2D3A2D] transition-all group">
+                        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-2 transition-transform" />
+                        Kembali ke Seluruh Menu
+                    </Link>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                    {recommendations.map((item: any) => (
-                        <Link key={item.id} href={`/rasa-ibu/products/${item.slug}`} className="group space-y-4">
-                            <div className="aspect-[4/5] bg-[#FDFBF7] rounded-[2.5rem] overflow-hidden border border-[#E5E1D8] transition-all group-hover:shadow-xl">
-                                {item.image ? (
-                                    <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                                ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-slate-100 text-3xl">🍲</div>
-                                )}
-                            </div>
-                            <div>
-                                <h3 className="font-black text-[#1A241A] text-sm group-hover:text-[#8B7E66] transition-colors">{item.name}</h3>
-                                <p className="text-xs font-bold text-amber-600">Rp {item.price.toLocaleString('id-ID')}</p>
-                            </div>
-                        </Link>
-                    ))}
-                </div>
             </div>
-        </section>
-
-        {/* Reviews */ }
-        <ProductReviews
-            productName={product.name}
-            brandId={brandId}
-            initialReviews={initialReviews}
-        />
-
-        {/* Back Link */ }
-        <div className="py-20 text-center">
-            <Link href="/rasa-ibu/products" className="inline-flex items-center gap-3 text-xs font-black uppercase tracking-widest text-[#8B7E66] hover:text-[#2D3A2D] transition-all group">
-                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-2 transition-transform" />
-                Kembali ke Seluruh Menu
-            </Link>
-        </div>
-        </div >
+            </>
         );
     } catch (e: any) {
         return (
