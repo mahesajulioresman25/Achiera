@@ -23,8 +23,25 @@ export default async function RasaIbuOpsDashboard() {
         include: {
             orders: {
                 orderBy: { createdAt: 'desc' },
-                include: {
-                    warehouse: true,
+                select: {
+                    id: true,
+                    createdAt: true,
+                    customerName: true,
+                    customerAddress: true,
+                    customerNote: true,
+                    manualRef: true,
+                    channel: true,
+                    status: true,
+                    totalAmount: true,
+                    total: true,
+                    subscriptionId: true,
+                    paymentProof: true, // ✅ Add this field
+                    warehouse: {
+                        select: {
+                            id: true,
+                            name: true
+                        }
+                    },
                     orderItems: {
                         include: {
                             frozenVariant: {
@@ -38,7 +55,7 @@ export default async function RasaIbuOpsDashboard() {
                             }
                         }
                     }
-                } as any,
+                },
                 take: 10
             }
         }
