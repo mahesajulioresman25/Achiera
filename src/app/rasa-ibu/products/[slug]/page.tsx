@@ -5,6 +5,22 @@ import ProductRecommendations from '@/components/commerce/ProductRecommendations
 import ProductWishlistButton from '@/components/commerce/ProductWishlistButton';
 import ProductReviews from '@/components/commerce/ProductReviews';
 import RecentlyViewedTracker from '@/components/commerce/RecentlyViewedTracker';
+import { Metadata } from 'next';
+
+export async function generateMetadata(
+    { params }: { params: Promise<{ slug: string }> }
+): Promise<Metadata> {
+    const { slug } = await params;
+    const product = await prisma.frozenProduct.findFirst({
+        where: { slug: slug },
+        select: { name: true, description: true }
+    });
+
+    return {
+        title: product ? `${product.name} | Rasa Ibu - Masakan Rumah Siap Saji` : 'Menu Rasa Ibu',
+        description: product?.description || 'Menu lezat dari Rasa Ibu.'
+    };
+}
 import AnimatedSection from '@/components/commerce/AnimatedSection';
 import { prisma } from '@/lib/prisma';
 import { getRecommendedProducts, incrementProductView } from '@/lib/actions/rasa-ibu/public-products';
@@ -20,19 +36,23 @@ export default async function RasaIbuProductDetailPage({ params }: { params: Pro
     // Fetch Brand Config
     const brand = await prisma.brand.findUnique({
         where: { slug: 'rasa-ibu' },
-        select: { id: true, paymentSettings: true }
+        include: { brandConfig: true }
     });
 
     if (!brand) return <div className="py-24 text-center">Brand not found</div>;
+    const brandId = brand.id;
 
-    // Fetch Product from Database
+    // 2. Fetch Product with isolation compliance
     const product = await prisma.frozenProduct.findFirst({
         where: {
-            slug: slug,
-            category: { brand: { slug: 'rasa-ibu' } }
+            brandId,
+            slug: slug
         },
         include: {
-            variants: true
+            category: true,
+            variants: {
+                orderBy: { price: 'asc' }
+            }
         }
     });
 
@@ -41,9 +61,11 @@ export default async function RasaIbuProductDetailPage({ params }: { params: Pro
 
     if (!product) {
         return (
-            <div className="py-40 text-center space-y-8">
-                <h1 className="text-3xl font-black">Menu Tidak Ditemukan</h1>
-                <Link href="/rasa-ibu/products" className="text-sm font-black uppercase text-[#8B7E66] border-b-2 border-[#8B7E66]">Kembali ke Menu</Link>
+            <div className="py-24 text-center">
+                <h1 className="text-2xl font-bold mb-4">Menu Tidak Ditemukan</h1>
+                <Link href="/rasa-ibu/products" className="text-primary hover:underline">
+                    Kembali ke Daftar Menu
+                </Link>
             </div>
         );
     }

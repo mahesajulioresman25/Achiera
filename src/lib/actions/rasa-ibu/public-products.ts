@@ -216,26 +216,6 @@ export async function getProductsByCategory(brandId: string, categorySlug: strin
 }
 
 /**
- * Increment product view count
- */
-export async function incrementProductView(productId: string) {
-    try {
-        await prisma.frozenProduct.update({
-            where: { id: productId },
-            data: {
-                viewCount: {
-                    increment: 1
-                }
-            }
-        });
-
-        revalidatePath('/rasa-ibu');
-    } catch (error) {
-        console.error('Error incrementing view count:', error);
-    }
-}
-
-/**
  * Get all categories for a brand
  */
 export async function getCategories(brandId: string) {

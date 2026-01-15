@@ -7,6 +7,7 @@ import CategoryFilter from '@/components/filters/CategoryFilter';
 import ProductWishlistButton from '@/components/commerce/ProductWishlistButton';
 import BestForYou from '@/components/commerce/BestForYou';
 import AnimatedSection from '@/components/commerce/AnimatedSection';
+import AddBundleToCartButton from '@/components/commerce/AddBundleToCartButton';
 
 import { unisolatedPrisma as prisma } from '@/lib/prisma';
 import { FlashSaleService } from '@/lib/services/FlashSaleService';
@@ -241,9 +242,7 @@ export default async function RasaIbuProductListPage({
                 </div>
 
                 <div className="mt-auto">
-                    <button className="w-full bg-[#1A241A] hover:bg-[#8B7E66] text-white py-4 rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-slate-900/10 transition-all flex items-center justify-center gap-3">
-                        Siapkan Paket Ini
-                    </button>
+                    <AddBundleToCartButton bundle={bundle} className="shadow-xl shadow-slate-900/10" />
                     <p className="text-[9px] text-center text-amber-700/60 mt-4 font-black uppercase tracking-[0.2em] opacity-40">
                         Detail paket di dalam
                     </p>
