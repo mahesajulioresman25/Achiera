@@ -232,6 +232,9 @@ export default function OrderTrackingResultClient({ id }: OrderTrackingClientPro
     const qrisEnabled = order.paymentSettings?.qrisEnabled;
     const qrisImageUrl = order.paymentSettings?.qrisImageUrl;
 
+    // Check for pending proof
+    const pendingPayment = payments.find((p: any) => !p.isVerified && p.proofPath);
+
     // Unified Status Mapping (Bridge Admin status to Tracking status)
     const statusMap: Record<string, string> = {
         'DIBAYAR': 'PAYMENT_VERIFIED',
@@ -407,102 +410,139 @@ export default function OrderTrackingResultClient({ id }: OrderTrackingClientPro
 
                             {(order.status === 'WAITING_PAYMENT' || order.status === 'WAITING_FINAL_PAYMENT' || order.status === 'DIPESAN') ? (
                                 <div className="space-y-8">
-                                    <div className="p-8 bg-[#FDFBF7]/10 rounded-[2rem] text-center border border-[#FDFBF7]/10 backdrop-blur-sm">
-                                        <div className="text-[10px] text-[#FDFBF7]/60 mb-2 font-black uppercase tracking-[0.2em]">{paymentLabel}</div>
-                                        <div className="text-3xl font-black text-[#FDFBF7]">Rp {nextPaymentAmount.toLocaleString('id-ID')}</div>
-                                    </div>
+                                    {pendingPayment ? (
+                                        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                            <div className="p-8 bg-emerald-500/10 rounded-[2rem] border border-emerald-500/20 text-center backdrop-blur-sm">
+                                                <div className="w-16 h-16 bg-emerald-500 text-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-500/20 animate-pulse">
+                                                    <CheckCircle className="w-8 h-8" />
+                                                </div>
+                                                <h4 className="text-lg font-black text-emerald-400 uppercase tracking-tight mb-2">Bukti Terkirim</h4>
+                                                <p className="text-[10px] font-bold text-emerald-500/80 leading-relaxed uppercase tracking-wide px-4">
+                                                    Mohon tunggu sebentar ya Bunda. Tim kami sedang memverifikasi pembayaran Bunda secara manual.
+                                                </p>
+                                            </div>
 
-                                    {qrisEnabled && (
-                                        <div className="flex gap-2 p-1.5 bg-black/20 rounded-2xl">
-                                            <button
-                                                onClick={() => setPaymentMethod('BANK')}
-                                                className={`flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all ${paymentMethod === 'BANK' ? 'bg-[#FDFBF7] text-[#2D3A2D] shadow-lg' : 'text-[#FDFBF7]/40 hover:text-[#FDFBF7]'}`}
-                                            >
-                                                Transfer Bank
-                                            </button>
-                                            <button
-                                                onClick={() => setPaymentMethod('QRIS')}
-                                                className={`flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all ${paymentMethod === 'QRIS' ? 'bg-[#FDFBF7] text-[#2D3A2D] shadow-lg' : 'text-[#FDFBF7]/40 hover:text-[#FDFBF7]'}`}
-                                            >
-                                                Scan QRIS
-                                            </button>
-                                        </div>
-                                    )}
-
-                                    <div className="text-sm">
-                                        {paymentMethod === 'BANK' ? (
-                                            <>
-                                                <label className="block text-[10px] font-black uppercase tracking-widest mb-3 text-[#FDFBF7]/60 ml-2">Tujuan Transfer:</label>
-                                                <select
-                                                    value={selectedBankId}
-                                                    onChange={(e) => setSelectedBankId(e.target.value)}
-                                                    className="w-full p-4 bg-black/10 border border-[#FDFBF7]/20 rounded-2xl mb-4 text-[#FDFBF7] font-bold focus:ring-2 ring-white/20 outline-none"
-                                                >
-                                                    {banks.map(bank => (
-                                                        <option key={bank.id} value={bank.id} className="text-stone-900">{bank.bankName} - {bank.accountHolder}</option>
-                                                    ))}
-                                                </select>
-
-                                                {(() => {
-                                                    const bank = banks.find(b => b.id === selectedBankId);
-                                                    return bank ? (
-                                                        <div className="font-black block bg-[#FDFBF7] p-5 rounded-2xl text-center mb-6 text-[#2D3A2D] shadow-inner">
-                                                            <div className="text-[10px] text-[#8B7E66] uppercase tracking-widest mb-1">{bank.bankName}</div>
-                                                            <div className="text-xl tracking-tighter">{bank.accountNumber}</div>
-                                                            <div className="text-[10px] font-bold mt-2 opacity-60 uppercase">a.n {bank.accountHolder}</div>
-                                                        </div>
-                                                    ) : <div className="text-center text-[10px] font-black text-[#FDFBF7]/40 uppercase tracking-widest mb-6">Pilih bank tujuan</div>;
-                                                })()}
-
-                                                <label className="block text-[10px] font-black uppercase tracking-widest mb-3 text-[#FDFBF7]/60 ml-2">Bank Pengirim:</label>
-                                                <input
-                                                    type="text"
-                                                    placeholder="Contoh: BCA / Mandiri / GoPay"
-                                                    value={sourceBankName}
-                                                    onChange={(e) => setSourceBankName(e.target.value)}
-                                                    className="w-full p-4 bg-black/10 border border-[#FDFBF7]/20 rounded-2xl mb-2 text-[#FDFBF7] placeholder:text-[#FDFBF7]/30 font-bold outline-none"
-                                                />
-                                            </>
-                                        ) : (
-                                            <div className="space-y-6 mb-8">
-                                                <div className="bg-white rounded-[2rem] p-6 flex flex-col items-center shadow-2xl">
-                                                    {qrisImageUrl ? (
-                                                        <img src={qrisImageUrl} alt="QRIS" className="w-full max-w-[220px] aspect-square object-contain" />
-                                                    ) : (
-                                                        <div className="w-48 h-48 bg-stone-50 flex items-center justify-center text-stone-300 italic text-[10px] font-black uppercase tracking-widest">QRIS Belum Tersedia</div>
-                                                    )}
-                                                    <p className="mt-5 text-[9px] font-black text-stone-400 uppercase tracking-[0.2em] text-center px-4 leading-relaxed">Scan QR di atas dengan aplikasi mobile banking atau e-wallet (GoPay, OVO, ShopeePay) Anda</p>
+                                            <div className="space-y-3">
+                                                <label className="block text-[10px] font-black uppercase tracking-widest text-[#FDFBF7]/60 ml-2">Pratinjau Bukti Bunda:</label>
+                                                <div className="aspect-[3/4] rounded-[2rem] border-2 border-white/10 overflow-hidden shadow-2xl relative group">
+                                                    <img src={pendingPayment.proofPath} alt="Uploaded Proof" className="w-full h-full object-contain bg-black/20" />
+                                                    <a
+                                                        href={pendingPayment.proofPath}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                        className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/60 to-transparent flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                                    >
+                                                        <span className="text-[10px] font-black uppercase bg-white text-[#2D3A2D] px-4 py-2 rounded-xl shadow-lg">Lihat Ukuran Penuh</span>
+                                                    </a>
                                                 </div>
                                             </div>
-                                        )}
-                                    </div>
 
-                                    <div className="border-t border-[#FDFBF7]/10 pt-8">
-                                        <label className="block text-[10px] font-black uppercase tracking-widest mb-4 text-[#FDFBF7]/60 ml-2 text-center">Unggah Bukti Pembayaran</label>
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={handleFileChange}
-                                            className="w-full text-[10px] font-black text-[#FDFBF7]/40 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-[#FDFBF7] file:text-[#2D3A2D] hover:file:bg-[#F9F7F2] transition-all cursor-pointer"
-                                        />
-                                        <button
-                                            onClick={handleUploadProof}
-                                            disabled={isUploading || !uploadFile}
-                                            className="mt-6 w-full py-4 bg-[#FDFBF7] text-[#2D3A2D] rounded-2xl text-xs font-black uppercase tracking-widest flex items-center justify-center gap-3 disabled:opacity-30 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl"
-                                        >
-                                            {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-                                            {uploadFile ? 'Kirim Konfirmasi' : 'Pilih File Bukti'}
-                                        </button>
+                                            <div className="pt-6 border-t border-white/10 text-center">
+                                                <p className="text-[10px] font-black text-[#FDFBF7]/40 uppercase tracking-widest leading-relaxed">
+                                                    Jika dalam 15 menit status belum berubah, silakan hubungi kami via WhatsApp.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <div className="p-8 bg-[#FDFBF7]/10 rounded-[2rem] text-center border border-[#FDFBF7]/10 backdrop-blur-sm">
+                                                <div className="text-[10px] text-[#FDFBF7]/60 mb-2 font-black uppercase tracking-[0.2em]">{paymentLabel}</div>
+                                                <div className="text-3xl font-black text-[#FDFBF7]">Rp {nextPaymentAmount.toLocaleString('id-ID')}</div>
+                                            </div>
 
-                                        <button
-                                            onClick={handleCancelOrder}
-                                            disabled={isCancelling}
-                                            className="mt-6 w-full py-2 text-[#FDFBF7]/40 hover:text-red-400 text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2"
-                                        >
-                                            {isCancelling ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
-                                            Batalkan Pesanan
-                                        </button>
-                                    </div>
+                                            {qrisEnabled && (
+                                                <div className="flex gap-2 p-1.5 bg-black/20 rounded-2xl">
+                                                    <button
+                                                        onClick={() => setPaymentMethod('BANK')}
+                                                        className={`flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all ${paymentMethod === 'BANK' ? 'bg-[#FDFBF7] text-[#2D3A2D] shadow-lg' : 'text-[#FDFBF7]/40 hover:text-[#FDFBF7]'}`}
+                                                    >
+                                                        Transfer Bank
+                                                    </button>
+                                                    <button
+                                                        onClick={() => setPaymentMethod('QRIS')}
+                                                        className={`flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all ${paymentMethod === 'QRIS' ? 'bg-[#FDFBF7] text-[#2D3A2D] shadow-lg' : 'text-[#FDFBF7]/40 hover:text-[#FDFBF7]'}`}
+                                                    >
+                                                        Scan QRIS
+                                                    </button>
+                                                </div>
+                                            )}
+
+                                            <div className="text-sm">
+                                                {paymentMethod === 'BANK' ? (
+                                                    <>
+                                                        <label className="block text-[10px] font-black uppercase tracking-widest mb-3 text-[#FDFBF7]/60 ml-2">Tujuan Transfer:</label>
+                                                        <select
+                                                            value={selectedBankId}
+                                                            onChange={(e) => setSelectedBankId(e.target.value)}
+                                                            className="w-full p-4 bg-black/10 border border-[#FDFBF7]/20 rounded-2xl mb-4 text-[#FDFBF7] font-bold focus:ring-2 ring-white/20 outline-none"
+                                                        >
+                                                            {banks.map(bank => (
+                                                                <option key={bank.id} value={bank.id} className="text-stone-900">{bank.bankName} - {bank.accountHolder}</option>
+                                                            ))}
+                                                        </select>
+
+                                                        {(() => {
+                                                            const bank = banks.find(b => b.id === selectedBankId);
+                                                            return bank ? (
+                                                                <div className="font-black block bg-[#FDFBF7] p-5 rounded-2xl text-center mb-6 text-[#2D3A2D] shadow-inner">
+                                                                    <div className="text-[10px] text-[#8B7E66] uppercase tracking-widest mb-1">{bank.bankName}</div>
+                                                                    <div className="text-xl tracking-tighter">{bank.accountNumber}</div>
+                                                                    <div className="text-[10px] font-bold mt-2 opacity-60 uppercase">a.n {bank.accountHolder}</div>
+                                                                </div>
+                                                            ) : <div className="text-center text-[10px] font-black text-[#FDFBF7]/40 uppercase tracking-widest mb-6">Pilih bank tujuan</div>;
+                                                        })()}
+
+                                                        <label className="block text-[10px] font-black uppercase tracking-widest mb-3 text-[#FDFBF7]/60 ml-2">Bank Pengirim:</label>
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Contoh: BCA / Mandiri / GoPay"
+                                                            value={sourceBankName}
+                                                            onChange={(e) => setSourceBankName(e.target.value)}
+                                                            className="w-full p-4 bg-black/10 border border-[#FDFBF7]/20 rounded-2xl mb-2 text-[#FDFBF7] placeholder:text-[#FDFBF7]/30 font-bold outline-none"
+                                                        />
+                                                    </>
+                                                ) : (
+                                                    <div className="space-y-6 mb-8">
+                                                        <div className="bg-white rounded-[2rem] p-6 flex flex-col items-center shadow-2xl">
+                                                            {qrisImageUrl ? (
+                                                                <img src={qrisImageUrl} alt="QRIS" className="w-full max-w-[220px] aspect-square object-contain" />
+                                                            ) : (
+                                                                <div className="w-48 h-48 bg-stone-50 flex items-center justify-center text-stone-300 italic text-[10px] font-black uppercase tracking-widest">QRIS Belum Tersedia</div>
+                                                            )}
+                                                            <p className="mt-5 text-[9px] font-black text-stone-400 uppercase tracking-[0.2em] text-center px-4 leading-relaxed">Scan QR di atas dengan aplikasi mobile banking atau e-wallet (GoPay, OVO, ShopeePay) Anda</p>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            <div className="border-t border-[#FDFBF7]/10 pt-8">
+                                                <label className="block text-[10px] font-black uppercase tracking-widest mb-4 text-[#FDFBF7]/60 ml-2 text-center">Unggah Bukti Pembayaran</label>
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={handleFileChange}
+                                                    className="w-full text-[10px] font-black text-[#FDFBF7]/40 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-[#FDFBF7] file:text-[#2D3A2D] hover:file:bg-[#F9F7F2] transition-all cursor-pointer"
+                                                />
+                                                <button
+                                                    onClick={handleUploadProof}
+                                                    disabled={isUploading || !uploadFile}
+                                                    className="mt-6 w-full py-4 bg-[#FDFBF7] text-[#2D3A2D] rounded-2xl text-xs font-black uppercase tracking-widest flex items-center justify-center gap-3 disabled:opacity-30 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl"
+                                                >
+                                                    {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                                                    {uploadFile ? 'Kirim Konfirmasi' : 'Pilih File Bukti'}
+                                                </button>
+
+                                                <button
+                                                    onClick={handleCancelOrder}
+                                                    disabled={isCancelling}
+                                                    className="mt-6 w-full py-2 text-[#FDFBF7]/40 hover:text-red-400 text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2"
+                                                >
+                                                    {isCancelling ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
+                                                    Batalkan Pesanan
+                                                </button>
+                                            </div>
+                                        </>
+                                    )}
                                 </div>
                             ) : (
                                 <div className="p-10 bg-[#FDFBF7]/10 rounded-[2.5rem] text-center border border-[#FDFBF7]/10 backdrop-blur-sm">

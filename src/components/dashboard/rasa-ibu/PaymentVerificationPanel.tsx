@@ -100,7 +100,7 @@ export default function PaymentVerificationPanel({ brandId, onVerificationSucces
                     </div>
                     <div className="text-left">
                         <h3 className="text-sm font-black text-[#2D3A2D] uppercase tracking-widest leading-none">Verifikasi Pembayaran</h3>
-                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Antrean QRIS Menunggu</p>
+                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Antrean Pembayaran Menunggu</p>
                     </div>
                 </div>
                 {payments.length > 0 && (

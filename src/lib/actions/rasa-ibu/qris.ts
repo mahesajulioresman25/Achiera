@@ -302,7 +302,6 @@ export async function getPendingPaymentsAction(brandId: string) {
         const payments = await prisma.payment.findMany({
             where: {
                 order: { brandId },
-                type: 'QRIS',
                 isVerified: false,
                 proofPath: { not: null }
             },
