@@ -173,7 +173,9 @@ export default async function OwnerDashboardPage() {
             <ProcurementSynergyPanel opportunities={synergyOpportunities} />
 
             {/* Consolidated Financial Statements */}
-            <ConsolidatedStatementsHub />
+            <div id="financial-reports">
+                <ConsolidatedStatementsHub />
+            </div>
 
             {/* Capital Allocation Optimizer */}
             <CapitalAllocationDashboard />
@@ -188,7 +190,9 @@ export default async function OwnerDashboardPage() {
             <CashFlowForecastPanel brandId="rasa-ibu" />
 
             {/* Strategic KPI Dashboard */}
-            <StrategicKPIDashboard />
+            <div id="kpi-center">
+                <StrategicKPIDashboard />
+            </div>
 
             {/* Executive Report Generator */}
             <ReportGeneratorDashboard />

@@ -24,9 +24,9 @@ export default function RasaIbuFooter({ config, paymentSettings }: { config?: an
                             <a href={instagram} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#E5E1D8]/10 flex items-center justify-center hover:bg-[#B2BCA2] hover:text-[#2D3A2D] transition-all" title="Instagram">
                                 <Instagram className="w-5 h-5" />
                             </a>
-                            <a href={`mailto:${email}`} className="w-10 h-10 rounded-full bg-[#E5E1D8]/10 flex items-center justify-center hover:bg-[#B2BCA2] hover:text-[#2D3A2D] transition-all" title="Email">
+                            <Link href="/rasa-ibu/contact" className="w-10 h-10 rounded-full bg-[#E5E1D8]/10 flex items-center justify-center hover:bg-[#B2BCA2] hover:text-[#2D3A2D] transition-all" title="Email Kami">
                                 <Mail className="w-5 h-5" />
-                            </a>
+                            </Link>
                         </div>
                     </div>
 
@@ -63,6 +63,9 @@ export default function RasaIbuFooter({ config, paymentSettings }: { config?: an
                                 <Link href="https://wa.me/6282215191435" target="_blank" className="hover:text-white transition-colors">Konsultasi Menu</Link>
                             </li>
                             <li>
+                                <Link href="/rasa-ibu/contact" className="hover:text-white transition-colors">Hubungi Kami</Link>
+                            </li>
+                            <li>
                                 <Link href="/order/track" className="hover:text-white transition-colors">Lacak Pesanan</Link>
                             </li>
                         </ul>
@@ -70,7 +73,7 @@ export default function RasaIbuFooter({ config, paymentSettings }: { config?: an
 
                     {/* Newsletter or Contact */}
                     <div>
-                        <h3 className="text-white font-bold mb-6 uppercase tracking-widest text-xs">Hubungi Kami</h3>
+                        <h3 className="text-white font-bold mb-6 uppercase tracking-widest text-xs">Butuh Bantuan?</h3>
                         <p className="text-xs text-[#B2BCA2] mb-4 leading-relaxed">
                             Butuh bantuan pesanan atau ingin bertanya lebih lanjut?
                         </p>

@@ -20,6 +20,19 @@ export const ChiefStrategyOfficer = ({ briefing }: Props) => {
         );
     }
 
+    const handleExecute = () => {
+        const action = briefing.strategicAction.toLowerCase();
+
+        if (action.includes('laporan') || action.includes('keuangan') || action.includes('financial')) {
+            document.getElementById('financial-reports')?.scrollIntoView({ behavior: 'smooth' });
+        } else if (action.includes('kpi') || action.includes('performa')) {
+            document.getElementById('kpi-center')?.scrollIntoView({ behavior: 'smooth' });
+        } else {
+            // Default behavior: scroll to next section
+            window.scrollBy({ top: 400, behavior: 'smooth' });
+        }
+    };
+
     return (
         <div className="bg-gradient-to-br from-slate-900 to-indigo-950 rounded-2xl shadow-xl border border-indigo-500/30 overflow-hidden mb-8">
             {/* Header */}
@@ -83,9 +96,12 @@ export const ChiefStrategyOfficer = ({ briefing }: Props) => {
                                 </p>
                             </div>
 
-                            <button className="mt-8 w-full py-3 bg-white text-indigo-900 font-bold rounded-lg hover:bg-indigo-50 transition-colors flex items-center justify-center gap-2">
+                            <button
+                                onClick={handleExecute}
+                                className="mt-8 w-full py-3 bg-white text-indigo-900 font-bold rounded-lg hover:bg-indigo-50 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg flex items-center justify-center gap-2 group-hover:shadow-indigo-500/50"
+                            >
                                 Execute Strategy
-                                <Zap size={16} />
+                                <Zap size={16} className="group-hover:text-amber-500 transition-colors" />
                             </button>
                         </div>
 
