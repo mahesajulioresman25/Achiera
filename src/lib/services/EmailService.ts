@@ -34,7 +34,8 @@ export class EmailService {
 
     private static getFromAddress() {
         const rawName = process.env.SMTP_FROM_NAME || 'Achiera Platform';
-        const cleanName = rawName.replace(/>/g, '').trim();
+        // Aggressively clean: remove <, >, and extra spaces
+        const cleanName = rawName.replace(/[<>]/g, '').trim();
         const fromEmail = process.env.SMTP_FROM || process.env.SMTP_USER;
         return `"${cleanName}" <${fromEmail}>`;
     }
@@ -249,7 +250,6 @@ export class EmailService {
                 subject: order.isGift
                     ? `[Achiera] Konfirmasi Pesanan Hadiah #${order.invoiceNo}`
                     : `[Achiera] Konfirmasi Pesanan #${order.invoiceNo}`,
-                html: html,
                 html: html
             });
             console.log(`[EmailService] Order confirmation sent to ${recipientEmail}${order.isGift ? ' (gift recipient)' : ''}`);
@@ -372,16 +372,11 @@ export class EmailService {
         `.trim();
 
         try {
-            // Clean sender name
-            const rawFromName = process.env.SMTP_FROM_NAME || 'Achiera Platform';
-            const cleanFromName = rawFromName.replace(/>/g, '').trim();
-
             await this.transporter.sendMail({
-                from: `"${cleanFromName}" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+                from: this.getFromAddress(),
                 to: recipientEmail,
                 subject: `🎁 Surprise! Ada kiriman spesial dari ${order.customerName}`,
                 html: html,
-                html: html
             });
             console.log(`[EmailService] Gift Notification sent to ${recipientEmail}`);
 
@@ -460,16 +455,11 @@ export class EmailService {
         `.trim();
 
         try {
-            // Clean sender name
-            const rawFromName = process.env.SMTP_FROM_NAME || 'Achiera Platform';
-            const cleanFromName = rawFromName.replace(/>/g, '').trim();
-
             await this.transporter.sendMail({
-                from: `"${cleanFromName}" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+                from: this.getFromAddress(),
                 to: order.customerEmail,
                 subject: `[Achiera] Update Pesanan #${order.invoiceNo}: ${newStatus}`,
                 html: html,
-                html: html
             });
             console.log(`[EmailService] Status update sent to ${order.customerEmail}`);
 
@@ -495,7 +485,7 @@ export class EmailService {
 
         try {
             await this.transporter.sendMail({
-                from: `"${process.env.SMTP_FROM_NAME || 'Achiera Alert'}" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+                from: this.getFromAddress(),
                 to: adminEmail,
                 subject: `⚠️ Alert: ${subject}`,
                 html: `<div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
@@ -574,16 +564,11 @@ export class EmailService {
         `.trim();
 
         try {
-            // Clean sender name
-            const rawFromName = process.env.SMTP_FROM_NAME || 'Achiera Platform';
-            const cleanFromName = rawFromName.replace(/>/g, '').trim();
-
             await this.transporter.sendMail({
-                from: `"${cleanFromName}" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+                from: this.getFromAddress(),
                 to: email,
                 subject: `[Achiera] Kode OTP ${label}: ${code}`,
                 html: html,
-                html: html
             });
             console.log(`[EmailService] OTP email sent to ${email} for ${type}`);
 
@@ -816,16 +801,11 @@ export class EmailService {
         `.trim();
 
         try {
-            // Clean sender name
-            const rawFromName = process.env.SMTP_FROM_NAME || 'Achiera Platform';
-            const cleanFromName = rawFromName.replace(/>/g, '').trim();
-
             await this.transporter.sendMail({
-                from: `"${cleanFromName}" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+                from: this.getFromAddress(),
                 to: subscription.customerEmail,
                 subject: `[Achiera] Langganan Bunda Aktif - ${subscription.plan?.name || 'Custom'}`,
                 html: html,
-                html: html
             });
             console.log(`[EmailService] Subscription invoice sent to ${subscription.customerEmail}`);
 
