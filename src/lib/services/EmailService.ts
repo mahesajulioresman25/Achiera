@@ -284,6 +284,124 @@ export class EmailService {
         }
     }
 
+    static async sendGiftNotification(order: EmailOrderInfo) {
+        const recipientEmail = order.recipientEmail;
+        if (!recipientEmail) {
+            console.warn('[EmailService] Skipping Gift Notification: No recipient email provided');
+            return false;
+        }
+
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+        const trackingUrl = `${appUrl}/order/track/${order.invoiceNo}`;
+
+        const html = `
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: 'Inter', sans-serif; color: #2D3A2D; line-height: 1.6; margin: 0; padding: 0; background-color: #FDFBF7; }
+        .container { max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 24px; overflow: hidden; border: 1px solid #E5E1D8; shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .header { background: #DB2777; color: #FDFBF7; padding: 40px; text-align: center; }
+        .content { padding: 40px; }
+        .footer { background: #F9F7F2; padding: 30px; text-align: center; color: #8B7E66; font-size: 12px; }
+        h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.02em; }
+        .card-box { background: #FFF1F2; padding: 30px; border-radius: 20px; margin: 30px 0; border: 2px dashed #FECDD3; text-align: center; }
+        .button { display: inline-block; padding: 16px 32px; background: #DB2777; color: #FDFBF7; text-decoration: none; border-radius: 16px; font-weight: bold; margin-top: 20px; }
+        .accent { color: #FECDD3; text-transform: uppercase; font-size: 10px; font-weight: 900; letter-spacing: 0.2em; display: block; margin-bottom: 8px; }
+        
+        .item-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+        .item-table th { text-align: left; border-bottom: 2px solid #F3F1ED; padding: 10px; color: #8B7E66; }
+        .item-table td { padding: 12px 10px; border-bottom: 1px solid #F3F1ED; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="${appUrl}/images/logos/rasa-ibu-logo-white.png" alt="Rasa Ibu" style="height: 50px; margin-bottom: 20px; opacity: 0.9;">
+            <span class="accent">Special Delivery</span>
+            <h1>Ada Kiriman Spesial Untukmu! 🎁</h1>
+        </div>
+        <div class="content">
+            <p>Halo <strong>${order.recipientName || 'Kakak'}</strong>!</p>
+            <p>Ada paket kejutan yang sedang menuju ke tempatmu. Seseorang ingin berbagi kebahagiaan lewat hidangan spesial Rasa Ibu.</p>
+            
+            <div class="card-box">
+                <p style="font-size: 12px; font-weight: 800; color: #BE185D; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 15px;">Pesan dari Pengirim:</p>
+                <div style="font-size: 18px; font-style: italic; font-family: 'Georgia', serif; color: #831843; line-height: 1.6;">
+                    "${order.giftMessage || 'Enjoy this special treat!'}"
+                </div>
+                <p style="margin-top: 20px; font-size: 14px; font-weight: bold; color: #9D174D;">— ${order.customerName}</p>
+            </div>
+
+            <h3 style="font-size: 16px; margin: 30px 0 10px 0;">📦 Isi Paket Kebahagiaan:</h3>
+            <table class="item-table">
+                <thead>
+                    <tr>
+                        <th width="70%">Menu</th>
+                        <th width="30%" style="text-align: center;">Qty</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${((order.items || (order as any).orderItems) || []).map((item: any) => `
+                        <tr>
+                            <td>
+                                <strong>${item.name}</strong><br/>
+                                <span style="font-size: 12px; color: #8B7E66;">${item.variantName || 'Normal'}</span>
+                            </td>
+                            <td align="center"><strong>${item.quantity}</strong> porsi</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <p style="font-size: 14px; color: #8B7E66;">Penasaran sudah sampai mana?</p>
+                <a href="${trackingUrl}" class="button">Lacak Kiriman</a>
+            </div>
+            
+            <p style="margin-top: 30px; font-size: 12px; color: #8B7E66; text-align: center;">
+                Jika ada pertanyaan mengenai pengiriman, tim kami siap membantu.
+            </p>
+        </div>
+        <div class="footer">
+            <p>© 2026 Rasa Ibu - Achiera. Semua Hak Dilindungi.<br>Dapur Utama Rasa Ibu</p>
+        </div>
+    </div>
+</body>
+</html>
+        `.trim();
+
+        try {
+            // Clean sender name
+            const rawFromName = process.env.SMTP_FROM_NAME || 'Achiera Platform';
+            const cleanFromName = rawFromName.replace(/>/g, '').trim();
+
+            await this.transporter.sendMail({
+                from: `"${cleanFromName}" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+                to: recipientEmail,
+                subject: `🎁 Surprise! Ada kiriman spesial dari ${order.customerName}`,
+                html: html,
+                html: html
+            });
+            console.log(`[EmailService] Gift Notification sent to ${recipientEmail}`);
+
+            // System log
+            const { logSystemActivity } = await import('@/lib/logger');
+            await logSystemActivity(
+                'EMAIL_SEND',
+                'INFO',
+                `Gift notification sent to ${recipientEmail}`,
+                { invoiceNo: order.invoiceNo, sender: order.customerName },
+                order.brandId
+            );
+
+            return true;
+        } catch (error) {
+            console.error('[EmailService] Gift Notification Error:', error);
+            return false;
+        }
+    }
+
     static async sendStatusUpdate(order: EmailOrderInfo, newStatus: string) {
         if (!order.customerEmail) {
             console.warn('[EmailService] Skipping Status Update: No customer email provided');

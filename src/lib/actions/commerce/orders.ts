@@ -257,6 +257,18 @@ export async function createWebsiteOrderAction(data: {
                     paymentMethod: data.paymentMethod,
                     brandId: order.brandId || undefined
                 } as any);
+
+                // Send Gift Notification if applicable
+                if (data.isGift && data.recipientEmail) {
+                    await EmailService.sendGiftNotification({
+                        ...order,
+                        giftMessage: data.giftMessage,
+                        recipientName: data.recipientName,
+                        recipientEmail: data.recipientEmail,
+                        customerName: data.customerName, // Sender
+                        brandId: order.brandId || undefined
+                    } as any);
+                }
             }
         } catch (emailError) {
             console.error('Email notification error (non-critical):', emailError);
