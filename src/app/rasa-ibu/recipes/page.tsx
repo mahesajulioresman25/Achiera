@@ -47,49 +47,10 @@ export default async function RecipesPage({
     const heroImage = config?.recipeListHeroImage || 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1600&q=80';
 
     // Fallback to mock data if no recipes in database
-    const displayRecipes = recipes.length > 0 ? recipes : [
-        {
-            id: '1',
-            title: 'Sarden Rasa Ibu Tumis Pete',
-            authorName: 'Bunda Ani',
-            image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=80',
-            duration: 15,
-            difficulty: 'Mudah',
-            description: 'Cara asik menikmati sarden kaleng agar lebih wangi dan menggugah selera keluarga.',
-            likesCount: 124,
-            slug: 'sarden-tumis-pete'
-        },
-        {
-            id: '2',
-            title: 'Rendang Suwir Crispy',
-            authorName: 'Kak Sari',
-            image: 'https://images.unsplash.com/photo-1606491956689-2ea28c674675?w=800&q=80',
-            duration: 20,
-            difficulty: 'Sedang',
-            description: 'Kreasi rendang sisa lebaran yang digoreng kering, cocok buat lauk tahan lama.',
-            likesCount: 89,
-            slug: 'rendang-suwir-crispy'
-        },
-        {
-            id: '3',
-            title: 'Nasi Goreng Sarden Pedas',
-            authorName: 'Chef Juna (KW)',
-            image: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=800&q=80',
-            duration: 10,
-            difficulty: 'Mudah',
-            description: 'Sarapan praktis cuma modal nasi kemarin dan sarden Rasa Ibu.',
-            likesCount: 215,
-            slug: 'nasi-goreng-sarden'
-        }
-    ];
+    const displayRecipes = recipes;
 
     // Fallback categories if none in database
-    const displayCategories = categories.length > 0 ? categories : [
-        { name: 'Sarapan', count: 3 },
-        { name: 'Makan Siang', count: 5 },
-        { name: 'Camilan', count: 2 },
-        { name: 'Bekal Anak', count: 4 }
-    ];
+    const displayCategories = categories;
 
     return (
         <div className="min-h-screen bg-[#FDFBF7] pb-24">

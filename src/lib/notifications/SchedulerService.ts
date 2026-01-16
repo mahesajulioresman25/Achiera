@@ -33,19 +33,16 @@ class SchedulerService {
         // Disable node-cron in production (Vercel) as it won't persist
         // Tasks are consolidated in unified-worker API
         if (process.env.NODE_ENV === 'production') {
-            console.log('[Scheduler] Skipping node-cron start in production environment.');
             return;
         }
 
         this.isRunning = true;
-        console.log('[Scheduler] Starting Automated Reporting System...');
 
         // 1. Daily Insight: Every day at 21:00 (9 PM)
         // 1. Daily Insight: Every day at 21:00 (9 PM)
         cron.schedule('0 21 * * *', () => {
             // Detach execution to prevent blocking the scheduler check
             setImmediate(async () => {
-                console.log('[Scheduler] Triggering Daily Insight...');
                 await this.runDailyInsight();
             });
         });
@@ -53,92 +50,88 @@ class SchedulerService {
         // 2. Weekly Trend: Every Monday at 08:00
         cron.schedule('0 8 * * 1', () => {
             setImmediate(async () => {
-                console.log('[Scheduler] Triggering Weekly Trend...');
-                await this.runWeeklyTrend();
+                setImmediate(async () => {
+                    await this.runWeeklyTrend();
+                });
             });
-        });
 
-        // 3. Monthly Report: Every 1st of the month at 08:00
-        cron.schedule('0 8 1 * *', () => {
-            setImmediate(async () => {
-                console.log('[Scheduler] Triggering Monthly Report...');
-                await this.runMonthlyReport();
-            });
-        });
+            // 3. Monthly Report: Every 1st of the month at 08:00
+            cron.schedule('0 8 1 * *', () => {
+                setImmediate(async () => {
+                    setImmediate(async () => {
+                        await this.runMonthlyReport();
+                    });
+                });
 
-        // 4. Emergency Alerts: Every 15 minutes
-        cron.schedule('*/15 * * * *', async () => {
-            await this.runEmergencyAlerts();
-        });
+                // 4. Emergency Alerts: Every 15 minutes
+                cron.schedule('*/15 * * * *', async () => {
+                    await this.runEmergencyAlerts();
+                });
 
-        // 5. Daily Overhead Sync: Every day at 01:00 AM
-        cron.schedule('0 1 * * *', async () => {
-            console.log('[Scheduler] Triggering Daily Overhead Sync...');
-            await this.runDailyOverheadSync();
-        });
+                // 5. Daily Overhead Sync: Every day at 01:00 AM
+                cron.schedule('0 1 * * *', async () => {
+                    await this.runDailyOverheadSync();
+                });
 
-        console.log('[Scheduler] All jobs scheduled successfully.');
-    }
+
+            }
 
     private async runDailyInsight() {
-        try {
-            const brand = await prisma.brand.findFirst({ where: { name: 'Rasa Ibu' } });
-            if (!brand) return;
+                try {
+                    const brand = await prisma.brand.findFirst({ where: { name: 'Rasa Ibu' } });
+                    if(!brand) return;
 
-            const data = await this.dailyService.collectDailyData(brand.id);
-            const anomalies = this.dailyService.detectAnomalies(data);
-            const analysis = await generateDailyInsights(data, anomalies);
+                    const data = await this.dailyService.collectDailyData(brand.id);
+                    const anomalies = this.dailyService.detectAnomalies(data);
+                    const analysis = await generateDailyInsights(data, anomalies);
 
-            await this.notificationService.sendDailyInsight(brand.id, analysis, data);
-            console.log('[Scheduler] Daily Insight sent for Rasa Ibu');
-        } catch (e) {
-            console.error('[Scheduler] Error in Daily Insight:', e);
-        }
-    }
+                    await this.notificationService.sendDailyInsight(brand.id, analysis, data);
+                } catch(e) {
+                    console.error('[Scheduler] Error in Daily Insight:', e);
+                }
+            }
 
     private async runWeeklyTrend() {
-        try {
-            const brand = await prisma.brand.findFirst({ where: { name: 'Rasa Ibu' } });
-            if (!brand) return;
+                try {
+                    const brand = await prisma.brand.findFirst({ where: { name: 'Rasa Ibu' } });
+                    if(!brand) return;
 
-            const data = await this.monthlyService.getWeeklyTrends(brand.id);
-            await this.notificationService.sendWeeklyTrend(brand.id, data);
-            console.log('[Scheduler] Weekly Trend sent for Rasa Ibu');
-        } catch (e) {
-            console.error('[Scheduler] Error in Weekly Trend:', e);
-        }
-    }
+                    const data = await this.monthlyService.getWeeklyTrends(brand.id);
+                    await this.notificationService.sendWeeklyTrend(brand.id, data);
+                } catch(e) {
+                    console.error('[Scheduler] Error in Weekly Trend:', e);
+                }
+            }
 
     private async runMonthlyReport() {
-        try {
-            const brand = await prisma.brand.findFirst({ where: { name: 'Rasa Ibu' } });
-            if (!brand) return;
+                try {
+                    const brand = await prisma.brand.findFirst({ where: { name: 'Rasa Ibu' } });
+                    if(!brand) return;
 
-            const data = await this.monthlyService.collectMonthlyData(brand.id);
-            const analysis = await analyzeMonthlyData(data);
+                    const data = await this.monthlyService.collectMonthlyData(brand.id);
+                    const analysis = await analyzeMonthlyData(data);
 
-            await this.notificationService.sendMonthlyReport(brand.id, data, analysis);
-            console.log('[Scheduler] Monthly Report sent for Rasa Ibu');
-        } catch (e) {
-            console.error('[Scheduler] Error in Monthly Report:', e);
-        }
-    }
+                    await this.notificationService.sendMonthlyReport(brand.id, data, analysis);
+                } catch(e) {
+                    console.error('[Scheduler] Error in Monthly Report:', e);
+                }
+            }
 
     private async runEmergencyAlerts() {
-        try {
-            const brand = await prisma.brand.findFirst({ where: { name: 'Rasa Ibu' } });
-            if (!brand) return;
+                try {
+                    const brand = await prisma.brand.findFirst({ where: { name: 'Rasa Ibu' } });
+                    if(!brand) return;
 
-            // Low Stock Check
-            const lowStockItems = await prisma.frozenVariant.findMany({
-                where: {
-                    product: { category: { brandId: brand.id } },
-                    stockOnHand: { lte: 5 }
-                },
-                include: { product: true }
-            });
+                    // Low Stock Check
+                    const lowStockItems = await prisma.frozenVariant.findMany({
+                        where: {
+                            product: { category: { brandId: brand.id } },
+                            stockOnHand: { lte: 5 }
+                        },
+                        include: { product: true }
+                    });
 
-            if (lowStockItems.length > 0) {
+                    if(lowStockItems.length > 0) {
                 const items = lowStockItems.map(v => ({
                     name: v.product.name,
                     stock: v.stockOnHand,
@@ -175,7 +168,6 @@ class SchedulerService {
                 await syncDailyOverheadAction(brand.id);
                 await syncDemandAccuracyAction(brand.id);
             }
-            console.log('[Scheduler] Daily Overhead & AI Accuracy Sync completed for all brands');
         } catch (e) {
             console.error('[Scheduler] Error in Daily Overhead Sync:', e);
         }

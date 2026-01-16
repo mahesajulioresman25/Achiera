@@ -302,7 +302,7 @@ async function evaluateIncreaseAdSpend(brandId: string): Promise<RecommendationD
  * Run recommendation engine
  */
 export async function runRecommendationEngine(brandId?: string): Promise<void> {
-    console.log('[Recommendations] Starting recommendation engine...');
+
 
     const brands = brandId
         ? [await prisma.brand.findUnique({ where: { id: brandId } })]
@@ -356,14 +356,14 @@ export async function runRecommendationEngine(brandId?: string): Promise<void> {
                     }
                 });
 
-                console.log(`[Recommendations] ✓ ${brand.name}: ${rec.title}`);
+
             }
         } catch (error) {
             console.error(`[Recommendations] ✗ Failed for brand ${brand.name}:`, error);
         }
     }
 
-    console.log('[Recommendations] Recommendation engine complete');
+
 }
 
 // CLI execution

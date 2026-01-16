@@ -129,7 +129,7 @@ async function aggregateSalesForDate(
 export async function runDailySalesAggregation(date?: Date): Promise<void> {
     const targetDate = date || new Date(Date.now() - 24 * 60 * 60 * 1000); // Yesterday
 
-    console.log(`[Aggregation] Running daily sales aggregation for ${targetDate.toISOString().split('T')[0]}`);
+
 
     // Get all brands
     const brands = await prisma.brand.findMany({
@@ -163,13 +163,13 @@ export async function runDailySalesAggregation(date?: Date): Promise<void> {
                 }
             });
 
-            console.log(`[Aggregation] ✓ ${brand.name}: ${metrics.orderCount} orders, ${metrics.netRevenue} revenue`);
+
         } catch (error) {
             console.error(`[Aggregation] ✗ Failed for brand ${brand.name}:`, error);
         }
     }
 
-    console.log('[Aggregation] Daily sales aggregation complete');
+
 }
 
 // CLI execution
