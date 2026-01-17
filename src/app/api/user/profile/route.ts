@@ -176,9 +176,10 @@ export async function PUT(request: NextRequest) {
         if (birthday) {
             try {
                 // Find all loyalty members for this phone number across all brands
-                // We need to update each one individually to satisfy brand isolation
+                // We need to use unisolatedPrisma for cross-brand query
                 if (updatedUser.phone) {
-                    const loyaltyMembers = await prisma.loyaltyMember.findMany({
+                    const { unisolatedPrisma } = await import('@/lib/prisma');
+                    const loyaltyMembers = await unisolatedPrisma.loyaltyMember.findMany({
                         where: { customerPhone: updatedUser.phone },
                         select: { id: true, brandId: true }
                     });

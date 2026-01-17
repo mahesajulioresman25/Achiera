@@ -110,8 +110,27 @@ model Brand {
   frozenProducts               FrozenProduct[]
   frozenVariants               FrozenVariant[]
   productWishlists             ProductWishlist[]
+  seasonalConfigs              SeasonalConfig[]
 
   @@map("brands")
+}
+
+model SeasonalConfig {
+  id                String   @id @default(cuid())
+  brandId           String
+  brand             Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  seasonType        String   // 'IMLEK', 'RAMADAN', 'WAISAK', etc.
+  isEnabled         Boolean  @default(true)
+  customColors      Json?    // Override default colors {primary, secondary, text}
+  customOrnamentUrl String?  @db.Text // Custom uploaded ornament image URL
+  startDateOverride DateTime? // Manual date override for testing
+  endDateOverride   DateTime?
+  promoMessage      String?  @db.Text // Custom promo message for this celebration
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([brandId, seasonType])
+  @@map("seasonal_configs")
 }
 
 model User {
