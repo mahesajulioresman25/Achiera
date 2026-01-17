@@ -2,9 +2,9 @@
  * Utility to compress images on the client side using Canvas API.
  * This helps avoid 413 Payload Too Large errors on server actions.
  */
-export async function compressImage(file: File, maxWidth = 1200, maxHeight = 1200, quality = 0.6): Promise<File> {
-    // If file is already reasonably small (< 150KB) and not a huge dimension, don't bother
-    if (file.size < 150 * 1024 && file.type === 'image/jpeg') return file;
+export async function compressImage(file: File, maxWidth = 1600, maxHeight = 1600, quality = 0.8): Promise<File> {
+    // If file is already reasonably small (< 200KB) and not a huge dimension, don't bother
+    if (file.size < 200 * 1024 && file.type === 'image/jpeg') return file;
 
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -51,12 +51,9 @@ export async function compressImage(file: File, maxWidth = 1200, maxHeight = 120
                                 lastModified: Date.now(),
                             });
 
-                            console.log(`[ImageCompression] ${file.name}: ${Math.round(file.size / 1024)}KB -> ${Math.round(compressedFile.size / 1024)}KB`);
-
-                            // Extreme fallback: if still > 1.5MB, force even smaller
-                            if (compressedFile.size > 1.5 * 1024 * 1024 && quality > 0.3) {
-                                console.warn(`[ImageCompression] Target still too large (${Math.round(compressedFile.size / 1024)}KB), re-compressing...`);
-                                compressedFile = await compressImage(compressedFile, maxWidth * 0.7, maxHeight * 0.7, quality - 0.2);
+                            // fallback: if still > 2MB, force slightly smaller
+                            if (compressedFile.size > 2 * 1024 * 1024 && quality > 0.4) {
+                                compressedFile = await compressImage(compressedFile, maxWidth * 0.8, maxHeight * 0.8, quality - 0.2);
                             }
 
                             resolve(compressedFile);
