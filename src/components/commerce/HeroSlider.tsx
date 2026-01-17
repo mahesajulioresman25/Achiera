@@ -65,9 +65,6 @@ export default function HeroSlider({ slides, autoPlayInterval = 6000 }: HeroSlid
                 >
                     {/* Background Media with Parallax-like scale effect */}
                     <motion.div
-                        initial={{ scale: 1.1 }}
-                        animate={{ scale: 1 }}
-                        transition={{ duration: 10, ease: "linear" }}
                         className="absolute inset-0"
                     >
                         {slides[currentIndex].mediaType === 'IMAGE' ? (
