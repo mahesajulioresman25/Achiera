@@ -52,7 +52,7 @@ export default function HeroSlider({ slides, autoPlayInterval = 6000 }: HeroSlid
     if (!slides || slides.length === 0) return null;
 
     return (
-        <div className="relative w-full h-[650px] md:h-[800px] overflow-hidden bg-[#1A241A] rounded-[3.5rem] shadow-2xl group/slider">
+        <div className="relative w-full h-[500px] sm:h-[600px] md:h-[800px] overflow-hidden bg-[#1A241A] rounded-[2rem] sm:rounded-[3rem] md:rounded-[3.5rem] shadow-2xl group/slider">
             <AnimatePresence mode="wait">
                 <motion.div
                     key={currentIndex}
@@ -99,7 +99,7 @@ export default function HeroSlider({ slides, autoPlayInterval = 6000 }: HeroSlid
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.3, duration: 0.6 }}
-                                    className="mb-6 flex items-center gap-3"
+                                    className="mb-4 md:mb-6 flex items-center gap-3"
                                 >
                                     <span className="w-12 h-px bg-amber-500/50" />
                                     <span className="text-amber-500 text-xs md:text-sm font-black uppercase tracking-[0.4em]">
@@ -113,7 +113,7 @@ export default function HeroSlider({ slides, autoPlayInterval = 6000 }: HeroSlid
                                 initial={{ opacity: 0, y: 30 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.5, duration: 0.8 }}
-                                className="text-4xl md:text-8xl font-black text-[#FDFBF7] leading-[1.1] mb-8 tracking-tight font-serif italic"
+                                className="text-3xl sm:text-4xl md:text-8xl font-black text-[#FDFBF7] leading-[1.2] md:leading-[1.1] mb-6 md:mb-8 tracking-tight font-serif italic"
                             >
                                 {slides[currentIndex].title.split('\\n').map((line, i) => (
                                     <React.Fragment key={i}>
@@ -128,7 +128,7 @@ export default function HeroSlider({ slides, autoPlayInterval = 6000 }: HeroSlid
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.7, duration: 0.6 }}
-                                className="text-lg md:text-2xl text-[#FDFBF7]/80 leading-relaxed font-medium mb-12 max-w-xl"
+                                className="text-sm sm:text-lg md:text-2xl text-[#FDFBF7]/80 leading-relaxed font-medium mb-8 md:mb-12 max-w-xl"
                             >
                                 {slides[currentIndex].subtitle}
                             </motion.p>
@@ -142,7 +142,7 @@ export default function HeroSlider({ slides, autoPlayInterval = 6000 }: HeroSlid
                                 >
                                     <Link
                                         href={slides[currentIndex].ctaLink || '#'}
-                                        className="group/cta relative inline-flex items-center gap-4 bg-amber-500 hover:bg-amber-600 text-[#1A241A] px-10 py-5 rounded-2xl font-black text-xs uppercase tracking-widest transition-all duration-300 hover:shadow-[0_0_30px_rgba(245,158,11,0.4)] active:scale-95"
+                                        className="group/cta relative inline-flex items-center gap-4 bg-amber-500 hover:bg-amber-600 text-[#1A241A] px-8 sm:px-10 py-4 sm:py-5 rounded-2xl font-black text-[10px] sm:text-xs uppercase tracking-widest transition-all duration-300 hover:shadow-[0_0_30px_rgba(245,158,11,0.4)] active:scale-95"
                                     >
                                         <span>{slides[currentIndex].ctaLabel}</span>
                                         <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover/cta:translate-x-2" />

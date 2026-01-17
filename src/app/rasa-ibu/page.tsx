@@ -195,7 +195,7 @@ export default async function RasaIbuHomePage() {
                         <HeroSlider slides={heroSlides} autoPlayInterval={5000} />
                     ) : (
                         // Fallback to static hero if no slides
-                        <div className="relative h-[600px] flex items-center overflow-hidden bg-gradient-to-br from-[#2D3A2D] via-[#1A241A] to-[#2D3A2D] rounded-[3rem] shadow-2xl">
+                        <div className="relative h-[500px] sm:h-[600px] md:h-[600px] flex items-center overflow-hidden bg-gradient-to-br from-[#2D3A2D] via-[#1A241A] to-[#2D3A2D] rounded-[2rem] sm:rounded-[3rem] md:rounded-[3rem] shadow-2xl">
                             <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent z-10"></div>
                             {/* Decorative overlay pattern */}
                             <div className="absolute inset-0 opacity-5 z-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '40px 40px' }}></div>
@@ -207,23 +207,23 @@ export default async function RasaIbuHomePage() {
                             <div className="relative z-20 max-w-7xl mx-auto px-6 w-full">
                                 <div className="max-w-2xl space-y-8">
                                     <span className="inline-block text-xs font-black uppercase tracking-[0.3em] text-amber-400 bg-amber-400/10 px-4 py-2 rounded-full border border-amber-400/20">{heroTagline}</span>
-                                    <h1 className="text-4xl md:text-7xl font-black leading-[1.1] text-white whitespace-pre-line drop-shadow-2xl">
+                                    <h1 className="text-3xl sm:text-4xl md:text-7xl font-black leading-[1.2] md:leading-[1.1] text-white whitespace-pre-line drop-shadow-2xl">
                                         {heroTitle}
                                     </h1>
-                                    <p className="text-base md:text-xl text-white/90 leading-relaxed font-medium whitespace-pre-line max-w-xl">
+                                    <p className="text-sm sm:text-base md:text-xl text-white/90 leading-relaxed font-medium whitespace-pre-line max-w-xl">
                                         {heroSubtitle}
                                     </p>
                                     <div className="flex flex-col sm:flex-row gap-4 pt-6">
                                         <Link
                                             href={heroCtaPrimaryLink}
-                                            className="group inline-block px-10 py-5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-black text-sm uppercase tracking-widest rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 text-center relative overflow-hidden"
+                                            className="group inline-block px-8 sm:px-10 py-4 sm:py-5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-black text-[10px] sm:text-sm uppercase tracking-widest rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 text-center relative overflow-hidden"
                                         >
                                             <span className="relative z-10">{heroCtaPrimary}</span>
                                             <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
                                         </Link>
                                         <Link
                                             href={heroCtaSecondaryLink}
-                                            className="inline-block px-10 py-5 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-black text-sm uppercase tracking-widest rounded-2xl border-2 border-white/30 hover:border-white/60 transition-all duration-300 text-center shadow-lg"
+                                            className="inline-block px-8 sm:px-10 py-4 sm:py-5 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-black text-[10px] sm:text-sm uppercase tracking-widest rounded-2xl border-2 border-white/30 hover:border-white/60 transition-all duration-300 text-center shadow-lg"
                                         >
                                             {heroCtaSecondary}
                                         </Link>
