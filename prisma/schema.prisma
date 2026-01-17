@@ -123,6 +123,7 @@ model User {
   phone                String? // WhatsApp number for contact
   address              String?               @db.Text // Delivery address
   profileImage         String?               @db.Text // Profile photo URL
+  birthday             DateTime?
   createdAt            DateTime              @default(now())
   updatedAt            DateTime              @updatedAt
   globalRole           GlobalRole            @default(USER)

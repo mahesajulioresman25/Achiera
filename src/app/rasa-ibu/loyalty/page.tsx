@@ -3,7 +3,8 @@
 import React, { useState } from 'react';
 import { getMemberInfoAction, updateMemberBirthdayAction } from '@/lib/actions/commerce/loyalty';
 import { getPublicBrandConfigAction } from '@/lib/actions/rasa-ibu/intelligence';
-import { Coins, Loader2, Sparkles, Trophy, Wallet, ArrowLeft, CheckCircle2, Cake, ArrowRight, Star, HelpCircle } from 'lucide-react';
+import { Coins, Loader2, Sparkles, Trophy, Wallet, ArrowLeft, CheckCircle2, Cake, ArrowRight, Star, HelpCircle, Heart, Gift } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
 export default function PublicLoyaltyPage() {
@@ -93,8 +94,48 @@ export default function PublicLoyaltyPage() {
     const progress = Math.min(100, (currentSpent / nextThreshold) * 100);
     const remaining = nextThreshold - currentSpent;
 
+    // Birthday Logic
+    const today = new Date();
+    const isBirthMonth = memberData?.birthday && new Date(memberData.birthday).getMonth() === today.getMonth();
+    const isBirthDay = isBirthMonth && new Date(memberData.birthday).getDate() === today.getDate();
+
     return (
         <div className="min-h-screen bg-[#FDFBF7] pb-20">
+            {/* Birthday Celebration Overlay */}
+            <AnimatePresence>
+                {isBirthDay && (
+                    <div className="fixed inset-0 pointer-events-none z-[100] overflow-hidden">
+                        {[...Array(20)].map((_, i) => (
+                            <motion.div
+                                key={i}
+                                initial={{
+                                    opacity: 0,
+                                    y: "100vh",
+                                    x: `${Math.random() * 100}vw`,
+                                    rotate: 0,
+                                    scale: 0.5 + Math.random()
+                                }}
+                                animate={{
+                                    opacity: [0, 1, 1, 0],
+                                    y: "-20vh",
+                                    rotate: 360,
+                                    x: `${(Math.random() * 100) + (Math.sin(i) * 10)}vw`
+                                }}
+                                transition={{
+                                    duration: 5 + Math.random() * 5,
+                                    repeat: Infinity,
+                                    delay: Math.random() * 10,
+                                    ease: "linear"
+                                }}
+                                className="absolute text-amber-500/30"
+                            >
+                                {i % 2 === 0 ? <Heart className="w-8 h-8 fill-current" /> : <Sparkles className="w-6 h-6" />}
+                            </motion.div>
+                        ))}
+                    </div>
+                )}
+            </AnimatePresence>
+
             {/* Header / Nav */}
             <div className="max-w-4xl mx-auto px-6 pt-10 pb-6 flex items-center justify-between">
                 <Link href="/rasa-ibu" className="flex items-center gap-2 text-[#8B7E66] hover:text-[#2D3A2D] transition-all group">
@@ -224,11 +265,18 @@ export default function PublicLoyaltyPage() {
                                     </div>
 
                                     <div className="relative z-10">
-                                        <h3 className="text-lg font-black text-amber-900 mb-2">🎁 Double Point Birthday</h3>
+                                        <h3 className="text-lg font-black text-amber-900 mb-2">🎁 {isBirthMonth ? 'Bulan Kelahiran Bunda!' : 'Double Point Birthday'}</h3>
+                                        {isBirthDay && (
+                                            <div className="mb-4 p-4 bg-white/60 backdrop-blur-sm rounded-2xl border border-amber-200 animate-bounce">
+                                                <p className="text-xs font-black text-amber-900 flex items-center gap-2">
+                                                    <Sparkles className="w-4 h-4 text-amber-500" /> Selamat Ulang Tahun, Bunda! Nikmati kejutan spesial hari ini! 🎉
+                                                </p>
+                                            </div>
+                                        )}
                                         {!memberData.birthday ? (
                                             <>
                                                 <p className="text-[11px] text-amber-800 leading-relaxed mb-6 font-medium">
-                                                    Dapatkan 2x Poin di setiap transaksi <strong className="text-amber-600">tepat di hari ulang tahun Bunda</strong>! Lengkapilah tanggal lahir Bunda:
+                                                    Dapatkan <strong className="text-amber-600 uppercase">2x Poin</strong> di setiap transaksi <strong className="text-amber-900">selama bulan kelahiran Bunda</strong>!
                                                 </p>
                                                 <form onSubmit={handleBirthdaySubmit} className="space-y-3">
                                                     <input
@@ -251,27 +299,38 @@ export default function PublicLoyaltyPage() {
                                             </>
                                         ) : (
                                             <div className="space-y-4">
-                                                {/* Check if today is birthday */}
-                                                {(new Date().getDate() === new Date(memberData.birthday).getDate() &&
-                                                    new Date().getMonth() === new Date(memberData.birthday).getMonth()) ? (
-                                                    <div className="p-5 bg-[#2D3A2D] text-white rounded-3xl border-2 border-amber-400 animate-pulse">
-                                                        <h4 className="text-sm font-black uppercase tracking-widest mb-1 text-amber-400">Selamat Ulang Tahun Bunda! 🎂</h4>
-                                                        <p className="text-[10px] font-medium opacity-90">Bonus 2x Poin aktif otomatis untuk seluruh pesanan hari ini!</p>
+                                                <div className="flex items-center gap-3 p-4 bg-white/40 rounded-2xl border border-amber-200/50">
+                                                    <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                                        <Cake className="w-5 h-5 text-amber-600" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-[10px] font-black text-amber-900 uppercase tracking-wider">Tanggal Spesial Bunda</p>
+                                                        <p className="text-sm font-bold text-amber-800">
+                                                            {new Date(memberData.birthday).toLocaleDateString('id-ID', { day: 'numeric', month: 'long' })}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                {isBirthMonth ? (
+                                                    <div className="p-4 bg-[#2D3A2D] text-white rounded-2xl shadow-lg border border-amber-400/30 overflow-hidden relative group">
+                                                        <motion.div
+                                                            animate={{ scale: [1, 1.1, 1] }}
+                                                            transition={{ duration: 2, repeat: Infinity }}
+                                                            className="absolute -right-2 -top-2 opacity-20"
+                                                        >
+                                                            <Sparkles className="w-16 h-16" />
+                                                        </motion.div>
+                                                        <p className="text-xs font-black uppercase tracking-widest mb-1 text-amber-400 flex items-center gap-2">
+                                                            <Gift className="w-3 h-3" /> Bonus Aktif!
+                                                        </p>
+                                                        <p className="text-[11px] font-medium leading-relaxed">
+                                                            Bunda sedang dalam bulan spesial! Nikmati <span className="text-amber-400 font-black">Double Poin (2x)</span> otomatis untuk setiap pesanan selama bulan ini.
+                                                        </p>
                                                     </div>
                                                 ) : (
-                                                    <div className="p-4 bg-white/40 border border-amber-200 rounded-2xl flex items-center gap-4">
-                                                        <div className="w-10 h-10 bg-amber-600 text-white rounded-full flex items-center justify-center">
-                                                            <Star className="w-5 h-5 fill-current" />
-                                                        </div>
-                                                        <div>
-                                                            <p className="text-[10px] font-black uppercase text-amber-900">Bonus Terdaftar!</p>
-                                                            <p className="text-xs font-bold text-amber-800">Ulang Tahun: {new Date(memberData.birthday).toLocaleDateString('id-ID', { day: 'numeric', month: 'long' })}</p>
-                                                        </div>
-                                                    </div>
+                                                    <p className="text-[10px] text-amber-800 font-medium italic text-center">
+                                                        *Bonus Double Point otomatis aktif pada bulan kelahiran Bunda.
+                                                    </p>
                                                 )}
-                                                <p className="text-[9px] text-amber-800/60 font-bold uppercase tracking-tighter text-center italic">
-                                                    *Bonus 2x Poin hanya berlaku di hari H sesuai tanggal di atas.
-                                                </p>
                                             </div>
                                         )}
                                     </div>

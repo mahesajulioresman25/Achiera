@@ -30,6 +30,7 @@ export async function GET(request: NextRequest) {
                 address: true,
                 profileImage: true,
                 emailVerified: true,
+                birthday: true,
                 createdAt: true,
             }
         });
@@ -79,7 +80,8 @@ export async function PUT(request: NextRequest) {
             newEmail,
             newPassword,
             currentPassword,
-            otpToken
+            otpToken,
+            birthday
         } = body;
 
         const user = await prisma.user.findUnique({
@@ -133,6 +135,7 @@ export async function PUT(request: NextRequest) {
         if (phone !== undefined) updateData.phone = phone;
         if (address !== undefined) updateData.address = address;
         if (profileImage !== undefined) updateData.profileImage = profileImage;
+        if (birthday !== undefined) updateData.birthday = birthday ? new Date(birthday) : null;
 
         if (isChangingEmail) {
             // Check if new email is already taken
@@ -165,8 +168,26 @@ export async function PUT(request: NextRequest) {
                 address: true,
                 profileImage: true,
                 emailVerified: true,
+                birthday: true,
             }
         });
+
+        // 6. Sync Birthday with LoyaltyMember if updated
+        if (birthday) {
+            try {
+                // Find all brands this user is associated with (via UserBrandRole or LoyaltyMember)
+                // For simplicity and based on current flow, we update LoyaltyMember if name/phone matches
+                // Or better, we look for LoyaltyMember by phone if available
+                if (updatedUser.phone) {
+                    await prisma.loyaltyMember.updateMany({
+                        where: { customerPhone: updatedUser.phone },
+                        data: { birthday: new Date(birthday) }
+                    });
+                }
+            } catch (syncError) {
+                console.error('Loyalty birthday sync error:', syncError);
+            }
+        }
 
         return NextResponse.json({
             success: true,

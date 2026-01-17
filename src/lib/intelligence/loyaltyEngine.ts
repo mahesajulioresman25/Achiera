@@ -154,13 +154,12 @@ export class LoyaltyEngine {
             isMarketingBonus = true;
         }
 
-        // Birthday bonus (2x points) - Exact day only
+        // Birthday bonus (2x points) - Entire birth month
         let isBirthdayBonus = false;
         if (member.birthday) {
             const today = new Date();
             const birthday = new Date(member.birthday);
-            if (today.getDate() === birthday.getDate() &&
-                today.getMonth() === birthday.getMonth()) {
+            if (today.getMonth() === birthday.getMonth()) {
                 points *= 2;
                 isBirthdayBonus = true;
             }
@@ -200,7 +199,7 @@ export class LoyaltyEngine {
                 type: 'EARN',
                 points,
                 orderId,
-                description: `Earned ${points} points${isMarketingBonus ? ' (2x Subscriber Bonus)' : ''}${isBirthdayBonus ? ' (Birthday Bonus)' : ''} from order`,
+                description: `Earned ${points} points${isMarketingBonus ? ' (2x Subscriber Bonus)' : ''}${isBirthdayBonus ? ' (Birth Month Bonus)' : ''} from order`,
                 balanceBefore: member.availablePoints || 0,
                 balanceAfter: newAvailablePoints,
                 expiresAt: new Date(Date.now() + config.pointExpiryDays * 24 * 60 * 60 * 1000)

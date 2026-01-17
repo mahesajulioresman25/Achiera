@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Camera, Loader2, Mail, Phone, MapPin, Lock, ShieldCheck, ArrowLeft, Check, MessageCircle } from 'lucide-react';
+import { Camera, Loader2, Mail, Phone, MapPin, Lock, ShieldCheck, ArrowLeft, Check, MessageCircle, Cake } from 'lucide-react';
 import Link from 'next/link';
 
 export default function ProfileEditPage() {
@@ -21,6 +21,7 @@ export default function ProfileEditPage() {
     const [phone, setPhone] = useState('');
     const [address, setAddress] = useState('');
     const [profileImage, setProfileImage] = useState('');
+    const [birthday, setBirthday] = useState('');
 
     // Password change
     const [showPasswordSection, setShowPasswordSection] = useState(false);
@@ -57,6 +58,9 @@ export default function ProfileEditPage() {
                 setPhone(data.data.phone || '');
                 setAddress(data.data.address || '');
                 setProfileImage(data.data.profileImage || '');
+                if (data.data.birthday) {
+                    setBirthday(new Date(data.data.birthday).toISOString().split('T')[0]);
+                }
             }
         } catch (err) {
             setError('Gagal memuat profil');
@@ -209,7 +213,8 @@ export default function ProfileEditPage() {
         const changes: any = {
             name,
             phone,
-            address
+            address,
+            birthday
         };
 
         if (showPasswordSection) {
@@ -368,6 +373,21 @@ export default function ProfileEditPage() {
                                     placeholder="Jalan, Nomor Rumah, RT/RW, Kelurahan..."
                                 />
                             </div>
+                        </div>
+
+                        {/* Birthday */}
+                        <div>
+                            <label className="block text-sm font-bold text-[#2D3A2D] mb-1">Tanggal Lahir</label>
+                            <div className="relative">
+                                <Cake className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                <input
+                                    type="date"
+                                    value={birthday}
+                                    onChange={(e) => setBirthday(e.target.value)}
+                                    className="w-full pl-12 pr-4 py-3 rounded-xl bg-[#F9F7F2] border border-[#E5E1D8] focus:ring-2 focus:ring-[#B2BCA2]"
+                                />
+                            </div>
+                            <p className="text-xs text-gray-400 mt-1">Lengkapi untuk mendapatkan hadiah spesial di hari ulang tahun Bunda</p>
                         </div>
 
                         {/* Password Change Section */}

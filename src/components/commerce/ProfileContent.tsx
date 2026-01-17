@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import SubscriptionList from '@/components/commerce/SubscriptionList';
 import OrderHistory from '@/components/commerce/OrderHistory';
 import WishlistTab from '@/components/commerce/WishlistTab';
-import { User, Package, CreditCard, LogOut, Home as HomeIcon, ChevronRight, Settings, Heart } from 'lucide-react';
+import { User, Package, CreditCard, LogOut, Home as HomeIcon, ChevronRight, Settings, Heart, Cake } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import { motion } from 'framer-motion';
 
@@ -145,6 +145,13 @@ export default function ProfileContent({ user }: { user: any }) {
                                             <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8B7E66] ml-2">Nomor WhatsApp</label>
                                             <div className="px-6 py-4 bg-[#F9F7F2] rounded-2xl border border-[#E5E1D8]/50 font-bold text-[#2D3A2D] text-lg">
                                                 {user.phone || <span className="text-gray-300 italic font-medium">Belum diisi</span>}
+                                            </div>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8B7E66] ml-2">Tanggal Lahir</label>
+                                            <div className="px-6 py-4 bg-[#F9F7F2] rounded-2xl border border-[#E5E1D8]/50 font-bold text-[#2D3A2D] text-lg flex items-center gap-3">
+                                                <Cake className="w-5 h-5 text-amber-500" />
+                                                {user.birthday ? new Date(user.birthday).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : <span className="text-gray-300 italic font-medium">Belum diisi</span>}
                                             </div>
                                         </div>
                                         <div className="md:col-span-2 space-y-2">
