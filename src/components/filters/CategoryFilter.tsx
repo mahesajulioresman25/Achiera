@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 interface Category {
     name: string;
@@ -14,21 +15,23 @@ interface CategoryFilterProps {
 }
 
 export default function CategoryFilter({ categories, initialCategory = 'Semua' }: CategoryFilterProps) {
+    const router = useRouter();
+    const searchParams = useSearchParams();
     const [active, setActive] = useState(initialCategory);
     const [isPending, startTransition] = useTransition();
 
     const handleClick = (cat: Category) => {
         startTransition(() => {
             setActive(cat.name);
-            // Update URL with category filter
-            const url = new URL(window.location.href);
+            const params = new URLSearchParams(searchParams.toString());
+
             if (cat.name === 'Semua') {
-                url.searchParams.delete('category');
+                params.delete('category');
             } else {
-                url.searchParams.set('category', cat.slug || cat.name.toLowerCase().replace(/\s+/g, '-'));
+                params.set('category', cat.slug || cat.name.toLowerCase().replace(/\s+/g, '-'));
             }
-            window.history.pushState({}, '', url);
-            window.location.reload(); // Reload to fetch filtered data
+
+            router.push(`/rasa-ibu/products?${params.toString()}`, { scroll: false });
         });
     };
 
@@ -37,10 +40,10 @@ export default function CategoryFilter({ categories, initialCategory = 'Semua' }
             <button
                 onClick={() => handleClick({ name: 'Semua' })}
                 disabled={isPending}
-                className={`px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-colors ${active === 'Semua'
-                        ? 'bg-[#2D3A2D] text-[#FDFBF7]'
-                        : 'bg-[#F9F7F2] text-[#8B7E66] hover:bg-[#F0EEE9]'
-                    } ${isPending ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`px-6 py-3 rounded-full text-sm font-black whitespace-nowrap transition-all duration-300 shadow-sm ${active === 'Semua'
+                        ? 'bg-[#2D3A2D] text-[#FDFBF7] shadow-lg shadow-[#2D3A2D]/20 -translate-y-0.5'
+                        : 'bg-white text-[#8B7E66] hover:bg-[#F9F7F2] border border-[#E5E1D8]'
+                    } ${isPending ? 'opacity-50' : ''}`}
             >
                 Semua
             </button>
@@ -49,12 +52,12 @@ export default function CategoryFilter({ categories, initialCategory = 'Semua' }
                     key={cat.slug || cat.name}
                     onClick={() => handleClick(cat)}
                     disabled={isPending}
-                    className={`px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-colors ${active === cat.name
-                            ? 'bg-[#2D3A2D] text-[#FDFBF7]'
-                            : 'bg-[#F9F7F2] text-[#8B7E66] hover:bg-[#F0EEE9]'
-                        } ${isPending ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    className={`px-6 py-3 rounded-full text-sm font-black whitespace-nowrap transition-all duration-300 shadow-sm ${active === cat.name
+                            ? 'bg-[#2D3A2D] text-[#FDFBF7] shadow-lg shadow-[#2D3A2D]/20 -translate-y-0.5'
+                            : 'bg-white text-[#8B7E66] hover:bg-[#F9F7F2] border border-[#E5E1D8]'
+                        } ${isPending ? 'opacity-50' : ''}`}
                 >
-                    {cat.name} {cat.count !== undefined && `(${cat.count})`}
+                    {cat.name} {cat.count !== undefined && <span className="ml-1 opacity-50">({cat.count})</span>}
                 </button>
             ))}
         </div>

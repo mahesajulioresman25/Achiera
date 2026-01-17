@@ -11,6 +11,7 @@ import AddBundleToCartButton from '@/components/commerce/AddBundleToCartButton';
 
 import { unisolatedPrisma as prisma } from '@/lib/prisma';
 import { FlashSaleService } from '@/lib/services/FlashSaleService';
+import ProductSearch from '@/components/filters/ProductSearch';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -19,11 +20,12 @@ export const revalidate = 0;
 export default async function RasaIbuProductListPage({
     searchParams
 }: {
-    searchParams: Promise<{ category?: string }>
+    searchParams: Promise<{ category?: string, q?: string }>
 }) {
     try {
         const params = await searchParams;
         const selectedCategory = params.category;
+        const searchQuery = params.q;
 
         // Fetch Brand RASA IBU
         const brand = await prisma.brand.findUnique({
@@ -47,6 +49,10 @@ export default async function RasaIbuProductListPage({
                     category: {
                         ...(selectedCategory ? { slug: selectedCategory } : {})
                     },
+                    OR: searchQuery ? [
+                        { name: { contains: searchQuery, mode: 'insensitive' } },
+                        { description: { contains: searchQuery, mode: 'insensitive' } }
+                    ] : undefined,
                     inventoryType: 'FINISHED_GOOD'
                 },
                 include: {
@@ -289,22 +295,24 @@ export default async function RasaIbuProductListPage({
 
                     {/* Filter / Search Bar */}
                     <AnimatedSection delay={0.3}>
-                        <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-5 md:p-6 shadow-2xl shadow-slate-200 border border-white mb-16 flex flex-col md:flex-row justify-between items-stretch md:items-center gap-6">
+                        <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-5 md:p-6 shadow-2xl shadow-slate-200 border border-white mb-10 flex flex-col md:flex-row justify-between items-stretch md:items-center gap-6">
                             <CategoryFilter
                                 categories={categories.map((c: any) => ({ name: c.name, slug: c.slug }))}
                                 initialCategory={selectedCategory ? categories.find((c: any) => c.slug === selectedCategory)?.name || 'Semua' : 'Semua'}
                             />
-                            <div className="relative w-full md:w-96">
-                                <input
-                                    type="text"
-                                    placeholder="Cari menu favorit Bunda..."
-                                    className="w-full pl-6 pr-14 py-4 rounded-2xl bg-[#F9F7F2] border border-[#E5E1D8] focus:outline-none focus:ring-4 focus:ring-[#B2BCA2]/20 font-medium transition-all"
-                                />
-                                <div className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-[#2D3A2D] rounded-xl flex items-center justify-center text-white shadow-lg">
-                                    <Utensils className="w-4 h-4" />
-                                </div>
-                            </div>
+                            <ProductSearch defaultValue={searchQuery} />
                         </div>
+
+                        {searchQuery && (
+                            <div className="mb-10 px-6 animate-in fade-in slide-in-from-top-4 duration-500">
+                                <h2 className="text-xl font-medium text-[#8B7E66]">
+                                    Menampilkan hasil untuk <span className="text-[#2D3A2D] font-black underline decoration-amber-400 decoration-4 underline-offset-8">"{searchQuery}"</span>
+                                    <span className="ml-3 text-sm text-stone-400 font-bold uppercase tracking-widest bg-stone-100 px-3 py-1 rounded-full">
+                                        {mappedProducts.length} Menu ditemukan
+                                    </span>
+                                </h2>
+                            </div>
+                        )}
                     </AnimatedSection>
 
                     {/* If Specific Category Selected -> Show Standard Grid */}
