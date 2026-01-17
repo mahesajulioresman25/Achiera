@@ -255,17 +255,25 @@ export default function CatalogManager({ brandId, products, categories, onClose 
             // Combine existing images with uploaded ones
             galleryImagePaths = [...existingGalleryImages];
 
-            // Upload gallery images if any
+            // Upload gallery images if any - SEQUENTIAL to avoid 413 Payload Too Large
             if (galleryImages.length > 0) {
-                const galleryFormData = new FormData();
-                // Compress each gallery image
                 for (const img of galleryImages) {
-                    const compressedImg = await compressImage(img);
-                    galleryFormData.append('images', compressedImg);
-                }
-                const galleryRes = await uploadMultipleProductImages(galleryFormData);
-                if (galleryRes.success && 'paths' in galleryRes && galleryRes.paths) {
-                    galleryImagePaths.push(...galleryRes.paths);
+                    try {
+                        const compressedImg = await compressImage(img);
+                        const galleryFormData = new FormData();
+                        galleryFormData.append('image', compressedImg);
+
+                        const singleRes = await uploadProductImage(galleryFormData);
+
+                        if (singleRes.success && singleRes.path) {
+                            galleryImagePaths.push(singleRes.path);
+                        } else {
+                            console.error('Gallery Upload error:', singleRes.error);
+                            toast.error(`Gagal upload salah satu gambar galeri: ${singleRes.error}`);
+                        }
+                    } catch (err) {
+                        console.error('Compression or Upload error:', err);
+                    }
                 }
             }
 

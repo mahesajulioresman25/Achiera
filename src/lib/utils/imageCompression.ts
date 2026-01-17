@@ -3,9 +3,9 @@
  * Utility to compress images on the client side using Canvas API.
  * This helps avoid 413 Payload Too Large errors on server actions.
  */
-export async function compressImage(file: File, maxWidth = 1600, maxHeight = 1600, quality = 0.8): Promise<File> {
-    // If file is already small (< 500KB), don't bother compressing
-    if (file.size < 500 * 1024) return file;
+export async function compressImage(file: File, maxWidth = 1920, maxHeight = 1920, quality = 0.75): Promise<File> {
+    // If file is already reasonably small (< 200KB) and not a huge dimension, don't bother
+    if (file.size < 200 * 1024) return file;
 
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -39,21 +39,24 @@ export async function compressImage(file: File, maxWidth = 1600, maxHeight = 160
                     return;
                 }
 
+                // Draw with high quality scaling if needed, but simple drawImage is usually fine for this
                 ctx.drawImage(img, 0, 0, width, height);
 
                 canvas.toBlob(
                     (blob) => {
                         if (blob) {
-                            const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", {
+                            // Ensure the output is JPEG to keep size down
+                            const fileName = file.name.replace(/\.[^/.]+$/, "") + ".jpg";
+                            const compressedFile = new File([blob], fileName, {
                                 type: 'image/jpeg',
                                 lastModified: Date.now(),
                             });
 
-                            // Only return compressed if it's actually smaller
-                            if (compressedFile.size < file.size) {
-                                resolve(compressedFile);
+                            // If it's still > 2MB, try one more pass with lower quality
+                            if (compressedFile.size > 2 * 1024 * 1024 && quality > 0.5) {
+                                resolve(compressImage(compressedFile, maxWidth * 0.8, maxHeight * 0.8, quality - 0.2));
                             } else {
-                                resolve(file);
+                                resolve(compressedFile);
                             }
                         } else {
                             resolve(file); // Fallback to original
