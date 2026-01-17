@@ -197,23 +197,37 @@ export default function CatalogManager({ brandId, products, categories, onClose 
         }
     };
 
-    const handlePrimaryImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handlePrimaryImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            setPrimaryImage(file);
-            setPrimaryImagePreview(URL.createObjectURL(file));
+            setIsUploading(true);
+            const compressed = await compressImage(file);
+            setPrimaryImage(compressed);
+            setPrimaryImagePreview(URL.createObjectURL(compressed));
+            setIsUploading(false);
         }
     };
 
-    const handleGalleryImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleGalleryImagesChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(e.target.files || []);
-        if (files.length + galleryImages.length > 5) {
+        if (files.length + galleryImages.length + existingGalleryImages.length > 5) {
             toast.error('Maksimal 5 gambar untuk galeri');
             return;
         }
-        setGalleryImages([...galleryImages, ...files]);
-        const previews = files.map(f => URL.createObjectURL(f));
+
+        setIsUploading(true);
+        const compressedFiles: File[] = [];
+        const previews: string[] = [];
+
+        for (const file of files) {
+            const compressed = await compressImage(file);
+            compressedFiles.push(compressed);
+            previews.push(URL.createObjectURL(compressed));
+        }
+
+        setGalleryImages([...galleryImages, ...compressedFiles]);
         setGalleryPreviews([...galleryPreviews, ...previews]);
+        setIsUploading(false);
     };
 
     const removeGalleryImage = (index: number) => {
@@ -237,17 +251,14 @@ export default function CatalogManager({ brandId, products, categories, onClose 
 
             // Upload primary image if new file selected
             if (primaryImage) {
-                // Compress before upload
-                const compressedPrimary = await compressImage(primaryImage);
                 const formData = new FormData();
-                formData.append('image', compressedPrimary);
+                formData.append('image', primaryImage);
                 const uploadRes = await uploadProductImage(formData);
                 if (uploadRes.success && uploadRes.path) {
                     primaryImagePath = uploadRes.path;
                 } else {
-                    toast.error(`Error upload gambar: ${uploadRes.error}`);
+                    toast.error(`Error upload gambar utama: ${uploadRes.error}`);
                     setIsSubmitting(false);
-                    setIsUploading(false);
                     return;
                 }
             }
@@ -259,9 +270,8 @@ export default function CatalogManager({ brandId, products, categories, onClose 
             if (galleryImages.length > 0) {
                 for (const img of galleryImages) {
                     try {
-                        const compressedImg = await compressImage(img);
                         const galleryFormData = new FormData();
-                        galleryFormData.append('image', compressedImg);
+                        galleryFormData.append('image', img);
 
                         const singleRes = await uploadProductImage(galleryFormData);
 
@@ -272,7 +282,7 @@ export default function CatalogManager({ brandId, products, categories, onClose 
                             toast.error(`Gagal upload salah satu gambar galeri: ${singleRes.error}`);
                         }
                     } catch (err) {
-                        console.error('Compression or Upload error:', err);
+                        console.error('Upload error:', err);
                     }
                 }
             }

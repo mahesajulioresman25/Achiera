@@ -1,11 +1,10 @@
-
 /**
  * Utility to compress images on the client side using Canvas API.
  * This helps avoid 413 Payload Too Large errors on server actions.
  */
-export async function compressImage(file: File, maxWidth = 1920, maxHeight = 1920, quality = 0.75): Promise<File> {
-    // If file is already reasonably small (< 200KB) and not a huge dimension, don't bother
-    if (file.size < 200 * 1024) return file;
+export async function compressImage(file: File, maxWidth = 1200, maxHeight = 1200, quality = 0.6): Promise<File> {
+    // If file is already reasonably small (< 150KB) and not a huge dimension, don't bother
+    if (file.size < 150 * 1024 && file.type === 'image/jpeg') return file;
 
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -43,21 +42,24 @@ export async function compressImage(file: File, maxWidth = 1920, maxHeight = 192
                 ctx.drawImage(img, 0, 0, width, height);
 
                 canvas.toBlob(
-                    (blob) => {
+                    async (blob) => {
                         if (blob) {
                             // Ensure the output is JPEG to keep size down
                             const fileName = file.name.replace(/\.[^/.]+$/, "") + ".jpg";
-                            const compressedFile = new File([blob], fileName, {
+                            let compressedFile = new File([blob], fileName, {
                                 type: 'image/jpeg',
                                 lastModified: Date.now(),
                             });
 
-                            // If it's still > 2MB, try one more pass with lower quality
-                            if (compressedFile.size > 2 * 1024 * 1024 && quality > 0.5) {
-                                resolve(compressImage(compressedFile, maxWidth * 0.8, maxHeight * 0.8, quality - 0.2));
-                            } else {
-                                resolve(compressedFile);
+                            console.log(`[ImageCompression] ${file.name}: ${Math.round(file.size / 1024)}KB -> ${Math.round(compressedFile.size / 1024)}KB`);
+
+                            // Extreme fallback: if still > 1.5MB, force even smaller
+                            if (compressedFile.size > 1.5 * 1024 * 1024 && quality > 0.3) {
+                                console.warn(`[ImageCompression] Target still too large (${Math.round(compressedFile.size / 1024)}KB), re-compressing...`);
+                                compressedFile = await compressImage(compressedFile, maxWidth * 0.7, maxHeight * 0.7, quality - 0.2);
                             }
+
+                            resolve(compressedFile);
                         } else {
                             resolve(file); // Fallback to original
                         }
