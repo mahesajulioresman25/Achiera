@@ -411,13 +411,13 @@ export default async function RasaIbuHomePage() {
                         {ctaSubtitle}
                     </p>
                     <div className="flex flex-col items-center gap-4 pt-4">
-                        <a
-                            href="#menu"
+                        <Link
+                            href="/rasa-ibu/contact"
                             className="group inline-flex items-center gap-3 px-12 py-6 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white rounded-full text-sm font-black uppercase tracking-widest hover:scale-105 transition-all duration-300 shadow-2xl shadow-amber-900/20 hover:shadow-amber-900/30 relative overflow-hidden"
                         >
                             <span className="relative z-10">{ctaButton}</span>
                             <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-                        </a>
+                        </Link>
                         <a
                             href={`https://wa.me/${whatsapp}?text=${encodeURIComponent("Halo, saya butuh bantuan order.")}`}
                             target="_blank"
