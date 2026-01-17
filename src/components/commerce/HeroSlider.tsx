@@ -62,30 +62,56 @@ export default function HeroSlider({ slides, autoPlayInterval = 6000 }: HeroSlid
                     transition={{ duration: 1.2, ease: "easeInOut" }}
                     className="absolute inset-0"
                 >
-                    {/* Background Media with Parallax-like scale effect */}
-                    <motion.div
-                        className="absolute inset-0"
-                    >
-                        {slides[currentIndex].mediaType === 'IMAGE' ? (
-                            <div
-                                className="absolute inset-0 bg-cover bg-center"
-                                style={{ backgroundImage: `url(${slides[currentIndex].imageUrl})` }}
-                            />
-                        ) : (
-                            <video
-                                autoPlay
-                                loop
-                                muted
-                                playsInline
-                                className="absolute inset-0 w-full h-full object-cover"
-                            >
-                                <source src={slides[currentIndex].videoUrl} type="video/mp4" />
-                            </video>
-                        )}
-                        {/* More sophisticated gradient overlays */}
+                    {/* Background Media with Cinematic Horizontal Pan */}
+                    <div className="absolute inset-0 overflow-hidden">
+                        <motion.div
+                            initial={{ x: '-2%' }}
+                            animate={{ x: '2%' }}
+                            transition={{
+                                duration: 20,
+                                ease: "linear",
+                                repeat: Infinity,
+                                repeatType: "reverse"
+                            }}
+                            className="absolute inset-0 w-[110%] h-full left-[-5%]"
+                        >
+                            {slides[currentIndex].mediaType === 'IMAGE' ? (
+                                <div
+                                    className="absolute inset-0 bg-cover bg-center"
+                                    style={{ backgroundImage: `url(${slides[currentIndex].imageUrl})` }}
+                                />
+                            ) : (
+                                <video
+                                    autoPlay
+                                    loop
+                                    muted
+                                    playsInline
+                                    className="absolute inset-0 w-full h-full object-cover"
+                                >
+                                    <source src={slides[currentIndex].videoUrl} type="video/mp4" />
+                                </video>
+                            )}
+                        </motion.div>
+                    </div>
+
+                    {/* Breathing Light & Gradient Overlays */}
+                    <div className="absolute inset-0 pointer-events-none">
                         <div className="absolute inset-0 bg-gradient-to-t from-[#1A241A] via-transparent to-transparent opacity-80" />
                         <div className="absolute inset-0 bg-gradient-to-r from-[#1A241A]/90 via-[#1A241A]/40 to-transparent" />
-                    </motion.div>
+
+                        {/* Dynamic "Breathing" Glow Overlay */}
+                        <motion.div
+                            animate={{
+                                opacity: [0.1, 0.2, 0.1],
+                            }}
+                            transition={{
+                                duration: 8,
+                                repeat: Infinity,
+                                ease: "easeInOut"
+                            }}
+                            className="absolute inset-0 bg-amber-500/5 mix-blend-overlay"
+                        />
+                    </div>
 
                     {/* Content Section */}
                     <div className="relative z-20 h-full container mx-auto px-8 md:px-16 flex items-center">
@@ -105,7 +131,7 @@ export default function HeroSlider({ slides, autoPlayInterval = 6000 }: HeroSlid
                                 </motion.div>
                             )}
 
-                            {/* Title with Serif Font */}
+                            {/* Title with Serif Font - Staggered Reveal */}
                             <motion.h1
                                 initial={{ opacity: 0, y: 30 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -120,7 +146,7 @@ export default function HeroSlider({ slides, autoPlayInterval = 6000 }: HeroSlid
                                 ))}
                             </motion.h1>
 
-                            {/* Subtitle */}
+                            {/* Subtitle - Staggered Reveal */}
                             <motion.p
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
