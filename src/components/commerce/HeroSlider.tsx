@@ -52,7 +52,6 @@ export default function HeroSlider({ slides, autoPlayInterval = 6000 }: HeroSlid
     if (!slides || slides.length === 0) return null;
 
     return (
-    return (
         <div className="relative w-full h-[600px] sm:h-[650px] md:h-[800px] overflow-hidden bg-[#1A241A] rounded-[2rem] sm:rounded-[3rem] md:rounded-[3.5rem] shadow-2xl group/slider">
             <AnimatePresence mode="wait">
                 <motion.div
