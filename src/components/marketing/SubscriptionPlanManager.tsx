@@ -83,7 +83,6 @@ export default function SubscriptionPlanManager({ brandId, onClose }: { brandId:
         setLoading(true);
 
         try {
-            console.log('[SubscriptionPlanManager] Saving plan:', editingPlan);
 
             const res = await fetch(`/api/brands/${brandId}/subscription-plans`, {
                 method: editingPlan.id ? 'PUT' : 'POST',
@@ -93,7 +92,6 @@ export default function SubscriptionPlanManager({ brandId, onClose }: { brandId:
 
             if (!res.ok) {
                 const errorData = await res.json();
-                console.error('[SubscriptionPlanManager] Error response:', errorData);
                 throw new Error(errorData.error || "Failed to save");
             }
 

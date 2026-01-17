@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { createProduct, updateProduct, deleteProduct, getIbuCategories } from '@/lib/actions/rasa-ibu/catalog';
 import { getRecipeHPPAction } from '@/lib/actions/rasa-ibu/production';
 import { uploadProductImage, uploadMultipleProductImages } from '@/lib/actions/rasa-ibu/imageUpload';
+import { compressImage } from '@/lib/utils/imageCompression';
 import { ImagePlus, X, Zap, Tag, Percent, TrendingUp, Info, Scale, Activity, Star } from 'lucide-react';
 import { toast } from 'sonner';
 import CategoryManager from './inventory/CategoryManager';
@@ -236,8 +237,10 @@ export default function CatalogManager({ brandId, products, categories, onClose 
 
             // Upload primary image if new file selected
             if (primaryImage) {
+                // Compress before upload
+                const compressedPrimary = await compressImage(primaryImage);
                 const formData = new FormData();
-                formData.append('image', primaryImage);
+                formData.append('image', compressedPrimary);
                 const uploadRes = await uploadProductImage(formData);
                 if (uploadRes.success && uploadRes.path) {
                     primaryImagePath = uploadRes.path;
@@ -255,7 +258,11 @@ export default function CatalogManager({ brandId, products, categories, onClose 
             // Upload gallery images if any
             if (galleryImages.length > 0) {
                 const galleryFormData = new FormData();
-                galleryImages.forEach(img => galleryFormData.append('images', img));
+                // Compress each gallery image
+                for (const img of galleryImages) {
+                    const compressedImg = await compressImage(img);
+                    galleryFormData.append('images', compressedImg);
+                }
                 const galleryRes = await uploadMultipleProductImages(galleryFormData);
                 if (galleryRes.success && 'paths' in galleryRes && galleryRes.paths) {
                     galleryImagePaths.push(...galleryRes.paths);
