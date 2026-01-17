@@ -1,5 +1,5 @@
 
-export type SeasonType = 'IMLEK' | 'RAMADAN' | 'LEBARAN' | 'INDEPENDENCE' | 'CHRISTMAS' | 'NEW_YEAR' | 'HARI_IBU' | 'NONE';
+export type SeasonType = 'IMLEK' | 'RAMADAN' | 'LEBARAN' | 'INDEPENDENCE' | 'CHRISTMAS' | 'NEW_YEAR' | 'HARI_IBU' | 'WAISAK' | 'NYEPI' | 'KARTINI' | 'NONE';
 
 interface SeasonConfig {
     type: SeasonType;
@@ -9,7 +9,7 @@ interface SeasonConfig {
         secondary: string; // Decoration
         text: string;
     };
-    iconTheme: 'LANTERN' | 'KETUPAT' | 'FLAG' | 'BELL' | 'HEART' | 'NONE';
+    iconTheme: 'LANTERN' | 'KETUPAT' | 'FLAG' | 'BELL' | 'HEART' | 'LOTUS' | 'OGOH' | 'KEBAYA' | 'NONE';
 }
 
 export const SEASONAL_THEMES: Record<SeasonType, SeasonConfig> = {
@@ -54,6 +54,24 @@ export const SEASONAL_THEMES: Record<SeasonType, SeasonConfig> = {
         name: 'Hari Ibu',
         colors: { primary: '#AA336A', secondary: '#FFB6C1', text: '#FDFBF7' },
         iconTheme: 'HEART'
+    },
+    WAISAK: {
+        type: 'WAISAK',
+        name: 'Hari Raya Waisak',
+        colors: { primary: '#FF6B35', secondary: '#F7931E', text: '#FDFBF7' },
+        iconTheme: 'LOTUS'
+    },
+    NYEPI: {
+        type: 'NYEPI',
+        name: 'Hari Raya Nyepi',
+        colors: { primary: '#4A148C', secondary: '#FFD700', text: '#FDFBF7' },
+        iconTheme: 'OGOH'
+    },
+    KARTINI: {
+        type: 'KARTINI',
+        name: 'Hari Kartini',
+        colors: { primary: '#DC143C', secondary: '#FFFFFF', text: '#FDFBF7' },
+        iconTheme: 'KEBAYA'
     },
     NONE: {
         type: 'NONE',
@@ -137,13 +155,22 @@ export function getCurrentSeason(date: Date = new Date()): SeasonConfig {
     // 2. Independence Day (Aug 10 - Aug 20)
     if (month === 7 && day >= 10 && day <= 20) return SEASONAL_THEMES.INDEPENDENCE;
 
-    // 3. Hari Ibu (Dec 20 - Dec 23)
+    // 3. Hari Kartini (Apr 20 - Apr 22)
+    if (month === 3 && day >= 20 && day <= 22) return SEASONAL_THEMES.KARTINI;
+
+    // 4. Waisak (Usually mid-May, varies by lunar calendar - using May 12-18 as range)
+    if (month === 4 && day >= 12 && day <= 18) return SEASONAL_THEMES.WAISAK;
+
+    // 5. Nyepi (Usually March, varies by Balinese calendar - using March 10-16 as range)
+    if (month === 2 && day >= 10 && day <= 16) return SEASONAL_THEMES.NYEPI;
+
+    // 6. Hari Ibu (Dec 20 - Dec 23)
     if (month === 11 && day >= 20 && day <= 23) return SEASONAL_THEMES.HARI_IBU;
 
-    // 4. Christmas (Dec 15 - Dec 26)
+    // 7. Christmas (Dec 15 - Dec 26)
     if (month === 11 && day >= 15 && day <= 26) return SEASONAL_THEMES.CHRISTMAS;
 
-    // 5. Pre-New Year
+    // 8. Pre-New Year
     if (month === 11 && day >= 27) return SEASONAL_THEMES.NEW_YEAR;
 
     return SEASONAL_THEMES.NONE;

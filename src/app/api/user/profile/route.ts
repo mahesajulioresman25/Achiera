@@ -175,14 +175,24 @@ export async function PUT(request: NextRequest) {
         // 6. Sync Birthday with LoyaltyMember if updated
         if (birthday) {
             try {
-                // Find all brands this user is associated with (via UserBrandRole or LoyaltyMember)
-                // For simplicity and based on current flow, we update LoyaltyMember if name/phone matches
-                // Or better, we look for LoyaltyMember by phone if available
+                // Find all loyalty members for this phone number across all brands
+                // We need to update each one individually to satisfy brand isolation
                 if (updatedUser.phone) {
-                    await prisma.loyaltyMember.updateMany({
+                    const loyaltyMembers = await prisma.loyaltyMember.findMany({
                         where: { customerPhone: updatedUser.phone },
-                        data: { birthday: new Date(birthday) }
+                        select: { id: true, brandId: true }
                     });
+
+                    // Update each loyalty member with brand isolation
+                    for (const member of loyaltyMembers) {
+                        await prisma.loyaltyMember.update({
+                            where: {
+                                id: member.id,
+                                brandId: member.brandId // Brand isolation requirement
+                            },
+                            data: { birthday: new Date(birthday) }
+                        });
+                    }
                 }
             } catch (syncError) {
                 console.error('Loyalty birthday sync error:', syncError);
