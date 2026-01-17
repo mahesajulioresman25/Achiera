@@ -1,5 +1,5 @@
 
-export type SeasonType = 'IMLEK' | 'RAMADAN' | 'LEBARAN' | 'INDEPENDENCE' | 'CHRISTMAS' | 'NEW_YEAR' | 'NONE';
+export type SeasonType = 'IMLEK' | 'RAMADAN' | 'LEBARAN' | 'INDEPENDENCE' | 'CHRISTMAS' | 'NEW_YEAR' | 'HARI_IBU' | 'NONE';
 
 interface SeasonConfig {
     type: SeasonType;
@@ -9,7 +9,7 @@ interface SeasonConfig {
         secondary: string; // Decoration
         text: string;
     };
-    iconTheme: 'LANTERN' | 'KETUPAT' | 'FLAG' | 'BELL' | 'NONE';
+    iconTheme: 'LANTERN' | 'KETUPAT' | 'FLAG' | 'BELL' | 'HEART' | 'NONE';
 }
 
 export const SEASONAL_THEMES: Record<SeasonType, SeasonConfig> = {
@@ -49,6 +49,12 @@ export const SEASONAL_THEMES: Record<SeasonType, SeasonConfig> = {
         colors: { primary: '#1A1A1A', secondary: '#D4AF37', text: '#FDFBF7' },
         iconTheme: 'BELL'
     },
+    HARI_IBU: {
+        type: 'HARI_IBU',
+        name: 'Hari Ibu',
+        colors: { primary: '#AA336A', secondary: '#FFB6C1', text: '#FDFBF7' },
+        iconTheme: 'HEART'
+    },
     NONE: {
         type: 'NONE',
         name: 'Default',
@@ -57,31 +63,87 @@ export const SEASONAL_THEMES: Record<SeasonType, SeasonConfig> = {
     }
 };
 
+// Moving Holiday Registry (Calculated/Lookup for 2024-2030)
+// Ensure these match the start of the "festive season" (usually a few days before/during)
+const MOVING_HOLIDAYS: Record<number, {
+    imlek: { month: number, day: number },
+    ramadan: { month: number, day: number },
+    lebaran: { month: number, day: number }
+}> = {
+    2024: {
+        imlek: { month: 1, day: 10 },    // Feb 10
+        ramadan: { month: 2, day: 10 }, // March 10
+        lebaran: { month: 3, day: 10 }, // April 10
+    },
+    2025: {
+        imlek: { month: 0, day: 29 },    // Jan 29
+        ramadan: { month: 1, day: 28 }, // Feb 28
+        lebaran: { month: 2, day: 30 }, // March 30
+    },
+    2026: {
+        imlek: { month: 1, day: 17 },    // Feb 17
+        ramadan: { month: 1, day: 18 }, // Feb 18 (Ramadan begins)
+        lebaran: { month: 2, day: 20 }, // March 20 (Eid)
+    },
+    2027: {
+        imlek: { month: 1, day: 6 },     // Feb 6
+        ramadan: { month: 1, day: 7 },     // Feb 7
+        lebaran: { month: 2, day: 9 },     // March 9
+    },
+    2028: {
+        imlek: { month: 0, day: 26 },    // Jan 26
+        ramadan: { month: 0, day: 27 },    // Jan 27
+        lebaran: { month: 1, day: 26 },    // Feb 26
+    },
+    2029: {
+        imlek: { month: 1, day: 13 },    // Feb 13
+        ramadan: { month: 0, day: 15 },    // Jan 15
+        lebaran: { month: 1, day: 14 },    // Feb 14
+    },
+    2030: {
+        imlek: { month: 1, day: 3 },     // Feb 3
+        ramadan: { month: 0, day: 5 },     // Jan 5
+        lebaran: { month: 1, day: 4 },     // Feb 4
+    }
+};
+
 export function getCurrentSeason(date: Date = new Date()): SeasonConfig {
+    const year = date.getFullYear();
     const month = date.getMonth(); // 0-11
     const day = date.getDate();
 
     // 1. New Year (Jan 1 - Jan 7)
     if (month === 0 && day <= 7) return SEASONAL_THEMES.NEW_YEAR;
 
-    // 2. Imlek (Approx Feb) - Hardcoded for 2026/Generic
-    // In 2026, Imlek is Feb 17. Range: Feb 10 - Feb 20.
-    if (month === 1 && day >= 10 && day <= 24) return SEASONAL_THEMES.IMLEK;
+    // Moving Holidays Logic
+    const holidays = MOVING_HOLIDAYS[year];
+    if (holidays) {
+        // Imlek (Range: H-7 to H+3)
+        const imlekDate = new Date(year, holidays.imlek.month, holidays.imlek.day);
+        const diffImlek = (date.getTime() - imlekDate.getTime()) / (1000 * 3600 * 24);
+        if (diffImlek >= -7 && diffImlek <= 3) return SEASONAL_THEMES.IMLEK;
 
-    // 3. Ramadan/Lebaran (Approx for 2026)
-    // 2026: Ramadan starts ~Feb 18, Eid ~Mar 20.
-    // Overlapping Imlek? Let's prioritize Imlek until Feb 20, then Ramadan.
-    if (month === 1 && day > 24) return SEASONAL_THEMES.RAMADAN; // Late Feb
-    if (month === 2 && day <= 19) return SEASONAL_THEMES.RAMADAN; // Early March
-    if (month === 2 && day >= 20 && day <= 27) return SEASONAL_THEMES.LEBARAN; // Eid Week
+        // Ramadan (Start to Eid-1)
+        const ramadanStart = new Date(year, holidays.ramadan.month, holidays.ramadan.day);
+        const lebaranStart = new Date(year, holidays.lebaran.month, holidays.lebaran.day);
 
-    // 4. Independence Day (Aug)
+        if (date >= ramadanStart && date < lebaranStart) return SEASONAL_THEMES.RAMADAN;
+
+        // Lebaran (Range: H to H+7)
+        const diffLebaran = (date.getTime() - lebaranStart.getTime()) / (1000 * 3600 * 24);
+        if (diffLebaran >= 0 && diffLebaran <= 7) return SEASONAL_THEMES.LEBARAN;
+    }
+
+    // 2. Independence Day (Aug 10 - Aug 20)
     if (month === 7 && day >= 10 && day <= 20) return SEASONAL_THEMES.INDEPENDENCE;
 
-    // 5. Christmas (Dec)
+    // 3. Hari Ibu (Dec 20 - Dec 23)
+    if (month === 11 && day >= 20 && day <= 23) return SEASONAL_THEMES.HARI_IBU;
+
+    // 4. Christmas (Dec 15 - Dec 26)
     if (month === 11 && day >= 15 && day <= 26) return SEASONAL_THEMES.CHRISTMAS;
 
-    // 6. Pre-New Year
+    // 5. Pre-New Year
     if (month === 11 && day >= 27) return SEASONAL_THEMES.NEW_YEAR;
 
     return SEASONAL_THEMES.NONE;

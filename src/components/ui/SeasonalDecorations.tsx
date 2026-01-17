@@ -60,6 +60,15 @@ export default function SeasonalDecorations() {
                             <div className="w-8 h-8 rounded-full bg-red-600 border-2 border-white shadow-lg"></div>
                         </div>
                     </>
+                );
+            case 'HEART': // Hari Ibu
+                return (
+                    <>
+                        <div className="fixed top-0 w-full h-1 bg-gradient-to-r from-pink-400 via-rose-300 to-pink-400 z-[60] shadow-sm" />
+                        <div className="fixed top-10 right-10 z-[60] opacity-30">
+                            <Heart className="w-16 h-16 text-rose-300 fill-current" />
+                        </div>
+                    </>
                 )
             default:
                 return null;

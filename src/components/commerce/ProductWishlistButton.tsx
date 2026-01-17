@@ -3,6 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { toggleWishlistAction } from '@/lib/actions/commerce/wishlist';
+import { Heart } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 
 interface ProductWishlistButtonProps {
     productId: string;
