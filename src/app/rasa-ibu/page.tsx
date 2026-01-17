@@ -195,7 +195,7 @@ export default async function RasaIbuHomePage() {
                         <HeroSlider slides={heroSlides} autoPlayInterval={5000} />
                     ) : (
                         // Fallback to static hero if no slides
-                        <div className="relative h-[500px] sm:h-[600px] md:h-[600px] flex items-center overflow-hidden bg-gradient-to-br from-[#2D3A2D] via-[#1A241A] to-[#2D3A2D] rounded-[2rem] sm:rounded-[3rem] md:rounded-[3rem] shadow-2xl">
+                        <div className="relative h-[600px] sm:h-[650px] md:h-[600px] flex items-center overflow-hidden bg-gradient-to-br from-[#2D3A2D] via-[#1A241A] to-[#2D3A2D] rounded-[2rem] sm:rounded-[3rem] md:rounded-[3rem] shadow-2xl">
                             <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent z-10"></div>
                             {/* Decorative overlay pattern */}
                             <div className="absolute inset-0 opacity-5 z-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '40px 40px' }}></div>

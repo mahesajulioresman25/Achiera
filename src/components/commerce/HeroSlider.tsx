@@ -52,7 +52,8 @@ export default function HeroSlider({ slides, autoPlayInterval = 6000 }: HeroSlid
     if (!slides || slides.length === 0) return null;
 
     return (
-        <div className="relative w-full h-[500px] sm:h-[600px] md:h-[800px] overflow-hidden bg-[#1A241A] rounded-[2rem] sm:rounded-[3rem] md:rounded-[3.5rem] shadow-2xl group/slider">
+    return (
+        <div className="relative w-full h-[600px] sm:h-[650px] md:h-[800px] overflow-hidden bg-[#1A241A] rounded-[2rem] sm:rounded-[3rem] md:rounded-[3.5rem] shadow-2xl group/slider">
             <AnimatePresence mode="wait">
                 <motion.div
                     key={currentIndex}
@@ -128,7 +129,7 @@ export default function HeroSlider({ slides, autoPlayInterval = 6000 }: HeroSlid
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.7, duration: 0.6 }}
-                                className="text-sm sm:text-lg md:text-2xl text-[#FDFBF7]/80 leading-relaxed font-medium mb-8 md:mb-12 max-w-xl"
+                                className="text-[13px] sm:text-lg md:text-2xl text-[#FDFBF7]/80 leading-relaxed font-medium mb-6 md:mb-12 max-w-xl"
                             >
                                 {slides[currentIndex].subtitle}
                             </motion.p>
@@ -171,7 +172,7 @@ export default function HeroSlider({ slides, autoPlayInterval = 6000 }: HeroSlid
             </div>
 
             {/* Bottom Navigation Grid */}
-            <div className="absolute bottom-12 left-0 right-0 z-30 flex flex-col items-center gap-6">
+            <div className="absolute bottom-6 sm:bottom-8 md:bottom-12 left-0 right-0 z-30 flex flex-col items-center gap-4 md:gap-6">
                 {/* Dots */}
                 <div className="flex gap-4">
                     {slides.map((_, index) => (
