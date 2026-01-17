@@ -4,6 +4,37 @@ import { unisolatedPrisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 
 /**
+ * Helper to fetch and calculate ratings for a list of products
+ */
+export async function getProductRatings(brandId: string, productNames: string[]) {
+    try {
+        const ratings = await (unisolatedPrisma as any).customerReview.groupBy({
+            by: ['productName'],
+            where: {
+                brandId,
+                platform: 'WEBSITE',
+                productName: { in: productNames }
+            },
+            _avg: { rating: true },
+            _count: { rating: true }
+        });
+
+        const ratingMap: Record<string, { avg: number, count: number }> = {};
+        ratings.forEach((r: any) => {
+            ratingMap[r.productName] = {
+                avg: Number(r._avg.rating || 0),
+                count: r._count.rating || 0
+            };
+        });
+
+        return ratingMap;
+    } catch (error) {
+        console.error('Error fetching product ratings:', error);
+        return {};
+    }
+}
+
+/**
  * Get best selling products based on order count
  * @param limit Number of products to return (default: 6)
  */
@@ -29,6 +60,9 @@ export async function getBestSellers(brandId: string, limit: number = 6) {
             take: limit
         });
 
+        const productNames = products.map(p => p.name);
+        const ratingMap = await getProductRatings(brandId, productNames);
+
         return products.map((p: any) => ({
             id: p.id,
             slug: p.slug,
@@ -40,7 +74,9 @@ export async function getBestSellers(brandId: string, limit: number = 6) {
             image: p.image || undefined,
             orderCount: p.orderCount,
             totalStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0),
-            inStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0) > 0
+            inStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0) > 0,
+            rating: ratingMap[p.name]?.avg || 5.0, // Fallback to 5.0 if no reviews
+            reviewCount: ratingMap[p.name]?.count || 0
         }));
     } catch (error) {
         console.error('Error fetching best sellers:', error);
@@ -90,6 +126,9 @@ export async function getFeaturedProducts(brandId: string) {
                 take: 6
             });
 
+            const productNames = latestProducts.map(p => p.name);
+            const ratingMap = await getProductRatings(brandId, productNames);
+
             return latestProducts.map((p: any) => ({
                 id: p.id,
                 slug: p.slug,
@@ -99,9 +138,14 @@ export async function getFeaturedProducts(brandId: string) {
                 description: p.description || '',
                 image: p.image || undefined,
                 totalStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0),
-                inStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0) > 0
+                inStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0) > 0,
+                rating: ratingMap[p.name]?.avg || 5.0,
+                reviewCount: ratingMap[p.name]?.count || 0
             }));
         }
+
+        const productNames = products.map(p => p.name);
+        const ratingMap = await getProductRatings(brandId, productNames);
 
         return products.map((p: any) => ({
             id: p.id,
@@ -112,7 +156,9 @@ export async function getFeaturedProducts(brandId: string) {
             description: p.description || '',
             image: p.image || undefined,
             totalStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0),
-            inStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0) > 0
+            inStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0) > 0,
+            rating: ratingMap[p.name]?.avg || 5.0,
+            reviewCount: ratingMap[p.name]?.count || 0
         }));
     } catch (error) {
         console.error('Error fetching featured products:', error);
@@ -185,6 +231,9 @@ export async function getRecommendedProducts(brandId: string, productId: string,
             products = [...products, ...fallbackProducts];
         }
 
+        const productNames = products.map(p => p.name);
+        const ratingMap = await getProductRatings(brandId, productNames);
+
         return products.map((p: any) => ({
             id: p.id,
             slug: p.slug,
@@ -194,7 +243,9 @@ export async function getRecommendedProducts(brandId: string, productId: string,
             description: p.description || '',
             image: p.image || undefined,
             totalStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0),
-            inStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0) > 0
+            inStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0) > 0,
+            rating: ratingMap[p.name]?.avg || 5.0,
+            reviewCount: ratingMap[p.name]?.count || 0
         }));
     } catch (error) {
         console.error('Error fetching recommendations:', error);
@@ -224,6 +275,9 @@ export async function getProductsByCategory(brandId: string, categorySlug: strin
             }
         });
 
+        const productNames = products.map(p => p.name);
+        const ratingMap = await getProductRatings(brandId, productNames);
+
         return products.map((p: any) => ({
             id: p.id,
             slug: p.slug,
@@ -233,7 +287,9 @@ export async function getProductsByCategory(brandId: string, categorySlug: strin
             description: p.description || '',
             image: p.image || undefined,
             totalStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0),
-            inStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0) > 0
+            inStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0) > 0,
+            rating: ratingMap[p.name]?.avg || 5.0,
+            reviewCount: ratingMap[p.name]?.count || 0
         }));
     } catch (error) {
         console.error('Error fetching products by category:', error);

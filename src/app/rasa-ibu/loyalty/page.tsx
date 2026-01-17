@@ -298,7 +298,7 @@ export default function PublicLoyaltyPage() {
                     <div className="lg:col-span-12 mt-12 mb-12">
                         <div className="text-center mb-12">
                             <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#8B7E66] bg-[#FDFBF7] px-4">Member Benefits</span>
-                            <h3 className="text-2xl font-black text-[#2D3A2D] mt-2">Keuntungan Spesial</h3>
+                            <h3 className="text-2xl font-black text-[#2D3A2D] mt-2">Keuntungan untuk Bunda</h3>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -307,9 +307,9 @@ export default function PublicLoyaltyPage() {
                                 <div className="w-16 h-16 bg-[#FDFBF7] border border-[#E5E1D8] rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm group-hover:bg-[#2D3A2D] group-hover:text-white transition-all duration-300">
                                     <Coins className="w-7 h-7" />
                                 </div>
-                                <h3 className="font-black text-[#2D3A2D] text-lg uppercase tracking-tight mb-3">Konversi Poin Mudah</h3>
+                                <h3 className="font-black text-[#2D3A2D] text-lg uppercase tracking-tight mb-3">Poin Otomatis di Setiap Pesanan</h3>
                                 <p className="text-sm text-[#8B7E66] leading-relaxed font-medium">
-                                    Setiap Rp 10.000 belanja dapat 1 poin. 1 poin bernilai <strong className="text-[#2D3A2D]">Rp {pointMultiplier}</strong> diskon belanja.
+                                    Setiap belanja akan otomatis mengumpulkan poin yang bisa digunakan sebagai potongan di pembelian berikutnya.
                                 </p>
                             </div>
 
@@ -318,9 +318,9 @@ export default function PublicLoyaltyPage() {
                                 <div className="w-16 h-16 bg-[#FDFBF7] border border-[#E5E1D8] rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm group-hover:bg-pink-500 group-hover:text-white transition-all duration-300">
                                     <Sparkles className="w-7 h-7" />
                                 </div>
-                                <h3 className="font-black text-[#2D3A2D] text-lg uppercase tracking-tight mb-3">Double Point Birthday</h3>
+                                <h3 className="font-black text-[#2D3A2D] text-lg uppercase tracking-tight mb-3">Hadiah Ulang Tahun Bunda</h3>
                                 <p className="text-sm text-[#8B7E66] leading-relaxed font-medium">
-                                    Rayakan ulang tahun Bunda dengan <strong className="text-pink-600">2x poin</strong> untuk semua pesanan selama bulan kelahiran.
+                                    Di bulan ulang tahun Bunda, setiap pesanan akan mendapatkan poin dua kali lipat sebagai hadiah dari kami.
                                 </p>
                             </div>
 
@@ -331,7 +331,7 @@ export default function PublicLoyaltyPage() {
                                 </div>
                                 <h3 className="font-black text-[#2D3A2D] text-lg uppercase tracking-tight mb-3">Bebas Tukar Kapan Saja</h3>
                                 <p className="text-sm text-[#8B7E66] leading-relaxed font-medium">
-                                    Tidak ada batas minimum penukaran. Bunda bisa potong saldo poin berapapun di setiap transaksi.
+                                    Poin bisa digunakan kapan saja, tanpa minimum penukaran, sesuai kebutuhan Bunda.
                                 </p>
                             </div>
                         </div>
@@ -340,20 +340,20 @@ export default function PublicLoyaltyPage() {
                     {/* Full Width: Education Section */}
                     <div className="lg:col-span-12 mt-20 pt-20 border-t border-[#E5E1D8] space-y-16">
                         <div className="text-center space-y-4">
-                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#8B7E66] border-b-2 border-[#E5E1D8] pb-2">Level Up Your Rewards</span>
-                            <h2 className="text-3xl font-black text-[#2D3A2D]">Cara Naik Tier Member</h2>
+                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#8B7E66] border-b-2 border-[#E5E1D8] pb-2">Loyalty Journey</span>
+                            <h2 className="text-3xl font-black text-[#2D3A2D]">Perjalanan Keanggotaan Bunda</h2>
                             <p className="text-sm text-[#8B7E66] max-w-xl mx-auto leading-relaxed">
-                                Keanggotaan Bunda dihitung berdasarkan total belanja bersih (Lifetime Spend). Makin tinggi levelnya, makin besar bonus poin di tiap pesanan!
+                                Keanggotaan bertumbuh seiring kebersamaan. Semakin sering Rasa Ibu menemani meja makan, semakin besar manfaat yang Bunda terima.
                             </p>
                         </div>
 
                         {/* Tier Comparison Tables */}
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                             {(brandConfig?.loyaltyTiers || [
-                                { name: 'BRONZE', spend: 'Member Baru', multiplier: '1.0x Poin', perk: 'Standard Rewards', color: 'bg-[#FDFBF7] text-[#8B7E66] border-[#E5E1D8]' },
-                                { name: 'SILVER', spend: 'Rp 1 Juta', multiplier: '1.25x Poin', perk: 'Extra 25% Points', color: 'bg-white text-slate-700 border-[#E5E1D8] shadow-sm' },
-                                { name: 'GOLD', spend: 'Rp 5 Juta', multiplier: '1.5x Poin', perk: 'Extra 50% Points', color: 'bg-yellow-50 text-yellow-700 border-yellow-200 shadow-sm' },
-                                { name: 'PLATINUM', spend: 'Rp 10 Juta', multiplier: '2.0x Poin', perk: 'Double Every Point!', color: 'bg-[#2D3A2D] text-[#FDFBF7] border-transparent shadow-xl' }
+                                { name: 'BRONZE', spend: 'Member Baru', multiplier: 'Poin Standar', perk: 'Untuk setiap pesanan', color: 'bg-[#FDFBF7] text-[#8B7E66] border-[#E5E1D8]' },
+                                { name: 'SILVER', spend: 'Rp 1 Juta', multiplier: 'Lebih Banyak Poin', perk: 'Tambahan poin lebih besar', color: 'bg-white text-slate-700 border-[#E5E1D8] shadow-sm' },
+                                { name: 'GOLD', spend: 'Rp 5 Juta', multiplier: 'Manfaat Istimewa', perk: 'Poin terkumpul lebih cepat', color: 'bg-yellow-50 text-yellow-700 border-yellow-200 shadow-sm' },
+                                { name: 'PLATINUM', spend: 'Rp 10 Juta', multiplier: 'Paling Istimewa', perk: 'Poin dua kali lipat', color: 'bg-[#2D3A2D] text-[#FDFBF7] border-transparent shadow-xl' }
                             ]).map((tier: any, i: number) => (
                                 <div key={i} className={`p-8 rounded-[2.5rem] border ${tier.color || 'bg-white'} flex flex-col justify-between min-h-[280px] hover:-translate-y-2 transition-transform duration-500`}>
                                     <div className={tier.name === 'PLATINUM' ? 'text-white' : ''}>
@@ -362,7 +362,6 @@ export default function PublicLoyaltyPage() {
                                             <span className="text-[10px] font-black uppercase tracking-widest">{tier.name}</span>
                                         </div>
                                         <h4 className="text-2xl font-black mb-1">{tier.spend}</h4>
-                                        <p className="text-[10px] font-black uppercase opacity-60">Minimal Belanja</p>
                                     </div>
                                     <div className={`pt-6 border-t ${tier.name === 'PLATINUM' ? 'border-white/20 text-white' : 'border-current/10'}`}>
                                         <p className="text-lg font-black mb-1">{tier.multiplier}</p>
@@ -375,10 +374,10 @@ export default function PublicLoyaltyPage() {
                         {/* How it works grid */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 pt-10">
                             {(brandConfig?.loyaltySteps || [
-                                { step: '01', title: 'Belanja Enak', desc: 'Setiap pesanan yang lunas akan otomatis menambah poin dan progress tier Bunda secara real-time.' },
-                                { step: '02', title: 'Kumpulkan Poin', desc: `Gunakan poin untuk potongan diskon di pesanan berikutnya. 1 Poin setara Rp ${pointMultiplier} diskon belanja.` },
-                                { step: '03', title: 'Nikmati Benefit', desc: 'Makin tinggi tier, makin cepat poin terkumpul. Nikmati juga bonus 2x poin di bulan ulang tahun Bunda!' },
-                                { step: '04', title: 'Reward Kontribusi', desc: 'Dapatkan 50.000 Poin instan jika resep Bunda terpilih jadi Menu Resmi. Poin masuk otomatis via nomor WhatsApp Bunda.' }
+                                { step: '01', title: 'Belanja Enak', desc: 'Setiap pesanan yang lunas akan otomatis menambah poin dan progress keanggotaan Bunda secara real-time.' },
+                                { step: '02', title: 'Kumpulkan Poin', desc: 'Gunakan poin untuk potongan diskon di pesanan berikutnya, otomatis tanpa ribet.' },
+                                { step: '03', title: 'Nikmati Benefit', desc: 'Makin tinggi tier, makin cepat poin terkumpul. Nikmati juga bonus poin di hari spesial Bunda!' },
+                                { step: '04', title: 'Apresiasi dari Kami', desc: 'Resep pilihan yang dibagikan Bunda akan mendapatkan poin apresiasi sebagai ucapan terima kasih dari kami.' }
                             ]).map((step: any, i: number) => (
                                 <div key={i} className="space-y-4">
                                     <div className="w-12 h-12 rounded-2xl bg-white border border-[#E5E1D8] flex items-center justify-center text-xl font-black text-[#2D3A2D]">{step.step}</div>

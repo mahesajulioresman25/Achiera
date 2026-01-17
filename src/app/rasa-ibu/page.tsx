@@ -5,6 +5,8 @@ import HeroSlider from '@/components/commerce/HeroSlider';
 import BestSellersSection from '@/components/commerce/BestSellersSection';
 import SubscriptionPromoSection from '@/components/commerce/SubscriptionPromoSection';
 import PromoBadge from '@/components/commerce/PromoBadge';
+import ProductWishlistButton from '@/components/commerce/ProductWishlistButton';
+import { Star } from 'lucide-react';
 
 import { unisolatedPrisma as prisma } from '@/lib/prisma';
 import { getFeaturedProducts, getBestSellers } from '@/lib/actions/rasa-ibu/public-products';
@@ -289,10 +291,17 @@ export default async function RasaIbuHomePage() {
                                 )}
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-                                {/* Promo / Flash Sale Badge */}
                                 {getProductPrice(product).discount > 0 && (
                                     <PromoBadge type="FLASH_SALE" className="top-4 left-4" />
                                 )}
+
+                                {/* Top Right Badges */}
+                                <div className="absolute top-4 right-4 flex flex-col gap-2 items-end z-10">
+                                    <div className="bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full text-[10px] font-black tracking-widest text-[#2D3A2D] flex items-center gap-1 shadow-sm">
+                                        <Star className="w-3 h-3 text-amber-500 fill-current" /> {(product.rating || 5.0).toFixed(1)}
+                                    </div>
+                                    <ProductWishlistButton productId={product.id} productName={product.name} brandId={brandId} />
+                                </div>
                             </div>
                             <h3 className="text-sm md:text-xl font-black mb-2 tracking-tight line-clamp-1 group-hover:text-[#8B7E66] transition-colors">{product.name}</h3>
                             <p className="text-[10px] md:text-sm text-gray-500 font-medium mb-3 md:mb-4 line-clamp-2 leading-relaxed">{product.description}</p>

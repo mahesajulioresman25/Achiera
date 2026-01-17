@@ -109,6 +109,7 @@ model Brand {
   assetDepreciations           AssetDepreciation[]
   frozenProducts               FrozenProduct[]
   frozenVariants               FrozenVariant[]
+  productWishlists             ProductWishlist[]
 
   @@map("brands")
 }
@@ -131,6 +132,7 @@ model User {
   brandRoles           UserBrandRole[]
   complianceViolations ComplianceViolation[]
   verificationTokens   VerificationToken[]
+  productWishlists     ProductWishlist[]
 
   @@map("users")
 }
@@ -596,6 +598,7 @@ model FrozenProduct {
   variants            FrozenVariant[]
   inventoryType       InventoryType      @default(FINISHED_GOOD)
   recipeProducts      RecipeProduct[]
+  wishlists           ProductWishlist[]
 
   @@index([brandId])
   @@index([categoryId], map: "FrozenProduct_frozen_products_categoryId_idx")
@@ -1878,6 +1881,22 @@ model CustomerReview {
   @@index([brandId, platform, rating])
   @@index([reviewDate])
   @@map("customer_reviews")
+}
+
+model ProductWishlist {
+  id        String        @id @default(cuid())
+  userId    String
+  brandId   String
+  productId String
+  createdAt DateTime      @default(now())
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  brand     Brand         @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  product   FrozenProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@index([brandId])
+  @@index([productId])
+  @@map("product_wishlists")
 }
 
 model MarketplaceInsight {

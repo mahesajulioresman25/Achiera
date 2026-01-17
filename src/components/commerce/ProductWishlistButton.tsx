@@ -1,23 +1,25 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Heart } from 'lucide-react';
-import { toast } from 'sonner';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useSession } from 'next-auth/react';
+import { toggleWishlistAction } from '@/lib/actions/commerce/wishlist';
 
 interface ProductWishlistButtonProps {
     productId: string;
     productName: string;
+    brandId?: string;
     className?: string;
 }
 
 export default function ProductWishlistButton({
     productId,
     productName,
+    brandId = "clp...", // rasa-ibu default if not provided, but better to pass it
     className = ""
 }: ProductWishlistButtonProps) {
+    const { data: session } = useSession();
     const [isFav, setIsFav] = useState(false);
     const [mounted, setMounted] = useState(false);
+    const [isSyncing, setIsSyncing] = useState(false);
 
     useEffect(() => {
         setMounted(true);
@@ -25,26 +27,44 @@ export default function ProductWishlistButton({
         setIsFav(favs.includes(productId));
     }, [productId]);
 
-    const toggleFav = (e: React.MouseEvent) => {
+    const toggleFav = async (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
 
-        const favs = JSON.parse(localStorage.getItem('rasa_ibu_fav_menu') || '[]');
-        let newFavStatus = !isFav;
+        if (isSyncing) return;
 
-        if (newFavStatus) {
-            if (!favs.includes(productId)) favs.push(productId);
-            toast.success(`${productName} ditambahkan ke Menu Favorit Bunda!`, {
-                icon: '❤️'
-            });
+        // If logged in, sync with server
+        if (session?.user) {
+            setIsSyncing(true);
+            const res = await toggleWishlistAction(productId, brandId);
+            setIsSyncing(false);
+
+            if (res.success) {
+                setIsFav(res.active || false);
+                toast.success(res.message, { icon: res.active ? '❤️' : '🗑️' });
+            } else {
+                toast.error(res.error);
+                return;
+            }
         } else {
-            const index = favs.indexOf(productId);
-            if (index > -1) favs.splice(index, 1);
-            toast.info('Dihapus dari Menu Favorit.');
-        }
+            // Guest mode: LocalStorage only
+            const favs = JSON.parse(localStorage.getItem('rasa_ibu_fav_menu') || '[]');
+            let newFavStatus = !isFav;
 
-        setIsFav(newFavStatus);
-        localStorage.setItem('rasa_ibu_fav_menu', JSON.stringify(favs));
+            if (newFavStatus) {
+                if (!favs.includes(productId)) favs.push(productId);
+                toast.success(`${productName} ditambahkan ke Menu Favorit Bunda!`, {
+                    icon: '❤️'
+                });
+            } else {
+                const index = favs.indexOf(productId);
+                if (index > -1) favs.splice(index, 1);
+                toast.info('Dihapus dari Menu Favorit.');
+            }
+
+            setIsFav(newFavStatus);
+            localStorage.setItem('rasa_ibu_fav_menu', JSON.stringify(favs));
+        }
 
         // Dispatch custom event for Header update
         window.dispatchEvent(new Event('wishlist-updated'));

@@ -2,8 +2,10 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Flame } from 'lucide-react';
+import { Flame, Star } from 'lucide-react';
 import PromoBadge from './PromoBadge';
+import ProductWishlistButton from './ProductWishlistButton';
+import { useSession } from 'next-auth/react';
 
 interface Product {
     id: string;
@@ -15,7 +17,8 @@ interface Product {
     image?: string;
     orderCount?: number;
     totalStock?: number;
-    inStock: boolean;
+    rating?: number;
+    reviewCount?: number;
 }
 
 interface BestSellersSectionProps {
@@ -24,6 +27,7 @@ interface BestSellersSectionProps {
 }
 
 export default function BestSellersSection({ products, activeFlashSale }: BestSellersSectionProps) {
+    const { data: session } = useSession();
     // Helper to calculate product price with flash sale
     const getProductPrice = (product: Product) => {
         const basePrice = product.price;
@@ -92,6 +96,14 @@ export default function BestSellersSection({ products, activeFlashSale }: BestSe
                                 </div>
                             )}
                             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                            {/* Top Right Badges */}
+                            <div className="absolute top-4 right-4 flex flex-col gap-2 items-end z-10 transition-transform group-hover:scale-110">
+                                <div className="bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full text-[10px] font-black tracking-widest text-[#2D3A2D] flex items-center gap-1 shadow-sm">
+                                    <Star className="w-3 h-3 text-amber-500 fill-current" /> {(product.rating || 5.0).toFixed(1)}
+                                </div>
+                                <ProductWishlistButton productId={product.id} productName={product.name} />
+                            </div>
 
                             {/* Promo / Flash Sale Badge */}
                             {getProductPrice(product).discount > 0 ? (
