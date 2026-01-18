@@ -31,13 +31,17 @@ export default function ProductWishlistButton({
         // Fetch initial state
         const fetchInitialState = async () => {
             if (session?.user) {
-                // For logged-in users, fetch from server
-                const res = await fetch(`/api/wishlist/check?productId=${productId}&brandId=${brandId}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    setIsFav(data.isFavorite || false);
-                } else {
-                    // Fallback to localStorage
+                // For logged-in users, fetch from server using server action
+                try {
+                    const { getUserWishlistAction } = await import('@/lib/actions/commerce/wishlist');
+                    const res = await getUserWishlistAction(brandId);
+                    if (res.success && res.data) {
+                        setIsFav(res.data.includes(productId));
+                    } else {
+                        setIsFav(false);
+                    }
+                } catch (error) {
+                    // Fallback to localStorage on error
                     const favs = JSON.parse(localStorage.getItem('rasa_ibu_fav_menu') || '[]');
                     setIsFav(favs.includes(productId));
                 }
