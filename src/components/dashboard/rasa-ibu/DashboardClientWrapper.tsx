@@ -232,15 +232,14 @@ export default function DashboardClientWrapper({
     }, [brandId]);
 
     // Auth & Permission Logic (Prioritize Server User for consistency)
-    const { data: clientSession } = useSession();
+    const { data: clientSession, status: authStatus } = useSession();
     const user = serverUser || clientSession?.user;
+    const isAuthLoading = authStatus === 'loading' && !serverUser;
 
     // Direct Bypass Logic for Owner (Mahesa)
-    // 1. Matches specific emails
-    // 2. Matches specific DB IDs
-    // 3. Matches name pattern
-    const isMahesa = (
+    const isMahesa = !!(
         user?.email?.toLowerCase().includes('mahesa') ||
+        user?.email?.toLowerCase().includes('achiera') ||
         user?.name?.toLowerCase().includes('mahesa') ||
         user?.id === 'cmk5kkbnc000013lpokgbhmjy' || // Achiera Account
         user?.id === 'cmk8mdya50001zn3vz7azydoz'    // Gmail Account
@@ -265,21 +264,16 @@ export default function DashboardClientWrapper({
         user?.brandRoles?.some((br: any) => ['OWNER', 'ADMIN', 'BRAND_ADMIN', 'BRAND_OWNER'].includes(br?.role?.toUpperCase() || ''));
 
     // 4. Final Permission Sets - OWNER BYPASS ACTIVATED
-    const canManageBrand = isMahesa || isGlobalOwner || ['BRAND_ADMIN', 'OWNER', 'ADMIN', 'BRAND_OWNER'].includes(normalizedRole) || hasAnyAdminAuthority;
+    const canManageBrand = !isAuthLoading && (isMahesa || isGlobalOwner || ['BRAND_ADMIN', 'OWNER', 'ADMIN', 'BRAND_OWNER'].includes(normalizedRole) || hasAnyAdminAuthority);
     const canAccessWarehouse = canManageBrand || ['BRAND_WAREHOUSE_ADMIN', 'WAREHOUSE_STAFF'].includes(normalizedRole);
     const canAccessIntelligence = canManageBrand || ['BRAND_FINANCE'].includes(normalizedRole);
 
-    // Debug Pulse (Visible only to Mahesa in console)
+    // Debug Pulse
     React.useEffect(() => {
-        if (isMahesa) {
-            console.log('🛡️ ACHIERA SECURITY BYPASS:', {
-                user: user?.email,
-                role: normalizedRole,
-                global: user?.globalRole,
-                canManage: canManageBrand
-            });
+        if (isMahesa || user?.email) {
+            console.log('🛡️ AUTH DEBUG:', { email: user?.email, id: user?.id, role: normalizedRole, managed: canManageBrand });
         }
-    }, [isMahesa, user, normalizedRole, canManageBrand]);
+    }, [user, normalizedRole, canManageBrand, isMahesa]);
 
     // ... (effects)
 
