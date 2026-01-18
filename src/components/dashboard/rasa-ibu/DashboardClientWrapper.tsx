@@ -245,9 +245,14 @@ export default function DashboardClientWrapper({
         br.brandId === brandId || br.brand?.slug === 'rasa-ibu'
     )?.role || '';
 
-    // 3. Final Permission Determination
     const normalizedRole = (brandRoleInBrands || brandRoleInRoles || '').toUpperCase();
-    const canManageBrand = isGlobalOwner || ['BRAND_ADMIN', 'OWNER', 'ADMIN', 'BRAND_OWNER'].includes(normalizedRole);
+
+    // 3. High-Priority Permission Fallback (Ensures Owners/Admins never get locked out)
+    const hasAnyAdminAuthority = user?.brands?.some(b => ['OWNER', 'ADMIN', 'BRAND_ADMIN', 'BRAND_OWNER'].includes(b.role.toUpperCase())) ||
+        user?.brandRoles?.some(br => ['OWNER', 'ADMIN', 'BRAND_ADMIN', 'BRAND_OWNER'].includes(br.role.toUpperCase()));
+
+    // 4. Final Permission Sets
+    const canManageBrand = isGlobalOwner || ['BRAND_ADMIN', 'OWNER', 'ADMIN', 'BRAND_OWNER'].includes(normalizedRole) || hasAnyAdminAuthority;
     const canAccessWarehouse = canManageBrand || ['BRAND_WAREHOUSE_ADMIN', 'WAREHOUSE_STAFF'].includes(normalizedRole);
     const canAccessIntelligence = canManageBrand || ['BRAND_FINANCE'].includes(normalizedRole);
 
