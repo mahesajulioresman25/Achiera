@@ -241,7 +241,7 @@ export default function DashboardClientWrapper({
         b.brandId === brandId || b.brandSlug === 'rasa-ibu'
     )?.role || '';
 
-    const brandRoleInRoles = user?.brandRoles?.find(br =>
+    const brandRoleInRoles = (user as any)?.brandRoles?.find((br: any) =>
         br.brandId === brandId || br.brand?.slug === 'rasa-ibu'
     )?.role || '';
 
@@ -251,9 +251,11 @@ export default function DashboardClientWrapper({
     const hasAnyAdminAuthority = user?.brands?.some(b => ['OWNER', 'ADMIN', 'BRAND_ADMIN', 'BRAND_OWNER'].includes(b?.role?.toUpperCase() || '')) ||
         user?.brandRoles?.some(br => ['OWNER', 'ADMIN', 'BRAND_ADMIN', 'BRAND_OWNER'].includes(br?.role?.toUpperCase() || ''));
 
-    // Emergency Fallback: If Email or ID is a known admin, force access (Mahesa)
+    // Emergency Fallback: If Email, ID, or Name is a known admin, force access (Mahesa)
     const isMahesa = user?.email?.toLowerCase().includes('mahesajulioresman25') ||
-        user?.id === 'cmk5kkbnc000013lpokgbhmjy';
+        user?.id === 'cmk5kkbnc000013lpokgbhmjy' || // Achiera ID
+        user?.id === 'cmk8mdya50001zn3vz7azydoz' || // Gmail ID
+        user?.name?.toLowerCase().includes('mahesa');
 
     // 4. Final Permission Sets
     const canManageBrand = isGlobalOwner || ['BRAND_ADMIN', 'OWNER', 'ADMIN', 'BRAND_OWNER'].includes(normalizedRole) || hasAnyAdminAuthority || isMahesa;
