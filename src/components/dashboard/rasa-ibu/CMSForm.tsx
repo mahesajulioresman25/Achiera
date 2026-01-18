@@ -73,10 +73,10 @@ export default function CMSForm({ brandId, initialData }: CMSFormProps) {
             'Pemesanan di atas jam 15:00 akan dikirim keesokan harinya.'
         ],
         howToOrderInfoImage: initialData?.howToOrderInfoImage || '',
-        howToOrderCtaTitle: initialData?.howToOrderCtaTitle || 'Katalog Siap Ditelusuri',
-        howToOrderCtaPrimary: initialData?.howToOrderCtaPrimary || 'Buka Katalog Menu',
+        howToOrderCtaTitle: initialData?.howToOrderCtaTitle || 'Mari Hadirkan Kehangatan di Meja Makan Bunda',
+        howToOrderCtaPrimary: initialData?.howToOrderCtaPrimary || 'Lihat Menu Cinta Kami',
         howToOrderCtaPrimaryLink: initialData?.howToOrderCtaPrimaryLink || '/rasa-ibu/products',
-        howToOrderCtaSecondary: initialData?.howToOrderCtaSecondary || 'Tanya Ongkir',
+        howToOrderCtaSecondary: initialData?.howToOrderCtaSecondary || 'Tanya Bunda Soal Pengiriman',
 
         // 7. About Page
         aboutHeroTitle: initialData?.aboutHeroTitle || 'Berawal dari Kejujuran Dapur.',

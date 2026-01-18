@@ -88,7 +88,7 @@ export default async function RasaIbuHowToOrderPage() {
                         {config.howToOrderCtaPrimary || "Lihat Menu Cinta Kami"}
                     </Link>
                     <a
-                        href={`https://wa.me/${whatsapp}?text=${encodeURIComponent("Halo Rasa Ibu, saya ingin tanya ongkir ke area saya...")}`}
+                        href={`https://wa.me/${whatsapp}?text=${encodeURIComponent("Halo Rasa Ibu, saya ingin tanya pengiriman ke area saya...")}`}
                         className="border-2 border-[#1A241A] text-[#1A241A] px-12 py-6 rounded-full text-xs font-black uppercase tracking-widest hover:bg-[#FDFBF7] transition-all"
                     >
                         {config.howToOrderCtaSecondary || "Tanya Bunda Soal Pengiriman"}

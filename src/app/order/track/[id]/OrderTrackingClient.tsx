@@ -11,7 +11,7 @@ import PaymentVerificationPanel from '@/components/dashboard/rasa-ibu/PaymentVer
 const STATUS_STEPS_ID = [
     { key: 'WAITING_PAYMENT', label: 'Menunggu Pembayaran', icon: CreditCard },
     { key: 'PAYMENT_VERIFIED', label: 'Pembayaran Diverifikasi', icon: CheckCircle },
-    { key: 'IN_PRODUCTION', label: 'Sedang Disiapkan', icon: Package },
+    { key: 'IN_PRODUCTION', label: 'Sedang Disajikan', icon: Package },
     { key: 'SHIPPED', label: 'Dalam Pengiriman', icon: Truck },
     { key: 'COMPLETED', label: 'Selesai', icon: CheckCircle },
 ];

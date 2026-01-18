@@ -96,7 +96,10 @@ async function main() {
                 { label: 'Tentang Kami', href: '/rasa-ibu/about' }
             ],
             heroTagline: 'HANGATNYA MEJA MAKAN',
-            heroImage: '/images/rasa-ibu/hero.jpg'
+            heroImage: '/images/rasa-ibu/hero.jpg',
+            howToOrderCtaTitle: 'Mari Hadirkan Kehangatan di Meja Makan Bunda',
+            howToOrderCtaPrimary: 'Lihat Menu Cinta Kami',
+            howToOrderCtaSecondary: 'Tanya Bunda Soal Pengiriman'
         },
         create: {
             brandId: brand.id,
@@ -110,7 +113,10 @@ async function main() {
                 { label: 'Tentang Kami', href: '/rasa-ibu/about' }
             ],
             heroTagline: 'HANGATNYA MEJA MAKAN',
-            heroImage: '/images/rasa-ibu/hero.jpg'
+            heroImage: '/images/rasa-ibu/hero.jpg',
+            howToOrderCtaTitle: 'Mari Hadirkan Kehangatan di Meja Makan Bunda',
+            howToOrderCtaPrimary: 'Lihat Menu Cinta Kami',
+            howToOrderCtaSecondary: 'Tanya Bunda Soal Pengiriman'
         }
     });
     console.log('✅ Brand Config seeded.');
