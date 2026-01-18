@@ -39,7 +39,7 @@ export default function ProductWishlistButton({
         if (isSyncing) return;
 
         // If logged in, sync with server
-        if (session?.user) {
+        if (session?.user && brandId) {
             setIsSyncing(true);
             const res = await toggleWishlistAction(productId, brandId);
             setIsSyncing(false);
