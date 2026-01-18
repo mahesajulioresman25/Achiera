@@ -7,8 +7,8 @@ import CartDrawer from '@/components/cart/CartDrawer';
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "ACHIERA | Transforming Problems Into Possibilities",
-  description: "ACHIERA is your business and technology partner, helping companies turn challenges into opportunities through premium merchandise and integrated IT solutions.",
+  title: 'Achiera - Transforming Problems into Profit',
+  description: 'Enterprise business intelligence and automation platform',
 };
 
 // Force dynamic rendering for all routes to prevent build-time errors
@@ -16,21 +16,22 @@ export const metadata: Metadata = {
 // export const dynamic = 'force-dynamic';
 // export const dynamicParams = true;
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
+  const session = await auth();
+
   return (
-    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
-      <body
-        className={`${inter.className} bg-background text-foreground antialiased selection:bg-primary selection:text-primary-foreground`}
-        suppressHydrationWarning
-      >
-        <Providers>
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className} suppressHydrationWarning>
+        <SessionProvider session={session}>
+          <GlobalBirthdayBanner />
+          <SeasonalDecorations />
           {children}
-          <CartDrawer />
-        </Providers>
+          <Toaster position="top-center" richColors />
+        </SessionProvider>
       </body>
     </html>
   );

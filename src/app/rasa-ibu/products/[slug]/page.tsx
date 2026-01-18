@@ -12,6 +12,7 @@ import { unisolatedPrisma } from '@/lib/prisma';
 import { getRecommendedProducts } from '@/lib/actions/rasa-ibu/public-products';
 import { getProductReviewsAction } from '@/lib/actions/commerce/reviews';
 import ProductGallery from '@/components/commerce/ProductGallery';
+import ShareButton from '@/components/commerce/ShareButton';
 
 export async function generateMetadata(
     { params }: { params: Promise<{ slug: string }> }
@@ -284,12 +285,12 @@ export default async function RasaIbuProductDetailPage({
                                         className="flex items-center justify-center gap-3 py-5 rounded-2xl bg-white border-2 border-[#E5E1D8] text-[#2D3A2D] text-xs font-black uppercase tracking-widest hover:bg-[#F9F7F2] transition-all"
                                     >
                                         <MessageCircle className="w-5 h-5 text-emerald-500" />
-                                        Tanya Stok
+                                        Bantuan
                                     </a>
-                                    <button className="flex items-center justify-center gap-3 py-5 rounded-2xl bg-white border-2 border-[#E5E1D8] text-[#2D3A2D] text-xs font-black uppercase tracking-widest hover:bg-[#F9F7F2] transition-all">
-                                        <Share2 className="w-5 h-5" />
-                                        Bagikan
-                                    </button>
+                                    <ShareButton
+                                        productName={product.name}
+                                        productUrl={`https://achiera.com/rasa-ibu/products/${product.slug}`}
+                                    />
                                 </div>
                             </div>
                         </div>
