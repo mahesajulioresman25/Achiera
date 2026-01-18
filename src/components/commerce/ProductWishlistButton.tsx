@@ -103,10 +103,14 @@ export default function ProductWishlistButton({
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.9 }}
             onClick={toggleFav}
-            className={`p-3 rounded-full transition-all group flex items-center justify-center gap-2 ${isFav
-                ? 'bg-rose-500 text-white shadow-lg shadow-rose-200'
-                : 'bg-white/80 backdrop-blur-md text-gray-400 border border-gray-100 hover:text-rose-500 hover:bg-white shadow-sm'
+            className={`p-3 rounded-full transition-all group flex items-center justify-center gap-2 shadow-sm ${isFav
+                ? 'bg-rose-500 text-white shadow-rose-200'
+                : 'bg-white/80 backdrop-blur-md text-gray-400 border border-gray-100 hover:text-rose-500 hover:bg-white'
                 } ${className}`}
+            style={{
+                // Ensure background color is explicitly set if favorited to prevent className overrides
+                backgroundColor: isFav ? '#f43f5e' : undefined
+            }}
             title={isFav ? "Hapus dari Favorit" : "Simpan Menu Favorit"}
         >
             <motion.div
@@ -114,9 +118,12 @@ export default function ProductWishlistButton({
                 initial={{ scale: 0.8 }}
                 animate={{ scale: 1 }}
                 transition={{ type: 'spring', stiffness: 500, damping: 15 }}
+                className="flex items-center justify-center"
             >
                 <Heart
-                    className={`w-5 h-5 transition-all duration-300 ${isFav ? 'fill-current' : ''}`}
+                    className="w-5 h-5 transition-all duration-300"
+                    fill={isFav ? "currentColor" : "none"}
+                    stroke={isFav ? "white" : "currentColor"}
                 />
             </motion.div>
 

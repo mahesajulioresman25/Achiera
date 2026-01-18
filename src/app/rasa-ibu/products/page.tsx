@@ -124,7 +124,7 @@ export default async function RasaIbuProductListPage({
                         productId={product.id}
                         productName={product.name}
                         brandId={brandId}
-                        className="p-2 w-10 h-10 shadow-md bg-white/90 backdrop-blur-sm"
+                        className="p-2 w-10 h-10"
                     />
                 </div>
 
