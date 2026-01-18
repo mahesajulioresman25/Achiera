@@ -24,10 +24,8 @@ export class EmailAlertService {
     });
 
     private getFromAddress() {
-        const rawName = process.env.SMTP_FROM_NAME || 'Achiera Platform';
-        const cleanName = rawName.replace(/>/g, '').trim();
-        const fromEmail = process.env.SMTP_FROM || process.env.SMTP_USER;
-        return `"${cleanName}" <${fromEmail}>`;
+        const fromEmail = process.env.SMTP_FROM || process.env.SMTP_USER || 'alert@achiera.com';
+        return `"RASA IBU" <${fromEmail}>`;
     }
 
     /**

@@ -33,21 +33,9 @@ export class EmailService {
     });
 
     private static getFromAddress() {
-        const rawName = process.env.SMTP_FROM_NAME || 'RASA IBU';
-        // Aggressive clean to ensure only authorized characters and definitely no trailing >
-        let cleanName = rawName.replace(/[<>]/g, '').trim();
-
-        // If it specifically contains RASA IBU, let's normalize it
-        if (cleanName.toUpperCase().includes('RASA IBU')) {
-            cleanName = 'RASA IBU';
-        }
-
-        const fromEmail = process.env.SMTP_FROM || process.env.SMTP_USER;
-
-        return {
-            name: cleanName,
-            address: fromEmail || ''
-        };
+        const fromEmail = process.env.SMTP_FROM || process.env.SMTP_USER || 'order@achiera.com';
+        // Force RASA IBU for this service as it is the primary brand
+        return `"RASA IBU" <${fromEmail}>`;
     }
 
     static async sendOrderConfirmation(order: EmailOrderInfo, loyalty?: LoyaltyInfo) {
@@ -276,7 +264,7 @@ export class EmailService {
         `.trim();
 
             await this.transporter.sendMail({
-                from: this.getFromAddress(),
+                from: EmailService.getFromAddress(),
                 to: recipientEmail,
                 subject: order.isGift
                     ? `[Rasa Ibu] Kejutan Hidangan Untuk Bunda! 🎁 #${order.invoiceNo}`
@@ -410,7 +398,7 @@ export class EmailService {
 
         try {
             await this.transporter.sendMail({
-                from: this.getFromAddress(),
+                from: EmailService.getFromAddress(),
                 to: recipientEmail,
                 subject: `🎁 Surprise! Ada kiriman spesial dari ${order.customerName}`,
                 html: html,
@@ -500,7 +488,7 @@ export class EmailService {
 
         try {
             await this.transporter.sendMail({
-                from: this.getFromAddress(),
+                from: EmailService.getFromAddress(),
                 to: order.customerEmail,
                 subject: `[Achiera] Update Pesanan #${order.invoiceNo}: ${newStatus}`,
                 html: html,
@@ -529,7 +517,7 @@ export class EmailService {
 
         try {
             await this.transporter.sendMail({
-                from: this.getFromAddress(),
+                from: EmailService.getFromAddress(),
                 to: adminEmail,
                 subject: `⚠️ Alert: ${subject}`,
                 html: `
@@ -642,7 +630,7 @@ export class EmailService {
 
         try {
             await this.transporter.sendMail({
-                from: this.getFromAddress(),
+                from: EmailService.getFromAddress(),
                 to: email,
                 subject: `[Achiera] Kode OTP ${label}: ${code}`,
                 html: html,
@@ -881,7 +869,7 @@ export class EmailService {
 
         try {
             await this.transporter.sendMail({
-                from: this.getFromAddress(),
+                from: EmailService.getFromAddress(),
                 to: subscription.customerEmail,
                 subject: `[Achiera] Langganan Bunda Aktif - ${subscription.plan?.name || 'Custom'}`,
                 html: html,

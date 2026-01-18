@@ -19,7 +19,7 @@ export default function CheckoutFlow({ platformLinks, upsellProducts = [] }: Che
     const brandId = 'rasa-ibu'; // Default brand for this flow
 
     return (
-        <div className="min-h-screen pt-28 pb-20 bg-[#FDFBF7]">
+        <div className="min-h-screen pt-20 pb-20 bg-[#FDFBF7]">
             <div className="max-w-7xl mx-auto px-4 md:px-6">
 
                 {/* Header Compact */}

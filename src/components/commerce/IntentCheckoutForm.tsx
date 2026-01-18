@@ -151,7 +151,7 @@ export default function IntentCheckoutForm() {
     };
 
     return (
-        <div className="bg-white border border-[#E5E1D8] rounded-[2rem] p-6 md:p-10 shadow-sm space-y-10 animate-in slide-in-from-bottom duration-500 max-w-2xl mx-auto">
+        <div className="bg-white border border-[#E5E1D8] rounded-[2rem] p-4 md:p-6 shadow-sm space-y-6 animate-in slide-in-from-bottom duration-500 max-w-2xl mx-auto">
             <div className="space-y-3">
                 <div className="flex justify-between items-start">
                     <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#8B7E66]">Satu Langkah Lagi</span>
@@ -161,7 +161,7 @@ export default function IntentCheckoutForm() {
                         </span>
                     )}
                 </div>
-                <h2 className="text-3xl font-black text-[#2D3A2D] tracking-tight">Kirim Pesanan Bunda</h2>
+                <h2 className="text-2xl font-black text-[#2D3A2D] tracking-tight">Kirim Pesanan Bunda</h2>
             </div>
 
             {error && (
@@ -170,7 +170,7 @@ export default function IntentCheckoutForm() {
                 </div>
             )}
 
-            <div className="space-y-8">
+            <div className="space-y-6">
                 {/* 1. Informasi Kontak */}
                 <div className="space-y-4">
                     <h3 className="text-[10px] font-black uppercase tracking-widest text-[#B2BCA2] border-b border-[#F0EEE9] pb-2">1. Informasi Kontak</h3>
@@ -182,7 +182,7 @@ export default function IntentCheckoutForm() {
                                     type="text"
                                     value={customerName}
                                     onChange={(e) => setCustomerName(e.target.value)}
-                                    className="w-full bg-[#FDFBF7] border border-[#E5E1D8] rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#B2BCA2] transition-all"
+                                    className="w-full bg-[#FDFBF7] border border-[#E5E1D8] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#B2BCA2] transition-all"
                                     placeholder="Nama Bunda..."
                                 />
                                 {isAutofilling && (
@@ -199,7 +199,7 @@ export default function IntentCheckoutForm() {
                                 type="email"
                                 value={customerEmail}
                                 onChange={(e) => setCustomerEmail(e.target.value)}
-                                className="w-full bg-[#FDFBF7] border border-[#E5E1D8] rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#B2BCA2] transition-all"
+                                className="w-full bg-[#FDFBF7] border border-[#E5E1D8] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#B2BCA2] transition-all"
                                 placeholder="bunda@email.com"
                             />
                         </div>
@@ -215,7 +215,7 @@ export default function IntentCheckoutForm() {
                                     setCustomerPhone(e.target.value);
                                     if (memberInfo) setMemberInfo(null);
                                 }}
-                                className="w-full bg-[#FDFBF7] border border-[#E5E1D8] rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#B2BCA2] transition-all"
+                                className="w-full bg-[#FDFBF7] border border-[#E5E1D8] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#B2BCA2] transition-all"
                                 placeholder="0812..."
                                 autoComplete="tel"
                             />
@@ -230,7 +230,7 @@ export default function IntentCheckoutForm() {
                         </div>
 
                         {/* WhatsApp Marketing Opt-In */}
-                        <div className={`flex items-center gap-3 p-4 border rounded-2xl transition-all duration-300 ${isMarketingAllowed ? 'bg-amber-50 border-amber-200' : 'bg-[#FDFBF7] border-[#E5E1D8]'}`}>
+                        <div className={`flex items-center gap-3 p-3 border rounded-2xl transition-all duration-300 ${isMarketingAllowed ? 'bg-amber-50 border-amber-200' : 'bg-[#FDFBF7] border-[#E5E1D8]'}`}>
                             <label className="relative inline-flex items-center cursor-pointer">
                                 <input
                                     type="checkbox"
@@ -251,19 +251,13 @@ export default function IntentCheckoutForm() {
 
                         {/* Point Check Feedback */}
                         {memberInfo && (
-                            <div className="mt-3 p-4 bg-emerald-50 border-2 border-emerald-200 rounded-xl animate-in slide-in-from-top-2 duration-200">
-                                <div className="flex items-start gap-3">
-                                    <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
-                                        <Check className="w-6 h-6 text-white" />
+                            <div className="mt-2 p-3 bg-emerald-50 border-2 border-emerald-200 rounded-xl animate-in slide-in-from-top-2 duration-200">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <Check className="w-5 h-5 text-white" />
                                     </div>
                                     <div className="flex-1">
-                                        <p className="text-[10px] font-black uppercase tracking-widest text-emerald-700 mb-1">✨ Poin Ditemukan!</p>
-                                        <p className="text-sm font-black text-emerald-900">
-                                            {memberInfo.customerName || customerName || 'Bunda'} punya <span className="text-lg">{availableToUse.toLocaleString()}</span> poin
-                                        </p>
-                                        <p className="text-[10px] text-emerald-600 mt-1">
-                                            {isUsingGlobal ? '🌍 Poin Global (bisa dipakai di semua brand)' : '🏠 Poin Rasa Ibu'}
-                                        </p>
+                                        <p className="text-[9px] font-black uppercase tracking-widest text-emerald-700">Poin: <span className="text-sm">{availableToUse.toLocaleString()}</span></p>
                                     </div>
                                 </div>
                             </div>
@@ -274,15 +268,14 @@ export default function IntentCheckoutForm() {
                 {/* 2. Gifting Section (Optional) */}
                 <div className="space-y-4">
                     <h3 className="text-[10px] font-black uppercase tracking-widest text-[#B2BCA2] border-b border-[#F0EEE9] pb-2">2. Pilihan Hadiah</h3>
-                    <div className="bg-[#FDFBF7] border border-[#E5E1D8] rounded-2xl p-5 space-y-4">
+                    <div className="bg-[#FDFBF7] border border-[#E5E1D8] rounded-2xl p-4 space-y-3">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${isGift ? 'bg-pink-100 text-pink-600' : 'bg-slate-100 text-slate-400'}`}>
-                                    <Sparkles className="w-5 h-5" />
+                                <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-colors ${isGift ? 'bg-pink-100 text-pink-600' : 'bg-slate-100 text-slate-400'}`}>
+                                    <Sparkles className="w-4 h-4" />
                                 </div>
                                 <div>
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-[#2D3A2D]">Kirim sebagai Hadiah?</p>
-                                    <p className="text-[9px] text-[#8B7E66]">Sertakan kartu ucapan digital spesial.</p>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-[#2D3A2D]">Kirim Hadiah?</p>
                                 </div>
                             </div>
                             <label className="relative inline-flex items-center cursor-pointer">
@@ -340,7 +333,7 @@ export default function IntentCheckoutForm() {
                                     key={pref}
                                     type="button"
                                     onClick={() => setDelivery(pref)}
-                                    className={`flex-1 px-6 py-4 rounded-xl text-[10px] font-black uppercase tracking-[0.1em] border transition-all ${delivery === pref
+                                    className={`flex-1 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.1em] border transition-all ${delivery === pref
                                         ? 'bg-[#2D3A2D] text-[#FDFBF7] border-[#2D3A2D] shadow-lg shadow-green-950/20'
                                         : 'bg-white text-[#8B7E66] border-[#E5E1D8] hover:bg-slate-50'
                                         }`}
@@ -360,7 +353,7 @@ export default function IntentCheckoutForm() {
                                         key={c}
                                         type="button"
                                         onClick={() => setCourierType(c as any)}
-                                        className={`px-4 py-4 rounded-xl text-[10px] font-black uppercase border transition-all ${courierType === c
+                                        className={`px-3 py-3 rounded-xl text-[10px] font-black uppercase border transition-all ${courierType === c
                                             ? 'bg-[#2D3A2D] text-[#FDFBF7] border-[#2D3A2D]'
                                             : 'bg-white text-[#8B7E66] border-[#E5E1D8]'
                                             }`}
@@ -378,7 +371,7 @@ export default function IntentCheckoutForm() {
                         <textarea
                             value={customerAddress}
                             onChange={(e) => setCustomerAddress(e.target.value)}
-                            className="w-full bg-[#FDFBF7] border border-[#E5E1D8] rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#B2BCA2] transition-all min-h-[80px]"
+                            className="w-full bg-[#FDFBF7] border border-[#E5E1D8] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#B2BCA2] transition-all min-h-[60px]"
                             placeholder="Tuliskan alamat lengkap pengiriman Bunda di sini..."
                         />
                     </div>
@@ -391,20 +384,19 @@ export default function IntentCheckoutForm() {
                         <button
                             type="button"
                             onClick={() => setPaymentMethod('TRANSFER')}
-                            className={`p-5 rounded-2xl border text-left transition-all relative ${paymentMethod === 'TRANSFER'
+                            className={`p-4 rounded-2xl border text-left transition-all relative ${paymentMethod === 'TRANSFER'
                                 ? 'bg-[#2D3A2D] text-[#FDFBF7] border-[#2D3A2D] shadow-lg shadow-green-950/20'
                                 : 'bg-white text-[#8B7E66] border-[#E5E1D8] hover:bg-slate-50'
                                 }`}
                         >
                             <p className="text-[10px] font-black uppercase tracking-widest">Transfer Bank</p>
-                            <p className="text-[9px] opacity-70 mt-1.5 font-medium leading-relaxed">Konfirmasi & pelacakan pesanan via Email & Web.</p>
                         </button>
 
                         {brandConfig?.qrisEnabled && (
                             <button
                                 type="button"
                                 onClick={() => setPaymentMethod('QRIS')}
-                                className={`p-5 rounded-2xl border text-left transition-all relative overflow-hidden ${paymentMethod === 'QRIS'
+                                className={`p-4 rounded-2xl border text-left transition-all relative overflow-hidden ${paymentMethod === 'QRIS'
                                     ? 'bg-emerald-800 text-[#FDFBF7] border-emerald-800 shadow-lg shadow-emerald-950/20'
                                     : 'bg-white text-emerald-800 border-[#E5E1D8] hover:bg-emerald-50'
                                     }`}
@@ -413,7 +405,6 @@ export default function IntentCheckoutForm() {
                                     <p className="text-[10px] font-black uppercase tracking-widest">Bayar Instan (QRIS)</p>
                                     <span className="bg-emerald-100 text-emerald-700 text-[8px] px-2 py-0.5 rounded font-black">REKOMENDASI</span>
                                 </div>
-                                <p className="text-[9px] opacity-70 mt-1.5 font-medium leading-relaxed">Scan kode QRIS & pesanan Bunda langsung diproses otomatis.</p>
                             </button>
                         )}
                     </div>
@@ -422,20 +413,17 @@ export default function IntentCheckoutForm() {
                 {/* Loyalty & Summary Section */}
                 <div className="space-y-6 pt-6 border-t border-[#F0EEE9]">
                     {memberInfo && (
-                        <div className={`p-6 rounded-2xl border transition-all duration-300 ${usePoints ? 'bg-indigo-50 border-indigo-100' : 'bg-slate-50 border-slate-100'}`}>
+                        <div className={`p-4 rounded-2xl border transition-all duration-300 ${usePoints ? 'bg-indigo-50 border-indigo-100' : 'bg-slate-50 border-slate-100'}`}>
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
-                                    <div className={`p-2 rounded-xl ${usePoints ? 'bg-indigo-500 text-white' : 'bg-slate-200 text-slate-500'}`}>
-                                        <Sparkles className="w-4 h-4" />
+                                    <div className={`p-1.5 rounded-xl ${usePoints ? 'bg-indigo-500 text-white' : 'bg-slate-200 text-slate-500'}`}>
+                                        <Sparkles className="w-3.5 h-3.5" />
                                     </div>
-                                    <div>
-                                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Loyalty Poin</p>
-                                        <p className="text-sm font-bold text-slate-900">Bunda punya <span className="text-indigo-600 font-black">{availableToUse} Poin</span></p>
-                                    </div>
+                                    <p className="text-[10px] font-bold text-slate-900">Bunda punya <span className="text-indigo-600 font-black">{availableToUse} Poin</span></p>
                                 </div>
                                 <button
                                     onClick={() => setUsePoints(!usePoints)}
-                                    className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${usePoints
+                                    className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase transition-all ${usePoints
                                         ? 'bg-indigo-600 text-white'
                                         : 'bg-white border text-slate-500 hover:bg-slate-100'
                                         }`}
@@ -466,23 +454,16 @@ export default function IntentCheckoutForm() {
                     </div>
 
                     {/* Membership Perks Nudge */}
-                    <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 rounded-2xl p-5 space-y-3 shadow-inner">
+                    <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 rounded-2xl p-4 space-y-2 shadow-inner">
                         <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 bg-amber-500 rounded-lg flex items-center justify-center text-white text-[10px] font-black italic">RI</div>
-                            <h4 className="text-[10px] font-black uppercase tracking-widest text-amber-800">Benefit Berlangganan Rasa Ibu</h4>
+                            <h4 className="text-[10px] font-black uppercase tracking-widest text-amber-800">Benefit Member Rasa Ibu</h4>
                         </div>
-                        <ul className="grid grid-cols-2 gap-x-4 gap-y-2">
-                            <li className="flex items-center gap-1.5 text-[9px] font-medium text-amber-900/70">
+                        <ul className="grid grid-cols-2 gap-x-4 gap-y-1">
+                            <li className="flex items-center gap-1.5 text-[8px] font-medium text-amber-900/70">
                                 <span className="text-amber-500">✨</span> 2x Poin Loyalty
                             </li>
-                            <li className="flex items-center gap-1.5 text-[9px] font-medium text-amber-900/70">
-                                <span className="text-amber-500">📖</span> Resep Eksklusif Mingguan
-                            </li>
-                            <li className="flex items-center gap-1.5 text-[9px] font-medium text-amber-900/70">
+                            <li className="flex items-center gap-1.5 text-[8px] font-medium text-amber-900/70">
                                 <span className="text-amber-500">🚚</span> Prioritas Pengiriman
-                            </li>
-                            <li className="flex items-center gap-1.5 text-[9px] font-medium text-amber-900/70">
-                                <span className="text-amber-500">🎁</span> Diskon Paket Hemat
                             </li>
                         </ul>
                     </div>
@@ -490,7 +471,7 @@ export default function IntentCheckoutForm() {
                     <button
                         onClick={handleHandoff}
                         disabled={!customerName || !customerPhone || !customerEmail || !customerAddress || isRedirecting}
-                        className={`w-full py-5 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] shadow-xl transition-all ${!customerName || !customerPhone || !customerEmail || !customerAddress || isRedirecting
+                        className={`w-full py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] shadow-xl transition-all ${!customerName || !customerPhone || !customerEmail || !customerAddress || isRedirecting
                             ? 'bg-slate-100 text-slate-400'
                             : 'bg-[#2D3A2D] text-[#FDFBF7] hover:scale-[1.01] active:scale-[0.99] shadow-green-950/20'
                             }`}

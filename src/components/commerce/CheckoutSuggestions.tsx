@@ -63,7 +63,10 @@ export default function CheckoutSuggestions({ brandId, compact = false }: Checko
         );
     }
 
-    if (suggestions.length === 0) return null;
+    if (suggestions.length === 0) {
+        console.log(`[CheckoutSuggestions] No suggestions found for brand: ${brandId}`);
+        return null;
+    }
 
     return (
         <div className={`space-y-6 ${compact ? 'bg-amber-50/30 p-6 rounded-[2rem] border border-amber-100/50' : ''}`}>
