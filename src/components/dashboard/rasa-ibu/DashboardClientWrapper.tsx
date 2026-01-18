@@ -293,6 +293,16 @@ export default function DashboardClientWrapper({
             <div suppressHydrationWarning className="absolute top-0 right-0 w-[800px] h-[800px] bg-amber-100/30 rounded-full blur-[120px] -z-10 translate-x-1/2 -translate-y-1/2"></div>
             <div suppressHydrationWarning className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-green-100/30 rounded-full blur-[100px] -z-10 -translate-x-1/2 translate-y-1/2"></div>
 
+            {/* DIAGNOSTIC BANNER (Temporary) */}
+            <div className="fixed top-0 left-0 right-0 z-[10000] bg-black text-white text-[10px] p-2 flex justify-center gap-6 font-mono">
+                <span>USER: {user?.email || 'Guest'}</span>
+                <span>ROLE: {normalizedRole || 'NONE'}</span>
+                <span>GLOBAL: {user?.globalRole || 'NONE'}</span>
+                <span className={canManageBrand ? 'text-emerald-400' : 'text-rose-400'}>MANAGE: {canManageBrand ? 'YES' : 'NO'}</span>
+                <span className={isMahesa ? 'text-emerald-400' : 'text-white'}>MAHESA: {isMahesa ? 'YES' : 'NO'}</span>
+                <span>ID: {user?.id || 'NO_ID'}</span>
+            </div>
+
             {/* Modals Selection */}
             {showLedger && <LedgerModal brandId={brandId} onClose={() => setShowLedger(false)} />}
             {showReports && <FinancialReportsModal brandId={brandId} onClose={() => setShowReports(false)} />}
