@@ -40,10 +40,15 @@ export async function getProductRatings(brandId: string, productNames: string[])
  */
 export async function getBestSellers(brandId: string, limit: number = 6) {
     try {
-        let products = await unisolatedPrisma.frozenProduct.findMany({
+        const products = await unisolatedPrisma.frozenProduct.findMany({
             where: {
                 category: { brandId },
                 inventoryType: 'FINISHED_GOOD',
+                variants: {
+                    some: {
+                        stockOnHand: { gt: 0 }
+                    }
+                }
             },
             include: {
                 variants: true,
@@ -54,23 +59,6 @@ export async function getBestSellers(brandId: string, limit: number = 6) {
             },
             take: limit
         });
-
-        // If still empty, try without inventoryType check
-        if (products.length === 0) {
-            products = await unisolatedPrisma.frozenProduct.findMany({
-                where: {
-                    category: { brandId },
-                },
-                include: {
-                    variants: true,
-                    category: true
-                },
-                orderBy: {
-                    createdAt: 'desc'
-                },
-                take: limit
-            });
-        }
 
         const productNames = products.map(p => p.name);
         const ratingMap = await getProductRatings(brandId, productNames);

@@ -161,7 +161,7 @@ export default function IntentCheckoutForm() {
                         </span>
                     )}
                 </div>
-                <h2 className="text-2xl font-black text-[#2D3A2D] tracking-tight">Kirim Pesanan Bunda</h2>
+                <h2 className="text-xl font-black text-[#2D3A2D] tracking-tight">Checkout</h2>
             </div>
 
             {error && (
@@ -172,11 +172,11 @@ export default function IntentCheckoutForm() {
 
             <div className="space-y-6">
                 {/* 1. Informasi Kontak */}
-                <div className="space-y-4">
-                    <h3 className="text-[10px] font-black uppercase tracking-widest text-[#B2BCA2] border-b border-[#F0EEE9] pb-2">1. Informasi Kontak</h3>
+                <div className="space-y-3">
+                    <h3 className="text-[9px] font-black uppercase tracking-widest text-[#B2BCA2] border-b border-[#F0EEE9] pb-1">1. Kontak</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-[9px] font-black uppercase tracking-widest text-[#8B7E66]">Siapa Nama Bunda?</label>
+                            <label className="text-[8px] font-black uppercase tracking-widest text-[#8B7E66]">Nama Lengkap</label>
                             <div className="relative">
                                 <input
                                     type="text"
@@ -193,7 +193,7 @@ export default function IntentCheckoutForm() {
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[9px] font-black uppercase tracking-widest text-[#8B7E66]">Alamat Email Bunda</label>
+                            <label className="text-[8px] font-black uppercase tracking-widest text-[#8B7E66]">Alamat Email</label>
                             <input
                                 required
                                 type="email"
@@ -205,7 +205,7 @@ export default function IntentCheckoutForm() {
                         </div>
                     </div>
                     <div className="space-y-2">
-                        <label className="text-[9px] font-black uppercase tracking-widest text-[#8B7E66]">Nomor WhatsApp</label>
+                        <label className="text-[8px] font-black uppercase tracking-widest text-[#8B7E66]">WhatsApp</label>
                         <div className="relative">
                             <input
                                 type="tel"
@@ -242,10 +242,10 @@ export default function IntentCheckoutForm() {
                             </label>
                             <div className="flex-1">
                                 <div className="flex items-center gap-2">
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-[#2D3A2D]">WhatsApp Notifikasi & Promo</p>
-                                    <span className="px-1.5 py-0.5 bg-amber-200 text-amber-800 text-[8px] font-black rounded">DOUBLE POINTS ⚡</span>
+                                    <p className="text-[9px] font-black uppercase tracking-widest text-[#2D3A2D]">Notifikasi & Promo</p>
+                                    <span className="px-1.5 py-0.5 bg-amber-200 text-amber-800 text-[7px] font-black rounded uppercase">Bonus Poin ⚡</span>
                                 </div>
-                                <p className="text-[9px] text-[#8B7E66]">Dapatkan 2x Poin Loyalty untuk setiap pesanan & info promo spesial.</p>
+                                <p className="text-[8px] text-[#8B7E66]">Dapatkan info promo & 2x Poin Loyalty.</p>
                             </div>
                         </div>
 
@@ -266,8 +266,8 @@ export default function IntentCheckoutForm() {
                 </div>
 
                 {/* 2. Gifting Section (Optional) */}
-                <div className="space-y-4">
-                    <h3 className="text-[10px] font-black uppercase tracking-widest text-[#B2BCA2] border-b border-[#F0EEE9] pb-2">2. Pilihan Hadiah</h3>
+                <div className="space-y-3">
+                    <h3 className="text-[9px] font-black uppercase tracking-widest text-[#B2BCA2] border-b border-[#F0EEE9] pb-1">2. Hadiah</h3>
                     <div className="bg-[#FDFBF7] border border-[#E5E1D8] rounded-2xl p-4 space-y-3">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
@@ -323,10 +323,10 @@ export default function IntentCheckoutForm() {
                 </div>
 
                 {/* 3. Pengiriman */}
-                <div className="space-y-4">
-                    <h3 className="text-[10px] font-black uppercase tracking-widest text-[#B2BCA2] border-b border-[#F0EEE9] pb-2">3. Pengiriman</h3>
+                <div className="space-y-3">
+                    <h3 className="text-[9px] font-black uppercase tracking-widest text-[#B2BCA2] border-b border-[#F0EEE9] pb-1">3. Pengiriman</h3>
                     <div className="space-y-2">
-                        <label className="text-[9px] font-black uppercase tracking-widest text-[#8B7E66]">Metode Pengiriman</label>
+                        <label className="text-[8px] font-black uppercase tracking-widest text-[#8B7E66]">Metode</label>
                         <div className="flex flex-col sm:flex-row gap-3">
                             {['Ambil di Dapur', 'Kurir Instan'].map((pref) => (
                                 <button
@@ -371,15 +371,15 @@ export default function IntentCheckoutForm() {
                         <textarea
                             value={customerAddress}
                             onChange={(e) => setCustomerAddress(e.target.value)}
-                            className="w-full bg-[#FDFBF7] border border-[#E5E1D8] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#B2BCA2] transition-all min-h-[60px]"
+                            className="w-full bg-[#FDFBF7] border border-[#E5E1D8] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#B2BCA2] transition-all min-h-[50px]"
                             placeholder="Tuliskan alamat lengkap pengiriman Bunda di sini..."
                         />
                     </div>
                 </div>
 
                 {/* 4. Pembayaran */}
-                <div className="space-y-4">
-                    <h3 className="text-[10px] font-black uppercase tracking-widest text-[#B2BCA2] border-b border-[#F0EEE9] pb-2">4. Pembayaran</h3>
+                <div className="space-y-3">
+                    <h3 className="text-[9px] font-black uppercase tracking-widest text-[#B2BCA2] border-b border-[#F0EEE9] pb-1">4. Pembayaran</h3>
                     <div className="grid grid-cols-1 gap-3">
                         <button
                             type="button"
@@ -479,9 +479,17 @@ export default function IntentCheckoutForm() {
                         {isRedirecting ? 'Memproses...' : paymentMethod === 'QRIS' ? 'Bayar Sekarang ⚡' : 'Selesaikan Pesanan 🥘'}
                     </button>
 
-                    <p className="text-[9px] text-center text-slate-400 italic leading-relaxed">
-                        Pesanan Bunda akan langsung dicatat asisten Dapur Rasa Ibu.<br />Konfirmasi & detail akan dikirimkan ke Email Bunda secara instan.
-                    </p>
+                    {/* Security & Privacy Badge */}
+                    <div className="pt-2 border-t border-[#F0EEE9] space-y-3">
+                        <div className="flex items-center justify-center gap-4 text-[8px] font-black text-[#8B7E66] uppercase tracking-widest opacity-60">
+                            <span className="flex items-center gap-1"><Check className="w-2.5 h-2.5 text-emerald-500" /> 256-bit SSL</span>
+                            <span className="flex items-center gap-1"><Check className="w-2.5 h-2.5 text-emerald-500" /> Data Protected</span>
+                            <span className="flex items-center gap-1"><Check className="w-2.5 h-2.5 text-emerald-500" /> Secure Payment</span>
+                        </div>
+                        <p className="text-[8px] text-center text-slate-400 italic leading-relaxed px-4">
+                            Dengan klik tombol di atas, Bunda menyetujui Kebijakan Privasi Rasa Ibu. Data Bunda terenkripsi aman dan hanya digunakan untuk keperluan pesanan.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div >
