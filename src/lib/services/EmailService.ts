@@ -33,9 +33,15 @@ export class EmailService {
     });
 
     private static getFromAddress() {
-        const rawName = process.env.SMTP_FROM_NAME || 'Achiera Platform';
-        // Clean name to ensure no illegal characters
-        const cleanName = rawName.replace(/[<>]/g, '').trim();
+        const rawName = process.env.SMTP_FROM_NAME || 'RASA IBU';
+        // Aggressive clean to ensure only authorized characters and definitely no trailing >
+        let cleanName = rawName.replace(/[<>]/g, '').trim();
+
+        // If it specifically contains RASA IBU, let's normalize it
+        if (cleanName.toUpperCase().includes('RASA IBU')) {
+            cleanName = 'RASA IBU';
+        }
+
         const fromEmail = process.env.SMTP_FROM || process.env.SMTP_USER;
 
         return {

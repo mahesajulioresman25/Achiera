@@ -43,7 +43,7 @@ export default function PlatformLinks({ links, compact = false }: { links: Exter
                                 ? 'bg-white/50 border border-[#E5E1D8] rounded-xl p-3 justify-center'
                                 : 'bg-white border border-[#E5E1D8] rounded-[1.5rem] px-6 py-4'}`}
                         >
-                            <div className={`${compact ? 'w-6 h-6' : 'w-12 h-12'} flex items-center justify-center relative flex-shrink-0 group-hover:scale-110 transition-transform duration-300`}>
+                            <div className={`${compact ? 'w-10 h-10' : 'w-12 h-12'} flex items-center justify-center relative flex-shrink-0 group-hover:scale-110 transition-transform duration-300`}>
                                 {(p as any).logoSrc ? (
                                     <img
                                         src={(p as any).logoSrc}
@@ -51,17 +51,15 @@ export default function PlatformLinks({ links, compact = false }: { links: Exter
                                         className="w-full h-full object-contain p-0.5"
                                     />
                                 ) : (
-                                    <span className={compact ? 'text-sm' : 'text-2xl'}>{(p as any).icon}</span>
+                                    <span className={compact ? 'text-xl' : 'text-2xl'}>{(p as any).icon}</span>
                                 )}
                             </div>
-                            {!compact && (
-                                <div className="flex flex-col">
-                                    <span className={`text-[10px] font-black uppercase tracking-widest ${p.textColor}`}>
-                                        {p.label}
-                                    </span>
-                                    <span className="text-[9px] font-bold text-gray-400">Pesan Sekarang</span>
-                                </div>
-                            )}
+                            <div className="flex flex-col">
+                                <span className={`text-[10px] font-black uppercase tracking-widest ${p.textColor}`}>
+                                    {p.label}
+                                </span>
+                                {compact ? null : <span className="text-[9px] font-bold text-gray-400">Pesan Sekarang</span>}
+                            </div>
                         </a>
                     );
                 })}
