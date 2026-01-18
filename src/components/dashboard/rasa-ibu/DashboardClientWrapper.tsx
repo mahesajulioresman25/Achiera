@@ -240,7 +240,7 @@ export default function DashboardClientWrapper({
     const currentBrandRole = user?.brands?.find(b => b.brandSlug === 'rasa-ibu')?.role || '';
 
     // 3. Permission Sets
-    const canManageBrand = isGlobalOwner || currentBrandRole === 'BRAND_ADMIN';
+    const canManageBrand = isGlobalOwner || ['BRAND_ADMIN', 'OWNER'].includes(currentBrandRole);
     const canAccessWarehouse = canManageBrand || ['BRAND_WAREHOUSE_ADMIN', 'WAREHOUSE_STAFF'].includes(currentBrandRole);
     const canAccessIntelligence = canManageBrand || ['BRAND_FINANCE'].includes(currentBrandRole);
 

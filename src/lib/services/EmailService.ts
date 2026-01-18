@@ -58,11 +58,11 @@ export class EmailService {
             return false;
         }
 
-        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.achiera.com';
         const trackingUrl = `${appUrl}/order/track/${order.invoiceNo}`;
 
         // Default bank info, can be overridden by brand settings
-        let bankInfo = { bankName: 'BCA', accountNo: '8000818181', accountName: 'RASA IBU - ACHIERA' };
+        let bankInfo = { bankName: 'BCA', accountNo: '2330620385', accountName: 'Mahesa Julio Resman' };
         let qrisUrl: string | undefined = undefined;
 
         // Fetch bank info from database
@@ -321,7 +321,7 @@ export class EmailService {
             return false;
         }
 
-        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.achiera.com';
         const trackingUrl = `${appUrl}/order/track/${order.invoiceNo}`;
 
         const html = `
@@ -439,7 +439,7 @@ export class EmailService {
             return false;
         }
 
-        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.achiera.com';
         const trackingUrl = `${appUrl}/order/track/${order.invoiceNo}`;
 
         const html = `
@@ -577,7 +577,7 @@ export class EmailService {
      * Send OTP email for authentication
      */
     static async sendOTPEmail(email: string, code: string, type: string) {
-        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.achiera.com';
         const typeLabels: Record<string, string> = {
             'OTP_LOGIN': 'Login',
             'OTP_REGISTER': 'Registrasi',
@@ -674,7 +674,7 @@ export class EmailService {
             return false;
         }
 
-        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.achiera.com';
         const profileUrl = `${appUrl}/rasa-ibu/profile?tab=subscription`;
 
         // Calculate total from items
@@ -749,12 +749,12 @@ export class EmailService {
     <div class="container">
         <div class="header">
             <img src="${appUrl}/images/logos/rasa-ibu-logo.png" alt="Rasa Ibu" style="height: 70px; margin-bottom: 24px;">
-            <span class="accent" style="color: #B2BCA2;">Langganan Katering</span>
-            <h1>Katering Bunda Siap Diantar! 🎉</h1>
+            <span class="accent" style="color: #B2BCA2;">Berlangganan Dapur Rasa Ibu</span>
+            <h1>Paket Berlangganan Bunda Siap Diantar! 🎉</h1>
         </div>
         <div class="content">
             <p style="font-size: 18px; margin-top: 0;">Halo, <strong>Bunda ${subscription.customerName}</strong>!</p>
-            <p style="color: #4A5D4A; font-size: 15px;">Kabar gembira! Paket katering langganan Bunda sudah aktif. Tim dapur kami siap menyajikan kehangatan masakan rumah langsung ke meja makan Bunda.</p>
+            <p style="color: #4A5D4A; font-size: 15px;">Kabar gembira! Paket Berlangganan Bunda sudah aktif. Tim dapur kami siap menyajikan kehangatan masakan rumah langsung ke meja makan Bunda.</p>
             
             <div class="invoice-box">
                 <table width="100%">
@@ -866,11 +866,11 @@ export class EmailService {
 
             <div style="text-align: center; margin-top: 40px;">
                 <p style="font-size: 14px; color: #8B7E66; margin-bottom: 8px;">Kelola langganan Bunda di sini:</p>
-                <a href="${profileUrl}" class="button">Lihat Profil Katering</a>
+                <a href="${profileUrl}" class="button">Lihat Profil Berlangganan</a>
             </div>
         </div>
         <div class="footer">
-            <p><strong>Dapur Katering Rasa Ibu - Oleh Achiera</strong></p>
+            <p><strong>Dapur Berlangganan Rasa Ibu - Oleh Achiera</strong></p>
             <p style="margin-top: 8px;">© ${new Date().getFullYear()} Achiera Holding. Semua Hak Dilindungi.</p>
         </div>
     </div>
