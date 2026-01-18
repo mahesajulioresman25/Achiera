@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
-import { LayoutGrid, LogOut, ChevronRight, X, Zap, BrainCircuit, TrendingUp, Star, Activity, ShieldCheck, ShoppingBasket, ChefHat, ArrowRightLeft, Printer, Globe, Megaphone, Calendar, User } from 'lucide-react';
+import { LayoutGrid, LogOut, ChevronRight, X, Zap, BrainCircuit, TrendingUp, Star, Activity, ShieldCheck, ShoppingBasket, ChefHat, ArrowRightLeft, Printer, Globe, Megaphone, Calendar, User, Sparkles } from 'lucide-react';
 import ManualOrderLedger from './ManualOrderLedger';
 import WhatsAppActivityPulse from './WhatsAppActivityPulse';
 import { getWhatsAppPulseAction } from '@/lib/actions/rasa-ibu/intelligence';
@@ -57,6 +57,7 @@ import AssetManagementHub from './AssetManagementHub';
 const InventoryBalancingHub = dynamic(() => import('./inventory/InventoryBalancingHub'), { ssr: false });
 const PricingAdvantageHub = dynamic(() => import('./intelligence/PricingAdvantageHub'), { ssr: false });
 import RecipeManager from './RecipeManager';
+import SeasonalSettingsPage from '@/app/dashboard/rasa-ibu/seasonal-settings/page';
 
 
 interface DashboardClientWrapperProps {
@@ -107,7 +108,7 @@ export default function DashboardClientWrapper({
     const [showQRISPayment, setShowQRISPayment] = React.useState<any>(null);
     const [showPaymentVerification, setShowPaymentVerification] = React.useState(false);
     const [showPaymentHistory, setShowPaymentHistory] = React.useState(false);
-    const [viewMode, setViewMode] = React.useState<'OPERATIONAL' | 'FINANCE' | 'INTELLIGENCE' | 'PRODUCTION' | 'CATALOG' | 'RAW_MATERIAL' | 'RECIPES' | 'MARKETING' | 'MARKETING_CAMPAIGNS' | 'MARKETING_CAMPAIGN_FORM' | 'MARKETING_FLASHSALE' | 'MARKETING_SUBSCRIPTIONS' | 'MARKETING_SUBSCRIPTION_DATA' | 'MARKETING_BUNDLE_MANAGER' | 'ORDER_LEDGER'>('OPERATIONAL');
+    const [viewMode, setViewMode] = React.useState<'OPERATIONAL' | 'FINANCE' | 'INTELLIGENCE' | 'PRODUCTION' | 'CATALOG' | 'RAW_MATERIAL' | 'RECIPES' | 'MARKETING' | 'MARKETING_CAMPAIGNS' | 'MARKETING_CAMPAIGN_FORM' | 'MARKETING_FLASHSALE' | 'MARKETING_SUBSCRIPTIONS' | 'MARKETING_SUBSCRIPTION_DATA' | 'MARKETING_BUNDLE_MANAGER' | 'MARKETING_SEASONAL' | 'ORDER_LEDGER'>('OPERATIONAL');
 
     const [pulseActivities, setPulseActivities] = React.useState<any[]>(activities || []);
     const [categories, setCategories] = React.useState<any[]>([]);
@@ -637,6 +638,21 @@ export default function DashboardClientWrapper({
                                     <p className="text-xs text-[#8B7E66] mt-2 leading-relaxed italic">Analisis perilaku dan preferensi Bunda secara mendalam.</p>
                                 </div>
                             </button>
+
+                            <button
+                                onClick={() => setViewMode('MARKETING_SEASONAL')}
+                                className="group p-8 bg-white border border-[#E5E1D8] rounded-[2.5rem] hover:border-emerald-200 hover:shadow-2xl hover:shadow-emerald-500/5 transition-all text-left flex flex-col gap-5 relative overflow-hidden"
+                            >
+                                <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-full -mr-12 -mt-12 group-hover:bg-emerald-100 transition-colors"></div>
+                                <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-white transition-colors relative z-10">
+                                    <Sparkles className="w-6 h-6" />
+                                </div>
+                                <div className="relative z-10">
+                                    <p className="text-[10px] font-black text-emerald-900 uppercase tracking-widest mb-1">Perayaan</p>
+                                    <p className="text-xl font-black text-[#1A241A] font-serif">Seasonal</p>
+                                    <p className="text-xs text-[#8B7E66] mt-2 leading-relaxed italic">Kelola tampilan perayaan musiman di website.</p>
+                                </div>
+                            </button>
                         </div>
 
                         <div className="pt-8 border-t border-[#E5E1D8]/50">
@@ -707,6 +723,17 @@ export default function DashboardClientWrapper({
                                 Back to Marketing
                             </button>
                             <SubscriptionDataManager brandId={brandId} />
+                        </div>
+                    ) : viewMode === 'MARKETING_SEASONAL' ? (
+                        <div className="space-y-6">
+                            <button
+                                onClick={() => setViewMode('MARKETING')}
+                                className="px-6 py-2.5 bg-white border border-[#E5E1D8] rounded-xl text-[10px] font-black uppercase tracking-widest text-[#8B7E66] hover:bg-stone-50 transition-all flex items-center gap-2"
+                            >
+                                <ChevronRight className="w-4 h-4 rotate-180" />
+                                Kembali ke Marketing Hub
+                            </button>
+                            <SeasonalSettingsPage />
                         </div>
                     ) : viewMode === 'PRODUCTION' ? (
                         <ProductionHub
