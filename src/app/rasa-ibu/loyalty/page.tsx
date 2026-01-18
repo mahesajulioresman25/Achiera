@@ -101,9 +101,9 @@ export default function PublicLoyaltyPage() {
 
     return (
         <div className="min-h-screen bg-[#FDFBF7] pb-20">
-            {/* Birthday Celebration Overlay */}
+            {/* Birthday Celebration Overlay - Show throughout birth month */}
             <AnimatePresence>
-                {isBirthDay && (
+                {isBirthMonth && (
                     <div className="fixed inset-0 pointer-events-none z-[100] overflow-hidden">
                         {[...Array(20)].map((_, i) => (
                             <motion.div

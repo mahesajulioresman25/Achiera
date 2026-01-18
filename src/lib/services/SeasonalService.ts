@@ -1,5 +1,5 @@
 
-export type SeasonType = 'IMLEK' | 'RAMADAN' | 'LEBARAN' | 'INDEPENDENCE' | 'CHRISTMAS' | 'NEW_YEAR' | 'HARI_IBU' | 'WAISAK' | 'NYEPI' | 'KARTINI' | 'NONE';
+export type SeasonType = 'IMLEK' | 'RAMADAN' | 'LEBARAN' | 'INDEPENDENCE' | 'CHRISTMAS' | 'NEW_YEAR' | 'HARI_IBU' | 'WAISAK' | 'NYEPI' | 'KARTINI' | 'MUHARRAM' | 'MAULID' | 'PASKAH' | 'NONE';
 
 interface SeasonConfig {
     type: SeasonType;
@@ -9,7 +9,7 @@ interface SeasonConfig {
         secondary: string; // Decoration
         text: string;
     };
-    iconTheme: 'LANTERN' | 'KETUPAT' | 'FLAG' | 'BELL' | 'HEART' | 'LOTUS' | 'OGOH' | 'KEBAYA' | 'NONE';
+    iconTheme: 'LANTERN' | 'KETUPAT' | 'FLAG' | 'BELL' | 'HEART' | 'LOTUS' | 'OGOH' | 'KEBAYA' | 'CRESCENT' | 'MOSQUE' | 'CROSS' | 'NONE';
 }
 
 export const SEASONAL_THEMES: Record<SeasonType, SeasonConfig> = {
@@ -72,6 +72,24 @@ export const SEASONAL_THEMES: Record<SeasonType, SeasonConfig> = {
         name: 'Hari Kartini',
         colors: { primary: '#DC143C', secondary: '#FFFFFF', text: '#FDFBF7' },
         iconTheme: 'KEBAYA'
+    },
+    MUHARRAM: {
+        type: 'MUHARRAM',
+        name: 'Tahun Baru Islam',
+        colors: { primary: '#0D4C3F', secondary: '#FFD700', text: '#FDFBF7' },
+        iconTheme: 'CRESCENT'
+    },
+    MAULID: {
+        type: 'MAULID',
+        name: 'Maulid Nabi Muhammad',
+        colors: { primary: '#1B5E20', secondary: '#FFFFFF', text: '#FDFBF7' },
+        iconTheme: 'MOSQUE'
+    },
+    PASKAH: {
+        type: 'PASKAH',
+        name: 'Paskah',
+        colors: { primary: '#E3F2FD', secondary: '#FFD54F', text: '#1565C0' },
+        iconTheme: 'CROSS'
     },
     NONE: {
         type: 'NONE',
@@ -155,22 +173,31 @@ export function getCurrentSeason(date: Date = new Date()): SeasonConfig {
     // 2. Independence Day (Aug 10 - Aug 20)
     if (month === 7 && day >= 10 && day <= 20) return SEASONAL_THEMES.INDEPENDENCE;
 
-    // 3. Hari Kartini (Apr 20 - Apr 22)
+    // 3. Muharram / Islamic New Year (July 7-9, 2024 - approximate)
+    if (month === 6 && day >= 7 && day <= 9) return SEASONAL_THEMES.MUHARRAM;
+
+    // 4. Maulid Nabi (September 15-17, 2024 - approximate)
+    if (month === 8 && day >= 15 && day <= 17) return SEASONAL_THEMES.MAULID;
+
+    // 5. Paskah / Easter (March 30 - April 2, varies by lunar calendar)
+    if ((month === 2 && day >= 28) || (month === 3 && day <= 2)) return SEASONAL_THEMES.PASKAH;
+
+    // 6. Hari Kartini (Apr 20 - Apr 22)
     if (month === 3 && day >= 20 && day <= 22) return SEASONAL_THEMES.KARTINI;
 
-    // 4. Waisak (Usually mid-May, varies by lunar calendar - using May 12-18 as range)
+    // 7. Waisak (Usually mid-May, varies by lunar calendar - using May 12-18 as range)
     if (month === 4 && day >= 12 && day <= 18) return SEASONAL_THEMES.WAISAK;
 
-    // 5. Nyepi (Usually March, varies by Balinese calendar - using March 10-16 as range)
+    // 8. Nyepi (Usually March, varies by Balinese calendar - using March 10-16 as range)
     if (month === 2 && day >= 10 && day <= 16) return SEASONAL_THEMES.NYEPI;
 
-    // 6. Hari Ibu (Dec 20 - Dec 23)
+    // 9. Hari Ibu (Dec 20 - Dec 23)
     if (month === 11 && day >= 20 && day <= 23) return SEASONAL_THEMES.HARI_IBU;
 
-    // 7. Christmas (Dec 15 - Dec 26)
+    // 10. Christmas (Dec 15 - Dec 26)
     if (month === 11 && day >= 15 && day <= 26) return SEASONAL_THEMES.CHRISTMAS;
 
-    // 8. Pre-New Year
+    // 11. Pre-New Year
     if (month === 11 && day >= 27) return SEASONAL_THEMES.NEW_YEAR;
 
     return SEASONAL_THEMES.NONE;

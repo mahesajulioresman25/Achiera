@@ -6,13 +6,18 @@ import { useSearchParams } from 'next/navigation';
 import SubscriptionList from '@/components/commerce/SubscriptionList';
 import OrderHistory from '@/components/commerce/OrderHistory';
 import WishlistTab from '@/components/commerce/WishlistTab';
-import { User, Package, CreditCard, LogOut, Home as HomeIcon, ChevronRight, Settings, Heart, Cake } from 'lucide-react';
+import { User, Package, CreditCard, LogOut, Home as HomeIcon, ChevronRight, Settings, Heart, Cake, Sparkles } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import { motion } from 'framer-motion';
 
 export default function ProfileContent({ user }: { user: any }) {
     const searchParams = useSearchParams();
     const activeTab = searchParams.get('tab') || 'profile';
+
+    // Check if current month is user's birth month
+    const today = new Date();
+    const isBirthMonth = user.birthday && new Date(user.birthday).getMonth() === today.getMonth();
+    const isBirthDay = isBirthMonth && new Date(user.birthday).getDate() === today.getDate();
 
     const tabs = [
         { id: 'profile', label: 'Profil Saya', icon: User },
@@ -29,6 +34,43 @@ export default function ProfileContent({ user }: { user: any }) {
                     <h1 className="text-4xl font-black text-[#2D3A2D] font-serif italic">Ruang Pribadi</h1>
                     <p className="text-[#8B7E66] mt-2 font-medium">Selamat datang kembali di rumah, <span className="text-[#2D3A2D] font-bold">{user.name}</span>.</p>
                 </header>
+
+                {/* Birthday Celebration Banner */}
+                {isBirthMonth && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mb-8 p-6 bg-gradient-to-r from-amber-100 via-yellow-50 to-amber-100 border-2 border-amber-300 rounded-[2rem] relative overflow-hidden"
+                    >
+                        <div className="absolute -right-8 -top-8 opacity-10 rotate-12">
+                            <Cake className="w-32 h-32 text-amber-900" />
+                        </div>
+                        <div className="relative z-10 flex items-center gap-4">
+                            <div className="flex-shrink-0">
+                                <div className="w-16 h-16 bg-amber-500 rounded-full flex items-center justify-center animate-bounce">
+                                    <Sparkles className="w-8 h-8 text-white" />
+                                </div>
+                            </div>
+                            <div className="flex-1">
+                                <h3 className="text-xl font-black text-amber-900 mb-1 flex items-center gap-2">
+                                    🎉 {isBirthDay ? 'Selamat Ulang Tahun, Bunda!' : 'Bulan Kelahiran Bunda!'}
+                                </h3>
+                                <p className="text-sm text-amber-800 font-medium">
+                                    {isBirthDay
+                                        ? 'Nikmati kejutan spesial hari ini! Dapatkan 2x Poin di setiap transaksi sepanjang bulan ini! 🎁'
+                                        : 'Dapatkan 2x Poin Loyalty di setiap transaksi selama bulan kelahiran Bunda! 🎁'
+                                    }
+                                </p>
+                            </div>
+                            <Link
+                                href="/rasa-ibu/loyalty"
+                                className="flex-shrink-0 px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-lg hover:shadow-xl active:scale-95"
+                            >
+                                Lihat Poin
+                            </Link>
+                        </div>
+                    </motion.div>
+                )}
 
                 <div className="flex flex-col lg:flex-row gap-12 items-start">
                     {/* Sidebar */}
