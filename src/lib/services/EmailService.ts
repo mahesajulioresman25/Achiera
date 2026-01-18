@@ -33,9 +33,20 @@ export class EmailService {
     });
 
     private static getFromAddress() {
-        const fromEmail = process.env.SMTP_FROM || process.env.SMTP_USER || 'order@achiera.com';
-        // Force RASA IBU for this service as it is the primary brand
-        return `"RASA IBU" <${fromEmail}>`;
+        let fromEmail = process.env.SMTP_FROM || process.env.SMTP_USER || 'order@achiera.com';
+
+        // Extract email only if it's in "Name <email>" format
+        if (fromEmail.includes('<') && fromEmail.includes('>')) {
+            const matches = fromEmail.match(/<([^>]+)>/);
+            if (matches && matches[1]) {
+                fromEmail = matches[1];
+            }
+        }
+
+        return {
+            name: "RASA IBU",
+            address: fromEmail.trim()
+        };
     }
 
     static async sendOrderConfirmation(order: EmailOrderInfo, loyalty?: LoyaltyInfo) {

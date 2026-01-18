@@ -24,8 +24,20 @@ export class EmailAlertService {
     });
 
     private getFromAddress() {
-        const fromEmail = process.env.SMTP_FROM || process.env.SMTP_USER || 'alert@achiera.com';
-        return `"RASA IBU" <${fromEmail}>`;
+        let fromEmail = process.env.SMTP_FROM || process.env.SMTP_USER || 'alert@achiera.com';
+
+        // Extract email only if it's in "Name <email>" format
+        if (fromEmail.includes('<') && fromEmail.includes('>')) {
+            const matches = fromEmail.match(/<([^>]+)>/);
+            if (matches && matches[1]) {
+                fromEmail = matches[1];
+            }
+        }
+
+        return {
+            name: "RASA IBU",
+            address: fromEmail.trim()
+        };
     }
 
     /**
