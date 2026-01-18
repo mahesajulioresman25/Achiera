@@ -158,7 +158,8 @@ export default async function RasaIbuOpsDashboard() {
             initialProducts: serializedProducts,
             initialRecipes: recipes,
             activities: MOCK_ACTIVITIES,
-            intelligence: { rhythm, anticipations, finance }
+            intelligence: { rhythm, anticipations, finance },
+            serverUser: session.user // Pass server session directly
         }));
 
         return (

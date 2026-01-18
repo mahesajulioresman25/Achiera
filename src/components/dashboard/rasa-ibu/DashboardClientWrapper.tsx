@@ -68,6 +68,7 @@ interface DashboardClientWrapperProps {
     initialRecipes?: any[];
     activities?: any[];
     intelligence?: any;
+    serverUser?: any; // Added for robust auth bypass
 }
 
 export default function DashboardClientWrapper({
@@ -76,7 +77,8 @@ export default function DashboardClientWrapper({
     initialProducts = [],
     initialRecipes = [],
     activities = [],
-    intelligence
+    intelligence,
+    serverUser
 }: DashboardClientWrapperProps) {
     const [showLedger, setShowLedger] = React.useState(false);
     const [showReports, setShowReports] = React.useState(false);
@@ -229,15 +231,15 @@ export default function DashboardClientWrapper({
         if (brandId) fetchCats();
     }, [brandId]);
 
-    // Auth & Permission Logic
-    const { data: session } = useSession();
-    const user = session?.user;
+    // Auth & Permission Logic (Prioritize Server User for consistency)
+    const { data: clientSession } = useSession();
+    const user = serverUser || clientSession?.user;
 
     // 1. Global Authority (Super Admin / Platform Admin)
     const isGlobalOwner = ['OWNER', 'PLATFORM_ADMIN', 'SUPER_ADMIN'].includes(user?.globalRole?.toUpperCase() || '');
 
     // 2. Brand Specific Role Resolution (Try multiple paths for robustness)
-    const brandRoleInBrands = user?.brands?.find(b =>
+    const brandRoleInBrands = user?.brands?.find((b: any) =>
         b.brandId === brandId || b.brandSlug === 'rasa-ibu'
     )?.role || '';
 
@@ -248,8 +250,8 @@ export default function DashboardClientWrapper({
     const normalizedRole = (brandRoleInBrands || brandRoleInRoles || '').toUpperCase();
 
     // 3. Absolute Permission Fallback (Ensures legitimate admins are NEVER locked out)
-    const hasAnyAdminAuthority = user?.brands?.some(b => ['OWNER', 'ADMIN', 'BRAND_ADMIN', 'BRAND_OWNER'].includes(b?.role?.toUpperCase() || '')) ||
-        user?.brandRoles?.some(br => ['OWNER', 'ADMIN', 'BRAND_ADMIN', 'BRAND_OWNER'].includes(br?.role?.toUpperCase() || ''));
+    const hasAnyAdminAuthority = user?.brands?.some((b: any) => ['OWNER', 'ADMIN', 'BRAND_ADMIN', 'BRAND_OWNER'].includes(b?.role?.toUpperCase() || '')) ||
+        user?.brandRoles?.some((br: any) => ['OWNER', 'ADMIN', 'BRAND_ADMIN', 'BRAND_OWNER'].includes(br?.role?.toUpperCase() || ''));
 
     // Emergency Fallback: If Email, ID, or Name is a known admin, force access (Mahesa)
     const isMahesa = user?.email?.toLowerCase().includes('mahesajulioresman25') ||
