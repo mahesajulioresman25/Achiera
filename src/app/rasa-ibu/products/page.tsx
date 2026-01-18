@@ -119,11 +119,11 @@ export default async function RasaIbuProductListPage({
         const ProductCard = ({ product }: { product: any }) => (
             <div className="group bg-white rounded-[2rem] overflow-hidden border border-[#E5E1D8] hover:shadow-2xl hover:shadow-[#2D3A2D]/10 transition-all duration-500 flex flex-col h-full relative">
 
-                {/* Wishlist Button Overlay */}
                 <div className="absolute top-4 left-4 z-20">
                     <ProductWishlistButton
                         productId={product.id}
                         productName={product.name}
+                        brandId={brandId}
                         className="p-2 w-10 h-10 shadow-md bg-white/90 backdrop-blur-sm"
                     />
                 </div>

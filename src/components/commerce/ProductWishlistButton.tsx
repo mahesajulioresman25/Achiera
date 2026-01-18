@@ -17,7 +17,7 @@ interface ProductWishlistButtonProps {
 export default function ProductWishlistButton({
     productId,
     productName,
-    brandId = "clp...", // rasa-ibu default if not provided, but better to pass it
+    brandId,
     className = ""
 }: ProductWishlistButtonProps) {
     const { data: session } = useSession();
@@ -45,9 +45,23 @@ export default function ProductWishlistButton({
 
             if (res.success) {
                 setIsFav(res.active || false);
+
+                // Update localStorage to sync with server state
+                const favs = JSON.parse(localStorage.getItem('rasa_ibu_fav_menu') || '[]');
+                if (res.active) {
+                    if (!favs.includes(productId)) favs.push(productId);
+                } else {
+                    const index = favs.indexOf(productId);
+                    if (index > -1) favs.splice(index, 1);
+                }
+                localStorage.setItem('rasa_ibu_fav_menu', JSON.stringify(favs));
+
                 toast.success(res.message, { icon: res.active ? '❤️' : '🗑️' });
+
+                // Dispatch event for other components
+                window.dispatchEvent(new Event('wishlist-updated'));
             } else {
-                toast.error(res.error);
+                toast.error(res.error || 'Gagal memperbarui favorit');
                 return;
             }
         } else {
