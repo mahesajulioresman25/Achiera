@@ -234,16 +234,20 @@ export default function DashboardClientWrapper({
     const user = session?.user;
 
     // 1. Global Authority (Super Admin / Platform Admin)
-    const isGlobalOwner = ['OWNER', 'PLATFORM_ADMIN'].includes(user?.globalRole || '');
+    const isGlobalOwner = ['OWNER', 'PLATFORM_ADMIN', 'SUPER_ADMIN'].includes(user?.globalRole?.toUpperCase() || '');
 
-    // 2. Brand Specific Role (Match by brandId or fallback slug)
-    const currentBrandRole = user?.brands?.find(b =>
+    // 2. Brand Specific Role Resolution (Try multiple paths for robustness)
+    const brandRoleInBrands = user?.brands?.find(b =>
         b.brandId === brandId || b.brandSlug === 'rasa-ibu'
     )?.role || '';
 
-    // 3. Permission Sets (Case-Insensitive for security)
-    const normalizedRole = currentBrandRole.toUpperCase();
-    const canManageBrand = isGlobalOwner || ['BRAND_ADMIN', 'OWNER', 'ADMIN'].includes(normalizedRole);
+    const brandRoleInRoles = user?.brandRoles?.find(br =>
+        br.brandId === brandId || br.brand?.slug === 'rasa-ibu'
+    )?.role || '';
+
+    // 3. Final Permission Determination
+    const normalizedRole = (brandRoleInBrands || brandRoleInRoles || '').toUpperCase();
+    const canManageBrand = isGlobalOwner || ['BRAND_ADMIN', 'OWNER', 'ADMIN', 'BRAND_OWNER'].includes(normalizedRole);
     const canAccessWarehouse = canManageBrand || ['BRAND_WAREHOUSE_ADMIN', 'WAREHOUSE_STAFF'].includes(normalizedRole);
     const canAccessIntelligence = canManageBrand || ['BRAND_FINANCE'].includes(normalizedRole);
 
