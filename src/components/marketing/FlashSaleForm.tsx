@@ -50,8 +50,6 @@ export default function FlashSaleForm({ brandId, initialData, onSuccess }: Flash
                 id: initialData?.id // Include ID if updating
             };
 
-            console.log('[FlashSaleForm] Sending payload:', payload);
-
             const res = await fetch(`/api/brands/${brandId}/flash-sale`, {
                 method: initialData ? 'PUT' : 'POST',
                 headers: { 'Content-Type': 'application/json' },

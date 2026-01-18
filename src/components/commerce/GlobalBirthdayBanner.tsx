@@ -85,11 +85,11 @@ export default function GlobalBirthdayBanner() {
                         {/* Content */}
                         <div className="flex-1">
                             <h3 className="text-base md:text-lg font-black text-amber-900 mb-1 flex items-center gap-2">
-                                🎉 {isBirthDay ? 'Selamat Ulang Tahun, Bunda!' : 'Bulan Kelahiran Bunda!'}
+                                🎉 {isBirthDay ? 'Selamat Ulang Tahun, Bunda' : 'Bulan Kelahiran Bunda!'}
                             </h3>
                             <p className="text-xs md:text-sm text-amber-800 font-medium">
                                 {isBirthDay
-                                    ? 'Nikmati kejutan spesial hari ini! Dapatkan 2x Poin di setiap transaksi sepanjang bulan ini! 🎁'
+                                    ? 'Semoga harinya hangat dan penuh kebaikan. Sebagai hadiah kecil dari kami, poin akan bertambah dua kali lipat sepanjang bulan ini.'
                                     : 'Dapatkan 2x Poin Loyalty di setiap transaksi selama bulan kelahiran Bunda! 🎁'
                                 }
                             </p>
@@ -100,7 +100,7 @@ export default function GlobalBirthdayBanner() {
                             href="/rasa-ibu/loyalty"
                             className="hidden md:flex flex-shrink-0 px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-lg hover:shadow-xl active:scale-95"
                         >
-                            Lihat Poin
+                            Lihat Poin Saya
                         </Link>
                     </div>
                 </div>

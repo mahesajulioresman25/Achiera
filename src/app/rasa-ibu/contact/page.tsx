@@ -39,7 +39,7 @@ export default function RasaIbuContactPage() {
                     });
                 }
             } catch (e) {
-                console.error("Failed to load settings", e);
+                // Failed to load settings
             } finally {
             }
         }

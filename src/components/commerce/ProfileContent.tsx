@@ -21,7 +21,7 @@ export default function ProfileContent({ user }: { user: any }) {
 
     const tabs = [
         { id: 'profile', label: 'Profil Saya', icon: User },
-        { id: 'orders', label: 'Riwayat Pesanan', icon: Package },
+        { id: 'orders', label: 'Riwayat Hidangan', icon: Package },
         { id: 'wishlist', label: 'Favorit Bunda', icon: Heart },
         { id: 'subscription', label: 'Daftar Langganan', icon: CreditCard },
         { id: 'settings', label: 'Pengaturan Akun', icon: Settings },
@@ -53,11 +53,11 @@ export default function ProfileContent({ user }: { user: any }) {
                             </div>
                             <div className="flex-1">
                                 <h3 className="text-xl font-black text-amber-900 mb-1 flex items-center gap-2">
-                                    🎉 {isBirthDay ? 'Selamat Ulang Tahun, Bunda!' : 'Bulan Kelahiran Bunda!'}
+                                    🎉 {isBirthDay ? 'Selamat Ulang Tahun, Bunda' : 'Bulan Kelahiran Bunda!'}
                                 </h3>
                                 <p className="text-sm text-amber-800 font-medium">
                                     {isBirthDay
-                                        ? 'Nikmati kejutan spesial hari ini! Dapatkan 2x Poin di setiap transaksi sepanjang bulan ini! 🎁'
+                                        ? 'Semoga harinya hangat dan penuh kebaikan. Sebagai hadiah kecil dari kami, poin akan bertambah dua kali lipat sepanjang bulan ini.'
                                         : 'Dapatkan 2x Poin Loyalty di setiap transaksi selama bulan kelahiran Bunda! 🎁'
                                     }
                                 </p>
@@ -66,7 +66,7 @@ export default function ProfileContent({ user }: { user: any }) {
                                 href="/rasa-ibu/loyalty"
                                 className="flex-shrink-0 px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-lg hover:shadow-xl active:scale-95"
                             >
-                                Lihat Poin
+                                Lihat Poin Saya
                             </Link>
                         </div>
                     </motion.div>
@@ -159,14 +159,14 @@ export default function ProfileContent({ user }: { user: any }) {
                                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
                                         <div>
-                                            <h2 className="text-3xl font-black text-[#2D3A2D] font-serif italic">Identitas Saya</h2>
-                                            <p className="text-[#8B7E66] font-medium mt-1">Data lengkap Anda untuk keperluan pengiriman.</p>
+                                            <h2 className="text-3xl font-black text-[#2D3A2D] font-serif italic">Identitas Bunda</h2>
+                                            <p className="text-[#8B7E66] font-medium mt-1">Informasi ini membantu kami menyiapkan dan mengirimkan hidangan dengan lebih baik.</p>
                                         </div>
                                         <Link
                                             href="/rasa-ibu/profile/edit"
                                             className="px-8 py-4 bg-[#8B7E66] hover:bg-[#6D6351] text-white rounded-2xl text-xs font-black uppercase tracking-widest transition-all shadow-xl hover:shadow-2xl active:scale-95"
                                         >
-                                            Edit Profil
+                                            Perbarui Data
                                         </Link>
                                     </div>
 

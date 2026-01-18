@@ -64,7 +64,6 @@ export function CashFlowForecastDashboard() {
     // Generate forecast mutation
     const generateMutation = useMutation({
         mutationFn: async () => {
-            console.log('Generating forecast for:', selectedBrand, timeframe);
             const result = await generateCashFlowForecastAction(selectedBrand, timeframe);
             if (!result.success) {
                 throw new Error(result.error || 'Failed to generate forecast');
@@ -72,7 +71,6 @@ export function CashFlowForecastDashboard() {
             return result;
         },
         onSuccess: (data) => {
-            console.log('Forecast generated successfully:', data);
             toast.success('Prakiraan arus kas berhasil dibuat!');
             queryClient.invalidateQueries({ queryKey: ['cash-flow-forecasts'] });
             queryClient.invalidateQueries({ queryKey: ['liquidity-risks'] });

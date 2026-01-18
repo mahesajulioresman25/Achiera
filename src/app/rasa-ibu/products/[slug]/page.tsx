@@ -120,7 +120,7 @@ export default async function RasaIbuProductDetailPage({
                     productImages = [...productImages, ...gallery];
                 }
             } catch (e) {
-                console.error("Failed to parse gallery images", e);
+                // Failed to load settings
             }
         }
 
