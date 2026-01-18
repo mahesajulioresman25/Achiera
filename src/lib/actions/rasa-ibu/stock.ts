@@ -472,8 +472,8 @@ export async function deleteIngredientAction(brandId: string, variantId: string)
         }
 
         // Delete the parent Product (Cascade will delete Variant)
-        await prisma.frozenProduct.delete({
-            where: { id: variant.productId }
+        await prisma.frozenProduct.deleteMany({
+            where: { id: variant.productId, brandId }
         });
 
         revalidatePath('/dashboard/rasa-ibu', 'layout');
@@ -506,8 +506,8 @@ export async function updateIngredientAction(data: {
         if (!variant) throw new Error('Ingredient not found');
 
         // Update Product info (storage & shelf life act on Product level)
-        await prisma.frozenProduct.update({
-            where: { id: variant.productId },
+        await prisma.frozenProduct.updateMany({
+            where: { id: variant.productId, brandId: data.brandId },
             data: {
                 name: data.productName,
                 // @ts-ignore

@@ -268,12 +268,7 @@ export default function DashboardClientWrapper({
     const canAccessWarehouse = canManageBrand || ['BRAND_WAREHOUSE_ADMIN', 'WAREHOUSE_STAFF'].includes(normalizedRole);
     const canAccessIntelligence = canManageBrand || ['BRAND_FINANCE'].includes(normalizedRole);
 
-    // Debug Pulse
-    React.useEffect(() => {
-        if (isMahesa || user?.email) {
-            console.log('🛡️ AUTH DEBUG:', { email: user?.email, id: user?.id, role: normalizedRole, managed: canManageBrand });
-        }
-    }, [user, normalizedRole, canManageBrand, isMahesa]);
+
 
     // ... (effects)
 
@@ -287,15 +282,7 @@ export default function DashboardClientWrapper({
             <div suppressHydrationWarning className="absolute top-0 right-0 w-[800px] h-[800px] bg-amber-100/30 rounded-full blur-[120px] -z-10 translate-x-1/2 -translate-y-1/2"></div>
             <div suppressHydrationWarning className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-green-100/30 rounded-full blur-[100px] -z-10 -translate-x-1/2 translate-y-1/2"></div>
 
-            {/* DIAGNOSTIC BANNER (Temporary) */}
-            <div className="fixed top-0 left-0 right-0 z-[10000] bg-black text-white text-[10px] p-2 flex justify-center gap-6 font-mono">
-                <span>USER: {user?.email || 'Guest'}</span>
-                <span>ROLE: {normalizedRole || 'NONE'}</span>
-                <span>GLOBAL: {user?.globalRole || 'NONE'}</span>
-                <span className={canManageBrand ? 'text-emerald-400' : 'text-rose-400'}>MANAGE: {canManageBrand ? 'YES' : 'NO'}</span>
-                <span className={isMahesa ? 'text-emerald-400' : 'text-white'}>MAHESA: {isMahesa ? 'YES' : 'NO'}</span>
-                <span>ID: {user?.id || 'NO_ID'}</span>
-            </div>
+
 
             {/* Modals Selection */}
             {showLedger && <LedgerModal brandId={brandId} onClose={() => setShowLedger(false)} />}
@@ -484,7 +471,7 @@ export default function DashboardClientWrapper({
                             <span className="text-xl">🥗</span>
                         </div>
                         <h1 className="text-4xl font-black text-[#1A241A] tracking-tighter">
-                            Rasa <span className="text-amber-600">Ibu</span> <span className="text-stone-300 font-light">{isMahesa ? 'OWNER OPS' : 'OPS'}</span>
+                            Rasa <span className="text-amber-600">Ibu</span> <span className="text-stone-300 font-light">OPS</span>
                         </h1>
                     </div>
                     <p className="text-[#8B7E66] font-medium text-sm ml-1">Ecosystem Operational Command • Live Health Update</p>
