@@ -235,6 +235,17 @@ export default function DashboardClientWrapper({
     const { data: clientSession } = useSession();
     const user = serverUser || clientSession?.user;
 
+    // Direct Bypass Logic for Owner (Mahesa)
+    // 1. Matches specific emails
+    // 2. Matches specific DB IDs
+    // 3. Matches name pattern
+    const isMahesa = (
+        user?.email?.toLowerCase().includes('mahesa') ||
+        user?.name?.toLowerCase().includes('mahesa') ||
+        user?.id === 'cmk5kkbnc000013lpokgbhmjy' || // Achiera Account
+        user?.id === 'cmk8mdya50001zn3vz7azydoz'    // Gmail Account
+    );
+
     // 1. Global Authority (Super Admin / Platform Admin)
     const isGlobalOwner = ['OWNER', 'PLATFORM_ADMIN', 'SUPER_ADMIN'].includes(user?.globalRole?.toUpperCase() || '');
 
@@ -249,20 +260,28 @@ export default function DashboardClientWrapper({
 
     const normalizedRole = (brandRoleInBrands || brandRoleInRoles || '').toUpperCase();
 
-    // 3. Absolute Permission Fallback (Ensures legitimate admins are NEVER locked out)
+    // 3. Absolute Permission Fallback
     const hasAnyAdminAuthority = user?.brands?.some((b: any) => ['OWNER', 'ADMIN', 'BRAND_ADMIN', 'BRAND_OWNER'].includes(b?.role?.toUpperCase() || '')) ||
         user?.brandRoles?.some((br: any) => ['OWNER', 'ADMIN', 'BRAND_ADMIN', 'BRAND_OWNER'].includes(br?.role?.toUpperCase() || ''));
 
-    // Emergency Fallback: If Email, ID, or Name is a known admin, force access (Mahesa)
-    const isMahesa = user?.email?.toLowerCase().includes('mahesajulioresman25') ||
-        user?.id === 'cmk5kkbnc000013lpokgbhmjy' || // Achiera ID
-        user?.id === 'cmk8mdya50001zn3vz7azydoz' || // Gmail ID
-        user?.name?.toLowerCase().includes('mahesa');
-
-    // 4. Final Permission Sets
-    const canManageBrand = isGlobalOwner || ['BRAND_ADMIN', 'OWNER', 'ADMIN', 'BRAND_OWNER'].includes(normalizedRole) || hasAnyAdminAuthority || isMahesa;
+    // 4. Final Permission Sets - OWNER BYPASS ACTIVATED
+    const canManageBrand = isMahesa || isGlobalOwner || ['BRAND_ADMIN', 'OWNER', 'ADMIN', 'BRAND_OWNER'].includes(normalizedRole) || hasAnyAdminAuthority;
     const canAccessWarehouse = canManageBrand || ['BRAND_WAREHOUSE_ADMIN', 'WAREHOUSE_STAFF'].includes(normalizedRole);
     const canAccessIntelligence = canManageBrand || ['BRAND_FINANCE'].includes(normalizedRole);
+
+    // Debug Pulse (Visible only to Mahesa in console)
+    React.useEffect(() => {
+        if (isMahesa) {
+            console.log('🛡️ ACHIERA SECURITY BYPASS:', {
+                user: user?.email,
+                role: normalizedRole,
+                global: user?.globalRole,
+                canManage: canManageBrand
+            });
+        }
+    }, [isMahesa, user, normalizedRole, canManageBrand]);
+
+    // ... (effects)
 
     // ... (effects)
 
