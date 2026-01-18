@@ -19,6 +19,7 @@ import WarehouseManager from './WarehouseManager';
 import LedgerModal from './LedgerModal';
 import IntelligenceHub from './IntelligenceHub';
 import BIPulseWidget from './intelligence/BIPulseWidget';
+import AccountManagerModal from './AccountManagerModal';
 import FinancialInsight from './FinancialInsight';
 import FinanceHub from './FinanceHub';
 import ExpenseEntryModal from './ExpenseEntryModal';
@@ -239,8 +240,9 @@ export default function DashboardClientWrapper({
     const currentBrandRole = user?.brands?.find(b => b.brandSlug === 'rasa-ibu')?.role || '';
 
     // 3. Permission Sets
-    const canAccessWarehouse = isGlobalOwner || ['BRAND_ADMIN', 'BRAND_WAREHOUSE_ADMIN', 'WAREHOUSE_STAFF'].includes(currentBrandRole);
-    const canAccessIntelligence = isGlobalOwner || ['BRAND_ADMIN', 'BRAND_FINANCE'].includes(currentBrandRole);
+    const canManageBrand = isGlobalOwner || currentBrandRole === 'BRAND_ADMIN';
+    const canAccessWarehouse = canManageBrand || ['BRAND_WAREHOUSE_ADMIN', 'WAREHOUSE_STAFF'].includes(currentBrandRole);
+    const canAccessIntelligence = canManageBrand || ['BRAND_FINANCE'].includes(currentBrandRole);
 
     // ... (effects)
 
@@ -446,7 +448,7 @@ export default function DashboardClientWrapper({
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3">
-                    {isGlobalOwner && (
+                    {canManageBrand && (
                         <div className="flex bg-[#F9F7F2] p-1 rounded-2xl border border-[#E5E1D8]">
                             <button
                                 onClick={() => setViewMode('OPERATIONAL')}
@@ -487,7 +489,16 @@ export default function DashboardClientWrapper({
                         </div>
                     )}
 
-                    {isGlobalOwner && (
+                    <Link
+                        href="/rasa-ibu"
+                        target="_blank"
+                        className="px-6 py-2.5 bg-amber-50 border border-amber-200 rounded-xl text-xs font-bold text-amber-700 hover:bg-amber-100 transition-all shadow-sm flex items-center gap-2"
+                    >
+                        <Globe className="w-4 h-4" />
+                        Lihat Website
+                    </Link>
+
+                    {(isGlobalOwner || (user?.brands?.length || 0) > 1) && (
                         <Link
                             href="/dashboard?select=manual"
                             className="px-6 py-2.5 bg-white border border-[#E5E1D8] rounded-xl text-xs font-bold text-[#8B7E66] hover:bg-stone-50 transition-all shadow-sm"
@@ -496,7 +507,7 @@ export default function DashboardClientWrapper({
                         </Link>
                     )}
 
-                    {isGlobalOwner && (
+                    {canAccessWarehouse && (
                         <button
                             onClick={() => setShowWarehouse(true)}
                             className="px-6 py-2.5 bg-[#2D3A2D] text-white rounded-xl text-xs font-bold hover:shadow-xl hover:-translate-y-0.5 transition-all shadow-lg shadow-green-900/10"
@@ -505,7 +516,7 @@ export default function DashboardClientWrapper({
                         </button>
                     )}
 
-                    {isGlobalOwner && (
+                    {canManageBrand && (
                         <button
                             onClick={() => setViewMode('RECIPES')}
                             className="px-6 py-2.5 bg-white border border-[#E5E1D8] text-[#2D3A2D] rounded-xl text-xs font-bold hover:bg-stone-50 transition-all shadow-sm"
@@ -535,7 +546,7 @@ export default function DashboardClientWrapper({
 
             {/* Content Transition */}
             {
-                viewMode === 'FINANCE' && isGlobalOwner ? (
+                viewMode === 'FINANCE' && canManageBrand ? (
                     showAssetHub ? (
                         <AssetManagementHub
                             brandId={brandId}
@@ -802,7 +813,7 @@ export default function DashboardClientWrapper({
                             <div className="grid grid-cols-1 gap-8">
                                 <SmartAdvisory intelligence={intelligence} />
 
-                                {isGlobalOwner && (
+                                {canManageBrand && (
                                     <FinancialInsight
                                         pulse={intelligence?.finance}
                                         onOpenLedger={() => setShowLedger(true)}
@@ -896,7 +907,7 @@ export default function DashboardClientWrapper({
                                     </button>
 
                                     {/* Produksi & Resep */}
-                                    {isGlobalOwner && (
+                                    {canManageBrand && (
                                         <button
                                             onClick={() => setViewMode('PRODUCTION')}
                                             className="group p-5 bg-white border border-[#E5E1D8] rounded-[2rem] hover:border-emerald-200 hover:shadow-xl hover:shadow-emerald-500/5 transition-all text-left flex flex-col gap-3"
@@ -912,7 +923,7 @@ export default function DashboardClientWrapper({
                                     )}
 
                                     {/* Katalog Menu */}
-                                    {isGlobalOwner && (
+                                    {canManageBrand && (
                                         <button
                                             onClick={() => setViewMode('CATALOG')}
                                             className="group p-5 bg-white border border-[#E5E1D8] rounded-[2rem] hover:border-amber-200 hover:shadow-xl hover:shadow-amber-500/5 transition-all text-left flex flex-col gap-3"
@@ -956,7 +967,7 @@ export default function DashboardClientWrapper({
                                     </button>
 
                                     {/* Ingredient Hub */}
-                                    {isGlobalOwner && (
+                                    {canManageBrand && (
                                         <button
                                             onClick={() => setViewMode('RAW_MATERIAL')}
                                             className="group p-5 bg-white border border-[#E5E1D8] rounded-[2rem] hover:border-blue-200 hover:shadow-xl hover:shadow-blue-500/5 transition-all text-left flex flex-col gap-3"
@@ -972,7 +983,7 @@ export default function DashboardClientWrapper({
                                     )}
 
                                     {/* Audit Stok */}
-                                    {isGlobalOwner && (
+                                    {canManageBrand && (
                                         <button
                                             onClick={() => setShowAudit(true)}
                                             className="group p-5 bg-white border border-[#E5E1D8] rounded-[2rem] hover:border-amber-200 hover:shadow-xl hover:shadow-amber-500/5 transition-all text-left flex flex-col gap-3"
@@ -1028,7 +1039,7 @@ export default function DashboardClientWrapper({
                                 <div className="lg:col-span-2 space-y-8 order-1 lg:order-2">
                                     <PantryStockGrid
                                         products={initialProducts}
-                                        canAudit={isGlobalOwner}
+                                        canAudit={canManageBrand}
                                         onOpenAudit={() => { closeAllModals(); setShowAudit(true); }}
                                         onOpenProduction={() => openOperationalHub('PRODUCTION')}
                                     />

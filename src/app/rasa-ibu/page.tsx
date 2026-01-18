@@ -283,7 +283,7 @@ export default async function RasaIbuHomePage() {
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
                     {featuredProducts.map((product: any) => (
                         <div key={product.id} className="group cursor-pointer">
-                            <div className="aspect-[4/5] bg-gradient-to-br from-[#F9F7F2] to-[#E5E1D8] rounded-3xl mb-6 overflow-hidden relative shadow-sm group-hover:shadow-xl transition-all duration-500">
+                            <Link href={`/rasa-ibu/products/${product.slug}`} className="aspect-[4/5] bg-gradient-to-br from-[#F9F7F2] to-[#E5E1D8] rounded-3xl mb-6 overflow-hidden relative shadow-sm group-hover:shadow-xl transition-all duration-500 block">
                                 {product.image ? (
                                     <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                                 ) : (
@@ -298,12 +298,14 @@ export default async function RasaIbuHomePage() {
                                 {/* Top Right Badges */}
                                 <div className="absolute top-4 right-4 flex flex-col gap-2 items-end z-10">
                                     <div className="bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full text-[10px] font-black tracking-widest text-[#2D3A2D] flex items-center gap-1 shadow-sm">
-                                        <Star className="w-3 h-3 text-amber-500 fill-current" /> {(product.rating || 5.0).toFixed(1)}
+                                        <Star className="w-3 h-3 text-amber-500 fill-current" /> {(product.rating || 0).toFixed(1)}
                                     </div>
                                     <ProductWishlistButton productId={product.id} productName={product.name} brandId={brandId} />
                                 </div>
-                            </div>
-                            <h3 className="text-sm md:text-xl font-black mb-2 tracking-tight line-clamp-1 group-hover:text-[#8B7E66] transition-colors">{product.name}</h3>
+                            </Link>
+                            <Link href={`/rasa-ibu/products/${product.slug}`}>
+                                <h3 className="text-sm md:text-xl font-black mb-2 tracking-tight line-clamp-1 group-hover:text-[#8B7E66] transition-colors">{product.name}</h3>
+                            </Link>
                             <p className="text-[10px] md:text-sm text-gray-500 font-medium mb-3 md:mb-4 line-clamp-2 leading-relaxed">{product.description}</p>
                             <div className="flex flex-col gap-3">
                                 {getProductPrice(product).discount > 0 ? (
