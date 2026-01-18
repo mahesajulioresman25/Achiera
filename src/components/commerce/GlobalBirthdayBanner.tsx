@@ -34,7 +34,7 @@ export default function GlobalBirthdayBanner() {
                     }
                 }
             } catch (error) {
-                console.error('Failed to fetch user data:', error);
+                // Failed to fetch user data - silently fail
             }
         };
 
