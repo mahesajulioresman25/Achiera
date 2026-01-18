@@ -362,7 +362,7 @@ export default function IntentCheckoutForm() {
                                     </button>
                                 ))}
                             </div>
-                            <p className="text-[9px] text-[#8B7E66] italic leading-tight">*Ongkir dibayar saat serah terima oleh Bunda.</p>
+                            <p className="text-[9px] text-[#8B7E66] italic leading-tight">*Pengiriman dibayar saat serah terima oleh Bunda.</p>
                         </div>
                     )}
 

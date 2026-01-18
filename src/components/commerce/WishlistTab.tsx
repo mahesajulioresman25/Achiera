@@ -52,13 +52,13 @@ export default function WishlistTab({ brandId }: { brandId: string }) {
                 </div>
                 <h3 className="text-xl font-black text-[#2D3A2D] mb-2">Belum Ada Menu Favorit</h3>
                 <p className="text-[#8B7E66] text-sm max-w-xs mx-auto mb-8">
-                    Bunda belum menandai menu apapun sebagai favorit. Yuk, telusuri katalog kami!
+                    Bunda belum menandai menu apapun sebagai favorit. Yuk, telusuri menu kasih kami!
                 </p>
                 <Link
                     href="/rasa-ibu/products"
                     className="inline-flex items-center gap-2 px-8 py-4 bg-[#2D3A2D] text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-105 transition-all shadow-xl"
                 >
-                    Lihat Katalog Menu <ShoppingBag className="w-4 h-4" />
+                    Lihat Daftar Menu <ShoppingBag className="w-4 h-4" />
                 </Link>
             </div>
         );
