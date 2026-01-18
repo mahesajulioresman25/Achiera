@@ -11,14 +11,20 @@ export default async function ProfilePage() {
         redirect('/auth/signin?callbackUrl=/rasa-ibu/profile');
     }
 
-    // Fetch fresh data from database to ensure ProfileContent shows updated info
-    const user = await prisma.user.findUnique({
-        where: { email: session.user.email }
-    });
+    // Fetch User with fresh data
+    // Fetch Brand "rasa-ibu" to get the correct absolute ID
+    const [user, brand] = await Promise.all([
+        prisma.user.findUnique({
+            where: { email: session.user.email }
+        }),
+        prisma.brand.findUnique({
+            where: { slug: 'rasa-ibu' }
+        })
+    ]);
 
     if (!user) {
         redirect('/auth/signin');
     }
 
-    return <ProfileContent user={user} />;
+    return <ProfileContent user={user} brandId={brand?.id} />;
 }

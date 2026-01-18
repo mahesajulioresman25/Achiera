@@ -10,7 +10,7 @@ import { User, Package, CreditCard, LogOut, Home as HomeIcon, ChevronRight, Sett
 import { signOut } from 'next-auth/react';
 import { motion } from 'framer-motion';
 
-export default function ProfileContent({ user }: { user: any }) {
+export default function ProfileContent({ user, brandId }: { user: any, brandId?: string }) {
     const searchParams = useSearchParams();
     const activeTab = searchParams.get('tab') || 'profile';
 
@@ -245,7 +245,7 @@ export default function ProfileContent({ user }: { user: any }) {
                                         <h2 className="text-3xl font-black text-[#2D3A2D] font-serif italic">Favorit Bunda</h2>
                                         <p className="text-[#8B7E66] font-medium mt-1">Daftar menu yang paling Bunda sukai untuk keluarga.</p>
                                     </div>
-                                    <WishlistTab brandId="rasa-ibu" />
+                                    <WishlistTab brandId={brandId || 'rasa-ibu'} />
                                 </div>
                             )}
                         </div>
