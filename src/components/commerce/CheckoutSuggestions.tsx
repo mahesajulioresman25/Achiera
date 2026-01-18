@@ -8,10 +8,11 @@ import { toast } from 'sonner';
 
 interface CheckoutSuggestionsProps {
     brandId: string;
+    compact?: boolean;
 }
 
-export default function CheckoutSuggestions({ brandId }: CheckoutSuggestionsProps) {
-    const { addItem } = useCart();
+export default function CheckoutSuggestions({ brandId, compact = false }: CheckoutSuggestionsProps) {
+    const { addToCart } = useCart();
     const [suggestions, setSuggestions] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -35,7 +36,7 @@ export default function CheckoutSuggestions({ brandId }: CheckoutSuggestionsProp
             return;
         }
 
-        addItem({
+        addToCart({
             productId: product.id,
             variantId: product.variantId,
             name: product.name,
@@ -65,24 +66,24 @@ export default function CheckoutSuggestions({ brandId }: CheckoutSuggestionsProp
     if (suggestions.length === 0) return null;
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 bg-amber-100 text-amber-600 rounded-xl">
+        <div className={`space-y-6 ${compact ? 'bg-amber-50/30 p-6 rounded-[2rem] border border-amber-100/50' : ''}`}>
+            <div className={`flex items-center gap-3 ${compact ? 'mb-4' : 'mb-2'}`}>
+                <div className={`p-2 bg-amber-100 text-amber-600 rounded-xl ${compact ? 'scale-75 origin-left' : ''}`}>
                     <Sparkles className="w-5 h-5 fill-current" />
                 </div>
                 <div>
-                    <h3 className="text-xl font-black text-[#2D3A2D] leading-none">Saran Bunda</h3>
+                    <h3 className={`${compact ? 'text-lg' : 'text-xl'} font-black text-[#2D3A2D] leading-none`}>Saran Bunda</h3>
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Lengkapi Menu Hari Ini</p>
                 </div>
             </div>
 
-            <div className="grid gap-4">
+            <div className={compact ? "flex gap-4 overflow-x-auto pb-4 scrollbar-hide -mx-2 px-2" : "grid gap-4"}>
                 {suggestions.map((item) => (
                     <div
                         key={item.id}
-                        className="group bg-white rounded-3xl border border-[#E5E1D8] p-4 flex gap-4 hover:border-amber-200 hover:shadow-xl hover:shadow-[#2D3A2D]/5 transition-all duration-500"
+                        className={`group bg-white rounded-3xl border border-[#E5E1D8] p-4 flex gap-4 hover:border-amber-200 hover:shadow-xl hover:shadow-[#2D3A2D]/5 transition-all duration-500 ${compact ? 'min-w-[280px] shrink-0' : ''}`}
                     >
-                        <div className="w-24 h-24 rounded-2xl overflow-hidden bg-slate-50 shrink-0 border border-slate-100">
+                        <div className={`${compact ? 'w-20 h-20' : 'w-24 h-24'} rounded-2xl overflow-hidden bg-slate-50 shrink-0 border border-slate-100`}>
                             <img
                                 src={item.image || '/placeholder-product.jpg'}
                                 alt={item.name}
@@ -116,10 +117,12 @@ export default function CheckoutSuggestions({ brandId }: CheckoutSuggestionsProp
                 ))}
             </div>
 
-            <button className="w-full py-4 bg-[#F9F7F2] border border-[#E5E1D8] rounded-2xl text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] hover:bg-white hover:text-[#2D3A2D] transition-all flex items-center justify-center gap-2 group">
-                Lihat Menu Lainnya
-                <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-            </button>
+            {!compact && (
+                <button className="w-full py-4 bg-[#F9F7F2] border border-[#E5E1D8] rounded-2xl text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] hover:bg-white hover:text-[#2D3A2D] transition-all flex items-center justify-center gap-2 group">
+                    Lihat Menu Lainnya
+                    <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                </button>
+            )}
         </div>
     );
 }

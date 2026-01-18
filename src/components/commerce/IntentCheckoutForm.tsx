@@ -10,6 +10,7 @@ import { getCustomerProfileByPhoneAction } from '@/lib/actions/commerce/customer
 import { Check, Coins, Loader2, Sparkles, UserCheck } from 'lucide-react';
 
 import { toast } from 'sonner';
+import CheckoutSuggestions from './CheckoutSuggestions';
 
 export default function IntentCheckoutForm() {
     const { items, cartTotal, clearCart, addToCart: addItem } = useCart();
@@ -417,6 +418,11 @@ export default function IntentCheckoutForm() {
                             </button>
                         )}
                     </div>
+                </div>
+
+                {/* 5. Checkout Suggestions */}
+                <div className="pt-2">
+                    <CheckoutSuggestions brandId="rasa-ibu" compact={true} />
                 </div>
 
                 {/* Loyalty & Summary Section */}

@@ -33,11 +33,13 @@ export async function GET(req: NextRequest) {
 
     // Time checks for frequency control
     const now = new Date();
-    const currentHour = now.getUTCHours() + 7; // WIB (UTC+7) adjustment
-    const adjustedHour = currentHour % 24;
-    const isDailyWindow = adjustedHour === 1 || adjustedHour === 2; // Run daily tasks at 1-2 AM WIB
-    const isWeeklyWindow = isDailyWindow && now.getDay() === 1; // Monday
-    const isMonthlyWindow = isDailyWindow && now.getDate() === 1; // 1st of month
+    // We remove the strict adjustedHour === 1 check because Vercel Cron now handles the timing (18:00 UTC = 01:00 WIB).
+    // This allows manual triggers for testing and makes the system more resilient.
+    const isDailyWindow = true; // Daily tasks run on every scheduled trigger
+    const isWeeklyWindow = now.getDay() === 1; // Monday
+    const isMonthlyWindow = now.getDate() === 1; // 1st of month
+
+    console.log(`[Unified Worker] Execution started at ${now.toISOString()}. Daily: ${isDailyWindow}, Weekly: ${isWeeklyWindow}, Monthly: ${isMonthlyWindow}`);
 
     try {
         const brands = await prisma.brand.findMany({ where: { isActive: true } });

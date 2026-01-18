@@ -38,7 +38,11 @@ export class ReportNotificationService {
     // Send Monthly Report via Email
     async sendMonthlyReport(brandId: string, data: MonthlyData, analysis: AIAnalysis) {
         const email = process.env.WA_ADMIN_EMAIL || process.env.SMTP_USER;
-        if (!email) return;
+        console.log(`[ReportNotificationService] Attempting to send Monthly Report for brand ${brandId} to: ${email}`);
+        if (!email) {
+            console.error('[ReportNotificationService] No recipient email found for Monthly Report (checked WA_ADMIN_EMAIL and SMTP_USER)');
+            return;
+        }
 
         const monthName = data.period.toLocaleString('id-ID', { month: 'long', year: 'numeric' });
         const { EmailService } = await import('@/lib/services/EmailService');
@@ -107,7 +111,11 @@ export class ReportNotificationService {
     // Send Daily Insight via Email
     async sendDailyInsight(brandId: string, analysis: DailyAIAnalysis, data?: DailyData) {
         const email = process.env.WA_ADMIN_EMAIL || process.env.SMTP_USER;
-        if (!email) return;
+        console.log(`[ReportNotificationService] Attempting to send Daily Insight for brand ${brandId} to: ${email}`);
+        if (!email) {
+            console.error('[ReportNotificationService] No recipient email found for Daily Insight');
+            return;
+        }
 
         const { EmailService } = await import('@/lib/services/EmailService');
         const { DailyInsightPDF } = await import('@/lib/pdf/DailyInsightPDF');
@@ -149,7 +157,11 @@ export class ReportNotificationService {
     // Send Weekly Trend via Email
     async sendWeeklyTrend(brandId: string, data: any) {
         const email = process.env.WA_ADMIN_EMAIL || process.env.SMTP_USER;
-        if (!email) return;
+        console.log(`[ReportNotificationService] Attempting to send Weekly Trend for brand ${brandId} to: ${email}`);
+        if (!email) {
+            console.error('[ReportNotificationService] No recipient email found for Weekly Trend');
+            return;
+        }
 
         const { EmailService } = await import('@/lib/services/EmailService');
         const dateRange = `${data.period.start.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })} - ${data.period.end.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}`;

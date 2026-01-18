@@ -82,11 +82,6 @@ export default function CheckoutFlow({ platformLinks, upsellProducts = [] }: Che
                             )}
                         </div>
 
-                        {/* Suggestions (Compact) */}
-                        <div className="py-2">
-                            <CheckoutSuggestions brandId={brandId} />
-                        </div>
-
                         {/* Compact Platform Links */}
                         {platformLinks && (
                             <div className="pt-6 border-t border-[#E5E1D8] opacity-60 hover:opacity-100 transition-opacity">
