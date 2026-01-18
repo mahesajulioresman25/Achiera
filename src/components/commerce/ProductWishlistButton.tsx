@@ -45,11 +45,12 @@ export default function ProductWishlistButton({
             setIsSyncing(false);
 
             if (res.success) {
-                setIsFav(res.active || false);
+                const newState = res.active || false;
+                setIsFav(newState);
 
                 // Update localStorage to sync with server state
                 const favs = JSON.parse(localStorage.getItem('rasa_ibu_fav_menu') || '[]');
-                if (res.active) {
+                if (newState) {
                     if (!favs.includes(productId)) favs.push(productId);
                 } else {
                     const index = favs.indexOf(productId);
@@ -57,7 +58,7 @@ export default function ProductWishlistButton({
                 }
                 localStorage.setItem('rasa_ibu_fav_menu', JSON.stringify(favs));
 
-                toast.success(res.message, { icon: res.active ? '❤️' : '🗑️' });
+                toast.success(res.message, { icon: newState ? '❤️' : '🗑️' });
 
                 // Dispatch event for other components
                 window.dispatchEvent(new Event('wishlist-updated'));
