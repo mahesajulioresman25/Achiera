@@ -87,7 +87,7 @@ export default async function RasaIbuProductListPage({
                 image: p.image || undefined,
                 variantId: firstVariant?.id,
                 variantName: firstVariant?.name || 'Porsi Keluarga',
-                rating: p.rating || 5.0
+                rating: p.rating || 0
             };
         });
 
@@ -153,7 +153,6 @@ export default async function RasaIbuProductListPage({
                         <div className="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-black tracking-widest text-[#2D3A2D] flex items-center gap-1 shadow-sm">
                             <Star className="w-3 h-3 text-amber-500 fill-current" /> {product.rating.toFixed(1)}
                         </div>
-                        <ProductWishlistButton productId={product.id} productName={product.name} brandId={brandId} />
                     </div>
 
                     {getProductPrice(product).discount > 0 && (

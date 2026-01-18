@@ -75,7 +75,7 @@ export async function getBestSellers(brandId: string, limit: number = 6) {
             orderCount: p.orderCount,
             totalStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0),
             inStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0) > 0,
-            rating: ratingMap[p.name]?.avg || 5.0, // Fallback to 5.0 if no reviews
+            rating: ratingMap[p.name]?.avg || 0, // Show 0 if no reviews
             reviewCount: ratingMap[p.name]?.count || 0
         }));
     } catch (error) {
@@ -139,7 +139,7 @@ export async function getFeaturedProducts(brandId: string) {
                 image: p.image || undefined,
                 totalStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0),
                 inStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0) > 0,
-                rating: ratingMap[p.name]?.avg || 5.0,
+                rating: ratingMap[p.name]?.avg || 0,
                 reviewCount: ratingMap[p.name]?.count || 0
             }));
         }
@@ -157,7 +157,7 @@ export async function getFeaturedProducts(brandId: string) {
             image: p.image || undefined,
             totalStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0),
             inStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0) > 0,
-            rating: ratingMap[p.name]?.avg || 5.0,
+            rating: ratingMap[p.name]?.avg || 0,
             reviewCount: ratingMap[p.name]?.count || 0
         }));
     } catch (error) {
@@ -244,7 +244,7 @@ export async function getRecommendedProducts(brandId: string, productId: string,
             image: p.image || undefined,
             totalStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0),
             inStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0) > 0,
-            rating: ratingMap[p.name]?.avg || 5.0,
+            rating: ratingMap[p.name]?.avg || 0,
             reviewCount: ratingMap[p.name]?.count || 0
         }));
     } catch (error) {
@@ -288,7 +288,7 @@ export async function getProductsByCategory(brandId: string, categorySlug: strin
             image: p.image || undefined,
             totalStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0),
             inStock: p.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0) > 0,
-            rating: ratingMap[p.name]?.avg || 5.0,
+            rating: ratingMap[p.name]?.avg || 0,
             reviewCount: ratingMap[p.name]?.count || 0
         }));
     } catch (error) {
