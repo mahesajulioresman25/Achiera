@@ -27,9 +27,29 @@ export default function ProductWishlistButton({
 
     useEffect(() => {
         setMounted(true);
-        const favs = JSON.parse(localStorage.getItem('rasa_ibu_fav_menu') || '[]');
-        setIsFav(favs.includes(productId));
-    }, [productId]);
+
+        // Fetch initial state
+        const fetchInitialState = async () => {
+            if (session?.user) {
+                // For logged-in users, fetch from server
+                const res = await fetch(`/api/wishlist/check?productId=${productId}&brandId=${brandId}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setIsFav(data.isFavorite || false);
+                } else {
+                    // Fallback to localStorage
+                    const favs = JSON.parse(localStorage.getItem('rasa_ibu_fav_menu') || '[]');
+                    setIsFav(favs.includes(productId));
+                }
+            } else {
+                // For guests, use localStorage
+                const favs = JSON.parse(localStorage.getItem('rasa_ibu_fav_menu') || '[]');
+                setIsFav(favs.includes(productId));
+            }
+        };
+
+        fetchInitialState();
+    }, [productId, brandId, session]);
 
     const toggleFav = async (e: React.MouseEvent) => {
         e.preventDefault();
