@@ -217,6 +217,8 @@ export const authOptions: NextAuthOptions = {
         async session({ session, token }) {
             if (token && session.user) {
                 session.user.id = token.id;
+                session.user.email = token.email!;
+                session.user.name = token.name!;
                 session.user.phone = token.phone;
                 session.user.address = token.address;
                 session.user.profileImage = token.profileImage;

@@ -251,8 +251,9 @@ export default function DashboardClientWrapper({
     const hasAnyAdminAuthority = user?.brands?.some(b => ['OWNER', 'ADMIN', 'BRAND_ADMIN', 'BRAND_OWNER'].includes(b?.role?.toUpperCase() || '')) ||
         user?.brandRoles?.some(br => ['OWNER', 'ADMIN', 'BRAND_ADMIN', 'BRAND_OWNER'].includes(br?.role?.toUpperCase() || ''));
 
-    // Emergency Fallback: If Email is a known admin, force access
-    const isMahesa = user?.email?.toLowerCase().includes('mahesajulioresman25');
+    // Emergency Fallback: If Email or ID is a known admin, force access (Mahesa)
+    const isMahesa = user?.email?.toLowerCase().includes('mahesajulioresman25') ||
+        user?.id === 'cmk5kkbnc000013lpokgbhmjy';
 
     // 4. Final Permission Sets
     const canManageBrand = isGlobalOwner || ['BRAND_ADMIN', 'OWNER', 'ADMIN', 'BRAND_OWNER'].includes(normalizedRole) || hasAnyAdminAuthority || isMahesa;
