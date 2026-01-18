@@ -36,6 +36,11 @@ export default function CheckoutSuggestions({ brandId, compact = false }: Checko
             return;
         }
 
+        if (!product.inStock) {
+            toast.error('Maaf Bunda, menu ini sudah habis.');
+            return;
+        }
+
         addToCart({
             productId: product.id,
             variantId: product.variantId,
@@ -110,9 +115,13 @@ export default function CheckoutSuggestions({ brandId, compact = false }: Checko
                                 </span>
                                 <button
                                     onClick={() => handleAddToCart(item)}
-                                    className="p-2 bg-[#2D3A2D] text-white rounded-xl hover:bg-amber-600 transition-all hover:scale-110 active:scale-95 shadow-lg shadow-emerald-900/10"
+                                    disabled={!item.inStock}
+                                    className={`p-2 rounded-xl transition-all hover:scale-110 active:scale-95 shadow-lg ${item.inStock
+                                        ? 'bg-[#2D3A2D] text-white hover:bg-amber-600 shadow-emerald-900/10'
+                                        : 'bg-slate-100 text-slate-300 cursor-not-allowed shadow-none'
+                                        }`}
                                 >
-                                    <Plus className="w-4 h-4" />
+                                    {item.inStock ? <Plus className="w-4 h-4" /> : <span className="text-[8px] font-black uppercase px-0.5">Habis</span>}
                                 </button>
                             </div>
                         </div>
