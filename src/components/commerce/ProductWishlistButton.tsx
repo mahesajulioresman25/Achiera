@@ -27,33 +27,10 @@ export default function ProductWishlistButton({
 
     useEffect(() => {
         setMounted(true);
-
-        // Fetch initial state
-        const fetchInitialState = async () => {
-            if (session?.user) {
-                // For logged-in users, fetch from server using server action
-                try {
-                    const { getUserWishlistAction } = await import('@/lib/actions/commerce/wishlist');
-                    const res = await getUserWishlistAction(brandId);
-                    if (res.success && res.data) {
-                        setIsFav(res.data.includes(productId));
-                    } else {
-                        setIsFav(false);
-                    }
-                } catch (error) {
-                    // Fallback to localStorage on error
-                    const favs = JSON.parse(localStorage.getItem('rasa_ibu_fav_menu') || '[]');
-                    setIsFav(favs.includes(productId));
-                }
-            } else {
-                // For guests, use localStorage
-                const favs = JSON.parse(localStorage.getItem('rasa_ibu_fav_menu') || '[]');
-                setIsFav(favs.includes(productId));
-            }
-        };
-
-        fetchInitialState();
-    }, [productId, brandId, session]);
+        // Use localStorage for initial state (will sync from server after first interaction)
+        const favs = JSON.parse(localStorage.getItem('rasa_ibu_fav_menu') || '[]');
+        setIsFav(favs.includes(productId));
+    }, [productId]);
 
     const toggleFav = async (e: React.MouseEvent) => {
         e.preventDefault();
