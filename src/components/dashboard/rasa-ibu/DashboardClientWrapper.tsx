@@ -484,7 +484,7 @@ export default function DashboardClientWrapper({
                             <span className="text-xl">🥗</span>
                         </div>
                         <h1 className="text-4xl font-black text-[#1A241A] tracking-tighter">
-                            Rasa <span className="text-amber-600">Ibu</span> <span className="text-stone-300 font-light">OPS</span>
+                            Rasa <span className="text-amber-600">Ibu</span> <span className="text-stone-300 font-light">{isMahesa ? 'OWNER OPS' : 'OPS'}</span>
                         </h1>
                     </div>
                     <p className="text-[#8B7E66] font-medium text-sm ml-1">Ecosystem Operational Command • Live Health Update</p>
