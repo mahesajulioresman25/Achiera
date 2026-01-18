@@ -16,7 +16,7 @@ export default function WishlistTab({ brandId }: { brandId: string }) {
         setLoading(true);
         const res = await getWishlistProductsAction(brandId);
         if (res.success) {
-            setProducts(res.data);
+            setProducts(res.data || []);
         }
         setLoading(false);
     };
