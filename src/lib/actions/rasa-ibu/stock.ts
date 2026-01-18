@@ -54,11 +54,19 @@ export async function adjustStock(data: {
                 variantData.costPrice = data.unitCost;
             }
 
-            const updatedVariant = await tx.frozenVariant.update({
+            // 1. Update Variant (safe with updateMany for isolation)
+            await tx.frozenVariant.updateMany({
                 where: { id: data.variantId, brandId },
-                data: variantData,
+                data: variantData
+            });
+
+            // Re-fetch with relations
+            const updatedVariant = await tx.frozenVariant.findFirst({
+                where: { id: data.variantId, brandId },
                 include: { product: true }
             });
+
+            if (!updatedVariant) throw new Error('Failed to update variant');
 
             const inventoryType = updatedVariant.product.inventoryType;
 
@@ -519,8 +527,8 @@ export async function updateIngredientAction(data: {
         });
 
         // Update Variant info (unit & price act on Variant level)
-        await prisma.frozenVariant.update({
-            where: { id: data.variantId },
+        await prisma.frozenVariant.updateMany({
+            where: { id: data.variantId, brandId: data.brandId },
             data: {
                 unit: data.unitName,
                 costPrice: data.costPrice
