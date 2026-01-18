@@ -852,22 +852,7 @@ export default function DashboardClientWrapper({
                         </div>
                     ) : (
                         <>
-                            {/* Executive Intelligence Tier */}
-                            <div className="grid grid-cols-1 gap-8">
-                                <SmartAdvisory intelligence={intelligence} />
-
-                                {canManageBrand && (
-                                    <FinancialInsight
-                                        pulse={intelligence?.finance}
-                                        onOpenLedger={() => setShowLedger(true)}
-                                        onOpenReports={() => setShowReports(true)}
-                                        onOpenReconciliation={() => setShowReconciliation(true)}
-                                        onOpenAccountManager={() => setShowAccountManager(true)}
-                                    />
-                                )}
-                            </div>
-
-                            {/* QUICK LAUNCHPAD - High Accessibility Action Grid */}
+                            {/* QUICK LAUNCHPAD - High Accessibility Action Grid (Moved Top for Visibility) */}
                             <div className="mb-10">
                                 <div className="flex items-center justify-between mb-4 px-2">
                                     <h2 className="text-xs font-black text-[#2D3A2D] uppercase tracking-widest flex items-center gap-2">
@@ -1069,6 +1054,21 @@ export default function DashboardClientWrapper({
                                         </div>
                                     </Link>
                                 </div>
+                            </div>
+
+                            {/* Executive Intelligence Tier */}
+                            <div className="grid grid-cols-1 gap-8">
+                                <SmartAdvisory intelligence={intelligence} />
+
+                                {canManageBrand && (
+                                    <FinancialInsight
+                                        pulse={intelligence?.finance}
+                                        onOpenLedger={() => setShowLedger(true)}
+                                        onOpenReports={() => setShowReports(true)}
+                                        onOpenReconciliation={() => setShowReconciliation(true)}
+                                        onOpenAccountManager={() => setShowAccountManager(true)}
+                                    />
+                                )}
                             </div>
 
                             {/* Operational Grid Tier */}
