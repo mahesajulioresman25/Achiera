@@ -19,7 +19,7 @@ interface AddToCartButtonProps {
     disabled?: boolean;
 }
 
-export default function AddToCartButton({ product, className, label = 'Siapkan Untuk Keluarga', disabled = false }: AddToCartButtonProps) {
+export default function AddToCartButton({ product, className, label = 'Sajikan Untuk Keluarga', disabled = false }: AddToCartButtonProps) {
     const { addToCart } = useCart();
     const [isAdded, setIsAdded] = useState(false);
 
@@ -62,7 +62,7 @@ export default function AddToCartButton({ product, className, label = 'Siapkan U
                         className="flex items-center gap-2"
                     >
                         <Check className="w-4 h-4" />
-                        <span>Selesai Kita Siapkan</span>
+                        <span>Selesai Kita Sajikan</span>
                     </motion.div>
                 ) : (
                     <motion.div

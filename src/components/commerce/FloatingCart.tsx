@@ -147,14 +147,14 @@ export default function FloatingCart() {
                                 onClick={() => setIsCartOpen(false)}
                                 className="w-full py-4 bg-[#2D3A2D] text-[#FDFBF7] rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[#1A241A] transition-all shadow-lg shadow-green-900/10 flex items-center justify-center gap-2"
                             >
-                                Lanjut ke Checkout
+                                Sajikan Meja Makan
                                 <ArrowRight className="w-4 h-4" />
                             </Link>
                             <button
                                 onClick={() => setIsCartOpen(false)}
                                 className="w-full py-4 bg-white border border-[#E5E1D8] text-[#8B7E66] rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[#F9F7F2] transition-all"
                             >
-                                Lanjut Belanja
+                                Sajikan Yang Lainnya
                             </button>
                         </div>
                     </div>

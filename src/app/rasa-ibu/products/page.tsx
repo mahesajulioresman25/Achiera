@@ -202,7 +202,7 @@ export default async function RasaIbuProductListPage({
                         <AddToCartButton
                             product={product}
                             className="w-full bg-[#2D3A2D] hover:bg-[#1A241A] text-[#FDFBF7] py-3 rounded-xl font-black shadow-md transition-all flex items-center justify-center gap-2"
-                            label={product.inStock ? 'Pesan Sekarang' : 'Habis'}
+                            label={product.inStock ? 'Sajikan' : 'Habis'}
                         />
                     </div>
                 </div>

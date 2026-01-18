@@ -273,7 +273,7 @@ export default async function RasaIbuProductDetailPage({
                                         variantId: primaryVariant?.id,
                                         variantName: primaryVariant?.name || 'Porsi Keluarga'
                                     }}
-                                    label="Simpan di Keranjang Bunda"
+                                    label="Sajikan"
                                     className="w-full py-6 rounded-[2rem] text-sm font-black uppercase tracking-widest shadow-2xl hover:scale-[1.02] transition-all"
                                 />
 

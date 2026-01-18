@@ -67,7 +67,7 @@ export default function AddBundleToCartButton({ bundle, className }: AddBundleTo
                         className="flex items-center gap-2"
                     >
                         <ShoppingBag className="w-5 h-5" />
-                        <span>Siapkan Paket Ini</span>
+                        <span>Sajikan Paket Ini</span>
                     </motion.div>
                 )}
             </AnimatePresence>

@@ -63,7 +63,7 @@ export default async function RasaIbuHomePage() {
     // 1. Hero
     const heroTagline = config?.heroTagline || "Hangatnya Meja Makan";
     const heroTitle = config?.publicTitle || "Kapanpun Rindu\nMasakan Ibu.";
-    const heroSubtitle = config?.publicSubtitle || "Karena kami percaya, rasa terbaik selalu datang dari rumah.\nSiap saji dalam 10 menit, tanpa pengawet, tanpa rahasia.";
+    const heroSubtitle = config?.publicSubtitle || "Hidangan hangat penuh kasih, hadir di meja makan Bunda dalam sekejap.";
     const heroImage = config?.heroImage || null;
     const heroCtaPrimary = config?.heroCtaPrimary || "Lihat Menu Kami";
     const heroCtaPrimaryLink = config?.heroCtaPrimaryLink || "/rasa-ibu/products";
@@ -343,7 +343,7 @@ export default async function RasaIbuHomePage() {
                                 )}
                                 <AddToCartButton
                                     product={product}
-                                    label="Siapkan"
+                                    label="Sajikan"
                                     className="px-4 py-2.5 text-[7px] md:text-[9px] w-full shadow-sm hover:shadow-md"
                                 />
                             </div>
