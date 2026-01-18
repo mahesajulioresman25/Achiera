@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { SessionProvider } from 'next-auth/react';
 import { ToastProvider } from '@/components/ui/ToastProvider';
 import { BrandConfirmProvider } from '@/components/ui/BrandConfirm';
 import { CartProvider } from '@/lib/contexts/CartContext';
@@ -22,17 +21,15 @@ export default function Providers({ children }: ProvidersProps) {
     }));
 
     return (
-        <SessionProvider>
-            <QueryClientProvider client={queryClient}>
-                <ThemeWrapper />
-                <CartProvider>
-                    <ToastProvider>
-                        <BrandConfirmProvider>
-                            {children}
-                        </BrandConfirmProvider>
-                    </ToastProvider>
-                </CartProvider>
-            </QueryClientProvider>
-        </SessionProvider>
+        <QueryClientProvider client={queryClient}>
+            <ThemeWrapper />
+            <CartProvider>
+                <ToastProvider>
+                    <BrandConfirmProvider>
+                        {children}
+                    </BrandConfirmProvider>
+                </ToastProvider>
+            </CartProvider>
+        </QueryClientProvider>
     );
 }
