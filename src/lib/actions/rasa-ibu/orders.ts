@@ -400,6 +400,16 @@ export async function updateOrderStatus(orderId: string, status: string) {
             }
         }
 
+        // 📱 SEND PUBLIC STATUS UPDATE EMAIL
+        if (order.customerEmail) {
+            try {
+                const { EmailService } = await import('@/lib/services/EmailService');
+                await EmailService.sendStatusUpdate(order as any, status);
+            } catch (emailErr) {
+                console.error('Failed to send status update email:', emailErr);
+            }
+        }
+
         revalidatePath(`/dashboard/rasa-ibu`);
         return { success: true, data: JSON.parse(JSON.stringify(order)) };
     } catch (error: any) {
