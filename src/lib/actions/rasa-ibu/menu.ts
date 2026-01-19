@@ -14,9 +14,9 @@ export async function createMenuFromRecipeAction(data: {
     targetMargin: number;
 }) {
     try {
-        // 1. Get recipe with items
-        const recipe = await prisma.recipe.findUnique({
-            where: { id: data.recipeId },
+        // 1. Get recipe with items (safe with findFirst for isolation)
+        const recipe = await prisma.recipe.findFirst({
+            where: { id: data.recipeId, brandId: data.brandId },
             include: {
                 items: {
                     include: {
@@ -52,9 +52,9 @@ export async function createMenuFromRecipeAction(data: {
         const divisor = 1 - data.marketplaceFeeRate - data.targetMargin;
         const sellingPrice = divisor > 0 ? subtotal / divisor : 0;
 
-        // 4. Update FrozenVariant with pricing data
-        await prisma.frozenVariant.update({
-            where: { id: recipe.frozenVariantId },
+        // 4. Update FrozenVariant with pricing data (safe with updateMany)
+        await prisma.frozenVariant.updateMany({
+            where: { id: recipe.frozenVariantId, brandId: data.brandId },
             data: {
                 costPrice: hppPerUnit,
                 operationalCostPerUnit: data.operationalCostPerUnit,
@@ -95,9 +95,9 @@ export async function createMenuManualAction(data: {
         const divisor = 1 - data.marketplaceFeeRate - data.targetMargin;
         const sellingPrice = divisor > 0 ? subtotal / divisor : 0;
 
-        // 2. Update FrozenVariant with pricing data
-        await prisma.frozenVariant.update({
-            where: { id: data.variantId },
+        // 2. Update FrozenVariant with pricing data (safe with updateMany)
+        await prisma.frozenVariant.updateMany({
+            where: { id: data.variantId, brandId: data.brandId },
             data: {
                 costPrice: data.hpp,
                 operationalCostPerUnit: data.operationalCostPerUnit,
