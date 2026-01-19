@@ -145,6 +145,9 @@ export async function adjustStock(data: {
                     create: { brandId, code: '1-1000', name: 'Kas Utama (Ops)', type: 'ASSET' }
                 });
 
+                // Calculate Total Value correctly: Unit Cost * Quantity
+                const totalValue = data.unitCost * Math.abs(roundedAdjustment);
+
                 await tx.journalTransaction.create({
                     data: {
                         brandId,
@@ -156,8 +159,8 @@ export async function adjustStock(data: {
                         referenceId: mutation.id,
                         entries: {
                             create: [
-                                { accountId: pantryAccount.id, debit: data.unitCost, credit: 0 },
-                                { accountId: sourceAccount.id, debit: 0, credit: data.unitCost }
+                                { accountId: pantryAccount.id, debit: totalValue, credit: 0 },
+                                { accountId: sourceAccount.id, debit: 0, credit: totalValue }
                             ]
                         }
                     }
@@ -166,11 +169,11 @@ export async function adjustStock(data: {
                 // Update balances
                 await tx.ledgerAccount.update({
                     where: { id: pantryAccount.id, brandId },
-                    data: { balance: { increment: data.unitCost } }
+                    data: { balance: { increment: totalValue } }
                 });
                 await tx.ledgerAccount.update({
                     where: { id: sourceAccount.id, brandId },
-                    data: { balance: { decrement: data.unitCost } }
+                    data: { balance: { decrement: totalValue } }
                 });
             }
 
