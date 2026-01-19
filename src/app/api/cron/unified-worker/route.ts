@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { ConsolidationPeriod } from '@prisma/client';
 import { SubscriptionDeliveryService } from '@/lib/services/SubscriptionDeliveryService';
 import { EmailParserService } from '@/lib/services/EmailParserService';
 import { ReportNotificationService } from '@/lib/notifications/ReportNotificationService';
@@ -169,7 +170,7 @@ export async function GET(req: NextRequest) {
             try {
                 const { ConsolidationEngine } = await import('@/lib/services/ConsolidationEngine');
                 const engine = new ConsolidationEngine();
-                await engine.generateConsolidatedStatement(now.getFullYear(), 'MONTHLY', 'CRON_WORKER');
+                await engine.generateConsolidatedStatement(now.getFullYear(), ConsolidationPeriod.MONTHLY, 'CRON_WORKER');
                 results.push({ task: 'financial-consolidation', status: 'success' });
             } catch (e: any) {
                 results.push({ task: 'financial-consolidation', status: 'failed', error: e.message });
