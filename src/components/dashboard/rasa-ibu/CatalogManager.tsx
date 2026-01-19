@@ -200,6 +200,10 @@ export default function CatalogManager({ brandId, products, categories, onClose 
     const handlePrimaryImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            if (file.size > 10 * 1024 * 1024) {
+                toast.error('Ukuran file maksimal 10MB');
+                return;
+            }
             setIsUploading(true);
             const compressed = await compressImage(file);
             setPrimaryImage(compressed);
@@ -212,6 +216,11 @@ export default function CatalogManager({ brandId, products, categories, onClose 
         const files = Array.from(e.target.files || []);
         if (files.length + galleryImages.length + existingGalleryImages.length > 5) {
             toast.error('Maksimal 5 gambar untuk galeri');
+            return;
+        }
+
+        if (files.some(f => f.size > 10 * 1024 * 1024)) {
+            toast.error('Salah satu file melebihi 10MB');
             return;
         }
 

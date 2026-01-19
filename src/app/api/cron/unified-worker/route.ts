@@ -163,6 +163,19 @@ export async function GET(req: NextRequest) {
             results.push(brandResults);
         }
 
+        // TASK 9: Financial Consolidation (Monthly Window)
+        // Runs once for the entire ecosystem (multi-brand)
+        if (isMonthlyWindow) {
+            try {
+                const { ConsolidationEngine } = await import('@/lib/services/ConsolidationEngine');
+                const engine = new ConsolidationEngine();
+                await engine.generateConsolidatedStatement(now.getFullYear(), 'MONTHLY', 'CRON_WORKER');
+                results.push({ task: 'financial-consolidation', status: 'success' });
+            } catch (e: any) {
+                results.push({ task: 'financial-consolidation', status: 'failed', error: e.message });
+            }
+        }
+
         // GLOBAL TASK: Process WhatsApp Queue (ALWAYS)
         const waResult = { task: 'whatsapp-queue', status: 'skipped', count: 0 };
         try {
