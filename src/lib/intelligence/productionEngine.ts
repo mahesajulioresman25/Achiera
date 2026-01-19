@@ -190,7 +190,9 @@ export class ProductionEngine {
 
                 // AUTO-HPP: Update costPrice of the finished good based on current ingredient costs
                 const hppData = await this.calculateRecipeHPP(item.plan.brandId, item.recipe.id, tx);
+
                 if (hppData.success) {
+                    // Update cost price
                     await tx.frozenVariant.updateMany({
                         where: {
                             id: item.recipe.frozenVariantId,
@@ -198,6 +200,52 @@ export class ProductionEngine {
                         },
                         data: { costPrice: hppData.totalHPP }
                     });
+
+                    // 4. FINANCIAL RECORDING (COGS Transfer)
+                    const totalValue = hppData.totalHPP * actualQuantity;
+                    if (totalValue > 0) {
+                        // Find or Create Accounts
+                        const materialAccount = await tx.ledgerAccount.upsert({
+                            where: { brandId_code: { brandId: item.plan.brandId, code: '5-PANTRY' } },
+                            update: {},
+                            create: { brandId: item.plan.brandId, code: '5-PANTRY', name: 'Bahan Baku & Dapur', type: 'EXPENSE' }
+                        });
+
+                        const finishedAccount = await tx.ledgerAccount.upsert({
+                            where: { brandId_code: { brandId: item.plan.brandId, code: '1-1300' } },
+                            update: {},
+                            create: { brandId: item.plan.brandId, code: '1-1300', name: 'Persediaan Barang', type: 'ASSET' }
+                        });
+
+                        await tx.journalTransaction.create({
+                            data: {
+                                brandId: item.plan.brandId,
+                                date: new Date(),
+                                description: `[AUTO-PROD] Produksi: ${item.recipe.frozenVariant?.product?.name} (${actualQuantity} unit)`,
+                                createdBy: operatorId,
+                                referenceType: 'PRODUCTION',
+                                referenceId: item.id,
+                                entries: {
+                                    create: [
+                                        { accountId: finishedAccount.id, debit: totalValue, credit: 0 },
+                                        { accountId: materialAccount.id, debit: 0, credit: totalValue }
+                                    ]
+                                }
+                            }
+                        });
+
+                        // Update Balances
+                        await tx.ledgerAccount.update({
+                            where: { id: finishedAccount.id },
+                            data: { balance: { increment: totalValue } }
+                        });
+                        await tx.ledgerAccount.update({
+                            where: { id: materialAccount.id },
+                            data: { balance: { decrement: totalValue } }
+                        });
+
+                        console.log(`[ProductionEngine] Financial journal created: +${totalValue} to Asset, -${totalValue} from Expense`);
+                    }
                 }
             }
 

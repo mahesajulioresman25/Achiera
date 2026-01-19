@@ -522,14 +522,14 @@ export class EmailService {
         }
     }
 
-    static async sendAdminAlert(subject: string, message: string, attachments?: any[]) {
-        const adminEmail = process.env.WA_ADMIN_EMAIL || process.env.SMTP_USER;
-        if (!adminEmail) return false;
+    static async sendAdminAlert(subject: string, message: string, attachments?: any[], toEmail?: string) {
+        const recipient = toEmail || process.env.WA_ADMIN_EMAIL || process.env.SMTP_USER;
+        if (!recipient) return false;
 
         try {
             await this.transporter.sendMail({
                 from: EmailService.getFromAddress(),
-                to: adminEmail,
+                to: recipient,
                 subject: `⚠️ Alert: ${subject}`,
                 html: `
 <!DOCTYPE html>

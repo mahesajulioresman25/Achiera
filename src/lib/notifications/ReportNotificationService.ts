@@ -31,16 +31,46 @@ export class ReportNotificationService {
         return '6282215191435';
     }
 
+    // Helper to get owner email
+    private async getOwnerEmail(brandId: string): Promise<string | null> {
+        try {
+            // Find user with OWNER role for this brand
+            const userRole = await prisma.userBrandRole.findFirst({
+                where: {
+                    brandId: brandId,
+                    role: 'OWNER'
+                },
+                include: {
+                    user: {
+                        select: { email: true }
+                    }
+                }
+            });
+
+            if (userRole?.user?.email) {
+                return userRole.user.email;
+            }
+
+            return null;
+        } catch (error) {
+            console.error('[ReportNotificationService] Failed to get owner email:', error);
+            return null;
+        }
+    }
+
     private async getBrandWhatsApp(brandId: string): Promise<string | null> {
         return this.getOwnerPhone(brandId);
     }
 
     // Send Monthly Report via Email
     async sendMonthlyReport(brandId: string, data: MonthlyData, analysis: AIAnalysis) {
-        const email = process.env.WA_ADMIN_EMAIL || process.env.SMTP_USER;
-        console.log(`[ReportNotificationService] Attempting to send Monthly Report for brand ${brandId} to: ${email}`);
+        const ownerEmail = await this.getOwnerEmail(brandId);
+        const email = ownerEmail || process.env.WA_ADMIN_EMAIL || process.env.SMTP_USER;
+
+        console.log(`[ReportNotificationService] Attempting to send Monthly Report for brand ${brandId} to: ${email} (Is Owner: ${!!ownerEmail})`);
+
         if (!email) {
-            console.error('[ReportNotificationService] No recipient email found for Monthly Report (checked WA_ADMIN_EMAIL and SMTP_USER)');
+            console.error('[ReportNotificationService] No recipient email found for Monthly Report (checked Owner, WA_ADMIN_EMAIL and SMTP_USER)');
             return;
         }
 
@@ -105,13 +135,16 @@ export class ReportNotificationService {
             <p><em>Note: Laporan eksekutif lengkap dengan grafik dan breakdown detail terlampir dalam format PDF.</em></p>
         `;
 
-        await EmailService.sendAdminAlert(`Laporan Bulanan - ${monthName}`, message, pdfAttachment || undefined);
+        await EmailService.sendAdminAlert(`Laporan Bulanan - ${monthName}`, message, pdfAttachment || undefined, email);
     }
 
     // Send Daily Insight via Email
     async sendDailyInsight(brandId: string, analysis: DailyAIAnalysis, data?: DailyData) {
-        const email = process.env.WA_ADMIN_EMAIL || process.env.SMTP_USER;
-        console.log(`[ReportNotificationService] Attempting to send Daily Insight for brand ${brandId} to: ${email}`);
+        const ownerEmail = await this.getOwnerEmail(brandId);
+        const email = ownerEmail || process.env.WA_ADMIN_EMAIL || process.env.SMTP_USER;
+
+        console.log(`[ReportNotificationService] Attempting to send Daily Insight for brand ${brandId} to: ${email} (Is Owner: ${!!ownerEmail})`);
+
         if (!email) {
             console.error('[ReportNotificationService] No recipient email found for Daily Insight');
             return;
@@ -151,13 +184,16 @@ export class ReportNotificationService {
             <p><em>Note: Detail insight harian terlampir dalam format PDF.</em></p>
         `;
 
-        await EmailService.sendAdminAlert(`Insight Harian - ${date}`, message, pdfAttachment || undefined);
+        await EmailService.sendAdminAlert(`Insight Harian - ${date}`, message, pdfAttachment || undefined, email);
     }
 
     // Send Weekly Trend via Email
     async sendWeeklyTrend(brandId: string, data: any) {
-        const email = process.env.WA_ADMIN_EMAIL || process.env.SMTP_USER;
-        console.log(`[ReportNotificationService] Attempting to send Weekly Trend for brand ${brandId} to: ${email}`);
+        const ownerEmail = await this.getOwnerEmail(brandId);
+        const email = ownerEmail || process.env.WA_ADMIN_EMAIL || process.env.SMTP_USER;
+
+        console.log(`[ReportNotificationService] Attempting to send Weekly Trend for brand ${brandId} to: ${email} (Is Owner: ${!!ownerEmail})`);
+
         if (!email) {
             console.error('[ReportNotificationService] No recipient email found for Weekly Trend');
             return;
@@ -174,18 +210,20 @@ export class ReportNotificationService {
             <p><strong>Channel:</strong><br>${Object.entries(data.channels).map(([name, val]: [string, any]) => `• ${name}: Rp ${val.toLocaleString()}`).join('<br>')}</p>
         `;
 
-        await EmailService.sendAdminAlert(`Review Mingguan - ${dateRange}`, message);
+        await EmailService.sendAdminAlert(`Review Mingguan - ${dateRange}`, message, undefined, email);
     }
 
     async sendLowStockAlert(brandId: string, items: Array<{ name: string; stock: number; min: number }>) {
+        const ownerEmail = await this.getOwnerEmail(brandId);
         const { EmailService } = await import('@/lib/services/EmailService');
         const message = `Beberapa item stok menipis:<br>${items.map(i => `• ${i.name}: Sisa ${i.stock}`).join('<br>')}`;
-        await EmailService.sendAdminAlert('STOK KRITIS', message);
+        await EmailService.sendAdminAlert('STOK KRITIS', message, undefined, ownerEmail || undefined);
     }
 
     async sendCancellationAlert(brandId: string, orderDetails: any) {
+        const ownerEmail = await this.getOwnerEmail(brandId);
         const { EmailService } = await import('@/lib/services/EmailService');
         const message = `Pembatalan Pesanan:<br>Invoice: ${orderDetails.invoiceNo}<br>Customer: ${orderDetails.customerName}`;
-        await EmailService.sendAdminAlert('ALERT PEMBATALAN', message);
+        await EmailService.sendAdminAlert('ALERT PEMBATALAN', message, undefined, ownerEmail || undefined);
     }
 }
