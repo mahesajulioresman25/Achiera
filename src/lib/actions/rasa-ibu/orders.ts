@@ -295,44 +295,45 @@ export async function updateOrderStatus(orderId: string, status: string) {
                 };
 
                 const configKey = channelMap[channel];
-                if (configKey && settings?.mdrFees?.[configKey]) {
-                    mdrRate = Number(settings.mdrFees[configKey]);
+                let platformFeeRate = 0;
+                let mdrRate = 0;
+
+                if (configKey) {
+                    if (settings?.marketplaceFees?.[configKey]) {
+                        platformFeeRate = Number(settings.marketplaceFees[configKey]);
+                    }
+                    if (settings?.mdrFees?.[configKey]) {
+                        mdrRate = Number(settings.mdrFees[configKey]);
+                    }
                 }
+
                 const totalAmount = Number(order.totalAmount || order.total);
                 const discountAmount = Number(order.subtotal || 0) - Number(order.total || 0);
-                let netReceived = totalAmount;
-                const deductions = [];
+
+                const platformFees = [];
+
+                if (platformFeeRate > 0) {
+                    const feeAmount = Math.round(totalAmount * (platformFeeRate / 100));
+                    platformFees.push({
+                        amount: feeAmount,
+                        accountCode: '5-6000', // Biaya Komisi/Marketplace
+                        description: `Marketplace Fee ${channel} (${platformFeeRate}%)`
+                    });
+                }
 
                 if (mdrRate > 0) {
                     const mdrAmount = Math.round(totalAmount * (mdrRate / 100));
-                    netReceived = totalAmount - mdrAmount;
-
-                    // Deduct MDR
-                    deductions.push({
+                    platformFees.push({
                         amount: mdrAmount,
-                        accountCode: '5-6000', // Biaya Adm Bank/Marketplace
-                        description: `MDR ${channel} (${mdrRate}%)`
+                        accountCode: '5-6000', // Biaya Adm Bank
+                        description: `Potongan MDR ${channel} (${mdrRate}%)`
                     });
                 }
 
                 // If Paid, we assume it hits the Bank/Cash
                 // However, recordSale typically records Receivable for Marketplaces
-                // If the user manually marks as PAID, they likely mean the money is SETTLED/RECEIVED.
-                // But generally DIBAYAR on Shopee means Customer Paid -> Escrow -> Receivable.
-                // Reconcile -> Bank.
-
-                // USER REQUEST: "input settlement... pastikan terpotong MDR"
-                // This usually implies the Settlement Step, not the Order Status step.
-                // BUT, if the user manually marks "DIBAYAR" for an offline order or manual entry,
-                // we should check if we are recording "Pending Receivable" or "Cash in Hand".
-
                 if (['SHOPEE', 'GRABFOOD', 'GOFOOD', 'TIKTOK'].includes(channel)) {
-                    // For Marketplaces, DIBAYAR = Revenue recognized, but money is in Receivable (Escrow)
-                    // The MDR is deducted upon SETTLEMENT (Move from Receivable -> Bank).
-                    // IF the user wants MDR recorded NOW, it means they want Net Receivable?
-                    // Let's record the Fee Expense now versus Payable/Receivable.
-
-                    // Option A: Dr Receivable (Net), Dr Expense (MDR), Cr Sales (Gross)
+                    // Option A: Dr Receivable (Full), Dr Expense (Fees), Cr Sales (Gross)
                     await JournalService.recordSale(
                         order.brandId,
                         orderId,
@@ -341,27 +342,16 @@ export async function updateOrderStatus(orderId: string, status: string) {
                         totalHPP,
                         Math.max(0, discountAmount)
                     );
-                    // Note: recordSale logic in JournalService needs to handle deductions if we want to include them
-                    // Currently recordSale doesn't support deductions argument.
-                    // Let's stick to standard behavior: DIBAYAR = Revenue. 
-                    // The MDR is usually realized at Settlement. 
-                    // BUT user asked for "input settlement".
 
-                    // If this action is triggered by "Verify Payment" on Reconciliation, 
-                    // then we are effectively doing Settlement.
-
-                    // Let's create a separate Journal Entry for the Fee if it's significant?
-                    // Or explicitely record expense.
-
-                    if (mdrRate > 0) {
-                        const mdrAmount = Math.round(totalAmount * (mdrRate / 100));
+                    // Record each fee as a reduction of receivable
+                    for (const fee of platformFees) {
                         await JournalService.recordExpense(
                             order.brandId,
-                            mdrAmount,
-                            '5-6000', // Biaya Adm
-                            `Potongan MDR ${channel} (${mdrRate}%)`,
+                            fee.amount,
+                            fee.accountCode,
+                            fee.description,
                             new Date(),
-                            '1-1200' // Reduce Receivable (because logic implies money was deducted from what we receive)
+                            '1-1200' // Reduce Receivable
                         );
                     }
                 } else {
