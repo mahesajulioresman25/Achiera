@@ -236,11 +236,11 @@ export class ProductionEngine {
 
                         // Update Balances
                         await tx.ledgerAccount.update({
-                            where: { id: finishedAccount.id },
+                            where: { id: finishedAccount.id, brandId: item.plan.brandId },
                             data: { balance: { increment: totalValue } }
                         });
                         await tx.ledgerAccount.update({
-                            where: { id: materialAccount.id },
+                            where: { id: materialAccount.id, brandId: item.plan.brandId },
                             data: { balance: { decrement: totalValue } }
                         });
 
