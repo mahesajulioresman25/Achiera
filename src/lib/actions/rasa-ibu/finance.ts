@@ -564,3 +564,90 @@ export async function getPricingRecommendationAction(brandId: string, costPrice:
         return { success: false, error: error.message };
     }
 }
+
+/**
+ * Get Money Mutation (Transaction History) for Liquid Asset Accounts
+ */
+export async function getMoneyMutationAction(brandId: string, options?: {
+    startDate?: Date;
+    endDate?: Date;
+    accountCode?: string;
+    limit?: number;
+}) {
+    try {
+        const { startDate, endDate, accountCode, limit = 100 } = options || {};
+
+        // 1. Identify Liquid Asset Accounts (Cash & Bank)
+        // Usually starting with '1-1' (Current Assets - Cash/Bank)
+        const accounts = await prisma.ledgerAccount.findMany({
+            where: {
+                brandId,
+                type: 'ASSET',
+                code: accountCode ? accountCode : { startsWith: '1-1' }
+            },
+            select: { id: true, code: true, name: true }
+        });
+
+        const accountIds = accounts.map(a => a.id);
+
+        // 2. Fetch Journal Entries for these accounts
+        const entries = await prisma.journalEntry.findMany({
+            where: {
+                accountId: { in: accountIds },
+                transaction: {
+                    brandId,
+                    ...(startDate || endDate ? {
+                        date: {
+                            ...(startDate ? { gte: startDate } : {}),
+                            ...(endDate ? { lte: endDate } : {})
+                        }
+                    } : {})
+                }
+            },
+            include: {
+                transaction: {
+                    select: {
+                        id: true,
+                        date: true,
+                        description: true,
+                        referenceType: true,
+                        referenceId: true,
+                        createdBy: true
+                    }
+                },
+                account: {
+                    select: {
+                        code: true,
+                        name: true
+                    }
+                }
+            },
+            orderBy: {
+                transaction: { date: 'desc' }
+            },
+            take: limit
+        });
+
+        // 3. Transform for UI
+        const formatted = entries.map(entry => {
+            const amount = Number(entry.debit) - Number(entry.credit);
+            return {
+                id: entry.id,
+                date: entry.transaction.date,
+                description: entry.description || entry.transaction.description,
+                accountName: entry.account.name,
+                accountCode: entry.account.code,
+                type: amount > 0 ? 'MASUK' : 'KELUAR',
+                amount: Math.abs(amount),
+                referenceType: entry.transaction.referenceType,
+                referenceId: entry.transaction.referenceId,
+                operator: entry.transaction.createdBy
+            };
+        });
+
+        return { success: true, data: JSON.parse(JSON.stringify(formatted)) };
+    } catch (error: any) {
+        console.error('Get Money Mutation Error:', error);
+        return { success: false, error: error.message };
+    }
+}
