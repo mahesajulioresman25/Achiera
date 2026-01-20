@@ -583,7 +583,12 @@ export async function getMoneyMutationAction(brandId: string, options?: {
             where: {
                 brandId,
                 type: 'ASSET',
-                code: accountCode ? accountCode : { startsWith: '1-1' }
+                ...(accountCode ? { code: accountCode } : {
+                    OR: [
+                        { code: { startsWith: '1-10' } },
+                        { code: { startsWith: '1-11' } }
+                    ]
+                })
             },
             select: { id: true, code: true, name: true }
         });
