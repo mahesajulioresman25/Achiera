@@ -84,9 +84,59 @@ export class WarehouseService {
 
             // 3. Check if we have enough stock
             if (remaining > 0) {
-                throw new InsufficientStockError(
-                    `Insufficient stock. Missing: ${remaining} units`
-                );
+                // [AUTO-PRODUCTION Logic]
+                // If stock is insufficient, check if we can produce it on-demand from a Recipe
+                // This handles "Just-in-Time" items like Spaghetti (served) consuming Sauce + Pasta (stock)
+                const variantForRecipe = await client.frozenVariant.findUnique({
+                    where: { id: variantId },
+                    select: { id: true, productId: true, name: true }
+                });
+
+                if (variantForRecipe) {
+                    const recipe = await client.recipe.findFirst({
+                        where: {
+                            brandId: ctx.brandId,
+                            OR: [
+                                { frozenVariantId: variantForRecipe.id },
+                                { productId: variantForRecipe.productId }
+                            ]
+                        },
+                        include: { items: true }
+                    });
+
+                    if (recipe && recipe.items.length > 0) {
+                        console.log(`[WarehouseService] Stock insufficient for ${variantForRecipe.name}. Attempting Auto-Production via Recipe ${recipe.id}. Missing: ${remaining}`);
+
+                        // Deduct ingredients for the missing amount
+                        for (const ingredient of recipe.items) {
+                            const qtyPerUnit = Number(ingredient.quantity);
+                            const totalIngredientNeeded = qtyPerUnit * remaining;
+
+                            // Recursive call to deduct ingredients
+                            // We pass 'client' (tx) to ensure atomicity
+                            await this.deductStock(
+                                ctx,
+                                warehouseId,
+                                ingredient.ingredientId,
+                                totalIngredientNeeded,
+                                `${referenceId || 'Auto'} (Produce ${variantForRecipe.name})`,
+                                client
+                            );
+                        }
+
+                        // If we are here, ingredients were successfully deducted.
+                        // We track this as a "Virtual" deduction.
+                        deductions.push({ batchId: 'VIRTUAL_PRODUCTION', quantity: remaining });
+                        remaining = 0;
+                    }
+                }
+
+                // Final Check: If still missing after substitute attempt, throw error
+                if (remaining > 0) {
+                    throw new InsufficientStockError(
+                        `Insufficient stock. Missing: ${remaining} units`
+                    );
+                }
             }
 
             // 4. Update aggregate stock
