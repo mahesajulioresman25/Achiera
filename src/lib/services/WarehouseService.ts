@@ -88,7 +88,7 @@ export class WarehouseService {
                 // If stock is insufficient, check if we can produce it on-demand from a Recipe
                 // This handles "Just-in-Time" items like Spaghetti (served) consuming Sauce + Pasta (stock)
                 const variantForRecipe = await client.frozenVariant.findUnique({
-                    where: { id: variantId },
+                    where: { id: variantId, brandId: ctx.brandId },
                     select: { id: true, productId: true, name: true }
                 });
 
