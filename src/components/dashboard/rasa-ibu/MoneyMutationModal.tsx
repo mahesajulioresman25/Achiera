@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { X, ArrowUpRight, ArrowDownRight, Search, Calendar, Landmark, Receipt, TrendingUp, Filter, Download } from 'lucide-react';
+import { X, ArrowUpRight, ArrowDownRight, Search, Calendar, Landmark as BankIcon, Receipt, TrendingUp, Filter, Download } from 'lucide-react';
 import { getMoneyMutationAction } from '@/lib/actions/rasa-ibu/finance';
 
 interface MoneyMutationModalProps {
