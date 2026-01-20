@@ -284,7 +284,6 @@ export async function updateOrderStatus(orderId: string, status: string) {
                 const { settings } = await getPlatformSettingsAction(order.brandId);
 
                 const channel = order.channel || 'OFFLINE';
-                let mdrRate = 0;
 
                 // Map channel to config key
                 const channelMap: Record<string, string> = {
