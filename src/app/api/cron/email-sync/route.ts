@@ -47,11 +47,9 @@ export async function GET() {
                 continue;
             }
 
-            // Only process if the integration matches the env email (or just process it regardless for Phase 1)
-            if (integration.emailAddress !== email) {
-                // Skip mismatching emails for now as we only have 1 env credential
-                continue;
-            }
+            // Process the sync using ENV credentials for the brand
+            // This allows the system to work even if the DB emailAddress doesn't match the ENV email
+            // (common in forwarding scenarios)
 
             try {
                 await parser.connect(email, password);

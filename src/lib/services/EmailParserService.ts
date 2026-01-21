@@ -23,6 +23,7 @@ export class EmailParserService {
         });
 
         await this.client.connect();
+        console.log(`[EmailParser] Connected to ${email}`);
     }
 
     async disconnect() {
@@ -36,8 +37,11 @@ export class EmailParserService {
 
         const lock = await this.client.getMailboxLock('INBOX');
         try {
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+
             const messages = await this.client.search({
-                seen: false,
+                since: yesterday,
                 or: [
                     { from: 'noreply@shopee.co.id' },
                     { from: 'noreply@tokopedia.com' },
