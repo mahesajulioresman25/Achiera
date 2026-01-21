@@ -583,12 +583,7 @@ export async function getMoneyMutationAction(brandId: string, options?: {
             where: {
                 brandId,
                 type: 'ASSET',
-                ...(accountCode ? { code: accountCode } : {
-                    OR: [
-                        { code: { startsWith: '1-10' } },
-                        { code: { startsWith: '1-11' } }
-                    ]
-                })
+                code: accountCode ? accountCode : { startsWith: '1-1' }
             },
             select: { id: true, code: true, name: true }
         });
@@ -656,3 +651,70 @@ export async function getMoneyMutationAction(brandId: string, options?: {
         return { success: false, error: error.message };
     }
 }
+
+/**
+ * Menambahkan pencatatan modal awal (Modal Disetor)
+ */
+export async function recordInitialCapitalAction(
+    brandId: string,
+    amount: number,
+    assetAccountCode: string, // Misal 1-1001 atau 1-1100
+    description: string = 'Setoran Modal Awal'
+) {
+    const session = await auth();
+    if (!session?.user) throw new Error("Unauthorized");
+
+    try {
+        const { JournalService } = await import('@/lib/intelligence/journalService');
+
+        // Dr. Aset (Kas/Bank)
+        // Cr. Ekuitas (3-1000 Modal Disetor)
+        const entries = [
+            { accountCode: assetAccountCode, debit: amount, credit: 0 },
+            { accountCode: '3-1000', debit: 0, credit: amount }
+        ];
+
+        await JournalService.createTransaction(
+            brandId,
+            new Date(),
+            description,
+            entries,
+            'EQUITY',
+            undefined,
+            session.user.id
+        );
+
+        revalidatePath('/dashboard/rasa-ibu');
+        return { success: true };
+    } catch (error: any) {
+        console.error('Failed to record initial capital:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+/**
+ * Mengambil log sistem (untuk riwayat email parsing)
+ */
+export async function getAppLogsAction(brandId: string, type?: string, limit: number = 50) {
+    const session = await auth();
+    if (!session?.user) throw new Error("Unauthorized");
+
+    try {
+        const logs = await prisma.appLog.findMany({
+            where: {
+                brandId,
+                ...(type ? { type } : {})
+            },
+            orderBy: {
+                createdAt: 'desc'
+            },
+            take: limit
+        });
+
+        return { success: true, logs: JSON.parse(JSON.stringify(logs)) };
+    } catch (error: any) {
+        console.error('Failed to fetch app logs:', error);
+        return { success: false, error: error.message };
+    }
+}
+

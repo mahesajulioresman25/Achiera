@@ -20,6 +20,8 @@ import { History, Search, ArrowRight, FileText, Landmark as BankIcon } from 'luc
 import LedgerModal from './LedgerModal';
 import PaymentHistoryModal from './PaymentHistoryModal';
 import MoneyMutationModal from './MoneyMutationModal';
+import AppLogModal from './AppLogModal';
+import InitialCapitalModal from './InitialCapitalModal';
 
 interface FinanceHubProps {
     brandId: string;
@@ -41,6 +43,8 @@ export default function FinanceHub({ brandId, pulse, onBack, onOpenExpenseEntry,
     const [showLedger, setShowLedger] = React.useState(false);
     const [showPaymentHistory, setShowPaymentHistory] = React.useState(false);
     const [showMoneyMutation, setShowMoneyMutation] = React.useState(false);
+    const [showAppLog, setShowAppLog] = React.useState(false);
+    const [showInitialCapital, setShowInitialCapital] = React.useState(false);
 
     // Price Intelligence State
     const [materials, setMaterials] = React.useState<any[]>([]);
@@ -189,10 +193,24 @@ export default function FinanceHub({ brandId, pulse, onBack, onOpenExpenseEntry,
                         </button>
                         <button
                             onClick={() => setShowMoneyMutation(true)}
-                            className="p-2 md:p-2.5 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-xl hover:bg-emerald-100 transition-all shadow-sm"
+                            className="p-2 md:p-2.5 bg-emerald-100 text-emerald-600 border border-emerald-200 rounded-xl hover:bg-emerald-200 transition-all shadow-sm"
                             title="Mutasi Kas (Uang Masuk/Keluar)"
                         >
                             <TrendingUp className="w-3.5 h-3.5 md:w-4 h-4" />
+                        </button>
+                        <button
+                            onClick={() => setShowInitialCapital(true)}
+                            className="p-2 md:p-2.5 bg-amber-100 text-amber-700 border border-amber-200 rounded-xl hover:bg-amber-200 transition-all shadow-sm"
+                            title="Catat Modal Awal"
+                        >
+                            <DollarSign className="w-3.5 h-3.5 md:w-4 h-4" />
+                        </button>
+                        <button
+                            onClick={() => setShowAppLog(true)}
+                            className="p-2 md:p-2.5 bg-white text-indigo-600 border border-indigo-100 rounded-xl hover:bg-indigo-50 transition-all shadow-sm"
+                            title="Log Sistem & Email Parsing"
+                        >
+                            <Settings className="w-3.5 h-3.5 md:w-4 h-4" />
                         </button>
                         <button
                             onClick={onOpenSettings}
@@ -788,6 +806,8 @@ export default function FinanceHub({ brandId, pulse, onBack, onOpenExpenseEntry,
             {showLedger && <LedgerModal brandId={brandId} onClose={() => setShowLedger(false)} />}
             {showPaymentHistory && <PaymentHistoryModal brandId={brandId} onClose={() => setShowPaymentHistory(false)} />}
             {showMoneyMutation && <MoneyMutationModal brandId={brandId} onClose={() => setShowMoneyMutation(false)} />}
+            {showAppLog && <AppLogModal brandId={brandId} onClose={() => setShowAppLog(false)} />}
+            {showInitialCapital && <InitialCapitalModal brandId={brandId} onClose={() => setShowInitialCapital(false)} />}
         </div>
     );
 }
