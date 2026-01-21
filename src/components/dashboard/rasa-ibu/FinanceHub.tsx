@@ -21,7 +21,6 @@ import LedgerModal from './LedgerModal';
 import PaymentHistoryModal from './PaymentHistoryModal';
 import MoneyMutationModal from './MoneyMutationModal';
 import AppLogModal from './AppLogModal';
-import AppLogModal from './AppLogModal';
 
 interface FinanceHubProps {
     brandId: string;
@@ -43,7 +42,6 @@ export default function FinanceHub({ brandId, pulse, onBack, onOpenExpenseEntry,
     const [showLedger, setShowLedger] = React.useState(false);
     const [showPaymentHistory, setShowPaymentHistory] = React.useState(false);
     const [showMoneyMutation, setShowMoneyMutation] = React.useState(false);
-    const [showAppLog, setShowAppLog] = React.useState(false);
     const [showAppLog, setShowAppLog] = React.useState(false);
 
     // Price Intelligence State
