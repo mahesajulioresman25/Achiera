@@ -584,7 +584,12 @@ export async function getMoneyMutationAction(brandId: string, options?: {
             where: {
                 brandId,
                 type: 'ASSET',
-                code: accountCode ? accountCode : { startsWith: '1-1' }
+                ...(accountCode ? { code: accountCode } : {
+                    OR: [
+                        { code: { startsWith: '1-10' } },
+                        { code: { startsWith: '1-11' } }
+                    ]
+                })
             },
             select: { id: true, code: true, name: true }
         });
@@ -679,3 +684,26 @@ export async function getAppLogsAction(brandId: string, type?: string, limit: nu
     }
 }
 
+/**
+ * Pemicu sinkronisasi email secara manual
+ */
+export async function triggerEmailSyncAction() {
+    const session = await auth();
+    if (!session?.user) throw new Error("Unauthorized");
+
+    try {
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+        const res = await fetch(`${baseUrl}/api/cron/email-sync`, {
+            method: 'GET',
+            headers: {
+                'Cache-Control': 'no-cache'
+            }
+        });
+
+        const data = await res.json();
+        return { success: true, data };
+    } catch (error: any) {
+        console.error('Failed to trigger email sync:', error);
+        return { success: false, error: error.message };
+    }
+}

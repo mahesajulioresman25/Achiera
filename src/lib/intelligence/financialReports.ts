@@ -450,6 +450,10 @@ export class FinancialReports {
         const margin = pl.margin || 0;
         const expenseToRevenue = revenueTotal > 0 ? ((pl.expenses.total / revenueTotal) * 100).toFixed(2) : "0.00";
 
+        const cashAndBankTotal = bs.assets.items
+            .filter(i => i.code.startsWith('1-10') || i.code.startsWith('1-11'))
+            .reduce((sum, i) => sum + i.amount, 0);
+
         const notes = [
             {
                 title: "Dasar Penyusunan",
@@ -469,7 +473,7 @@ export class FinancialReports {
             },
             {
                 title: "Posisi Kas",
-                content: `Total aset lancar dalam bentuk Kas & Bank per tanggal ${range.end.toLocaleDateString()} adalah ${bs.assets.total.toLocaleString('id-ID')}.`
+                content: `Total aset lancar dalam bentuk Kas & Bank per tanggal ${range.end.toLocaleDateString()} adalah ${cashAndBankTotal.toLocaleString('id-ID')}.`
             },
             {
                 title: "Kewajiban & Pajak",

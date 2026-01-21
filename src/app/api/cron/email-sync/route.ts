@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { EmailParserService } from '@/lib/services/EmailParserService';
 import { prisma } from '@/lib/prisma';
+import { logSystemActivity } from '@/lib/logger';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -64,6 +65,9 @@ export async function GET() {
                 results.push({ brandId: integration.brandId, status: 'success' });
             } catch (err) {
                 console.error(`Error syncing for brand ${integration.brandId}:`, err);
+                try {
+                    await logSystemActivity('EMAIL_PARSE', 'ERROR', `Sync failed: ${String(err)}`, { email }, integration.brandId);
+                } catch (logErr) { }
                 results.push({ brandId: integration.brandId, status: 'failed', error: String(err) });
             }
         }

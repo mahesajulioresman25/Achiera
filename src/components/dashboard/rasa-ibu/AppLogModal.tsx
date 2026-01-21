@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
-import { X, Search, Calendar, Filter, Terminal, AlertTriangle, Info, Clock, ExternalLink } from 'lucide-react';
-import { getAppLogsAction } from '@/lib/actions/rasa-ibu/finance';
+import { getAppLogsAction, triggerEmailSyncAction } from '@/lib/actions/rasa-ibu/finance';
+import { toast } from 'sonner';
+import { RefreshCw, X, Search, Calendar, Filter, Terminal, AlertTriangle, Info, Clock, ExternalLink } from 'lucide-react';
 
 interface AppLogModalProps {
     brandId: string;
@@ -12,6 +13,7 @@ interface AppLogModalProps {
 export default function AppLogModal({ brandId, onClose }: AppLogModalProps) {
     const [loading, setLoading] = React.useState(true);
     const [logs, setLogs] = React.useState<any[]>([]);
+    const [isSyncing, setIsSyncing] = React.useState(false);
     const [filter, setFilter] = React.useState({
         type: 'EMAIL_PARSE' as string | 'ALL',
         search: ''
@@ -98,9 +100,29 @@ export default function AppLogModal({ brandId, onClose }: AppLogModalProps) {
                         </div>
                         <button
                             onClick={loadData}
-                            className="p-3 bg-indigo-50 text-indigo-600 rounded-xl hover:bg-indigo-100 transition-colors"
+                            className="p-3 bg-[#F9F7F2] text-gray-400 rounded-xl hover:text-[#1A241A] transition-colors border border-[#E5E1D8]"
+                            title="Refresh Log"
                         >
                             <Clock className="w-5 h-5" />
+                        </button>
+
+                        <button
+                            onClick={async () => {
+                                setIsSyncing(true);
+                                const res = await triggerEmailSyncAction();
+                                if (res.success) {
+                                    toast.success('Sinkronisasi email dipicu!');
+                                    setTimeout(() => loadData(), 2000);
+                                } else {
+                                    toast.error('Gagal memicu sinkronisasi');
+                                }
+                                setIsSyncing(false);
+                            }}
+                            disabled={isSyncing}
+                            className={`flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg active:scale-95 disabled:opacity-50`}
+                        >
+                            <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
+                            {isSyncing ? 'Sinkronisasi...' : 'Sinkronisasi Sekarang'}
                         </button>
                     </div>
 
