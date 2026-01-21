@@ -206,15 +206,15 @@ export class ProductionEngine {
                     if (totalValue > 0) {
                         // Find or Create Accounts
                         const materialAccount = await tx.ledgerAccount.upsert({
-                            where: { brandId_code: { brandId: item.plan.brandId, code: '5-PANTRY' } },
+                            where: { brandId_code: { brandId: item.plan.brandId, code: '1-1300' } },
                             update: {},
-                            create: { brandId: item.plan.brandId, code: '5-PANTRY', name: 'Bahan Baku & Dapur', type: 'EXPENSE' }
+                            create: { brandId: item.plan.brandId, code: '1-1300', name: 'Persediaan Bahan Baku', type: 'ASSET' }
                         });
 
                         const finishedAccount = await tx.ledgerAccount.upsert({
-                            where: { brandId_code: { brandId: item.plan.brandId, code: '1-1300' } },
+                            where: { brandId_code: { brandId: item.plan.brandId, code: '1-1301' } },
                             update: {},
-                            create: { brandId: item.plan.brandId, code: '1-1300', name: 'Persediaan Barang', type: 'ASSET' }
+                            create: { brandId: item.plan.brandId, code: '1-1301', name: 'Persediaan Barang Jadi', type: 'ASSET' }
                         });
 
                         await tx.journalTransaction.create({
@@ -244,7 +244,7 @@ export class ProductionEngine {
                             data: { balance: { decrement: totalValue } }
                         });
 
-                        console.log(`[ProductionEngine] Financial journal created: +${totalValue} to Asset, -${totalValue} from Expense`);
+                        console.log(`[ProductionEngine] Financial journal created: +${totalValue} to FG (1-1301), -${totalValue} from RM (1-1300)`);
                     }
                 }
             }

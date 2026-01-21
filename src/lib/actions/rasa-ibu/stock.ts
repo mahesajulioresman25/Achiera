@@ -122,8 +122,12 @@ export async function adjustStock(data: {
                 let targetType: any = 'EXPENSE';
 
                 if (inventoryType === 'FINISHED_GOOD') {
+                    targetCode = '1-1301';
+                    targetName = 'Persediaan Barang Jadi';
+                    targetType = 'ASSET';
+                } else if (inventoryType === 'RAW_MATERIAL') {
                     targetCode = '1-1300';
-                    targetName = 'Persediaan Barang';
+                    targetName = 'Persediaan Bahan Baku';
                     targetType = 'ASSET';
                 } else if (inventoryType === 'SUPPLY') {
                     targetCode = '1-1400';
@@ -188,8 +192,12 @@ export async function adjustStock(data: {
                     let targetType: any = 'EXPENSE';
 
                     if (inventoryType === 'FINISHED_GOOD') {
+                        targetCode = '1-1301';
+                        targetName = 'Persediaan Barang Jadi';
+                        targetType = 'ASSET';
+                    } else if (inventoryType === 'RAW_MATERIAL') {
                         targetCode = '1-1300';
-                        targetName = 'Persediaan Barang';
+                        targetName = 'Persediaan Bahan Baku';
                         targetType = 'ASSET';
                     } else if (inventoryType === 'SUPPLY') {
                         targetCode = '1-1400';
