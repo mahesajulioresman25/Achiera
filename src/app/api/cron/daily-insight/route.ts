@@ -4,6 +4,7 @@ import { DailyInsightsService } from '@/lib/services/DailyInsightsService';
 import { generateDailyInsights } from '@/lib/ai/daily-insights-generator';
 import { ReportNotificationService } from '@/lib/notifications/ReportNotificationService';
 import { prisma } from '@/lib/prisma';
+import { logSystemActivity } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -30,6 +31,14 @@ export async function GET(request: Request) {
                 // 4. Send Alert (Logic inside service checks severity)
                 await notificationService.sendDailyInsight(brand.id, analysis, data);
 
+                await logSystemActivity(
+                    'EMAIL_SEND',
+                    'INFO',
+                    `Daily Insight sent for ${brand.name}`,
+                    { severity: analysis.severity, anomalies: anomalies.length },
+                    brand.id
+                );
+
                 results.push({
                     brand: brand.name,
                     status: 'processed',
@@ -38,6 +47,15 @@ export async function GET(request: Request) {
                 });
             } catch (error) {
                 console.error(`Failed to process daily insight for ${brand.name}:`, error);
+
+                await logSystemActivity(
+                    'EMAIL_SEND',
+                    'ERROR',
+                    `Failed to send Daily Insight for ${brand.name}`,
+                    { error: String(error) },
+                    brand.id
+                );
+
                 results.push({ brand: brand.name, status: 'failed', error: String(error) });
             }
         }

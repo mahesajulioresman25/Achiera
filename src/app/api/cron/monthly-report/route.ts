@@ -4,6 +4,7 @@ import { MonthlyReportService } from '@/lib/services/MonthlyReportService';
 import { analyzeMonthlyData } from '@/lib/ai/monthly-report-analyzer';
 import { ReportNotificationService } from '@/lib/notifications/ReportNotificationService';
 import { prisma } from '@/lib/prisma';
+import { logSystemActivity } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -30,9 +31,26 @@ export async function GET(request: Request) {
                 // 3. Send Notification
                 await notificationService.sendMonthlyReport(brand.id, data, analysis);
 
+                await logSystemActivity(
+                    'EMAIL_SEND',
+                    'INFO',
+                    `Monthly Report sent for ${brand.name}`,
+                    { month: data.period.toLocaleString('id-ID', { month: 'long', year: 'numeric' }) },
+                    brand.id
+                );
+
                 results.push({ brand: brand.name, status: 'sent' });
             } catch (error) {
                 console.error(`Failed to generate report for ${brand.name}:`, error);
+
+                await logSystemActivity(
+                    'EMAIL_SEND',
+                    'ERROR',
+                    `Failed to send Monthly Report for ${brand.name}`,
+                    { error: String(error) },
+                    brand.id
+                );
+
                 results.push({ brand: brand.name, status: 'failed', error: String(error) });
             }
         }
