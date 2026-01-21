@@ -21,7 +21,7 @@ import LedgerModal from './LedgerModal';
 import PaymentHistoryModal from './PaymentHistoryModal';
 import MoneyMutationModal from './MoneyMutationModal';
 import AppLogModal from './AppLogModal';
-import InitialCapitalModal from './InitialCapitalModal';
+import AppLogModal from './AppLogModal';
 
 interface FinanceHubProps {
     brandId: string;
@@ -44,7 +44,7 @@ export default function FinanceHub({ brandId, pulse, onBack, onOpenExpenseEntry,
     const [showPaymentHistory, setShowPaymentHistory] = React.useState(false);
     const [showMoneyMutation, setShowMoneyMutation] = React.useState(false);
     const [showAppLog, setShowAppLog] = React.useState(false);
-    const [showInitialCapital, setShowInitialCapital] = React.useState(false);
+    const [showAppLog, setShowAppLog] = React.useState(false);
 
     // Price Intelligence State
     const [materials, setMaterials] = React.useState<any[]>([]);
@@ -197,13 +197,6 @@ export default function FinanceHub({ brandId, pulse, onBack, onOpenExpenseEntry,
                             title="Mutasi Kas (Uang Masuk/Keluar)"
                         >
                             <TrendingUp className="w-3.5 h-3.5 md:w-4 h-4" />
-                        </button>
-                        <button
-                            onClick={() => setShowInitialCapital(true)}
-                            className="p-2 md:p-2.5 bg-amber-100 text-amber-700 border border-amber-200 rounded-xl hover:bg-amber-200 transition-all shadow-sm"
-                            title="Catat Modal Awal"
-                        >
-                            <DollarSign className="w-3.5 h-3.5 md:w-4 h-4" />
                         </button>
                         <button
                             onClick={() => setShowAppLog(true)}
@@ -807,7 +800,6 @@ export default function FinanceHub({ brandId, pulse, onBack, onOpenExpenseEntry,
             {showPaymentHistory && <PaymentHistoryModal brandId={brandId} onClose={() => setShowPaymentHistory(false)} />}
             {showMoneyMutation && <MoneyMutationModal brandId={brandId} onClose={() => setShowMoneyMutation(false)} />}
             {showAppLog && <AppLogModal brandId={brandId} onClose={() => setShowAppLog(false)} />}
-            {showInitialCapital && <InitialCapitalModal brandId={brandId} onClose={() => setShowInitialCapital(false)} />}
         </div>
     );
 }

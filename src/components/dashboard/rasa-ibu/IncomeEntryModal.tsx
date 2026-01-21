@@ -24,7 +24,7 @@ export default function IncomeEntryModal({ brandId, onClose }: IncomeEntryModalP
             const res = await getLedgerAccountsAction(brandId);
             if (res.success) {
                 const assets = res.data.filter((a: any) => a.type === 'ASSET');
-                const revenue = res.data.filter((a: any) => a.type === 'REVENUE');
+                const revenue = res.data.filter((a: any) => a.type === 'REVENUE' || a.type === 'EQUITY');
 
                 setAssetAccounts(assets);
                 setRevenueAccounts(revenue);

@@ -1,5 +1,6 @@
 'use server';
 
+import { auth } from '@/auth';
 import { JournalService } from '@/lib/intelligence/journalService';
 import { FinancialReports } from '@/lib/intelligence/financialReports';
 import { ReconciliationService } from '@/lib/intelligence/reconciliationService';
@@ -648,46 +649,6 @@ export async function getMoneyMutationAction(brandId: string, options?: {
         return { success: true, data: JSON.parse(JSON.stringify(formatted)) };
     } catch (error: any) {
         console.error('Get Money Mutation Error:', error);
-        return { success: false, error: error.message };
-    }
-}
-
-/**
- * Menambahkan pencatatan modal awal (Modal Disetor)
- */
-export async function recordInitialCapitalAction(
-    brandId: string,
-    amount: number,
-    assetAccountCode: string, // Misal 1-1001 atau 1-1100
-    description: string = 'Setoran Modal Awal'
-) {
-    const session = await auth();
-    if (!session?.user) throw new Error("Unauthorized");
-
-    try {
-        const { JournalService } = await import('@/lib/intelligence/journalService');
-
-        // Dr. Aset (Kas/Bank)
-        // Cr. Ekuitas (3-1000 Modal Disetor)
-        const entries = [
-            { accountCode: assetAccountCode, debit: amount, credit: 0 },
-            { accountCode: '3-1000', debit: 0, credit: amount }
-        ];
-
-        await JournalService.createTransaction(
-            brandId,
-            new Date(),
-            description,
-            entries,
-            'EQUITY',
-            undefined,
-            session.user.id
-        );
-
-        revalidatePath('/dashboard/rasa-ibu');
-        return { success: true };
-    } catch (error: any) {
-        console.error('Failed to record initial capital:', error);
         return { success: false, error: error.message };
     }
 }
