@@ -112,30 +112,30 @@ export class JournalService {
         discountAmount: number = 0
     ) {
         // Resolve Debit Account based on channel
-        let debitAccount = '1-1000'; // Default Cash
+        let debitAccount = '1-1000'; // Default Kas Utama
 
         if (['SHOPEE', 'TOKOPEDIA', 'GRABFOOD', 'GO_FOOD', 'TIKTOK_SHOP'].includes(channel)) {
             debitAccount = '1-1200'; // Piutang Usaha (Receivable)
         } else if (channel === 'WEBSITE') {
-            debitAccount = '1-1100'; // Bank BCA (Default for Website Online)
+            debitAccount = '1-1100'; // Bank Utama (Default for Website Online)
         } else if (['WHATSAPP', 'OFFLINE', 'CASH'].includes(channel)) {
             debitAccount = '1-1000'; // Kas
         }
 
         const entries: JournalEntryInput[] = [
             { accountCode: debitAccount, debit: amount, credit: 0 },
-            { accountCode: '4-1000', debit: 0, credit: amount + discountAmount } // Gross revenue
+            { accountCode: '4-1000', debit: 0, credit: amount + discountAmount } // Penjualan Produk (Gross)
         ];
 
         // Add Discount entry if applicable
         if (discountAmount > 0) {
-            entries.push({ accountCode: '4-3000', debit: discountAmount, credit: 0 }); // Sales Discount
+            entries.push({ accountCode: '4-3000', debit: discountAmount, credit: 0 }); // Potongan Penjualan
         }
 
-        // Add HPP entry if provided
+        // Add HPP entry if provided (IMPORTANT FOR AUDIT FIX)
         if (hppAmount > 0) {
-            entries.push({ accountCode: '5-1000', debit: hppAmount, credit: 0 }); // HPP
-            entries.push({ accountCode: '5-PANTRY', debit: 0, credit: hppAmount }); // Reduce Pantry Expense
+            entries.push({ accountCode: '5-1000', debit: hppAmount, credit: 0 }); // Harga Pokok Penjualan (Expense)
+            entries.push({ accountCode: '1-1301', debit: 0, credit: hppAmount }); // Persediaan Barang Jadi (Asset)
         }
 
         return this.createTransaction(

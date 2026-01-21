@@ -70,6 +70,7 @@ export async function processAutonomousOrder(orderData: AutomatedOrderData) {
         // 1. Map all items
         const mappedItems: any[] = [];
         const unmappedItems: string[] = [];
+        let totalHpp = 0;
 
         for (const item of orderData.items) {
             const match = await smartMatchProduct(orderData.brandId, item.externalName, orderData.platform);
@@ -80,6 +81,9 @@ export async function processAutonomousOrder(orderData: AutomatedOrderData) {
                     quantity: item.quantity,
                     price: item.price
                 });
+
+                // Calculate HPP: Quantity * Cost Price
+                totalHpp += (Number(match.variant.costPrice || 0) * item.quantity);
             } else {
                 unmappedItems.push(item.externalName);
             }
@@ -132,7 +136,8 @@ export async function processAutonomousOrder(orderData: AutomatedOrderData) {
                     orderData.brandId,
                     order.id,
                     orderData.grandTotal,
-                    orderData.platform
+                    orderData.platform,
+                    totalHpp
                 );
             } catch (finErr) {
                 console.error("[AAE] Financial recording failed:", finErr);

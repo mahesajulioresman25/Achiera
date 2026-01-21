@@ -172,7 +172,7 @@ export class OrderService {
                 }
             });
 
-            // 3. Deduct stock (FIFO)
+            // 3. Deduct stock (FIFO) and Calculate HPP
             const defaultWarehouse = await tx.warehouse.findFirst({
                 where: { brandId: ctx.brandId, isActive: true }
             });
@@ -181,18 +181,36 @@ export class OrderService {
                 throw new Error('No active warehouse found');
             }
 
+            let totalHpp = 0;
             for (const item of order.items) {
+                // Fetch variant to get costPrice
+                const variant = await tx.frozenVariant.findUnique({
+                    where: { id: item.variantId }
+                });
+
+                if (variant) {
+                    totalHpp += (Number(variant.costPrice || 0) * item.quantity);
+                }
+
                 await this.warehouseService.deductStock(
                     ctx,
                     defaultWarehouse.id,
                     item.variantId,
                     item.quantity,
-                    order.id
+                    order.id,
+                    tx // Pass transaction
                 );
             }
 
-            // 4. Record revenue in ledger
-            await this.recordRevenue(tx, ctx.brandId, order.id, input.amount);
+            // 4. Record revenue and HPP in ledger
+            const { JournalService } = await import('@/lib/intelligence/journalService');
+            await JournalService.recordSale(
+                ctx.brandId,
+                order.id,
+                input.amount,
+                'WEBSITE', // Default channel for this service
+                totalHpp
+            );
 
             // 5. Award loyalty points
             await this.loyaltyService.awardPoints(
@@ -299,57 +317,6 @@ export class OrderService {
         });
     }
 
-    /**
-     * Record revenue in ledger (double-entry)
-     */
-    private async recordRevenue(
-        tx: any,
-        brandId: string,
-        orderId: string,
-        amount: number
-    ) {
-        // Get ledger accounts
-        const cashAccount = await tx.ledgerAccount.findFirst({
-            where: { brandId, code: '1000-CASH' }
-        });
-
-        const revenueAccount = await tx.ledgerAccount.findFirst({
-            where: { brandId, code: '4000-REVENUE' }
-        });
-
-        if (!cashAccount || !revenueAccount) {
-            throw new Error('Ledger accounts not found');
-        }
-
-        // Create transaction
-        const transaction = await tx.ledgerTransaction.create({
-            data: {
-                brandId,
-                description: `Revenue from Order`,
-                referenceId: orderId
-            }
-        });
-
-        // Debit: Cash (increase asset)
-        await tx.ledgerEntry.create({
-            data: {
-                transactionId: transaction.id,
-                accountId: cashAccount.id,
-                debit: amount,
-                credit: 0
-            }
-        });
-
-        // Credit: Revenue (increase revenue)
-        await tx.ledgerEntry.create({
-            data: {
-                transactionId: transaction.id,
-                accountId: revenueAccount.id,
-                debit: 0,
-                credit: amount
-            }
-        });
-    }
 
     /**
      * Generate unique order number
