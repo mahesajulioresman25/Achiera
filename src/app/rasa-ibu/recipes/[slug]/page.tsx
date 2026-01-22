@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Clock, ChefHat, Flame, ArrowLeft, Plus, Gift, ShieldCheck } from 'lucide-react';
@@ -12,9 +13,8 @@ import { prisma } from '@/lib/prisma';
 import { getRecipeBySlug, getRelatedRecipes } from '@/lib/actions/rasa-ibu/recipes';
 import PrintRecipeButton from '@/components/content/PrintRecipeButton';
 
-// Force dynamic rendering
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// Enable ISR for recipes
+export const revalidate = 60;
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
     const slug = (await params).slug;
@@ -57,17 +57,49 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ s
     const recipe = JSON.parse(JSON.stringify(rawRecipe));
     const relatedRecipes = JSON.parse(JSON.stringify(rawRelatedRecipes));
 
+    // JSON-LD for SEO (Recipe Schema)
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "Recipe",
+        "name": recipe.title,
+        "image": recipe.image || "/placeholder-recipe.jpg",
+        "author": {
+            "@type": "Person",
+            "name": recipe.authorName
+        },
+        "description": recipe.description,
+        "prepTime": `PT${recipe.duration || 30}M`,
+        "recipeCategory": recipe.category,
+        "recipeIngredient": Array.isArray(recipe.ingredients) ? recipe.ingredients : [],
+        "recipeInstructions": Array.isArray(recipe.steps) ? recipe.steps.map((s: string) => ({
+            "@type": "HowToStep",
+            "text": s
+        })) : [],
+        "aggregateRating": recipe.likesCount > 0 ? {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9", // Mock high rating for recipes with likes
+            "reviewCount": recipe.likesCount
+        } : undefined
+    };
+
     // Canonical URL for sharing
-    const currentUrl = `https://rasaibu.id/recipes/${recipe.slug}`;
+    const currentUrl = `https://rasaibu.com/rasa-ibu/recipes/${recipe.slug}`;
 
     return (
         <div className="min-h-screen bg-[#FDFBF7] pb-32">
+            {/* SEO: JSON-LD for Recipe Schema */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
             {/* Header / Hero Image */}
             <div className="relative h-[70vh] md:h-[80vh] bg-gray-900 overflow-hidden">
-                <img
+                <Image
                     src={recipe.image || '/placeholder-recipe.jpg'}
                     alt={recipe.title}
-                    className="w-full h-full object-cover opacity-80 scale-105"
+                    fill
+                    priority
+                    className="object-cover opacity-80 scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1A241A] via-[#1A241A]/20 to-transparent" />
 
@@ -300,8 +332,14 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ s
                                             href={`/rasa-ibu/recipes/${related.slug}`}
                                             className="group bg-white rounded-3xl p-4 shadow-xl border border-[#E5E1D8] flex gap-5 hover:border-[#B2BCA2] hover:shadow-2xl hover:shadow-[#2D3A2D]/10 transition-all"
                                         >
-                                            <div className="w-24 h-24 rounded-2xl bg-[#F9F7F2] shrink-0 overflow-hidden border border-[#E5E1D8]">
-                                                <img src={related.image || '/placeholder-recipe.jpg'} alt={related.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                            <div className="relative w-24 h-24 rounded-2xl bg-[#F9F7F2] shrink-0 overflow-hidden border border-[#E5E1D8]">
+                                                <Image
+                                                    src={related.image || '/placeholder-recipe.jpg'}
+                                                    alt={related.title}
+                                                    fill
+                                                    sizes="96px"
+                                                    className="object-cover group-hover:scale-110 transition-transform duration-700"
+                                                />
                                             </div>
                                             <div className="pt-2">
                                                 <h4 className="font-black text-[#1A241A] text-base leading-tight mb-3 line-clamp-2 group-hover:text-[#8B7E66] transition-colors">

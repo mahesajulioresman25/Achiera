@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface ProductGalleryProps {
@@ -38,10 +39,12 @@ export default function ProductGallery({ images, productName }: ProductGalleryPr
                 onMouseLeave={() => setIsHovering(false)}
                 onMouseMove={handleMouseMove}
             >
-                <img
+                <Image
                     src={images[activeIndex]}
                     alt={`${productName} - View ${activeIndex + 1}`}
-                    className={`w-full h-full object-cover transition-transform duration-500 ease-out ${isHovering ? 'scale-150' : 'scale-100'}`}
+                    fill
+                    priority
+                    className={`object-cover transition-transform duration-500 ease-out ${isHovering ? 'scale-150' : 'scale-100'}`}
                     style={isHovering ? {
                         transformOrigin: `${mousePos.x}% ${mousePos.y}%`
                     } : undefined}
@@ -103,10 +106,12 @@ export default function ProductGallery({ images, productName }: ProductGalleryPr
                                 : 'border-transparent hover:border-[#8B7E66]'
                                 }`}
                         >
-                            <img
+                            <Image
                                 src={img}
                                 alt={`Thumbnail ${idx + 1}`}
-                                className="w-full h-full object-cover"
+                                fill
+                                sizes="80px"
+                                className="object-cover"
                             />
                         </button>
                     ))}

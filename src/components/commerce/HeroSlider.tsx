@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -76,9 +77,12 @@ export default function HeroSlider({ slides, autoPlayInterval = 6000 }: HeroSlid
                             className="absolute inset-0 w-[110%] h-full left-[-5%]"
                         >
                             {slides[currentIndex].mediaType === 'IMAGE' ? (
-                                <div
-                                    className="absolute inset-0 bg-cover bg-center"
-                                    style={{ backgroundImage: `url(${slides[currentIndex].imageUrl})` }}
+                                <Image
+                                    src={slides[currentIndex].imageUrl || ''}
+                                    alt={slides[currentIndex].title}
+                                    fill
+                                    priority={currentIndex === 0}
+                                    className="object-cover"
                                 />
                             ) : (
                                 <video

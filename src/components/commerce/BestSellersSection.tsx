@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Flame, Star } from 'lucide-react';
 import PromoBadge from './PromoBadge';
 import ProductWishlistButton from './ProductWishlistButton';
@@ -84,17 +85,21 @@ export default function BestSellersSection({ products, activeFlashSale }: BestSe
                             href={`/rasa-ibu/products/${product.slug}`}
                             className="group relative bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
                         >
-                            {product.image ? (
-                                <img
-                                    src={product.image}
-                                    alt={product.name}
-                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                                />
-                            ) : (
-                                <div className="w-full h-full flex items-center justify-center">
-                                    <span className="text-6xl">🍽️</span>
-                                </div>
-                            )}
+                            <div className="relative aspect-square overflow-hidden">
+                                {product.image ? (
+                                    <Image
+                                        src={product.image}
+                                        alt={product.name}
+                                        fill
+                                        sizes="(max-width: 768px) 50vw, 33vw"
+                                        className="object-cover group-hover:scale-110 transition-transform duration-700"
+                                    />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center bg-stone-50">
+                                        <span className="text-6xl">🍽️</span>
+                                    </div>
+                                )}
+                            </div>
                             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                             {/* Top Right Badges */}

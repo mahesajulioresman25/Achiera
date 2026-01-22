@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import AddToCartButton from '@/components/commerce/AddToCartButton';
 import { ShoppingBag, Utensils, Star, Package } from 'lucide-react';
 import PromoBadge from '@/components/commerce/PromoBadge';
@@ -13,9 +14,8 @@ import { unisolatedPrisma as prisma } from '@/lib/prisma';
 import { FlashSaleService } from '@/lib/services/FlashSaleService';
 import ProductSearch from '@/components/filters/ProductSearch';
 
-// Force dynamic rendering
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// Enable ISR for product list
+export const revalidate = 60;
 
 export default async function RasaIbuProductListPage({
     searchParams
@@ -91,6 +91,20 @@ export default async function RasaIbuProductListPage({
             };
         });
 
+        // JSON-LD for Search Engine Results
+        const jsonLd = {
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "itemListElement": mappedProducts.map((p, idx) => ({
+                "@type": "ListItem",
+                "position": idx + 1,
+                "url": `https://rasaibu.com/rasa-ibu/products/${p.slug}`,
+                "name": p.name,
+                "description": p.shortDesc,
+                "image": p.image
+            }))
+        };
+
         // Helper to calculate product price with flash sale
         const getProductPrice = (product: any) => {
             const basePrice = product.price;
@@ -130,10 +144,12 @@ export default async function RasaIbuProductListPage({
 
                 <Link href={`/rasa-ibu/products/${product.slug}`} className="block relative h-64 overflow-hidden shrink-0">
                     {product.image ? (
-                        <img
+                        <Image
                             src={product.image}
                             alt={product.name}
-                            className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            className="object-cover transform group-hover:scale-110 transition-transform duration-700"
                         />
                     ) : (
                         <div className="w-full h-full bg-[#F9F7F2] flex items-center justify-center text-[#E5E1D8] italic">
@@ -262,13 +278,21 @@ export default async function RasaIbuProductListPage({
 
         return (
             <div className="min-h-screen bg-[#FDFBF7] pb-20">
+                {/* SEO: JSON-LD for Products Listing */}
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+                />
+
                 {/* Header Section (Recipe Style) */}
                 <div className="relative min-h-[450px] md:h-[60vh] bg-[#2D3A2D] overflow-hidden">
                     <div className="absolute inset-0 bg-black/30 z-10" />
-                    <img
+                    <Image
                         src={config?.productListHeroImage || config?.heroImage || "https://images.unsplash.com/photo-1543362906-ac1b452601e0?w=1600&q=80"}
                         alt="Dining Table"
-                        className="absolute inset-0 w-full h-full object-cover"
+                        fill
+                        priority
+                        className="object-cover"
                     />
 
                     <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4 pt-16 md:pt-0">

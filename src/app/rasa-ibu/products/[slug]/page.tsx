@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Star, MessageCircle, Share2, ArrowLeft } from 'lucide-react';
 import AddToCartButton from '@/components/commerce/AddToCartButton';
 import PlatformLinks from '@/components/commerce/PlatformLinks';
@@ -41,9 +42,8 @@ export async function generateMetadata(
     };
 }
 
-// Force dynamic rendering
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// Enable ISR for product details
+export const revalidate = 60;
 
 export default async function RasaIbuProductDetailPage({
     params
@@ -98,6 +98,31 @@ export default async function RasaIbuProductDetailPage({
         // Formatting for UI
         const primaryVariant = product.variants[0];
         const price = Number(primaryVariant?.price || 0);
+
+        // JSON-LD for SEO (Rich Snippets)
+        const jsonLd = {
+            "@context": "https://schema.org",
+            "@type": "Product",
+            "name": product.name,
+            "image": product.image,
+            "description": product.description || `Sajian lezat ${product.name} dari Rasa Ibu.`,
+            "brand": {
+                "@type": "Brand",
+                "name": "Rasa Ibu"
+            },
+            "offers": {
+                "@type": "Offer",
+                "price": price,
+                "priceCurrency": "IDR",
+                "availability": product.variants.some(v => v.stockOnHand > 0) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+                "url": `https://rasaibu.com/rasa-ibu/products/${product.slug}`
+            },
+            "aggregateRating": (product as any).rating ? {
+                "@type": "AggregateRating",
+                "ratingValue": (product as any).rating,
+                "reviewCount": initialReviews.length || 1
+            } : undefined
+        };
         const totalStock = product.variants.reduce((sum: number, v: any) => sum + v.stockOnHand, 0);
 
         const waMessage = `Halo Rasa Ibu, saya ingin pesan ${product.name}. Apakah produknya ready stok?`;
@@ -130,6 +155,12 @@ export default async function RasaIbuProductDetailPage({
         return (
             <div className="min-h-screen bg-[#FDFBF7]">
                 <RecentlyViewedTracker productId={product.id} />
+
+                {/* SEO: JSON-LD JSON Structured Data */}
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+                />
 
                 {/* Hero / Header Section */}
                 <div className="max-w-7xl mx-auto px-6 pt-10 pb-20">
@@ -307,9 +338,15 @@ export default async function RasaIbuProductDetailPage({
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                             {recommendations.map((item: any) => (
                                 <Link key={item.id} href={`/rasa-ibu/products/${item.slug}`} className="group space-y-4">
-                                    <div className="aspect-[4/5] bg-[#FDFBF7] rounded-[2.5rem] overflow-hidden border border-[#E5E1D8] transition-all group-hover:shadow-xl">
+                                    <div className="relative aspect-[4/5] bg-[#FDFBF7] rounded-[2.5rem] overflow-hidden border border-[#E5E1D8] transition-all group-hover:shadow-xl">
                                         {item.image ? (
-                                            <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                            <Image
+                                                src={item.image}
+                                                alt={item.name}
+                                                fill
+                                                sizes="(max-width: 768px) 50vw, 25vw"
+                                                className="object-cover group-hover:scale-110 transition-transform duration-700"
+                                            />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center text-slate-100 text-3xl">🍲</div>
                                         )}

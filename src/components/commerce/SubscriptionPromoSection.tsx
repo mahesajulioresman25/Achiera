@@ -4,6 +4,7 @@ import React from 'react';
 // import { motion } from 'framer-motion';
 import { Calendar, Heart, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface SubscriptionPromoSectionProps {
     startFromPrice?: number;
@@ -80,11 +81,13 @@ export default function SubscriptionPromoSection({
                     <div
                         className="relative transition-transform hover:scale-105 duration-500"
                     >
-                        <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-[#B2BCA2]/20 transform rotate-2 hover:rotate-0 transition-transform duration-500">
-                            <img
+                        <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-4 border-[#B2BCA2]/20 transform rotate-2 hover:rotate-0 transition-transform duration-500">
+                            <Image
                                 src={imageUrl}
                                 alt="Paket Rantau Box"
-                                className="w-full h-auto object-cover"
+                                fill
+                                sizes="(max-width: 768px) 100vw, 50vw"
+                                className="object-cover"
                             />
                             <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-8">
                                 <div className="bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-xl inline-block">

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import AddToCartButton from '@/components/commerce/AddToCartButton';
 import PlatformLinks from '@/components/commerce/PlatformLinks';
 import HeroSlider from '@/components/commerce/HeroSlider';
@@ -188,8 +189,27 @@ export default async function RasaIbuHomePage() {
         return { base: basePrice, discount: 0, final: basePrice };
     };
 
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Rasa Ibu",
+        "url": "https://rasaibu.com",
+        "logo": "https://rasaibu.com/logo.png",
+        "description": "Masakan rumah siap saji dengan bumbu alami nusantara.",
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": `+${whatsapp}`,
+            "contactType": "customer service"
+        }
+    };
+
     return (
         <div className="space-y-0 text-[#2D3A2D]">
+            {/* SEO: JSON-LD Organization */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
             {/* 1. Hero Slider - Dynamic Promotional Slides */}
             <section className="py-12 bg-gradient-to-b from-[#FDFBF7] to-white">
                 <div className="container mx-auto px-6 md:px-12 max-w-7xl">
@@ -203,7 +223,7 @@ export default async function RasaIbuHomePage() {
                             <div className="absolute inset-0 opacity-5 z-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '40px 40px' }}></div>
                             {heroImage && (
                                 <div className="absolute inset-0">
-                                    <img src={heroImage} alt="Hero" className="w-full h-full object-cover" />
+                                    <Image src={heroImage} alt="Hero" fill className="object-cover" priority />
                                 </div>
                             )}
                             <div className="relative z-20 max-w-7xl mx-auto px-6 w-full">
@@ -285,9 +305,15 @@ export default async function RasaIbuHomePage() {
                         <div key={product.id} className="group cursor-pointer">
                             <Link href={`/rasa-ibu/products/${product.slug}`} className="aspect-[4/5] bg-gradient-to-br from-[#F9F7F2] to-[#E5E1D8] rounded-3xl mb-6 overflow-hidden relative shadow-sm group-hover:shadow-xl transition-all duration-500 block">
                                 {product.image ? (
-                                    <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                    <Image
+                                        src={product.image}
+                                        alt={product.name}
+                                        fill
+                                        sizes="(max-width: 768px) 50vw, 33vw"
+                                        className="object-cover group-hover:scale-110 transition-transform duration-700"
+                                    />
                                 ) : (
-                                    <div className="absolute inset-0 flex items-center justify-center italic text-gray-300">[Foto: {product.name}]</div>
+                                    <div className="absolute inset-0 flex items-center justify-center italic text-gray-300 bg-stone-50">[Foto: {product.name}]</div>
                                 )}
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
@@ -374,8 +400,16 @@ export default async function RasaIbuHomePage() {
                 <div className="absolute bottom-0 left-0 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl"></div>
 
                 <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24 items-center relative z-10">
-                    <div className="aspect-square bg-white/5 rounded-[3rem] flex items-center justify-center italic text-white/20 overflow-hidden shadow-2xl group">
-                        {config?.aboutImage ? <img src={config.aboutImage} alt="Philosophy" className="grayscale opacity-50 group-hover:opacity-70 w-full h-full object-cover transition-opacity duration-500" /> : "[Foto: Ibu dan Anak tertawa di dapur]"}
+                    <div className="relative aspect-square bg-white/5 rounded-[3rem] flex items-center justify-center italic text-white/20 overflow-hidden shadow-2xl group">
+                        {config?.aboutImage ? (
+                            <Image
+                                src={config.aboutImage}
+                                alt="Philosophy"
+                                fill
+                                sizes="(max-width: 768px) 100vw, 50vw"
+                                className="grayscale opacity-50 group-hover:opacity-70 object-cover transition-opacity duration-500"
+                            />
+                        ) : "[Foto: Ibu dan Anak tertawa di dapur]"}
                     </div>
                     <div className="space-y-10">
                         <span className="inline-block text-[10px] font-black uppercase tracking-[0.4em] text-[#8B7E66] bg-[#8B7E66]/10 px-4 py-2 rounded-full border border-[#8B7E66]/20">{philosophyTagline}</span>

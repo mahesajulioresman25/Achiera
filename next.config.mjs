@@ -13,6 +13,26 @@ const nextConfig = {
             bodySizeLimit: '20mb', // Allow uploads up to 20MB
         },
     },
+    images: {
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'images.unsplash.com',
+            },
+            {
+                protocol: 'https',
+                hostname: '**.supabase.co',
+            },
+            {
+                protocol: 'https',
+                hostname: 'achiera.com',
+            },
+            {
+                protocol: 'https',
+                hostname: '**.googleusercontent.com',
+            }
+        ],
+    },
 };
 
 export default nextConfig;

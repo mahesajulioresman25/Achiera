@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ChefHat, Clock, Plus } from 'lucide-react';
 import CategoryFilter from '@/components/filters/CategoryFilter';
 import RecipeLikeButton from '@/components/content/RecipeLikeButton';
@@ -10,8 +11,8 @@ import { prisma } from '@/lib/prisma';
 import { getPublishedRecipes, getRecipeCategories } from '@/lib/actions/rasa-ibu/recipes';
 
 // Force dynamic rendering
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// Enable ISR for recipes list
+export const revalidate = 60;
 
 export default async function RecipesPage({
     searchParams
@@ -38,7 +39,8 @@ export default async function RecipesPage({
     ]);
 
     // Sanitize recipes to POJOs for safe hydration
-    const recipes = JSON.parse(JSON.stringify(rawRecipes));
+    const displayRecipes = JSON.parse(JSON.stringify(rawRecipes));
+    const displayCategories = categories;
 
     // CMS Values with fallbacks
     const heroTitle = config?.recipeListHeroTitle || 'Kreasi Rasa Dapur Bunda';
@@ -46,21 +48,37 @@ export default async function RecipesPage({
     const heroTagline = config?.recipeListHeroTagline || 'Komunitas Rasa Ibu';
     const heroImage = config?.recipeListHeroImage || 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1600&q=80';
 
-    // Fallback to mock data if no recipes in database
-    const displayRecipes = recipes;
-
-    // Fallback categories if none in database
-    const displayCategories = categories;
+    // JSON-LD for SEO
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "itemListElement": displayRecipes.map((r: any, idx: number) => ({
+            "@type": "ListItem",
+            "position": idx + 1,
+            "url": `https://rasaibu.com/rasa-ibu/recipes/${r.slug}`,
+            "name": r.title,
+            "description": r.description,
+            "image": r.image
+        }))
+    };
 
     return (
         <div className="min-h-screen bg-[#FDFBF7] pb-24">
+            {/* SEO: JSON-LD for Recipes Listing */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
+
             {/* Header Section */}
             <div className="relative min-h-[60vh] md:min-h-[75vh] bg-[#2D3A2D] overflow-hidden flex items-center justify-center pt-24 pb-32">
                 <div className="absolute inset-0 bg-black/40 z-10" />
-                <img
+                <Image
                     src={heroImage}
                     alt="Cooking Background"
-                    className="absolute inset-0 w-full h-full object-cover object-center opacity-70 scale-105"
+                    fill
+                    priority
+                    className="object-cover object-center opacity-70 scale-105"
                 />
 
                 <div className="relative z-20 w-full max-w-5xl mx-auto text-center px-6">
@@ -121,10 +139,12 @@ export default async function RecipesPage({
                         <AnimatedSection key={recipe.id} delay={0.1 * (idx % 3)} direction="up">
                             <div className="group bg-white rounded-[2.5rem] overflow-hidden border border-[#E5E1D8] hover:shadow-2xl hover:shadow-[#2D3A2D]/10 transition-all duration-500 flex flex-col h-full">
                                 <div className="relative h-64 md:h-72 overflow-hidden shrink-0">
-                                    <img
+                                    <Image
                                         src={recipe.image || '/placeholder-recipe.jpg'}
                                         alt={recipe.title}
-                                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-1000"
+                                        fill
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                        className="object-cover transform group-hover:scale-110 transition-transform duration-1000"
                                     />
                                     <div className="absolute top-6 left-6 bg-white/95 backdrop-blur-xl px-4 py-2 rounded-2xl text-[10px] font-black text-[#2D3A2D] flex items-center gap-2 shadow-xl border border-white">
                                         <Clock className="w-4 h-4 text-amber-500" /> {recipe.duration} Menit
