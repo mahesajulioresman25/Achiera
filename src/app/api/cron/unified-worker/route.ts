@@ -123,8 +123,13 @@ export async function GET(req: NextRequest) {
             // TASK 6: Overhead & Accuracy Sync (Daily window)
             if (isDailyWindow) {
                 try {
-                    await syncDailyOverheadAction(brand.id);
-                    await syncDemandAccuracyAction(brand.id);
+                    // Refactored to use Services directly to avoid "Failed to find Server Action" errors in Cron
+                    const { JournalService } = await import('@/lib/intelligence/journalService');
+                    const { demandForecastEngine } = await import('@/lib/intelligence/demandForecastEngine');
+
+                    await JournalService.syncDailyOverhead(brand.id);
+                    await demandForecastEngine.syncAccuracy(brand.id);
+
                     brandResults.tasks.push({ name: 'sync-operations', status: 'success' });
                 } catch (e) {
                     brandResults.tasks.push({ name: 'sync-operations', status: 'failed', error: String(e) });

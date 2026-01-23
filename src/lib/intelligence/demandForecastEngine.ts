@@ -348,6 +348,31 @@ export class DemandForecastEngine {
             });
         }
     }
+
+    /**
+     * Sync actual demand and accuracy for all products in a brand (last 3 days)
+     */
+    async syncAccuracy(brandId: string) {
+        try {
+            const variants = await (prisma as any).frozenVariant.findMany({
+                where: { product: { category: { brandId } } },
+                select: { id: true }
+            });
+
+            // Update for the last 3 days to ensure we catch everything
+            for (const variant of variants) {
+                for (let i = 1; i <= 3; i++) {
+                    const targetDate = new Date();
+                    targetDate.setDate(targetDate.getDate() - i);
+                    await this.updateActualDemand(variant.id, targetDate);
+                }
+            }
+            return { success: true };
+        } catch (error: any) {
+            console.error('[DemandForecastEngine] syncAccuracy error:', error);
+            return { success: false, error: error.message };
+        }
+    }
 }
 
 export const demandForecastEngine = new DemandForecastEngine();

@@ -273,4 +273,93 @@ export class JournalService {
             take: limit
         });
     }
+
+    /**
+     * Automatically record daily kitchen overhead if not yet recorded today
+     * (Refactored from Server Action for Cron usage)
+     */
+    static async syncDailyOverhead(brandId: string) {
+        try {
+            const config = await prisma.brandConfig.findUnique({
+                where: { brandId }
+            });
+
+            if (!config) {
+                return { success: false, error: 'Config not found' };
+            }
+
+            const breakdown = (config as any).overheadBreakdown || {};
+            const dailyLabor = Math.round((Number(breakdown.labor) || 0) / 30);
+            const dailyUtilities = Math.round(((Number(breakdown.electricity) || 0) + (Number(breakdown.water) || 0) + (Number(breakdown.gas) || 0)) / 30);
+
+            if (dailyLabor + dailyUtilities <= 0) {
+                return { success: true, message: 'Settings not configured or zero' };
+            }
+
+            const now = new Date();
+            const todayStr = now.toISOString().split('T')[0];
+
+            // Check if already exists for today
+            const existing = await prisma.journalTransaction.findFirst({
+                where: {
+                    brandId,
+                    description: { contains: '[AUTO-DAILY-OVERHEAD]' },
+                    date: {
+                        gte: new Date(todayStr),
+                        lt: new Date(new Date(todayStr).getTime() + 24 * 60 * 60 * 1000)
+                    }
+                }
+            });
+
+            if (existing) {
+                return { success: true, message: 'Sudah tercatat hari ini' };
+            }
+
+            // Ensure accounts exist
+            await prisma.ledgerAccount.upsert({
+                where: { brandId_code: { brandId, code: '5-UTILITIES' } },
+                update: {},
+                create: { brandId, code: '5-UTILITIES', name: 'Biaya Listrik, Air & Gas', type: 'EXPENSE' }
+            });
+            await prisma.ledgerAccount.upsert({
+                where: { brandId_code: { brandId, code: '5-2000' } },
+                update: {},
+                create: { brandId, code: '5-2000', name: 'Biaya Gaji', type: 'EXPENSE' }
+            });
+            await prisma.ledgerAccount.upsert({
+                where: { brandId_code: { brandId, code: '2-5000' } },
+                update: {},
+                create: { brandId, code: '2-5000', name: 'Hutang Biaya Operasional', type: 'LIABILITY' }
+            });
+
+            // Record Salary Overhead
+            if (dailyLabor > 0) {
+                await this.recordExpense(
+                    brandId,
+                    dailyLabor,
+                    '5-2000',
+                    `[AUTO-DAILY-OVERHEAD] Alokasi Gaji Harian (${todayStr})`,
+                    now,
+                    '2-5000'
+                );
+            }
+
+            // Record Utilities Overhead
+            if (dailyUtilities > 0) {
+                await this.recordExpense(
+                    brandId,
+                    dailyUtilities,
+                    '5-UTILITIES',
+                    `[AUTO-DAILY-OVERHEAD] Alokasi Biaya Dapur Harian (${todayStr})`,
+                    now,
+                    '2-5000'
+                );
+            }
+
+            return { success: true, message: 'Berhasil mencatat biaya harian' };
+        } catch (error: any) {
+            console.error('[JournalService] syncDailyOverhead error:', error);
+            return { success: false, error: error.message };
+        }
+    }
 }
