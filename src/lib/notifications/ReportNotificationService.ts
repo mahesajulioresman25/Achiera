@@ -135,7 +135,19 @@ export class ReportNotificationService {
             <p><em>Note: Laporan eksekutif lengkap dengan grafik dan breakdown detail terlampir dalam format PDF.</em></p>
         `;
 
-        await EmailService.sendAdminAlert(`Laporan Bulanan - ${monthName}`, message, pdfAttachment || undefined, email);
+        if (await EmailService.sendAdminAlert(`Laporan Bulanan - ${monthName}`, message, pdfAttachment || undefined, email)) {
+            // Log success
+            try {
+                const { logSystemActivity } = await import('@/lib/logger');
+                await logSystemActivity(
+                    'REPORT_GENERATED',
+                    'INFO',
+                    `Monthly Report sent to ${email}`,
+                    { month: monthName, type: 'MONTHLY' },
+                    brandId
+                );
+            } catch (e) { }
+        }
     }
 
     // Send Daily Insight via Email
@@ -184,7 +196,19 @@ export class ReportNotificationService {
             <p><em>Note: Detail insight harian terlampir dalam format PDF.</em></p>
         `;
 
-        await EmailService.sendAdminAlert(`Insight Harian - ${date}`, message, pdfAttachment || undefined, email);
+        if (await EmailService.sendAdminAlert(`Insight Harian - ${date}`, message, pdfAttachment || undefined, email)) {
+            // Log success
+            try {
+                const { logSystemActivity } = await import('@/lib/logger');
+                await logSystemActivity(
+                    'REPORT_GENERATED',
+                    'INFO',
+                    `Daily Insight sent to ${email}`,
+                    { date: date, type: 'DAILY' },
+                    brandId
+                );
+            } catch (e) { }
+        }
     }
 
     // Send Weekly Trend via Email
@@ -210,7 +234,19 @@ export class ReportNotificationService {
             <p><strong>Channel:</strong><br>${Object.entries(data.channels).map(([name, val]: [string, any]) => `• ${name}: Rp ${val.toLocaleString()}`).join('<br>')}</p>
         `;
 
-        await EmailService.sendAdminAlert(`Review Mingguan - ${dateRange}`, message, undefined, email);
+        if (await EmailService.sendAdminAlert(`Review Mingguan - ${dateRange}`, message, undefined, email)) {
+            // Log success
+            try {
+                const { logSystemActivity } = await import('@/lib/logger');
+                await logSystemActivity(
+                    'REPORT_GENERATED',
+                    'INFO',
+                    `Weekly Trend sent to ${email}`,
+                    { range: dateRange, type: 'WEEKLY' },
+                    brandId
+                );
+            } catch (e) { }
+        }
     }
 
     async sendLowStockAlert(brandId: string, items: Array<{ name: string; stock: number; min: number }>) {
