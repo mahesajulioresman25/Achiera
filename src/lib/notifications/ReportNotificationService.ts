@@ -38,7 +38,7 @@ export class ReportNotificationService {
             const userRole = await prisma.userBrandRole.findFirst({
                 where: {
                     brandId: brandId,
-                    role: 'OWNER'
+                    role: 'BRAND_ADMIN'
                 },
                 include: {
                     user: {

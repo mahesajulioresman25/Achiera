@@ -51,7 +51,7 @@ export async function GET(req: NextRequest) {
             // TASK 1: Process Daily Deliveries (Run every hour or so, or in the daily window)
             if (isDailyWindow) {
                 try {
-                    const deliveryResults = await SubscriptionDeliveryService.processDailyDeliveries();
+                    const deliveryResults = await SubscriptionDeliveryService.processDailyDeliveries(brand.id);
                     brandResults.tasks.push({ name: 'deliveries', status: 'success', count: deliveryResults.length });
                 } catch (e) {
                     brandResults.tasks.push({ name: 'deliveries', status: 'failed', error: String(e) });

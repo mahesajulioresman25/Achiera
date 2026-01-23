@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma';
 
-export type LogType = 'EMAIL_SEND' | 'EMAIL_PARSE' | 'CRON' | 'SYSTEM';
+export type LogType = 'EMAIL_SEND' | 'EMAIL_PARSE' | 'CRON' | 'SYSTEM' | 'REPORT_GENERATED';
 export type LogSeverity = 'INFO' | 'WARN' | 'ERROR';
 
 export async function logSystemActivity(

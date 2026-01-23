@@ -75,9 +75,13 @@ export const DailyInsightPDF = ({ data, analysis }: Props) => {
 
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Rekomendasi Strategis</Text>
-                    {analysis.recommendations.map((rec, i) => (
-                        <Text key={i} style={styles.text}>• {rec}</Text>
-                    ))}
+                    {Array.isArray(analysis.recommendations) && analysis.recommendations.length > 0 ? (
+                        analysis.recommendations.map((rec, i) => (
+                            <Text key={i} style={styles.text}>• {rec}</Text>
+                        ))
+                    ) : (
+                        <Text style={styles.text}>Tidak ada rekomendasi spesifik hari ini.</Text>
+                    )}
                 </View>
 
                 {data.today.inventory.length > 0 && (

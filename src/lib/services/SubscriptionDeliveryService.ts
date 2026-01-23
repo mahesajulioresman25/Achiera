@@ -5,17 +5,20 @@ export class SubscriptionDeliveryService {
     /**
      * Process all deliveries scheduled for today
      */
-    static async processDailyDeliveries() {
+    static async processDailyDeliveries(brandId?: string) {
         const today = new Date();
         const dayOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'][today.getDay()];
 
         console.log(`[SubscriptionDelivery] Processing deliveries for ${dayOfWeek} (${today.toISOString().split('T')[0]})`);
 
         // Find active subscriptions
+        const whereClause: any = { status: 'ACTIVE' };
+        if (brandId) {
+            whereClause.brandId = brandId;
+        }
+
         const subscriptions = await prisma.subscription.findMany({
-            where: {
-                status: 'ACTIVE'
-            },
+            where: whereClause,
             include: {
                 items: { include: { variant: true } },
                 brand: true
@@ -23,7 +26,7 @@ export class SubscriptionDeliveryService {
         });
 
         // Filter by delivery day
-        const subscriptionsForToday = subscriptions.filter(sub => {
+        const subscriptionsForToday = subscriptions.filter((sub: any) => {
             if (!sub.deliveryDays) return false;
 
             try {
@@ -78,7 +81,7 @@ export class SubscriptionDeliveryService {
         });
 
         if (existing) {
-            console.log(`[SubscriptionDelivery] Delivery already exists for subscription ${subscription.id} on ${today.toISOString().split('T')[0]}`);
+            console.log(`[SubscriptionDelivery] Delivery already exists for subscription ${subscription.id} on ${targetDate.toISOString().split('T')[0]}`);
             return existing;
         }
 
