@@ -27,7 +27,7 @@ export default function IntentCheckoutForm() {
     const [showAutofillBadge, setShowAutofillBadge] = useState(false);
     const [usePoints, setUsePoints] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState<'TRANSFER' | 'QRIS'>('TRANSFER');
-    const [courierType, setCourierType] = useState<'GrabExpress' | 'GoSend'>('GrabExpress');
+    const [courierType, setCourierType] = useState<string>('GrabExpress');
     const [isGift, setIsGift] = useState(false);
     const [giftMessage, setGiftMessage] = useState('');
     const [recipientName, setRecipientName] = useState('');
@@ -328,17 +328,21 @@ export default function IntentCheckoutForm() {
                     <div className="space-y-2">
                         <label className="text-[8px] font-black uppercase tracking-widest text-[#8B7E66]">Metode</label>
                         <div className="flex flex-col sm:flex-row gap-3">
-                            {['Ambil di Dapur', 'Kurir Instan'].map((pref) => (
+                            {['Ambil di Dapur', 'Kurir Instan', 'Ekspedisi'].map((pref) => (
                                 <button
                                     key={pref}
                                     type="button"
-                                    onClick={() => setDelivery(pref)}
-                                    className={`flex-1 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.1em] border transition-all ${delivery === pref
-                                        ? 'bg-[#2D3A2D] text-[#FDFBF7] border-[#2D3A2D] shadow-lg shadow-green-950/20'
+                                    onClick={() => {
+                                        setDelivery(pref);
+                                        if (pref === 'Kurir Instan') setCourierType('GrabExpress');
+                                        if (pref === 'Ekspedisi') setCourierType('JNE');
+                                    }}
+                                    className={`flex-1 px-4 py-3 rounded-xl text-[9px] font-black uppercase tracking-[0.1em] border transition-all ${delivery === pref
+                                        ? 'bg-[#2D3A2D] text-[#FDFBF7] border-[#2D3A2D] shadow-lg'
                                         : 'bg-white text-[#8B7E66] border-[#E5E1D8] hover:bg-slate-50'
                                         }`}
                                 >
-                                    {pref}
+                                    {pref === 'Ekspedisi' ? '📦 Ekspedisi' : pref === 'Kurir Instan' ? '🚀 Instan' : '🏠 Ambil'}
                                 </button>
                             ))}
                         </div>
@@ -347,14 +351,14 @@ export default function IntentCheckoutForm() {
                     {delivery === 'Kurir Instan' && (
                         <div className="space-y-3 p-5 bg-[#FDFBF7] rounded-2xl border border-[#E5E1D8] animate-in fade-in slide-in-from-top-2">
                             <label className="text-[9px] font-black uppercase tracking-widest text-[#8B7E66]">Pilih Kurir Instan Favorit Bunda</label>
-                            <div className="grid grid-cols-2 gap-3">
-                                {['GrabExpress', 'GoSend'].map((c) => (
+                            <div className="flex flex-wrap gap-2">
+                                {['GrabExpress', 'GoSend', 'Shopee Express'].map((c) => (
                                     <button
                                         key={c}
                                         type="button"
-                                        onClick={() => setCourierType(c as any)}
-                                        className={`px-3 py-3 rounded-xl text-[10px] font-black uppercase border transition-all ${courierType === c
-                                            ? 'bg-[#2D3A2D] text-[#FDFBF7] border-[#2D3A2D]'
+                                        onClick={() => setCourierType(c)}
+                                        className={`px-3 py-2.5 rounded-xl text-[9px] font-black uppercase border transition-all ${courierType === c
+                                            ? 'bg-orange-600 text-white border-orange-600'
                                             : 'bg-white text-[#8B7E66] border-[#E5E1D8]'
                                             }`}
                                     >
@@ -362,7 +366,29 @@ export default function IntentCheckoutForm() {
                                     </button>
                                 ))}
                             </div>
-                            <p className="text-[9px] text-[#8B7E66] italic leading-tight">*Pengiriman dibayar saat serah terima oleh Bunda.</p>
+                            <p className="text-[8px] text-[#8B7E66] italic leading-tight">*Ongkir dibayar ke driver saat pesanan tiba.</p>
+                        </div>
+                    )}
+
+                    {delivery === 'Ekspedisi' && (
+                        <div className="space-y-3 p-5 bg-[#FDFBF7] rounded-2xl border border-[#E5E1D8] animate-in fade-in slide-in-from-top-2">
+                            <label className="text-[9px] font-black uppercase tracking-widest text-[#8B7E66]">Pilih Jasa Ekspedisi</label>
+                            <div className="flex flex-wrap gap-2">
+                                {['JNE', 'J&T', 'SiCepat'].map((c) => (
+                                    <button
+                                        key={c}
+                                        type="button"
+                                        onClick={() => setCourierType(c)}
+                                        className={`px-3 py-2.5 rounded-xl text-[9px] font-black uppercase border transition-all ${courierType === c
+                                            ? 'bg-blue-600 text-white border-blue-600'
+                                            : 'bg-white text-[#8B7E66] border-[#E5E1D8]'
+                                            }`}
+                                    >
+                                        {c}
+                                    </button>
+                                ))}
+                            </div>
+                            <p className="text-[8px] text-[#8B7E66] italic leading-tight">*Pilih jasa kirim regular terbaik untuk daerah Bunda.</p>
                         </div>
                     )}
 

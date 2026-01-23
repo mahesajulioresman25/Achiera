@@ -805,6 +805,14 @@ model Order {
   warehouse              Warehouse?              @relation(fields: [warehouseId], references: [id])
   paymentReconciliations PaymentReconciliation[]
   payments               Payment[]
+  
+  // Delivery Tracking Fields
+  courierName            String?                 @map("courier_name")
+  trackingNo             String?                 @map("tracking_no")
+  trackingUrl            String?                 @map("tracking_url")
+  driverName             String?                 @map("driver_name")
+  driverPhone            String?                 @map("driver_phone")
+  shippedAt              DateTime?               @map("shipped_at")
 
   productId String?
   variantId String?

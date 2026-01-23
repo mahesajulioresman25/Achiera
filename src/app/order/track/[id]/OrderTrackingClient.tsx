@@ -376,6 +376,65 @@ export default function OrderTrackingResultClient({ id }: OrderTrackingClientPro
                             {/* Timeline */}
                             <div className="space-y-6">
                                 <h3 className="text-xs font-black text-[#2D3A2D] uppercase tracking-[0.2em] mb-4">Status Perjalanan</h3>
+
+                                {/* NEW: Delivery Banner with Dynamic Courier Styling */}
+                                {(order.status === 'DIKIRIM' || order.status === 'SELESAI') && (order.courierName || order.driverName) && (
+                                    <div className={`mb-8 p-6 rounded-[2rem] border flex flex-col md:flex-row items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500 overflow-hidden relative ${order.courierName?.toLowerCase().includes('shopee') ? 'bg-orange-50 border-orange-100 text-orange-950' :
+                                        order.courierName?.toLowerCase().includes('go') ? 'bg-green-50 border-green-100 text-green-950' :
+                                            order.courierName?.toLowerCase().includes('jne') ? 'bg-blue-50 border-blue-100 text-blue-950' :
+                                                order.courierName?.toLowerCase().includes('j&t') || order.courierName?.toLowerCase().includes('jnt') ? 'bg-red-50 border-red-100 text-red-950' :
+                                                    'bg-indigo-50 border-indigo-100 text-indigo-950'
+                                        }`}>
+                                        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-xl"></div>
+                                        <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg relative z-10 ${order.courierName?.toLowerCase().includes('shopee') ? 'bg-orange-500 text-white' :
+                                            order.courierName?.toLowerCase().includes('go') ? 'bg-green-600 text-white' :
+                                                order.courierName?.toLowerCase().includes('jne') ? 'bg-blue-600 text-white' :
+                                                    order.courierName?.toLowerCase().includes('j&t') || order.courierName?.toLowerCase().includes('jnt') ? 'bg-red-600 text-white' :
+                                                        'bg-indigo-600 text-white'
+                                            }`}>
+                                            <Truck className="w-8 h-8" />
+                                        </div>
+                                        <div className="flex-1 text-center md:text-left relative z-10">
+                                            <p className="text-[10px] font-black opacity-60 uppercase tracking-widest mb-1">
+                                                {order.courierName?.toLowerCase().includes('jne') || order.courierName?.toLowerCase().includes('jnt') ? 'Ekspedisi Pengiriman' : 'Kurir Sedang Mengantar'}
+                                            </p>
+                                            <h4 className="text-xl font-black uppercase tracking-tight leading-none">
+                                                {order.courierName} {order.driverName ? `• ${order.driverName}` : ''}
+                                            </h4>
+                                            {order.trackingNo && (
+                                                <p className="text-[10px] font-black mt-2 uppercase opacity-40 tracking-widest">NO. RESI/ID: {order.trackingNo}</p>
+                                            )}
+                                        </div>
+                                        <div className="flex flex-col gap-2 w-full md:w-auto relative z-10">
+                                            {order.driverPhone && (
+                                                <a
+                                                    href={`https://wa.me/${order.driverPhone.replace(/[^0-9]/g, '')}`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="px-6 py-3 bg-white text-indigo-900 rounded-xl text-[10px] font-black uppercase tracking-widest border border-black/5 shadow-sm hover:shadow-md transition-all text-center"
+                                                >
+                                                    Hubungi Driver
+                                                </a>
+                                            )}
+                                            {order.trackingUrl && (
+                                                <a
+                                                    href={order.trackingUrl}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className={`px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg transition-all text-center ${order.courierName?.toLowerCase().includes('shopee') ? 'bg-orange-500 text-white shadow-orange-200 hover:bg-orange-600' :
+                                                        order.courierName?.toLowerCase().includes('go') ? 'bg-green-600 text-white shadow-green-200 hover:bg-green-700' :
+                                                            order.courierName?.toLowerCase().includes('jne') ? 'bg-blue-600 text-white shadow-blue-200 hover:bg-blue-700' :
+                                                                order.courierName?.toLowerCase().includes('j&t') || order.courierName?.toLowerCase().includes('jnt') ? 'bg-red-600 text-white shadow-red-200 hover:bg-red-700' :
+                                                                    'bg-indigo-600 text-white shadow-indigo-200 hover:bg-indigo-700'
+                                                        }`}
+                                                >
+                                                    {order.courierName?.toLowerCase().includes('jne') || order.courierName?.toLowerCase().includes('jnt') ? 'Lacak Resi' : 'Lacak Driver'}
+                                                </a>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+
                                 <div className="ml-4 pl-10 border-l-[3px] border-[#F9F7F2] space-y-10 py-6">
                                     {extendedStatusSteps.map((step, idx) => {
                                         const isCompleted = idx <= currentStepIndex;

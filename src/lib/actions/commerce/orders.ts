@@ -140,76 +140,45 @@ export async function createWebsiteOrderAction(data: {
             console.error("Flash Sale Check Failed:", err);
         }
 
-        // 4. Create the order
-        const invoiceNo = `INV-WEB-${Date.now()}`;
-        const manualRef = `RIW-${Math.floor(1000 + Math.random() * 9000)}`;
-        const totalDiscount = discount + flashSaleDiscount;
-        const finalTotal = Math.max(0, serverSubtotal - totalDiscount);
+        // 4. Create the order via OrderService
+        const { OrderService } = await import('@/lib/services/OrderService');
+        const orderService = new OrderService();
 
-        // Combine notes
-        const notesParts = [];
-        if (redemptionNote) notesParts.push(redemptionNote);
-        if (flashSaleNote) notesParts.push(flashSaleNote);
-        const combinedInternalNote = notesParts.length > 0 ? notesParts.join(' | ') : undefined;
+        const ctx: any = { brandId: brandId, userId: 'WEBSITE_VISITOR' };
+        const combinedInternalNote = `Website Order. ${redemptionNote} ${flashSaleNote}`.trim();
 
-        const order = await prisma.order.create({
-            data: {
-                brandId, // Explicit brandId for isolation middleware
-                brand: { connect: { id: brandId } },
-                invoiceNo: invoiceNo,
-                manualRef: manualRef,
-                quantity: data.items.reduce((sum: number, item: any) => sum + Number(item.quantity), 0),
-                subtotal: serverSubtotal,
-                tax: 0,
-                total: finalTotal,
-                totalAmount: finalTotal,
-                customerName: data.customerName,
-                customerPhone: data.customerPhone,
-                customerEmail: data.customerEmail,
-                customerAddress: data.customerAddress,
-                customerNote: `[${data.deliveryOption || 'PENGAMBILAN'}${data.courierType ? ` - ${data.courierType}` : ''}] ${data.customerNote || ''}`.trim(),
-                internalNotes: combinedInternalNote,
-                channel: 'WEBSITE',
-                status: 'DIPESAN',
-                paymentMethod: data.paymentMethod,
-                isGift: data.isGift || false,
-                giftMessage: data.giftMessage,
-                recipientName: data.recipientName,
-                recipientEmail: data.recipientEmail,
-                warehouse: { connect: { id: warehouse.id } },
-                orderItems: {
-                    create: data.items.map(item => ({
-                        name: item.name,
-                        variantName: item.variantName || '',
-                        quantity: Number(item.quantity),
-                        price: Number(item.price),
-                        subtotal: Number(item.price) * Number(item.quantity),
-                        frozenVariantId: item.variantId,
-                        note: item.note,
-                        // Campaign Fields
-                        productBundleId: item.productBundleId,
-                        priceType: item.type === 'BUNDLE' ? 'BUNDLE' : 'NORMAL'
-                    }))
-                }
-            } as any,
-            include: {
-                orderItems: true
-            }
+        const order = await orderService.createOrder(ctx, {
+            brandId,
+            customerName: data.customerName,
+            customerPhone: data.customerPhone,
+            customerEmail: data.customerEmail,
+            customerAddress: data.customerAddress,
+            customerNote: `[${data.deliveryOption || 'PENGAMBILAN'}${data.courierType ? ` - ${data.courierType}` : ''}] ${data.customerNote || ''}`.trim(),
+            items: data.items.map(item => ({
+                variantId: item.variantId,
+                name: item.name,
+                variantName: item.variantName || '',
+                quantity: Number(item.quantity),
+                price: Number(item.price),
+                note: item.note,
+                productBundleId: item.productBundleId,
+                type: item.type === 'BUNDLE' ? 'BUNDLE' : 'NORMAL'
+            })),
+            channel: 'WEBSITE',
+            paymentMethod: data.paymentMethod,
+            loyaltyPointsUsed: data.redeemedPoints,
+            deliveryOption: data.deliveryOption,
+            courierType: data.courierType,
+            isGift: data.isGift,
+            giftMessage: data.giftMessage,
+            recipientName: data.recipientName,
+            recipientEmail: data.recipientEmail,
+            internalNotes: combinedInternalNote
         });
 
-        // 4.5 Sync Marketing Preference & Create/Update Loyalty
+        // 4.5 Sync Marketing Preference (LoyaltyAccount)
         try {
-            const { loyaltyEngine } = await import('../../intelligence/loyaltyEngine');
-            // Update LoyaltyMember (used by loyaltyEngine)
-            await loyaltyEngine.getOrCreateMember(
-                brandId,
-                data.customerPhone,
-                data.customerName,
-                data.customerEmail,
-                data.isMarketingAllowed
-            );
-
-            // Update LoyaltyAccount (used by LoyaltyService/legacy)
+            // Update LoyaltyAccount (used by legacy components)
             await prisma.loyaltyAccount.upsert({
                 where: {
                     brandId_customerPhone: {
@@ -234,20 +203,7 @@ export async function createWebsiteOrderAction(data: {
             console.error('Loyalty sync error (non-critical):', loyaltyError);
         }
 
-        // 5. Deduct stock using FIFO logic
-        const ctx = { brandId: brandId, userId: 'WEBSITE_VISITOR' };
-
-        for (const item of data.items) {
-            await warehouseService.deductStock(
-                ctx,
-                warehouse.id,
-                item.variantId,
-                item.quantity,
-                order.id
-            );
-        }
-
-        // 7. Send Email Notification (Server-side)
+        // 5. Send Email Notification (Server-side)
         try {
             const { EmailService } = await import('@/lib/services/EmailService');
 
@@ -276,14 +232,8 @@ export async function createWebsiteOrderAction(data: {
 
         revalidatePath('/dashboard/rasa-ibu');
 
-        // Process Incentives (Phase 8)
-        if (order.operatorId) {
-            const { IncentiveEngine } = await import('../../intelligence/incentiveEngine');
-            await IncentiveEngine.processOrderIncentive(order.id, order.operatorId);
-        }
-
         // Success Log
-        await logSystemActivity('SYSTEM', 'INFO', `Website Order Created: ${order.invoiceNo}`, { orderId: order.id, total: finalTotal }, brandId);
+        await logSystemActivity('SYSTEM', 'INFO', `Website Order Created: ${order.invoiceNo}`, { orderId: order.id, total: order.total }, brandId);
 
         return {
             success: true,

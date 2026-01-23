@@ -233,159 +233,84 @@ export async function createManualOrder(data: {
  * Updates the status of an existing order.
  * Transitions through: DIPESAN -> DIBAYAR -> DISIAPKAN -> DIKIRIM -> SELESAI
  */
-export async function updateOrderStatus(orderId: string, status: string) {
+export async function updateOrderStatus(
+    orderId: string,
+    status: string,
+    deliveryData?: {
+        courierName?: string;
+        trackingNo?: string;
+        trackingUrl?: string;
+        driverName?: string;
+        driverPhone?: string;
+    }
+) {
     try {
+        // Special case: If status is DIKIRIM and deliveryData is provided, use OrderService
+        if (status === 'DIKIRIM' && deliveryData) {
+            const orderBefore = await unisolatedPrisma.order.findUnique({ where: { id: orderId } });
+            if (!orderBefore?.brandId) throw new Error('Order or Brand not found');
+
+            const { OrderService } = await import('@/lib/services/OrderService');
+            const orderService = new OrderService();
+            const ctx = { brandId: orderBefore.brandId, userId: 'ADMIN_SYSTEM' };
+
+            const order = await orderService.updateDeliveryInfo(ctx, orderId, deliveryData);
+
+            // 📱 SEND PUBLIC STATUS UPDATE EMAIL (With Tracking Info)
+            if (order.customerEmail) {
+                try {
+                    const { EmailService } = await import('@/lib/services/EmailService');
+                    await EmailService.sendStatusUpdate(order as any, status);
+                } catch (emailErr) {
+                    console.error('Failed to send status update email:', emailErr);
+                }
+            }
+
+            // 💬 SEND WHATSAPP NOTIFICATION (Non-blocking)
+            if (order.customerPhone) {
+                try {
+                    const { quikWAService } = await import('@/lib/services/QuikWAService');
+                    await quikWAService.sendShippingNotification({
+                        invoiceNo: order.invoiceNo,
+                        customerName: order.customerName,
+                        customerPhone: order.customerPhone,
+                        courierName: deliveryData.courierName,
+                        trackingNo: deliveryData.trackingNo,
+                        trackingUrl: deliveryData.trackingUrl,
+                        driverName: deliveryData.driverName,
+                        brandId: order.brandId || undefined
+                    });
+                } catch (waErr) {
+                    console.error('Failed to send WhatsApp notification:', waErr);
+                }
+            }
+
+            revalidatePath(`/dashboard/rasa-ibu`);
+            return { success: true, data: JSON.parse(JSON.stringify(order)) };
+        }
+
         const order = await unisolatedPrisma.order.update({
             where: { id: orderId },
             data: { status: status as any },
         });
 
-        // Create journal entry when order is paid
+        // 💰 PROCESS PAYMENT & ACCOUNTING via OrderService
         if (status === 'DIBAYAR' && order.brandId) {
             try {
-                const { JournalService } = await import('@/lib/intelligence/journalService');
-                const { initializeChartOfAccounts, getAccountByCode } = await import('@/lib/intelligence/chartOfAccounts');
+                const { OrderService } = await import('@/lib/services/OrderService');
+                const orderService = new OrderService();
+                const ctx = { brandId: order.brandId, userId: 'ADMIN_SYSTEM' };
 
-                // Ensure CoA exists
-                const cashAccount = await getAccountByCode(order.brandId, '1-1000');
-                if (!cashAccount) {
-                    await initializeChartOfAccounts(order.brandId);
-                }
-
-                // Calculate HPP
-                const orderWithItems = await unisolatedPrisma.order.findUnique({
-                    where: { id: orderId },
-                    include: {
-                        orderItems: {
-                            include: {
-                                frozenVariant: true
-                            }
-                        }
-                    }
+                await orderService.processPayment(ctx, {
+                    orderId,
+                    amount: Number(order.totalAmount || order.total),
+                    method: order.paymentMethod || 'MANUAL',
+                    channel: order.channel || 'OFFLINE'
                 });
 
-                let totalHPP = 0;
-                if (orderWithItems) {
-                    for (const oItem of orderWithItems.orderItems) {
-                        const cost = Number(oItem.frozenVariant?.costPrice || 0);
-                        totalHPP += cost * oItem.quantity;
-                    }
-                }
-
-                // Ensure HPP account exists
-                await prisma.ledgerAccount.upsert({
-                    where: { brandId_code: { brandId: order.brandId, code: '5-1000' } },
-                    update: {},
-                    create: { brandId: order.brandId, code: '5-1000', name: 'Harga Pokok Penjualan (HPP)', type: 'EXPENSE' }
-                });
-
-                // Get Platform Settings for MDR
-                const { getPlatformSettingsAction } = await import('@/lib/actions/rasa-ibu/finance');
-                const { settings } = await getPlatformSettingsAction(order.brandId);
-
-                const channel = order.channel || 'OFFLINE';
-
-                // Map channel to config key
-                const channelMap: Record<string, string> = {
-                    'SHOPEE': 'SHOPEE',
-                    'GRABFOOD': 'GRAB_FOOD',
-                    'GOFOOD': 'GO_FOOD',
-                    'TIKTOK': 'TIKTOK_SHOP'
-                };
-
-                const configKey = channelMap[channel];
-                let platformFeeRate = 0;
-                let mdrRate = 0;
-
-                if (configKey) {
-                    if (settings?.marketplaceFees?.[configKey]) {
-                        platformFeeRate = Number(settings.marketplaceFees[configKey]);
-                    }
-                    if (settings?.mdrFees?.[configKey]) {
-                        mdrRate = Number(settings.mdrFees[configKey]);
-                    }
-                }
-
-                const totalAmount = Number(order.totalAmount || order.total);
-                const discountAmount = Number(order.subtotal || 0) - Number(order.total || 0);
-
-                const platformFees = [];
-
-                if (platformFeeRate > 0) {
-                    const feeAmount = Math.round(totalAmount * (platformFeeRate / 100));
-                    platformFees.push({
-                        amount: feeAmount,
-                        accountCode: '5-6000', // Biaya Komisi/Marketplace
-                        description: `Marketplace Fee ${channel} (${platformFeeRate}%)`
-                    });
-                }
-
-                if (mdrRate > 0) {
-                    const mdrAmount = Math.round(totalAmount * (mdrRate / 100));
-                    platformFees.push({
-                        amount: mdrAmount,
-                        accountCode: '5-6000', // Biaya Adm Bank
-                        description: `Potongan MDR ${channel} (${mdrRate}%)`
-                    });
-                }
-
-                // If Paid, we assume it hits the Bank/Cash
-                // However, recordSale typically records Receivable for Marketplaces
-                if (['SHOPEE', 'GRABFOOD', 'GOFOOD', 'TIKTOK'].includes(channel)) {
-                    // Option A: Dr Receivable (Full), Dr Expense (Fees), Cr Sales (Gross)
-                    await JournalService.recordSale(
-                        order.brandId,
-                        orderId,
-                        totalAmount,
-                        channel,
-                        totalHPP,
-                        Math.max(0, discountAmount)
-                    );
-
-                    // Record each fee as a reduction of receivable
-                    for (const fee of platformFees) {
-                        await JournalService.recordExpense(
-                            order.brandId,
-                            fee.amount,
-                            fee.accountCode,
-                            fee.description,
-                            new Date(),
-                            '1-1200' // Reduce Receivable
-                        );
-                    }
-                } else {
-                    // Direct Cash/Transfer (Offline/Whatsapp)
-                    // Net Amount hits the bank/cash immediately
-                    await JournalService.recordSale(
-                        order.brandId,
-                        orderId,
-                        totalAmount,
-                        channel,
-                        totalHPP,
-                        Math.max(0, discountAmount)
-                    );
-                    // For manual transfer/QRIS, if there is MDR, we should record expense and reduce cash?
-                    // But JournalService.recordSale uses 1-1000/1-1100.
-                }
-                // Award Loyalty Points after successful transition to DIBAYAR
-                if (order.customerPhone) {
-                    try {
-                        const { processOrderLoyalty } = await import('./businessIntelligence');
-                        await processOrderLoyalty(
-                            order.brandId,
-                            order.customerPhone,
-                            order.customerName || 'Bunda',
-                            totalAmount,
-                            orderId
-                        );
-                        console.log(`✅ Loyalty points awarded via updateOrderStatus for order ${orderId}`);
-                    } catch (loyaltyError) {
-                        console.error('Loyalty points error in updateOrderStatus:', loyaltyError);
-                    }
-                }
-            } catch (jeError) {
-                console.error('Failed to create journal entry:', jeError);
-                // Don't fail the order update if JE fails, checking availability next time
+                console.log(`✅ Order ${orderId} finalized via OrderService.processPayment`);
+            } catch (payError) {
+                console.error('Unified Payment Processing Failed:', payError);
             }
         }
 
@@ -396,6 +321,33 @@ export async function updateOrderStatus(orderId: string, status: string) {
                 await EmailService.sendStatusUpdate(order as any, status);
             } catch (emailErr) {
                 console.error('Failed to send status update email:', emailErr);
+            }
+        }
+
+        // 💬 SEND WHATSAPP NOTIFICATION (Non-blocking)
+        if (order.customerPhone) {
+            try {
+                const { quikWAService } = await import('@/lib/services/QuikWAService');
+
+                // Send appropriate notification based on status
+                if (status === 'DIBAYAR') {
+                    await quikWAService.sendPaymentConfirmation({
+                        invoiceNo: order.invoiceNo,
+                        customerName: order.customerName,
+                        customerPhone: order.customerPhone,
+                        totalAmount: Number(order.totalAmount || order.total),
+                        brandId: order.brandId || undefined
+                    });
+                } else if (status === 'SELESAI') {
+                    await quikWAService.sendDeliveryCompleted({
+                        invoiceNo: order.invoiceNo,
+                        customerName: order.customerName,
+                        customerPhone: order.customerPhone,
+                        brandId: order.brandId || undefined
+                    });
+                }
+            } catch (waErr) {
+                console.error('Failed to send WhatsApp notification:', waErr);
             }
         }
 

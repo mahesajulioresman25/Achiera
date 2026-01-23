@@ -433,7 +433,7 @@ export class EmailService {
         }
     }
 
-    static async sendStatusUpdate(order: EmailOrderInfo, newStatus: string) {
+    static async sendStatusUpdate(order: any, newStatus: string) {
         if (!order.customerEmail) {
             console.warn('[EmailService] Skipping Status Update: No customer email provided');
             return false;
@@ -441,6 +441,45 @@ export class EmailService {
 
         const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.achiera.com';
         const trackingUrl = `${appUrl}/order/track/${order.invoiceNo}`;
+
+        // Prepare context-specific messages
+        let statusIcon = '✨';
+        let statusDescription = 'Tim kami sedang bekerja sepenuh hati untuk memastikannya sampai ke tangan Bunda dengan sempurna.';
+        let deliveryInfoHtml = '';
+
+        if (newStatus === 'DIBAYAR') {
+            statusIcon = '✅';
+            statusDescription = 'Pembayaran Bunda telah kami terima. Dapur kami sedang mulai menyiapkan hidangan terbaik untuk Bunda.';
+        } else if (newStatus === 'DISIAPKAN') {
+            statusIcon = '👨‍🍳';
+            statusDescription = 'Hidangan sedang dimasak dan dikemas dengan rapi oleh tim dapur kami.';
+        } else if (newStatus === 'DIKIRIM') {
+            statusIcon = '🚀';
+            statusDescription = 'Kabar gembira! Hidangan Bunda sudah dalam perjalanan menuju lokasi.';
+
+            // Add tracking details if available
+            if (order.courierName || order.trackingNo || order.driverName) {
+                deliveryInfoHtml = `
+                <div style="margin-top: 24px; padding: 24px; background: #FDFBF7; border: 1px solid #E5E1D8; border-radius: 20px; text-align: left;">
+                    <p style="margin: 0 0 12px 0; font-size: 11px; font-weight: 900; color: #8B7E66; text-transform: uppercase; letter-spacing: 0.1em;">Informasi Pengiriman:</p>
+                    <table width="100%" style="font-size: 14px;">
+                        ${order.courierName ? `<tr><td style="color: #4A5D4A; padding: 4px 0;">Kurir</td><td align="right"><strong>${order.courierName}</strong></td></tr>` : ''}
+                        ${order.trackingNo ? `<tr><td style="color: #4A5D4A; padding: 4px 0;">No. Resi / ID</td><td align="right"><strong>${order.trackingNo}</strong></td></tr>` : ''}
+                        ${order.driverName ? `<tr><td style="color: #4A5D4A; padding: 4px 0;">Driver</td><td align="right"><strong>${order.driverName}</strong></td></tr>` : ''}
+                        ${order.driverPhone ? `<tr><td style="color: #4A5D4A; padding: 4px 0;">Kontak Driver</td><td align="right"><strong>${order.driverPhone}</strong></td></tr>` : ''}
+                    </table>
+                    ${order.trackingUrl ? `
+                    <div style="text-align: center; margin-top: 20px;">
+                        <a href="${order.trackingUrl}" style="font-size: 12px; font-weight: 900; color: #2D3A2D; text-decoration: underline;">KLIK UNTUK LACAK POSISI DRIVER</a>
+                    </div>
+                    ` : ''}
+                </div>
+                `;
+            }
+        } else if (newStatus === 'SELESAI') {
+            statusIcon = '🍲';
+            statusDescription = 'Pesanan telah dinyatakan sampai. Selamat menikmati hidangan dari Rasa Ibu, Bunda!';
+        }
 
         const html = `
 <!DOCTYPE html>
@@ -471,12 +510,14 @@ export class EmailService {
         </div>
         <div class="content">
             <p style="font-size: 18px; margin-top: 0;">Halo, <strong>Bunda ${order.customerName}</strong>!</p>
-            <p style="color: #4A5D4A; font-size: 15px;">Ada perkembangan menyenangkan untuk pesanan Bunda dengan nomor invoice <strong>${order.invoiceNo}</strong>. Tim kami sedang bekerja sepenuh hati untuk memastikannya sampai ke tangan Bunda dengan sempurna.</p>
+            <p style="color: #4A5D4A; font-size: 15px;">Ada perkembangan menyenangkan untuk pesanan Bunda dengan nomor invoice <strong>${order.invoiceNo}</strong>. ${statusDescription}</p>
             
             <div class="status-box">
-                <span style="font-size: 32px; display: block; margin-bottom: 8px;">✨</span>
+                <span style="font-size: 32px; display: block; margin-bottom: 8px;">${statusIcon}</span>
                 <p style="margin: 0; font-size: 12px; font-weight: 900; color: #8B7E66; text-transform: uppercase; letter-spacing: 0.2em;">Status Perjalanan Saat Ini:</p>
                 <div class="status-badge">${newStatus}</div>
+                
+                ${deliveryInfoHtml}
             </div>
 
             <div style="text-align: center; margin-top: 32px;">
@@ -485,7 +526,7 @@ export class EmailService {
             </div>
             
             <p style="margin-top: 40px; font-size: 15px; color: #4A5D4A; text-align: center; font-style: italic;">
-                "Sabar ya Bunda, kehangatan sedang dalam perjalanan. Terima kasih sudah setia bersama Rasa Ibu." 🙏✨
+                "Terima kasih sudah setia bersama Rasa Ibu Bunda." 🙏✨
             </p>
         </div>
         <div class="footer">
@@ -501,7 +542,7 @@ export class EmailService {
             await this.transporter.sendMail({
                 from: EmailService.getFromAddress(),
                 to: order.customerEmail,
-                subject: `[Achiera] Update Pesanan #${order.invoiceNo}: ${newStatus}`,
+                subject: `[Rasa Ibu] Update Pesanan Bunda #${order.invoiceNo}: ${newStatus}`,
                 html: html,
             });
             console.log(`[EmailService] Status update sent to ${order.customerEmail}`);

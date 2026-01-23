@@ -1,5 +1,6 @@
 import React from 'react';
 import { updateOrderStatus } from '@/lib/actions/rasa-ibu/orders';
+import DeliveryInputModal from './DeliveryInputModal';
 
 const STATUS_LABELS: Record<string, string> = {
     'DIPESAN': 'Pesan Tercatat',
@@ -51,6 +52,8 @@ export default function ManualOrderLedger({
     isFullscreen = false
 }: ManualOrderLedgerProps) {
     const [searchQuery, setSearchQuery] = React.useState('');
+    const [deliveryModalOrder, setDeliveryModalOrder] = React.useState<any>(null);
+
     const sortedOrders = [...orders]
         .filter(order => {
             const searchLower = searchQuery.toLowerCase();
@@ -194,19 +197,21 @@ export default function ManualOrderLedger({
                                             const deliveryMatch = order.customerNote?.match(/^\[(.*?)\]/);
                                             const deliveryInfo = deliveryMatch ? deliveryMatch[1] : null;
 
-                                            if (!deliveryInfo) return <span className="text-slate-300 italic text-[10px]">Cek Manual</span>;
+                                            if (!deliveryInfo && !order.courierName) return <span className="text-slate-300 italic text-[10px]">Cek Manual</span>;
 
-                                            const [method, courier] = deliveryInfo.split(' - ');
+                                            const method = order.courierName || (deliveryInfo ? deliveryInfo.split(' - ')[0] : 'Kurir');
+                                            const courier = order.trackingNo || (deliveryInfo ? deliveryInfo.split(' - ')[1] : null);
+
                                             return (
                                                 <div className="flex flex-col gap-1 min-w-[100px]">
-                                                    <span className={`px-2 py-1 rounded-lg text-[9px] font-black uppercase tracking-tight text-center border ${method === 'Kurir Instan'
+                                                    <span className={`px-2 py-1 rounded-lg text-[9px] font-black uppercase tracking-tight text-center border ${method.toLowerCase().includes('instan') || method.toLowerCase().includes('grab') || method.toLowerCase().includes('go')
                                                         ? 'bg-indigo-50 text-indigo-700 border-indigo-100'
                                                         : 'bg-emerald-50 text-emerald-700 border-emerald-100'
                                                         }`}>
                                                         {method}
                                                     </span>
                                                     {courier && (
-                                                        <span className="text-[9px] font-black text-[#8B7E66] uppercase text-center">{courier}</span>
+                                                        <span className="text-[9px] font-black text-[#8B7E66] uppercase text-center truncate max-w-[120px]" title={courier}>{courier}</span>
                                                     )}
                                                 </div>
                                             );
@@ -279,7 +284,7 @@ export default function ManualOrderLedger({
                                             )}
                                             {order.status === 'DISIAPKAN' && (
                                                 <button
-                                                    onClick={() => updateOrderStatus(order.id, 'DIKIRIM')}
+                                                    onClick={() => setDeliveryModalOrder(order)}
                                                     className="text-[9px] font-black uppercase text-indigo-600 border border-indigo-200 px-3 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 transition-all shadow-sm"
                                                 >
                                                     {isFrozenOnly ? '📦 Pack' : '🚚 Antar'}
@@ -313,6 +318,16 @@ export default function ManualOrderLedger({
                     </tbody>
                 </table>
             </div>
+
+            {deliveryModalOrder && (
+                <DeliveryInputModal
+                    order={deliveryModalOrder}
+                    onClose={() => setDeliveryModalOrder(null)}
+                    onSubmit={async (deliveryData) => {
+                        await updateOrderStatus(deliveryModalOrder.id, 'DIKIRIM', deliveryData);
+                    }}
+                />
+            )}
         </div>
     );
 }

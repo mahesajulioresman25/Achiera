@@ -89,7 +89,8 @@ export async function middleware(request: NextRequest) {
     // 1. Protect all /api/ routes (except auth, public, debug, and test)
     const isPublicApi = request.nextUrl.pathname.startsWith('/api/auth') ||
         request.nextUrl.pathname.startsWith('/api/public') ||
-        request.nextUrl.pathname.startsWith('/api/cron');
+        request.nextUrl.pathname.startsWith('/api/cron') ||
+        request.nextUrl.pathname.startsWith('/api/test');
 
     if (isApiRequest && !isPublicApi && !token) {
         return new NextResponse(

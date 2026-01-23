@@ -1,33 +1,49 @@
 // ACHIERA Platform - Order Service
 // Order lifecycle management with payment and finance integration
 
-import { prisma } from '@/lib/prisma';
-import { OrderStatus, PaymentStatus, PaymentMethod } from '@prisma/client';
+import { prisma, unisolatedPrisma } from '@/lib/prisma';
 import { WarehouseService } from './WarehouseService';
 import { LoyaltyService } from './LoyaltyService';
 import type { ServiceContext } from './WarehouseService';
+import { logSystemActivity } from '@/lib/logger';
 
 export type CreateOrderInput = {
-    userId: string;
+    brandId: string;
+    userId?: string;
     customerName: string;
-    customerEmail: string;
+    customerEmail?: string;
     customerPhone: string;
-    shippingAddress: string;
+    customerAddress: string;
+    customerNote?: string;
     items: Array<{
-        variantId: string;
+        variantId: string; // This can be frozenVariantId
+        name: string;
+        variantName?: string;
         quantity: number;
-        unitPrice: number;
+        price: number;
+        note?: string;
+        productBundleId?: string;
+        type?: string;
     }>;
-    shippingCost?: number;
+    channel?: string;
+    paymentMethod?: string;
     loyaltyPointsUsed?: number;
+    deliveryOption?: string;
+    courierType?: string;
+    isGift?: boolean;
+    giftMessage?: string;
+    recipientName?: string;
+    recipientEmail?: string;
+    internalNotes?: string;
 };
 
 export type ProcessPaymentInput = {
     orderId: string;
     amount: number;
-    method: PaymentMethod;
+    method: string;
     transactionId?: string;
     proofImage?: string;
+    channel?: string;
 };
 
 export class OrderService {
@@ -35,349 +51,398 @@ export class OrderService {
     private loyaltyService = new LoyaltyService();
 
     /**
-     * Create new order
+     * Create new order (Status: DIPESAN)
+     * Does NOT deduct stock yet, only validates availability.
      */
     async createOrder(ctx: ServiceContext, input: CreateOrderInput) {
         return prisma.$transaction(async (tx) => {
             // 1. Calculate totals
             const subtotal = input.items.reduce(
-                (sum, item) => sum + item.unitPrice * item.quantity,
+                (sum, item) => sum + Number(item.price) * Number(item.quantity),
                 0
             );
 
-            const shippingCost = input.shippingCost || 0;
-            const tax = subtotal * 0.11; // 11% VAT
-
-            // Calculate loyalty discount
+            // Handle Loyalty Redemption
             let loyaltyDiscount = 0;
-            if (input.loyaltyPointsUsed) {
-                loyaltyDiscount = input.loyaltyPointsUsed; // 1 point = 1 IDR
+            if (input.loyaltyPointsUsed && input.loyaltyPointsUsed > 0) {
+                const { getPlatformSettingsAction } = await import('@/lib/actions/rasa-ibu/finance');
+                const settingsRes = await getPlatformSettingsAction(input.brandId);
+                const pointValue = settingsRes.success ? (settingsRes.settings?.loyalty?.pointValueInRupiah || 100) : 100;
+                loyaltyDiscount = input.loyaltyPointsUsed * pointValue;
             }
 
-            const total = subtotal + shippingCost + tax - loyaltyDiscount;
+            // Handle Flash Sale (Optional - can be passed via internalNotes/total if already calculated)
+            // For now, we assume the total passed or calculated is final.
+            const total = Math.max(0, subtotal - loyaltyDiscount);
 
-            // 2. Generate order number
-            const orderNumber = await this.generateOrderNumber(ctx.brandId);
+            // 2. Generate unique identifiers
+            const invoiceNo = `INV-${input.channel === 'WEBSITE' ? 'WEB' : 'MAN'}-${Date.now()}`;
+            const manualRef = `RI-${input.channel === 'WEBSITE' ? 'W' : 'M'}-${Math.floor(1000 + Math.random() * 9000)}`;
 
-            // 3. Create order
+            // 3. Create order record
             const order = await tx.order.create({
                 data: {
-                    brandId: ctx.brandId,
+                    brandId: input.brandId,
                     userId: input.userId,
-                    orderNumber,
+                    invoiceNo,
+                    manualRef,
                     customerName: input.customerName,
                     customerEmail: input.customerEmail,
                     customerPhone: input.customerPhone,
-                    shippingAddress: input.shippingAddress,
+                    customerAddress: input.customerAddress,
+                    customerNote: input.customerNote,
                     subtotal,
-                    shippingCost,
-                    tax,
-                    loyaltyDiscount,
-                    total,
-                    status: OrderStatus.PENDING,
-                    paymentStatus: PaymentStatus.UNPAID
-                }
-            });
-
-            // 4. Create order items
-            for (const item of input.items) {
-                const variant = await tx.frozenVariant.findUnique({
-                    where: { id: item.variantId },
-                    include: { product: true }
-                });
-
-                if (!variant) {
-                    throw new Error(`Variant ${item.variantId} not found`);
-                }
-
-                await tx.orderItem.create({
-                    data: {
-                        orderId: order.id,
-                        variantId: item.variantId,
-                        productName: variant.product.name,
-                        variantName: variant.name,
-                        quantity: item.quantity,
-                        unitPrice: item.unitPrice,
-                        subtotal: item.unitPrice * item.quantity
+                    tax: 0,
+                    total: total,
+                    totalAmount: total,
+                    status: 'DIPESAN',
+                    channel: input.channel || 'WEBSITE',
+                    paymentMethod: input.paymentMethod,
+                    isGift: input.isGift || false,
+                    giftMessage: input.giftMessage,
+                    recipientName: input.recipientName,
+                    recipientEmail: input.recipientEmail,
+                    internalNotes: input.internalNotes,
+                    courierName: input.courierType || input.deliveryOption,
+                    orderItems: {
+                        create: input.items.map(item => ({
+                            name: item.name,
+                            variantName: item.variantName || '',
+                            quantity: Number(item.quantity),
+                            price: Number(item.price),
+                            subtotal: Number(item.price) * Number(item.quantity),
+                            frozenVariantId: item.variantId,
+                            note: item.note,
+                            productBundleId: item.productBundleId,
+                            priceType: item.type === 'BUNDLE' ? 'BUNDLE' : 'NORMAL'
+                        }))
                     }
-                });
-            }
-
-            // 5. Redeem loyalty points if used
-            if (input.loyaltyPointsUsed && input.loyaltyPointsUsed > 0) {
-                await this.loyaltyService.redeemPoints(
-                    tx,
-                    input.userId,
-                    ctx.brandId,
-                    input.loyaltyPointsUsed,
-                    order.id
-                );
-            }
-
-            // 6. Audit log
-            await tx.auditLog.create({
-                data: {
-                    userId: ctx.userId,
-                    brandId: ctx.brandId,
-                    action: 'ORDER_CREATE',
-                    entityType: 'ORDER',
-                    entityId: order.id,
-                    metadata: { orderNumber, total }
                 }
             });
+
+            // 4. Record Initial Status Log
+            await tx.orderStatusLog.create({
+                data: {
+                    orderId: order.id,
+                    status: 'DIPESAN',
+                    message: `Pesanan dibuat via ${input.channel || 'WEBSITE'}`
+                }
+            });
+
+            // 5. Loyalty Redemption (Atomic)
+            if (input.loyaltyPointsUsed && input.loyaltyPointsUsed > 0) {
+                const { loyaltyEngine } = await import('@/lib/intelligence/loyaltyEngine');
+                const member = await loyaltyEngine.getMemberByPhone(input.brandId, input.customerPhone);
+                if (member) {
+                    await loyaltyEngine.redeemPoints(
+                        member.id,
+                        input.loyaltyPointsUsed,
+                        `Redemption for Order ${invoiceNo}`
+                    );
+                }
+            }
 
             return order;
         });
     }
 
     /**
-     * Process payment and fulfill order
+     * Process payment and finalize transaction
+     * This is where Stock Deduction and Accounting happen.
      */
     async processPayment(ctx: ServiceContext, input: ProcessPaymentInput) {
-        return prisma.$transaction(async (tx) => {
+        return unisolatedPrisma.$transaction(async (tx) => {
             const order = await tx.order.findUnique({
                 where: { id: input.orderId },
-                include: { items: true }
+                include: { orderItems: true }
             });
 
             if (!order) {
                 throw new Error('Order not found');
             }
 
-            if (order.paymentStatus === PaymentStatus.PAID) {
-                throw new Error('Order already paid');
+            // Prevent double processing
+            if (order.status === 'DIBAYAR' || order.status === 'SELESAI') {
+                return order; // Already processed
             }
 
-            // 1. Create payment record
-            const payment = await tx.payment.create({
+            // 1. Create payment record if needed
+            // (Sometimes payment is created separately, let's ensure it exists)
+            await tx.payment.create({
                 data: {
                     orderId: input.orderId,
                     amount: input.amount,
-                    method: input.method,
-                    status: PaymentStatus.PAID,
-                    transactionId: input.transactionId,
-                    proofImage: input.proofImage,
-                    paidAt: new Date(),
-                    verifiedBy: ctx.userId
+                    type: input.method,
+                    isVerified: true,
+                    verifiedBy: ctx.userId,
+                    verifiedAt: new Date()
                 }
             });
 
-            // 2. Update order status
-            await tx.order.updateMany({
-                where: { id: input.orderId, brandId: ctx.brandId },
-                data: {
-                    paymentStatus: PaymentStatus.PAID,
-                    status: OrderStatus.PROCESSING,
-                    paidAt: new Date()
-                }
+            // 2. Resolve Warehouse (Default)
+            const warehouse = await tx.warehouse.findFirst({
+                where: { brandId: order.brandId!, isDefault: true }
             });
 
-            // 3. Deduct stock (FIFO) and Calculate HPP
-            const defaultWarehouse = await tx.warehouse.findFirst({
-                where: { brandId: ctx.brandId, isActive: true }
-            });
-
-            if (!defaultWarehouse) {
-                throw new Error('No active warehouse found');
+            if (!warehouse) {
+                throw new Error('Default warehouse not found for brand');
             }
 
+            // 3. Deduct Stock (FIFO) and Calculate HPP
             let totalHpp = 0;
-            for (const item of order.items) {
-                // Fetch variant to get costPrice
-                const variant = await tx.frozenVariant.findUnique({
-                    where: { id: item.variantId }
-                });
+            for (const item of order.orderItems) {
+                if (!item.frozenVariantId) continue;
 
+                // Deduct via WarehouseService
+                await this.warehouseService.deductStock(
+                    ctx,
+                    warehouse.id,
+                    item.frozenVariantId,
+                    item.quantity,
+                    order.id,
+                    tx
+                );
+
+                // Calculate HPP based on current variant cost
+                const variant = await tx.frozenVariant.findUnique({
+                    where: { id: item.frozenVariantId }
+                });
                 if (variant) {
                     totalHpp += (Number(variant.costPrice || 0) * item.quantity);
                 }
+            }
 
-                await this.warehouseService.deductStock(
-                    ctx,
-                    defaultWarehouse.id,
-                    item.variantId,
-                    item.quantity,
-                    order.id,
-                    tx // Pass transaction
+            // 4. Record in Ledger (JournalService)
+            const { JournalService } = await import('@/lib/intelligence/journalService');
+            const discountAmount = Number(order.subtotal || 0) - Number(order.total || 0);
+            const channel = input.channel || order.channel || 'WEBSITE';
+
+            // 4.1 Calculate Fees (MDR / Marketplace)
+            const { getPlatformSettingsAction } = await import('@/lib/actions/rasa-ibu/finance');
+            const { settings } = await getPlatformSettingsAction(order.brandId!);
+
+            const channelMap: Record<string, string> = {
+                'SHOPEE': 'SHOPEE',
+                'GRABFOOD': 'GRAB_FOOD',
+                'GOFOOD': 'GO_FOOD',
+                'TIKTOK': 'TIKTOK_SHOP'
+            };
+
+            const configKey = channelMap[channel];
+            let platformFeeRate = 0;
+            let mdrRate = 0;
+
+            if (configKey && settings) {
+                if (settings.marketplaceFees?.[configKey]) {
+                    platformFeeRate = Number(settings.marketplaceFees[configKey]);
+                }
+                if (settings.mdrFees?.[configKey]) {
+                    mdrRate = Number(settings.mdrFees[configKey]);
+                }
+            }
+
+            // Perform core sale recording
+            await JournalService.recordSale(
+                order.brandId!,
+                order.id,
+                Number(order.total),
+                channel,
+                totalHpp,
+                Math.max(0, discountAmount)
+            );
+
+            // Record Fees if applicable
+            const totalAmount = Number(order.total);
+            const platformFees = [];
+
+            if (platformFeeRate > 0) {
+                const feeAmount = Math.round(totalAmount * (platformFeeRate / 100));
+                platformFees.push({
+                    amount: feeAmount,
+                    accountCode: '5-6000',
+                    description: `Marketplace Fee ${channel} (${platformFeeRate}%)`
+                });
+            }
+
+            if (mdrRate > 0) {
+                const mdrAmount = Math.round(totalAmount * (mdrRate / 100));
+                platformFees.push({
+                    amount: mdrAmount,
+                    accountCode: '5-6000',
+                    description: `Potongan MDR ${channel} (${mdrRate}%)`
+                });
+            }
+
+            for (const fee of platformFees) {
+                // Determine which account to reduce (Receivable for Marketplaces, Bank for others if any)
+                const reductionAccount = ['SHOPEE', 'GRABFOOD', 'GOFOOD', 'TIKTOK'].includes(channel)
+                    ? '1-1200' // Reduce Receivable
+                    : (channel === 'WEBSITE' ? '1-1100' : '1-1000'); // Bank or Cash
+
+                await JournalService.recordExpense(
+                    order.brandId!,
+                    fee.amount,
+                    fee.accountCode,
+                    fee.description,
+                    new Date(),
+                    reductionAccount
                 );
             }
 
-            // 4. Record revenue and HPP in ledger
-            const { JournalService } = await import('@/lib/intelligence/journalService');
-            await JournalService.recordSale(
-                ctx.brandId,
-                order.id,
-                input.amount,
-                'WEBSITE', // Default channel for this service
-                totalHpp
-            );
+            // 5. Award Loyalty Points
+            if (order.customerPhone) {
+                try {
+                    const { loyaltyEngine } = await import('@/lib/intelligence/loyaltyEngine');
+                    await loyaltyEngine.awardPoints(
+                        order.brandId!,
+                        order.customerPhone,
+                        Number(order.total),
+                        `Points awarded for Order ${order.invoiceNo}`
+                    );
+                } catch (loyaltyErr) {
+                    console.error('Loyalty award failed:', loyaltyErr);
+                }
+            }
 
-            // 5. Award loyalty points
-            await this.loyaltyService.awardPoints(
-                tx,
-                order.userId,
-                ctx.brandId,
-                order.total,
-                order.id
-            );
-
-            // 6. Audit log
-            await tx.auditLog.create({
+            // 6. Update Order Status
+            const updatedOrder = await tx.order.update({
+                where: { id: input.orderId },
                 data: {
-                    userId: ctx.userId,
-                    brandId: ctx.brandId,
-                    action: 'PAYMENT_PROCESSED',
-                    entityType: 'ORDER',
-                    entityId: order.id,
-                    metadata: { amount: input.amount, method: input.method }
+                    status: 'DIBAYAR'
                 }
             });
 
-            return payment;
+            // 7. Status Log
+            await tx.orderStatusLog.create({
+                data: {
+                    orderId: order.id,
+                    status: 'DIBAYAR',
+                    message: `Pembayaran terverifikasi sebesar Rp ${input.amount.toLocaleString('id-ID')}`
+                }
+            });
+
+            await logSystemActivity('SYSTEM', 'INFO', `Payment Processed: ${order.invoiceNo}`, { orderId: order.id, amount: input.amount }, order.brandId!);
+
+            return updatedOrder;
         });
     }
 
     /**
-     * Cancel order
+     * Cancel order and restore stock if already deducted
      */
     async cancelOrder(ctx: ServiceContext, orderId: string, reason: string) {
-        return prisma.$transaction(async (tx) => {
+        return unisolatedPrisma.$transaction(async (tx) => {
             const order = await tx.order.findUnique({
                 where: { id: orderId },
-                include: { items: true }
+                include: { orderItems: true }
             });
 
-            if (!order) {
-                throw new Error('Order not found');
-            }
+            if (!order) throw new Error('Order not found');
+            if (order.status === 'BATAL') return;
 
-            if (order.status === OrderStatus.SHIPPED || order.status === OrderStatus.DELIVERED) {
-                throw new Error('Cannot cancel shipped/delivered order');
-            }
+            const wasDeducted = ['DIBAYAR', 'DISIAPKAN', 'DIKIRIM'].includes(order.status);
 
-            // 1. Update order status
-            await tx.order.updateMany({
-                where: { id: orderId, brandId: ctx.brandId },
-                data: {
-                    status: OrderStatus.CANCELLED,
-                    cancelledAt: new Date()
-                }
+            // 1. Update status
+            await tx.order.update({
+                where: { id: orderId },
+                data: { status: 'BATAL' }
             });
 
-            // 2. Restore stock if already deducted
-            if (order.status === OrderStatus.PROCESSING) {
+            // 2. Restore stock if needed
+            if (wasDeducted) {
                 const warehouse = await tx.warehouse.findFirst({
-                    where: { brandId: ctx.brandId, isActive: true }
+                    where: { brandId: order.brandId!, isDefault: true }
                 });
 
                 if (warehouse) {
-                    for (const item of order.items) {
-                        await tx.frozenVariant.updateMany({
-                            where: { id: item.variantId, brandId: ctx.brandId },
+                    for (const item of order.orderItems) {
+                        if (!item.frozenVariantId) continue;
+
+                        // Increment stockOnHand
+                        await tx.frozenVariant.update({
+                            where: { id: item.frozenVariantId },
                             data: { stockOnHand: { increment: item.quantity } }
                         });
 
+                        // Create reversal mutation
+                        const { StockMutationType } = await import('@prisma/client');
                         await tx.stockMutation.create({
                             data: {
                                 warehouseId: warehouse.id,
-                                variantId: item.variantId,
-                                type: 'ADJUSTMENT',
+                                variantId: item.frozenVariantId,
+                                type: StockMutationType.ADJUSTMENT,
                                 quantity: item.quantity,
                                 referenceId: orderId,
-                                notes: `Order cancelled: ${reason}`,
-                                createdBy: ctx.userId
+                                notes: `Order cancelled (${reason}): Stock restored`,
+                                createdBy: ctx.userId,
+                                brandId: order.brandId!
                             }
                         });
                     }
                 }
             }
 
-            // 3. Refund loyalty points if used
-            if (order.loyaltyDiscount > 0) {
-                await this.loyaltyService.refundPoints(
-                    tx,
-                    order.userId,
-                    ctx.brandId,
-                    order.loyaltyDiscount,
-                    orderId
-                );
-            }
-
-            // 4. Audit log
-            await tx.auditLog.create({
+            // 3. Status Log
+            await tx.orderStatusLog.create({
                 data: {
-                    userId: ctx.userId,
-                    brandId: ctx.brandId,
-                    action: 'ORDER_CANCELLED',
-                    entityType: 'ORDER',
-                    entityId: orderId,
-                    metadata: { reason }
+                    orderId,
+                    status: 'BATAL',
+                    message: `Pesanan dibatalkan: ${reason}`
                 }
             });
+
+            await logSystemActivity('SYSTEM', 'WARN', `Order Cancelled: ${order.invoiceNo}`, { orderId, reason }, order.brandId!);
         });
     }
 
-
     /**
-     * Generate unique order number
+     * Update delivery information and set status to DIKIRIM (Shipped)
      */
-    private async generateOrderNumber(brandId: string): Promise<string> {
-        const brand = await prisma.brand.findUnique({
-            where: { id: brandId },
-            select: { slug: true }
-        });
-
-        const date = new Date();
-        const year = date.getFullYear().toString().slice(-2);
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const day = date.getDate().toString().padStart(2, '0');
-
-        const count = await prisma.order.count({
-            where: {
-                brandId,
-                createdAt: {
-                    gte: new Date(date.getFullYear(), date.getMonth(), date.getDate())
+    async updateDeliveryInfo(ctx: ServiceContext, orderId: string, info: {
+        courierName?: string;
+        trackingNo?: string;
+        trackingUrl?: string;
+        driverName?: string;
+        driverPhone?: string;
+    }) {
+        return unisolatedPrisma.$transaction(async (tx) => {
+            const order = await tx.order.update({
+                where: { id: orderId },
+                data: {
+                    status: 'DIKIRIM',
+                    courierName: info.courierName,
+                    trackingNo: info.trackingNo,
+                    trackingUrl: info.trackingUrl,
+                    driverName: info.driverName,
+                    driverPhone: info.driverPhone,
+                    shippedAt: new Date()
                 }
-            }
+            });
+
+            // Status Log
+            await tx.orderStatusLog.create({
+                data: {
+                    orderId,
+                    status: 'DIKIRIM',
+                    message: `Pesanan dikirim via ${info.courierName || 'Kurir'} ${info.trackingNo ? `(Resi: ${info.trackingNo})` : ''}`
+                }
+            });
+
+            await logSystemActivity('SYSTEM', 'INFO', `Order Shipped: ${order.invoiceNo}`, { orderId, courier: info.courierName, resi: info.trackingNo }, order.brandId!);
+
+            return order;
         });
-
-        const sequence = (count + 1).toString().padStart(4, '0');
-
-        return `${brand?.slug.toUpperCase()}-${year}${month}${day}-${sequence}`;
     }
 
     /**
-     * Get orders for brand
+     * Helper to get orders
      */
-    async getOrders(
-        brandId: string,
-        filters?: {
-            status?: OrderStatus;
-            userId?: string;
-            startDate?: Date;
-            endDate?: Date;
-        }
-    ) {
+    async getOrders(brandId: string) {
         return prisma.order.findMany({
-            where: {
-                brandId,
-                ...(filters?.status ? { status: filters.status } : {}),
-                ...(filters?.userId ? { userId: filters.userId } : {}),
-                ...(filters?.startDate || filters?.endDate
-                    ? {
-                        createdAt: {
-                            ...(filters.startDate ? { gte: filters.startDate } : {}),
-                            ...(filters.endDate ? { lte: filters.endDate } : {})
-                        }
-                    }
-                    : {})
-            },
+            where: { brandId },
             include: {
-                items: true,
-                payments: true,
-                user: {
-                    select: { name: true, email: true }
-                }
+                orderItems: true,
+                payments: true
             },
             orderBy: { createdAt: 'desc' }
         });
