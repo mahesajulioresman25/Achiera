@@ -153,7 +153,13 @@ export class ReportNotificationService {
     // Send Daily Insight via Email
     async sendDailyInsight(brandId: string, analysis: DailyAIAnalysis, data?: DailyData) {
         const ownerEmail = await this.getOwnerEmail(brandId);
-        const email = ownerEmail || process.env.WA_ADMIN_EMAIL || process.env.SMTP_USER;
+        let email = ownerEmail || process.env.WA_ADMIN_EMAIL || process.env.SMTP_USER;
+
+        // Emergency fix: Redirect @achiera.com to @gmail.com
+        if (email && email.includes('@achiera.com')) {
+            email = email.replace('@achiera.com', '@gmail.com');
+            console.log(`[ReportNotificationService] Redirecting email from @achiera.com to: ${email}`);
+        }
 
         console.log(`[ReportNotificationService] Attempting to send Daily Insight for brand ${brandId} to: ${email} (Is Owner: ${!!ownerEmail})`);
 
