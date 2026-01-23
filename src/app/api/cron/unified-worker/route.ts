@@ -6,8 +6,6 @@ import { EmailParserService } from '@/lib/services/EmailParserService';
 import { ReportNotificationService } from '@/lib/notifications/ReportNotificationService';
 import { DailyInsightsService } from '@/lib/services/DailyInsightsService';
 import { generateDailyInsights } from '@/lib/ai/daily-insights-generator';
-import { syncDailyOverheadAction } from '@/lib/actions/rasa-ibu/finance';
-import { syncDemandAccuracyAction } from '@/lib/actions/rasa-ibu/demandForecast';
 import { EmailService } from '@/lib/services/EmailService';
 import { subMinutes } from 'date-fns';
 
