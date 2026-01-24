@@ -259,10 +259,13 @@ export default function SettlementParserModal({ brandId, onClose }: SettlementPa
                                             className="w-full p-2.5 rounded-xl border border-gray-200 text-sm font-bold text-gray-700 bg-gray-50 focus:ring-2 focus:ring-indigo-500"
                                         >
                                             <option value="SHOPEE">SHOPEE</option>
+                                            <option value="SHOPEE_FOOD">SHOPEE FOOD</option>
                                             <option value="TOKOPEDIA">TOKOPEDIA</option>
-                                            <option value="GRABFOOD">GRABFOOD</option>
-                                            <option value="GO_FOOD">GOFOOD</option>
+                                            <option value="GRAB_FOOD">GRAB FOOD</option>
+                                            <option value="GO_FOOD">GO FOOD</option>
+                                            <option value="GRAB_MART">GRAB MART</option>
                                             <option value="TIKTOK_SHOP">TIKTOK SHOP</option>
+                                            <option value="WHATSAPP">WHATSAPP / MANUAL</option>
                                         </select>
                                     </div>
 

@@ -265,8 +265,8 @@ export default async function OwnerDashboardPage() {
                                 Brand Performance Leaderboard
                             </h3>
                         </div>
-                        <div className="p-0">
-                            <table className="w-full text-sm text-left">
+                        <div className="p-0 overflow-x-auto">
+                            <table className="w-full text-sm text-left min-w-[600px]">
                                 <thead className="bg-slate-50 text-slate-500 font-medium">
                                     <tr>
                                         <th className="px-6 py-4">Brand</th>

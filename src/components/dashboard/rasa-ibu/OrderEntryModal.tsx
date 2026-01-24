@@ -247,12 +247,16 @@ export default function OrderEntryModal({ brandId, products, onClose }: { brandI
                                         onChange={(e) => setSource(e.target.value)}
                                         className="w-full bg-white border border-[#E5E1D8] rounded-xl px-4 py-3 text-sm focus:outline-none"
                                     >
-                                        <option value="WHATSAPP">WhatsApp (Legacy)</option>
-                                        <option value="QRIS">QRIS Direct</option>
+                                        <option value="WHATSAPP">WhatsApp / Manual</option>
                                         <option value="WEBSITE">Website</option>
-                                        <option value="SHOPEE">Shopee</option>
-                                        <option value="GRABFOOD">GrabFood</option>
-                                        <option value="GOFOOD">GoFood</option>
+                                        <option value="SHOPEE">Shopee Ecommerce</option>
+                                        <option value="SHOPEE_FOOD">Shopee Food</option>
+                                        <option value="TOKOPEDIA">Tokopedia</option>
+                                        <option value="GRAB_FOOD">GrabFood</option>
+                                        <option value="GO_FOOD">GoFood</option>
+                                        <option value="GRAB_MART">GrabMart</option>
+                                        <option value="TIKTOK_SHOP">TikTok Shop</option>
+                                        <option value="QRIS">QRIS Direct</option>
                                     </select>
                                 </div>
                             </div>

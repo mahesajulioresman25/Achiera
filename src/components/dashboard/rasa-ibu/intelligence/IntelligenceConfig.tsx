@@ -123,6 +123,8 @@ export default function IntelligenceConfig({ brandId }: IntelligenceConfigProps)
                                 { key: 'grabFood', label: 'GrabFood' },
                                 { key: 'goFood', label: 'GoFood' },
                                 { key: 'tokopedia', label: 'Tokopedia' },
+                                { key: 'tiktok', label: 'TikTok Shop' },
+                                { key: 'grabMart', label: 'GrabMart' },
                                 { key: 'shopee', label: 'Shopee (Ecommerce)' }
                             ].map((channel) => (
                                 <div key={channel.key} className="space-y-2">

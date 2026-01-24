@@ -96,7 +96,29 @@ export default function KitchenDisplay({ brandId, orders, onClose }: KitchenDisp
                                             <Clock className="w-4 h-4" />
                                             {timeInSystem}m
                                         </div>
-                                        <span className="text-[8px] font-black uppercase tracking-widest text-white/30">{order.channel || 'Manual'}</span>
+                                        <div className="flex items-center gap-2 mt-1">
+                                            {(() => {
+                                                const SOURCE_LOGOS: Record<string, string> = {
+                                                    'WHATSAPP': '/images/platforms/whatsapp.png',
+                                                    'WEBSITE': '/globe.svg',
+                                                    'SHOPEE': '/images/platforms/shopee-ecomerce.png',
+                                                    'SHOPEE_FOOD': '/images/platforms/shopee.png',
+                                                    'GRAB_FOOD': '/images/platforms/grabfood.png',
+                                                    'GO_FOOD': '/images/platforms/gofood.webp',
+                                                    'TOKOPEDIA': '/images/platforms/tokopedia.png',
+                                                    'TIKTOK_SHOP': '/images/platforms/TikTok.png',
+                                                    'GRAB_MART': '/images/platforms/grabamart.png',
+                                                    'MANUAL': '/file.svg'
+                                                };
+                                                const logo = SOURCE_LOGOS[order.channel?.toUpperCase()];
+                                                return logo ? (
+                                                    <div className="w-4 h-4 rounded-sm bg-white/10 p-0.5 flex items-center justify-center">
+                                                        <img src={logo} alt={order.channel} className="w-full h-full object-contain" />
+                                                    </div>
+                                                ) : null;
+                                            })()}
+                                            <span className="text-[8px] font-black uppercase tracking-widest text-white/30">{order.channel || 'Manual'}</span>
+                                        </div>
                                     </div>
                                 </div>
 

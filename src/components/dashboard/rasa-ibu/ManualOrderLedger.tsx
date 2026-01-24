@@ -20,12 +20,17 @@ const STATUS_COLORS: Record<string, string> = {
     'SELESAI': 'bg-slate-100 text-slate-500 border-slate-200',
 };
 
-const SOURCE_ICONS: Record<string, string> = {
-    'WHATSAPP': '📱',
-    'WEBSITE': '🌐',
-    'SHOPEE': '🛍️',
-    'GRABFOOD': '🟢',
-    'GOFOOD': '🔴'
+const SOURCE_LOGOS: Record<string, string> = {
+    'WHATSAPP': '/images/platforms/whatsapp.png',
+    'WEBSITE': '/globe.svg',
+    'SHOPEE': '/images/platforms/shopee-ecomerce.png',
+    'SHOPEE_FOOD': '/images/platforms/shopee.png',
+    'GRAB_FOOD': '/images/platforms/grabfood.png',
+    'GO_FOOD': '/images/platforms/gofood.webp',
+    'TOKOPEDIA': '/images/platforms/tokopedia.png',
+    'TIKTOK_SHOP': '/images/platforms/TikTok.png',
+    'GRAB_MART': '/images/platforms/grabamart.png',
+    'MANUAL': '/file.svg'
 };
 
 interface ManualOrderLedgerProps {
@@ -158,9 +163,13 @@ export default function ManualOrderLedger({
                                 <tr key={order.id} className={`hover:bg-[#FDFBF7]/50 transition-colors ${isAttentionNeeded ? 'bg-amber-50/20' : ''}`}>
                                     <td className="px-6 py-6">
                                         <div className="flex items-center gap-2">
-                                            <span className="text-xl grayscale hover:grayscale-0 transition-all cursor-help" title={order.channel || 'Manual'}>
-                                                {SOURCE_ICONS[order.channel as keyof typeof SOURCE_ICONS] || '❓'}
-                                            </span>
+                                            <div className="w-8 h-8 rounded-lg bg-white border border-slate-100 p-1 flex items-center justify-center grayscale hover:grayscale-0 transition-all cursor-help shadow-sm" title={order.channel || 'Manual'}>
+                                                {SOURCE_LOGOS[order.channel?.toUpperCase()] ? (
+                                                    <img src={SOURCE_LOGOS[order.channel.toUpperCase()]} alt={order.channel} className="w-full h-full object-contain" />
+                                                ) : (
+                                                    <span className="text-lg">❓</span>
+                                                )}
+                                            </div>
                                             <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest whitespace-nowrap">
                                                 {order.channel || 'Manual'}
                                             </span>

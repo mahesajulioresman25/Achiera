@@ -30,6 +30,20 @@ export default function MarketplaceTracker({ brandId }: MarketplaceTrackerProps)
         load();
     }, [brandId]);
 
+    const platformLogos: Record<string, string> = {
+        'SHOPEE': '/images/platforms/shopee-ecomerce.png',
+        'SHOPEE_FOOD': '/images/platforms/shopee.png',
+        'GRAB_FOOD': '/images/platforms/grabfood.png',
+        'GO_FOOD': '/images/platforms/gofood.webp',
+        'TOKOPEDIA': '/images/platforms/tokopedia.png',
+        'TIKTOK_SHOP': '/images/platforms/TikTok.png',
+        'TIKTOK': '/images/platforms/TikTok.png',
+        'GRAB_MART': '/images/platforms/grabamart.png',
+        'WEBSITE': '/globe.svg',
+        'MANUAL': '/file.svg',
+        'WA': '/images/platforms/whatsapp.png'
+    };
+
     if (isLoading) {
         return (
             <div className="bg-white p-12 rounded-[3.5rem] border border-[#E5E1D8] flex flex-col items-center justify-center space-y-4">
@@ -94,7 +108,20 @@ export default function MarketplaceTracker({ brandId }: MarketplaceTrackerProps)
                         <div key={platform.platform} className="bg-slate-50/50 rounded-[2.5rem] p-8 border border-slate-100 flex flex-col justify-between group hover:bg-white hover:shadow-xl transition-all duration-500">
                             <div>
                                 <div className="flex justify-between items-start mb-6">
-                                    <span className="px-4 py-2 bg-white rounded-full text-[10px] font-black uppercase tracking-widest border border-slate-100 shadow-sm">{platform.platform}</span>
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 bg-white rounded-xl border border-slate-100 p-1 flex items-center justify-center shadow-sm">
+                                            {platformLogos[platform.platform.toUpperCase()] ? (
+                                                <img
+                                                    src={platformLogos[platform.platform.toUpperCase()]}
+                                                    alt={platform.platform}
+                                                    className="w-full h-full object-contain"
+                                                />
+                                            ) : (
+                                                <ShoppingBag className="w-5 h-5 text-slate-300" />
+                                            )}
+                                        </div>
+                                        <span className="text-[11px] font-black uppercase tracking-widest text-[#2D3A2D]">{platform.platform}</span>
+                                    </div>
                                     <div className="text-right">
                                         <p className="text-[9px] font-bold text-slate-400 uppercase">Total Revenue</p>
                                         <p className="text-lg font-black text-[#2D3A2D]">{currency.format(platform.totalRevenue)}</p>

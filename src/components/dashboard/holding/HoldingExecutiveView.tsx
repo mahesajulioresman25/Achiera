@@ -68,16 +68,16 @@ export default function HoldingExecutiveView({ stats, brandSummary }: HoldingExe
 
     return (
         <div className="min-h-screen bg-[#F8FAFC]">
-            {/* Sidebar Navigation */}
-            <aside className="fixed left-0 top-0 h-full w-20 bg-white border-r border-slate-200 flex flex-col items-center py-8 space-y-8 z-50">
+            {/* Sidebar Navigation - Fixed side on Desktop, Bottom tab on Mobile */}
+            <aside className="hidden lg:flex fixed left-0 top-0 h-full w-20 bg-white border-r border-slate-200 flex-col items-center py-8 space-y-8 z-50">
                 <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-indigo-900/20">
                     <Building2 className="w-6 h-6" />
                 </div>
 
                 <nav className="flex flex-col gap-4">
                     {[
-                        { id: 'overview', icon: LayoutDashboard, label: 'Dashboard' }, // Changed icon to LayoutDashboard
-                        { id: 'intelligence', icon: Brain, label: 'AI Intelligence' }, // Changed icon to Brain
+                        { id: 'overview', icon: LayoutDashboard, label: 'Dashboard' },
+                        { id: 'intelligence', icon: Brain, label: 'AI Intelligence' },
                         { id: 'finance', icon: TrendingUp, label: 'Finance' },
                         { id: 'risk', icon: ShieldCheck, label: 'Risks' },
                         { id: 'control', icon: History, label: 'Audit' }
@@ -96,11 +96,7 @@ export default function HoldingExecutiveView({ stats, brandSummary }: HoldingExe
                             </span>
                         </button>
                     ))}
-                    {/* Copyright Footer */}
-                    <div className="pt-12 pb-8 border-t border-slate-200 text-center text-slate-400 text-sm">
-                        <p>© 2026 Rasa Ibu - Achiera. Holding Governance Division.</p>
-                    </div>
-                    {/* New section for Loyalty */}
+
                     <div className="pt-8 border-t border-slate-100 flex flex-col items-center space-y-8">
                         <button
                             onClick={() => setCurrentTab('loyalty')}
@@ -132,8 +128,30 @@ export default function HoldingExecutiveView({ stats, brandSummary }: HoldingExe
                 </div>
             </aside>
 
+            {/* Mobile Bottom Navigation */}
+            <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-6 py-3 flex justify-between items-center z-[100] shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+                {[
+                    { id: 'overview', icon: LayoutDashboard },
+                    { id: 'intelligence', icon: Brain },
+                    { id: 'finance', icon: TrendingUp },
+                    { id: 'risk', icon: ShieldCheck },
+                    { id: 'control', icon: History }
+                ].map((item) => (
+                    <button
+                        key={item.id}
+                        onClick={() => setCurrentTab(item.id as any)}
+                        className={`p-3 rounded-xl transition-all ${currentTab === item.id
+                            ? 'bg-indigo-50 text-indigo-600'
+                            : 'text-slate-400'
+                            }`}
+                    >
+                        <item.icon className="w-6 h-6" />
+                    </button>
+                ))}
+            </div>
+
             {/* Main Content Area */}
-            <main className="pl-20">
+            <main className="lg:pl-20 pb-24 lg:pb-0">
                 {/* Executive Header */}
                 <header className="sticky top-0 bg-white/80 backdrop-blur-xl border-b border-slate-200 z-40 px-10 py-6">
                     <div className="flex justify-between items-center">

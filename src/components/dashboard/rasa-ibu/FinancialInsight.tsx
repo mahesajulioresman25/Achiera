@@ -74,6 +74,28 @@ export default function FinancialInsight({ pulse, onOpenLedger, onOpenReports, o
                                 <div key={item.channel} className="space-y-3 group/item">
                                     <div className="flex justify-between items-end">
                                         <div className="flex items-center gap-3">
+                                            {(() => {
+                                                const SOURCE_LOGOS: Record<string, string> = {
+                                                    'WHATSAPP': '/images/platforms/whatsapp.png',
+                                                    'WEBSITE': '/globe.svg',
+                                                    'SHOPEE': '/images/platforms/shopee-ecomerce.png',
+                                                    'SHOPEE_FOOD': '/images/platforms/shopee.png',
+                                                    'GRAB_FOOD': '/images/platforms/grabfood.png',
+                                                    'GO_FOOD': '/images/platforms/gofood.webp',
+                                                    'TOKOPEDIA': '/images/platforms/tokopedia.png',
+                                                    'TIKTOK_SHOP': '/images/platforms/TikTok.png',
+                                                    'GRAB_MART': '/images/platforms/grabamart.png',
+                                                    'MANUAL': '/file.svg'
+                                                };
+                                                const logo = SOURCE_LOGOS[item.channel?.toUpperCase()];
+                                                return logo ? (
+                                                    <div className="w-4 h-4 rounded-lg bg-slate-50 border border-slate-100 p-0.5 flex items-center justify-center">
+                                                        <img src={logo} alt={item.channel} className="w-full h-full object-contain" />
+                                                    </div>
+                                                ) : (
+                                                    <div className="w-4 h-4 rounded-full bg-slate-100"></div>
+                                                );
+                                            })()}
                                             <span className="text-[11px] font-black uppercase tracking-widest text-[#1A241A]">{item.channel}</span>
                                             <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">{item.percentage}%</span>
                                         </div>

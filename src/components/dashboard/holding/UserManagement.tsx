@@ -42,10 +42,8 @@ export default function UserManagement({ initialUsers, availableBrands }: UserMa
     const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    // Derive active user from master list
     const activeUser = users.find(u => u.id === selectedUserId);
 
-    // Form States
     const [newUser, setNewUser] = useState({
         name: '',
         email: '',
@@ -66,6 +64,7 @@ export default function UserManagement({ initialUsers, availableBrands }: UserMa
             setIsCreateModalOpen(false);
             setNewUser({ name: '', email: '', password: '', globalRole: 'USER' });
             await refreshUsers();
+            toast.success('Identity deployed successfully');
         } else {
             toast.error(res.error);
         }
@@ -127,20 +126,20 @@ export default function UserManagement({ initialUsers, availableBrands }: UserMa
     );
 
     return (
-        <div className="min-h-screen bg-[#FDFBF7] p-8">
+        <div className="min-h-screen bg-[#FDFBF7] p-4 md:p-8">
             {/* Header */}
-            <div className="max-w-7xl mx-auto mb-12 flex justify-between items-end">
+            <div className="max-w-7xl mx-auto mb-12 flex flex-col md:flex-row md:justify-between md:items-end gap-6">
                 <div className="space-y-2">
                     <div className="flex items-center gap-3 text-stone-500 mb-2">
                         <Users className="w-5 h-5" />
                         <span className="text-sm font-bold uppercase tracking-[0.2em]">Platform Governance</span>
                     </div>
-                    <h1 className="text-4xl font-black text-stone-900">User Management</h1>
-                    <p className="text-stone-500">Manage system access, global roles, and brand-specific permissions.</p>
+                    <h1 className="text-3xl md:text-4xl font-black text-stone-900">User Management</h1>
+                    <p className="text-stone-500 text-sm md:text-base">Manage system access, global roles, and brand-specific permissions.</p>
                 </div>
                 <button
                     onClick={() => setIsCreateModalOpen(true)}
-                    className="flex items-center gap-2 px-6 py-3 bg-stone-900 text-white rounded-2xl font-bold hover:bg-stone-800 transition-all shadow-xl shadow-stone-900/10"
+                    className="flex items-center justify-center gap-2 px-6 py-4 bg-stone-900 text-white rounded-2xl font-bold hover:bg-stone-800 transition-all shadow-xl shadow-stone-900/10 w-full md:w-auto"
                 >
                     <UserPlus className="w-5 h-5" />
                     Create New User
@@ -150,18 +149,18 @@ export default function UserManagement({ initialUsers, availableBrands }: UserMa
             {/* Main Content */}
             <div className="max-w-7xl mx-auto space-y-6">
                 {/* Search & Stats */}
-                <div className="flex gap-4 items-center bg-white p-4 rounded-3xl border border-stone-200 shadow-sm">
+                <div className="flex flex-col md:flex-row gap-4 md:items-center bg-white p-4 rounded-3xl border border-stone-200 shadow-sm">
                     <div className="flex-1 relative">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
                         <input
                             type="text"
                             placeholder="Search by name or email..."
-                            className="w-full pl-12 pr-4 py-3 bg-stone-50 rounded-2xl border-none focus:ring-2 focus:ring-stone-900 outline-none transition-all"
+                            className="w-full pl-12 pr-4 py-3 bg-stone-50 rounded-2xl border-none focus:ring-2 focus:ring-stone-900 outline-none transition-all text-sm"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </div>
-                    <div className="px-6 py-3 bg-amber-50 rounded-2xl border border-amber-100 flex items-center gap-3">
+                    <div className="px-6 py-3 bg-amber-50 rounded-2xl border border-amber-100 flex items-center justify-center gap-3">
                         <UserCheck className="w-5 h-5 text-amber-600" />
                         <div className="text-sm font-bold text-amber-900">
                             {users.length} Total Users
@@ -170,79 +169,81 @@ export default function UserManagement({ initialUsers, availableBrands }: UserMa
                 </div>
 
                 {/* User Table Card */}
-                <div className="bg-white rounded-[2.5rem] border border-stone-200 shadow-sm overflow-hidden">
-                    <table className="w-full text-left">
-                        <thead>
-                            <tr className="bg-stone-50 border-b border-stone-100">
-                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-stone-400">Identity</th>
-                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-stone-400">Global Role</th>
-                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-stone-400">Brand Access</th>
-                                <th className="px-8 py-5 text-right text-[10px] font-black uppercase tracking-[0.2em] text-stone-400">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-stone-50">
-                            {filteredUsers.map((user) => (
-                                <tr key={user.id} className="hover:bg-stone-50/50 transition-colors group">
-                                    <td className="px-8 py-6">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-stone-100 to-stone-200 flex items-center justify-center font-black text-stone-500">
-                                                {user.name.charAt(0)}
-                                            </div>
-                                            <div>
-                                                <p className="font-black text-stone-900">{user.name}</p>
-                                                <p className="text-xs text-stone-400">{user.email}</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-8 py-6">
-                                        <div className="flex items-center gap-2">
-                                            <Shield className={`w-4 h-4 ${user.globalRole === 'OWNER' ? 'text-amber-500' : 'text-stone-400'}`} />
-                                            <span className={`text-[10px] font-black uppercase tracking-widest ${user.globalRole === 'OWNER' ? 'text-amber-600' : 'text-stone-500'}`}>
-                                                {user.globalRole}
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td className="px-8 py-6">
-                                        <div className="flex flex-wrap gap-2">
-                                            {user.globalRole === 'OWNER' ? (
-                                                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-[10px] font-black uppercase tracking-tight border border-amber-200">
-                                                    <Shield className="w-3 h-3" />
-                                                    All Brands (Master)
-                                                </span>
-                                            ) : user.brandRoles?.length > 0 ? (
-                                                user.brandRoles.map((br: any) => (
-                                                    <span key={br.id} className="inline-flex items-center gap-1.5 px-3 py-1 bg-stone-100 text-stone-600 rounded-full text-[10px] font-black uppercase tracking-tight">
-                                                        <Building className="w-3 h-3" />
-                                                        {br.brand.name} ({br.role})
-                                                    </span>
-                                                ))
-                                            ) : (
-                                                <span className="text-[10px] font-bold text-stone-300 italic italic">No brand access</span>
-                                            )}
-                                        </div>
-                                    </td>
-                                    <td className="px-8 py-6 text-right">
-                                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button
-                                                onClick={() => { setSelectedUserId(user.id); setIsRoleModalOpen(true); }}
-                                                className="p-2 hover:bg-white rounded-xl border border-transparent hover:border-stone-200 text-stone-400 hover:text-stone-900 transition-all"
-                                                title="Permissions"
-                                            >
-                                                <Settings2 className="w-5 h-5" />
-                                            </button>
-                                            <button
-                                                onClick={() => handleDeleteUser(user.id)}
-                                                className="p-2 hover:bg-rose-50 rounded-xl border border-transparent hover:border-rose-200 text-stone-400 hover:text-rose-600 transition-all"
-                                                title="Delete User"
-                                            >
-                                                <Trash2 className="w-5 h-5" />
-                                            </button>
-                                        </div>
-                                    </td>
+                <div className="bg-white rounded-[2rem] md:rounded-[2.5rem] border border-stone-200 shadow-sm overflow-hidden">
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left min-w-[800px]">
+                            <thead>
+                                <tr className="bg-stone-50 border-b border-stone-100">
+                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-stone-400">Identity</th>
+                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-stone-400">Global Role</th>
+                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-stone-400">Brand Access</th>
+                                    <th className="px-8 py-5 text-right text-[10px] font-black uppercase tracking-[0.2em] text-stone-400">Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="divide-y divide-stone-50">
+                                {filteredUsers.map((user) => (
+                                    <tr key={user.id} className="hover:bg-stone-50/50 transition-colors group">
+                                        <td className="px-8 py-6">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-stone-100 to-stone-200 flex items-center justify-center font-black text-stone-500">
+                                                    {user.name.charAt(0)}
+                                                </div>
+                                                <div>
+                                                    <p className="font-black text-stone-900">{user.name}</p>
+                                                    <p className="text-xs text-stone-400">{user.email}</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-8 py-6">
+                                            <div className="flex items-center gap-2">
+                                                <Shield className={`w-4 h-4 ${user.globalRole === 'OWNER' ? 'text-amber-500' : 'text-stone-400'}`} />
+                                                <span className={`text-[10px] font-black uppercase tracking-widest ${user.globalRole === 'OWNER' ? 'text-amber-600' : 'text-stone-500'}`}>
+                                                    {user.globalRole}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td className="px-8 py-6">
+                                            <div className="flex flex-wrap gap-2">
+                                                {user.globalRole === 'OWNER' ? (
+                                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-[10px] font-black uppercase tracking-tight border border-amber-200">
+                                                        <Shield className="w-3 h-3" />
+                                                        All Brands (Master)
+                                                    </span>
+                                                ) : user.brandRoles?.length > 0 ? (
+                                                    user.brandRoles.map((br: any) => (
+                                                        <span key={br.id} className="inline-flex items-center gap-1.5 px-3 py-1 bg-stone-100 text-stone-600 rounded-full text-[10px] font-black uppercase tracking-tight">
+                                                            <Building className="w-3 h-3" />
+                                                            {br.brand.name} ({br.role})
+                                                        </span>
+                                                    ))
+                                                ) : (
+                                                    <span className="text-[10px] font-bold text-stone-300 italic">No brand access</span>
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td className="px-8 py-6 text-right">
+                                            <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <button
+                                                    onClick={() => { setSelectedUserId(user.id); setIsRoleModalOpen(true); }}
+                                                    className="p-2 hover:bg-white rounded-xl border border-transparent hover:border-stone-200 text-stone-400 hover:text-stone-900 transition-all"
+                                                    title="Permissions"
+                                                >
+                                                    <Settings2 className="w-5 h-5" />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeleteUser(user.id)}
+                                                    className="p-2 hover:bg-rose-50 rounded-xl border border-transparent hover:border-rose-200 text-stone-400 hover:text-rose-600 transition-all"
+                                                    title="Delete User"
+                                                >
+                                                    <Trash2 className="w-5 h-5" />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -316,8 +317,8 @@ export default function UserManagement({ initialUsers, availableBrands }: UserMa
                                     </select>
                                 </div>
                             </div>
-                            <button type="submit" className="w-full py-4 bg-stone-900 text-white font-black uppercase tracking-widest rounded-2xl hover:bg-stone-800 transition-all shadow-xl shadow-stone-900/20">
-                                Deploy Identity
+                            <button type="submit" disabled={isLoading} className="w-full py-4 bg-stone-900 text-white font-black uppercase tracking-widest rounded-2xl hover:bg-stone-800 transition-all shadow-xl shadow-stone-900/20 disabled:opacity-50">
+                                {isLoading ? 'Processing...' : 'Deploy Identity'}
                             </button>
                         </form>
                     </div>

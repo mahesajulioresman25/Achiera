@@ -22,16 +22,22 @@ export default function PlatformSettingsModal({ brandId, onClose }: PlatformSett
         marketplaceFees: {
             WHATSAPP: 0,
             SHOPEE: 15,
+            SHOPEE_FOOD: 20,
             GRAB_FOOD: 25,
             GO_FOOD: 25,
-            TIKTOK_SHOP: 12
+            TOKOPEDIA: 10,
+            TIKTOK_SHOP: 12,
+            GRAB_MART: 20
         },
         mdrFees: {
             WHATSAPP: 0,
             SHOPEE: 1.5,
+            SHOPEE_FOOD: 0,
             GRAB_FOOD: 0,
             GO_FOOD: 0,
-            TIKTOK_SHOP: 0
+            TOKOPEDIA: 1.5,
+            TIKTOK_SHOP: 0,
+            GRAB_MART: 0
         },
         campaignFees: {},
         taxRates: {
@@ -48,17 +54,24 @@ export default function PlatformSettingsModal({ brandId, onClose }: PlatformSett
         async function load() {
             const res = await getPlatformSettingsAction(brandId);
             if (res.success && res.settings) {
-                // Ensure mdrFees exists if loading from old data
+                // Ensure mdrFees and marketplaceFees exist if loading from old data
                 const loaded = res.settings;
                 if (!loaded.mdrFees) {
                     loaded.mdrFees = {
                         WHATSAPP: 0,
                         SHOPEE: 1.5,
+                        SHOPEE_FOOD: 0,
                         GRAB_FOOD: 0,
                         GO_FOOD: 0,
-                        TIKTOK_SHOP: 0
+                        TOKOPEDIA: 1.5,
+                        TIKTOK_SHOP: 0,
+                        GRAB_MART: 0
                     };
                 }
+                if (!loaded.marketplaceFees.SHOPEE_FOOD) loaded.marketplaceFees.SHOPEE_FOOD = 20;
+                if (!loaded.marketplaceFees.TOKOPEDIA) loaded.marketplaceFees.TOKOPEDIA = 10;
+                if (!loaded.marketplaceFees.GRAB_MART) loaded.marketplaceFees.GRAB_MART = 20;
+
                 setSettings(loaded);
             }
             setIsLoading(false);
@@ -136,22 +149,22 @@ export default function PlatformSettingsModal({ brandId, onClose }: PlatformSett
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#2D3A2D]/40 backdrop-blur-md p-6">
             <div className="bg-[#FDFBF7] w-full max-w-4xl rounded-[2.5rem] shadow-2xl border border-[#E5E1D8] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-300 max-h-[90vh]">
-                <div className="px-10 py-8 border-b border-[#E5E1D8] bg-white flex justify-between items-center">
+                <div className="px-6 md:px-10 py-6 md:py-8 border-b border-[#E5E1D8] bg-white flex justify-between items-center">
                     <div className="flex items-center gap-4">
-                        <div className="p-3 bg-emerald-600 text-white rounded-2xl">
+                        <div className="p-2 md:p-3 bg-emerald-600 text-white rounded-2xl">
                             <Settings className="w-5 h-5" />
                         </div>
                         <div>
                             <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#8B7E66]">Konfigurasi Sistem</span>
-                            <h2 className="text-2xl font-black text-[#2D3A2D]">Pengaturan Finansial</h2>
+                            <h2 className="text-xl md:text-2xl font-black text-[#2D3A2D]">Pengaturan Finansial</h2>
                         </div>
                     </div>
-                    <button onClick={onClose} className="p-3 hover:bg-slate-100 rounded-full transition-colors">
+                    <button onClick={onClose} className="p-2 md:p-3 hover:bg-slate-100 rounded-full transition-colors">
                         <X className="w-6 h-6 text-slate-400" />
                     </button>
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-10 space-y-12 custom-scrollbar">
+                <div className="flex-1 overflow-y-auto p-6 md:p-10 space-y-12 custom-scrollbar">
                     {/* Bank Transfer Settings - NEW */}
                     <BankSettingsPanel brandId={brandId} />
 
@@ -181,6 +194,26 @@ export default function PlatformSettingsModal({ brandId, onClose }: PlatformSett
                             {Object.entries(settings.marketplaceFees).map(([channel, fee]: [string, any]) => (
                                 <div key={channel} className="bg-white border border-[#E5E1D8] p-5 rounded-2xl space-y-4 shadow-sm hover:shadow-md transition-shadow">
                                     <h4 className="text-[11px] font-black text-[#2D3A2D] uppercase tracking-wider flex items-center gap-2">
+                                        {(() => {
+                                            const SOURCE_LOGOS: Record<string, string> = {
+                                                'WHATSAPP': '/images/platforms/whatsapp.png',
+                                                'WEBSITE': '/globe.svg',
+                                                'SHOPEE': '/images/platforms/shopee-ecomerce.png',
+                                                'SHOPEE_FOOD': '/images/platforms/shopee.png',
+                                                'GRAB_FOOD': '/images/platforms/grabfood.png',
+                                                'GO_FOOD': '/images/platforms/gofood.webp',
+                                                'TOKOPEDIA': '/images/platforms/tokopedia.png',
+                                                'TIKTOK_SHOP': '/images/platforms/TikTok.png',
+                                                'GRAB_MART': '/images/platforms/grabamart.png',
+                                                'MANUAL': '/file.svg'
+                                            };
+                                            const logo = SOURCE_LOGOS[channel.toUpperCase()];
+                                            return logo ? (
+                                                <div className="w-4 h-4 rounded bg-slate-50 border border-slate-100 p-0.5 flex items-center justify-center">
+                                                    <img src={logo} alt={channel} className="w-full h-full object-contain" />
+                                                </div>
+                                            ) : null;
+                                        })()}
                                         {channel.replace('_', ' ')}
                                     </h4>
 

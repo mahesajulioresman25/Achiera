@@ -69,9 +69,31 @@ export default function DigitalReceipt({ order, onClose }: DigitalReceiptProps) 
                         <span>PELANGGAN</span>
                         <span className="font-bold">{order.customerName}</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between items-center">
                         <span>SUMBER</span>
-                        <span className="font-bold uppercase tracking-wider">{order.channel || 'OFFLINE'}</span>
+                        <div className="flex items-center gap-1.5 font-bold uppercase tracking-wider">
+                            {(() => {
+                                const SOURCE_LOGOS: Record<string, string> = {
+                                    'WHATSAPP': '/images/platforms/whatsapp.png',
+                                    'WEBSITE': '/globe.svg',
+                                    'SHOPEE': '/images/platforms/shopee-ecomerce.png',
+                                    'SHOPEE_FOOD': '/images/platforms/shopee.png',
+                                    'GRAB_FOOD': '/images/platforms/grabfood.png',
+                                    'GO_FOOD': '/images/platforms/gofood.webp',
+                                    'TOKOPEDIA': '/images/platforms/tokopedia.png',
+                                    'TIKTOK_SHOP': '/images/platforms/TikTok.png',
+                                    'GRAB_MART': '/images/platforms/grabamart.png',
+                                    'MANUAL': '/file.svg'
+                                };
+                                const logo = SOURCE_LOGOS[order.channel?.toUpperCase()];
+                                return logo ? (
+                                    <div className="w-3 h-3 grayscale opacity-70">
+                                        <img src={logo} alt={order.channel} className="w-full h-full object-contain" />
+                                    </div>
+                                ) : null;
+                            })()}
+                            {order.channel || 'OFFLINE'}
+                        </div>
                     </div>
                     {(() => {
                         const deliveryMatch = order.customerNote?.match(/^\[(.*?)\]/);

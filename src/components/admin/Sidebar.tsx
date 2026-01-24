@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
@@ -21,6 +22,8 @@ import {
     Zap,
     ShieldAlert,
     Users,
+    Menu,
+    X
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -30,6 +33,7 @@ interface SidebarProps {
 export default function Sidebar({ brandSlug }: SidebarProps) {
     const pathname = usePathname();
     const { data: session } = useSession();
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const brandRoles = (session?.user as any)?.brandRoles || [];
     const currentBrand = brandRoles.find((br: any) => br.brandSlug === brandSlug);
@@ -187,101 +191,128 @@ export default function Sidebar({ brandSlug }: SidebarProps) {
     };
 
     return (
-        <div className="w-64 bg-white border-r border-stone-200 min-h-screen flex flex-col" suppressHydrationWarning>
-            {/* Logo & Brand */}
-            <div className="p-6 border-b border-stone-200" suppressHydrationWarning>
-                <div className="flex items-center gap-3 mb-2" suppressHydrationWarning>
-                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center" suppressHydrationWarning>
-                        <Building2 className="w-5 h-5 text-white" />
-                    </div>
-                    <div suppressHydrationWarning>
-                        <h1 className="text-lg font-bold text-stone-900" suppressHydrationWarning>
-                            {currentBrand?.brandName || 'ACHIERA'}
-                        </h1>
-                    </div>
-                </div>
-                <p className="text-xs text-stone-500" suppressHydrationWarning>Admin Dashboard</p>
-            </div>
-
-            {/* Navigation */}
-            <nav className="flex-1 p-4 space-y-1" suppressHydrationWarning>
-                {menuItems.map((item, idx) => {
-                    if ('items' in item) {
-                        // Section with submenu
-                        return (
-                            <div key={idx} className="mb-4" suppressHydrationWarning>
-                                <div className="px-3 py-2 text-xs font-semibold text-stone-500 uppercase tracking-wider" suppressHydrationWarning>
-                                    {item.title}
-                                </div>
-                                <div className="space-y-1" suppressHydrationWarning>
-                                    {item.items?.map((subItem) => {
-                                        const Icon = subItem.icon;
-                                        const isActive = pathname === subItem.href;
-                                        return (
-                                            <Link
-                                                key={subItem.href}
-                                                href={subItem.href}
-                                                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive
-                                                    ? 'bg-amber-100 text-amber-900'
-                                                    : 'text-stone-700 hover:bg-stone-100'
-                                                    }`}
-                                                suppressHydrationWarning
-                                            >
-                                                <Icon className="w-4 h-4" />
-                                                {subItem.title}
-                                            </Link>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-                        );
-                    } else {
-                        // Single menu item
-                        const Icon = item.icon;
-                        const isActive = pathname === item.href;
-                        return (
-                            <Link
-                                key={item.href}
-                                href={item.href}
-                                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive
-                                    ? 'bg-amber-100 text-amber-900'
-                                    : 'text-stone-700 hover:bg-stone-100'
-                                    }`}
-                                suppressHydrationWarning
-                            >
-                                <Icon className="w-4 h-4" />
-                                {item.title}
-                            </Link>
-                        );
-                    }
-                })}
-            </nav>
-
-            {/* Brand Switcher (if user has multiple brands) */}
-            {brandRoles.length > 1 && (
-                <div className="p-4 border-t border-stone-200" suppressHydrationWarning>
-                    <Link
-                        href="/dashboard"
-                        className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-stone-700 hover:bg-stone-100 transition-colors"
-                        suppressHydrationWarning
-                    >
-                        <Building2 className="w-4 h-4" />
-                        Switch Brand
-                    </Link>
-                </div>
-            )}
-
-            {/* Sign Out */}
-            <div className="p-4 border-t border-stone-200" suppressHydrationWarning>
+        <>
+            {/* Mobile Toggle Button */}
+            <div className="lg:hidden fixed top-4 left-4 z-[60]">
                 <button
-                    onClick={handleSignOut}
-                    className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-red-700 hover:bg-red-50 w-full transition-colors"
-                    suppressHydrationWarning
+                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                    className="p-3 bg-white border border-stone-200 rounded-xl shadow-lg text-stone-900"
                 >
-                    <LogOut className="w-4 h-4" />
-                    Sign Out
+                    {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                 </button>
             </div>
-        </div>
+
+            {/* Mobile Overlay */}
+            {isMobileMenuOpen && (
+                <div
+                    className="fixed inset-0 bg-black/50 z-[50] lg:hidden"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                />
+            )}
+
+            {/* Sidebar Container */}
+            <div className={`
+                w-64 bg-white border-r border-stone-200 min-h-screen flex flex-col 
+                fixed lg:relative z-[55] lg:z-auto transition-transform duration-300
+                ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+            `} suppressHydrationWarning>
+                {/* Logo & Brand */}
+                <div className="p-6 border-b border-stone-200" suppressHydrationWarning>
+                    <div className="flex items-center gap-3 mb-2" suppressHydrationWarning>
+                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center" suppressHydrationWarning>
+                            <Building2 className="w-5 h-5 text-white" />
+                        </div>
+                        <div suppressHydrationWarning>
+                            <h1 className="text-lg font-bold text-stone-900 leading-tight" suppressHydrationWarning>
+                                {currentBrand?.brandName || 'ACHIERA'}
+                            </h1>
+                        </div>
+                    </div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-stone-400" suppressHydrationWarning>Admin Dashboard</p>
+                </div>
+
+                {/* Navigation */}
+                <nav className="flex-1 p-4 space-y-1 overflow-y-auto" suppressHydrationWarning>
+                    {menuItems.map((item, idx) => {
+                        if ('items' in item) {
+                            // Section with submenu
+                            return (
+                                <div key={idx} className="mb-4" suppressHydrationWarning>
+                                    <div className="px-3 py-2 text-[10px] font-black text-stone-400 uppercase tracking-widest" suppressHydrationWarning>
+                                        {item.title}
+                                    </div>
+                                    <div className="space-y-1" suppressHydrationWarning>
+                                        {item.items?.map((subItem) => {
+                                            const Icon = subItem.icon;
+                                            const isActive = pathname === subItem.href;
+                                            return (
+                                                <Link
+                                                    key={subItem.href}
+                                                    href={subItem.href}
+                                                    onClick={() => setIsMobileMenuOpen(false)}
+                                                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive
+                                                        ? 'bg-amber-100 text-amber-900 shadow-sm'
+                                                        : 'text-stone-700 hover:bg-stone-50'
+                                                        }`}
+                                                    suppressHydrationWarning
+                                                >
+                                                    <Icon className="w-4 h-4" />
+                                                    {subItem.title}
+                                                </Link>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            );
+                        } else {
+                            // Single menu item
+                            const Icon = item.icon;
+                            const isActive = pathname === item.href;
+                            return (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive
+                                        ? 'bg-amber-100 text-amber-900 shadow-sm'
+                                        : 'text-stone-700 hover:bg-stone-50'
+                                        }`}
+                                    suppressHydrationWarning
+                                >
+                                    <Icon className="w-4 h-4" />
+                                    {item.title}
+                                </Link>
+                            );
+                        }
+                    })}
+                </nav>
+
+                {/* Brand Switcher (if user has multiple brands) */}
+                {brandRoles.length > 1 && (
+                    <div className="p-4 border-t border-stone-200" suppressHydrationWarning>
+                        <Link
+                            href="/dashboard"
+                            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-stone-700 hover:bg-stone-50 transition-colors"
+                            suppressHydrationWarning
+                        >
+                            <Building2 className="w-4 h-4" />
+                            Switch Brand
+                        </Link>
+                    </div>
+                )}
+
+                {/* Sign Out */}
+                <div className="p-4 border-t border-stone-200" suppressHydrationWarning>
+                    <button
+                        onClick={handleSignOut}
+                        className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-red-700 hover:bg-red-50 w-full transition-colors font-bold"
+                        suppressHydrationWarning
+                    >
+                        <LogOut className="w-4 h-4" />
+                        Sign Out
+                    </button>
+                </div>
+            </div>
+        </>
     );
 }

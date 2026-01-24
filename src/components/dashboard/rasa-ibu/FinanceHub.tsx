@@ -462,18 +462,42 @@ export default function FinanceHub({ brandId, pulse, onBack, onOpenExpenseEntry,
                         </div>
 
                         <div className="mt-8 space-y-5">
-                            {pulse.channelBreakdown.map((item, idx) => (
-                                <div key={item.channel} className="flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[idx % COLORS.length] }}></div>
-                                        <span className="text-[10px] font-black uppercase text-[#1A241A] tracking-wider">{item.channel}</span>
+                            {pulse.channelBreakdown.map((item, idx) => {
+                                const platformLogos: Record<string, string> = {
+                                    'SHOPEE': '/images/platforms/shopee-ecomerce.png',
+                                    'SHOPEE_FOOD': '/images/platforms/shopee.png',
+                                    'GRAB_FOOD': '/images/platforms/grabfood.png',
+                                    'GO_FOOD': '/images/platforms/gofood.webp',
+                                    'TOKOPEDIA': '/images/platforms/tokopedia.png',
+                                    'TIKTOK_SHOP': '/images/platforms/TikTok.png',
+                                    'TIKTOK': '/images/platforms/TikTok.png',
+                                    'GRAB_MART': '/images/platforms/grabamart.png',
+                                    'WEBSITE': '/globe.svg',
+                                    'MANUAL': '/file.svg',
+                                    'WA': '/images/platforms/whatsapp.png',
+                                    'WHATSAPP': '/images/platforms/whatsapp.png'
+                                };
+                                const logo = platformLogos[item.channel.toUpperCase()];
+
+                                return (
+                                    <div key={item.channel} className="flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-6 h-6 rounded-lg bg-slate-50 border border-slate-100 p-0.5 flex items-center justify-center">
+                                                {logo ? (
+                                                    <img src={logo} alt={item.channel} className="w-full h-full object-contain" />
+                                                ) : (
+                                                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[idx % COLORS.length] }}></div>
+                                                )}
+                                            </div>
+                                            <span className="text-[10px] font-black uppercase text-[#1A241A] tracking-wider">{item.channel}</span>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-[10px] font-black">{currency.format(item.netAmount)}</p>
+                                            <p className="text-[8px] font-bold text-emerald-600">Margin: {item.grossAmount > 0 ? Math.round((item.netAmount / item.grossAmount) * 100) : 0}%</p>
+                                        </div>
                                     </div>
-                                    <div className="text-right">
-                                        <p className="text-[10px] font-black">{currency.format(item.netAmount)}</p>
-                                        <p className="text-[8px] font-bold text-emerald-600">Margin: {item.grossAmount > 0 ? Math.round((item.netAmount / item.grossAmount) * 100) : 0}%</p>
-                                    </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     </div>
 
