@@ -128,7 +128,7 @@ export async function GET(req: NextRequest) {
                     include: { product: true }
                 });
                 if (lowStock.length > 0) {
-                    await notificationService.sendLowStockAlert(brand.id, lowStock.map(v => ({ name: v.product.name, stock: v.stockOnHand, min: 5 })));
+                    await notificationService.sendLowStockAlert(brand.id, lowStock.map((v: any) => ({ name: v.product.name, stock: v.stockOnHand, min: 5 })));
                 }
                 brandResults.tasks.push({ name: 'emergency-alerts', status: 'success' });
             } catch (e) {
