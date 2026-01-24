@@ -91,13 +91,30 @@ export async function GET(req: NextRequest) {
             // TASK 4: Daily Insights & Anomalies (Daily window)
             if (isDailyWindow) {
                 try {
-                    const dataService = new DailyInsightsService();
-                    const notificationService = new ReportNotificationService();
-                    const data = await dataService.collectDailyData(brand.id);
-                    const anomalies = dataService.detectAnomalies(data);
-                    const analysis = await generateDailyInsights(data, anomalies);
-                    await notificationService.sendDailyInsight(brand.id, analysis, data);
-                    brandResults.tasks.push({ name: 'daily-insights', status: 'success' });
+                    // Check if already generated today to prevent duplicates
+                    const startOfToday = new Date();
+                    startOfToday.setHours(0, 0, 0, 0);
+
+                    const existingLog = await prisma.appLog.findFirst({
+                        where: {
+                            brandId: brand.id,
+                            type: 'REPORT_GENERATED',
+                            createdAt: { gte: startOfToday },
+                            message: { contains: 'Daily Insight' }
+                        }
+                    });
+
+                    if (existingLog) {
+                        brandResults.tasks.push({ name: 'daily-insights', status: 'skipped', message: 'Already generated today' });
+                    } else {
+                        const dataService = new DailyInsightsService();
+                        const notificationService = new ReportNotificationService();
+                        const data = await dataService.collectDailyData(brand.id);
+                        const anomalies = dataService.detectAnomalies(data);
+                        const analysis = await generateDailyInsights(data, anomalies);
+                        await notificationService.sendDailyInsight(brand.id, analysis, data);
+                        brandResults.tasks.push({ name: 'daily-insights', status: 'success' });
+                    }
                 } catch (e) {
                     brandResults.tasks.push({ name: 'daily-insights', status: 'failed', error: String(e) });
                 }

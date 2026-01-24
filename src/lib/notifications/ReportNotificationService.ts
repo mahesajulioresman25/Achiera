@@ -192,15 +192,18 @@ export class ReportNotificationService {
             }
         }
 
+        const brand = await prisma.brand.findUnique({ where: { id: brandId }, select: { name: true } });
+        const brandName = brand?.name || 'Rasa Ibu';
+
         const message = `
-            <h3>📅 Insight Harian - ${date}</h3>
+            <h3>📅 Insight Harian [${brandName}] - ${date}</h3>
             ${data ? `<p>Omset: Rp ${data.today.revenue.toLocaleString()}</p>` : ''}
             <p><strong>Analisis AI:</strong><br>${analysis.analysis}</p>
             <p><strong>Rekomendasi:</strong><br>${analysis.recommendations.join('<br>')}</p>
             <p><em>Note: Detail insight harian terlampir dalam format PDF.</em></p>
         `;
 
-        if (await EmailService.sendAdminAlert(`Insight Harian - ${date}`, message, pdfAttachment || undefined, email)) {
+        if (await EmailService.sendAdminAlert(`Insight Harian [${brandName}] - ${date}`, message, pdfAttachment || undefined, email)) {
             // Log success
             try {
                 const { logSystemActivity } = await import('@/lib/logger');

@@ -269,17 +269,16 @@ export async function updateOrderStatus(
             // 💬 SEND WHATSAPP NOTIFICATION (Non-blocking)
             if (order.customerPhone) {
                 try {
-                    const { quikWAService } = await import('@/lib/services/QuikWAService');
-                    await quikWAService.sendShippingNotification({
-                        invoiceNo: order.invoiceNo,
-                        customerName: order.customerName,
-                        customerPhone: order.customerPhone,
-                        courierName: deliveryData.courierName,
-                        trackingNo: deliveryData.trackingNo,
-                        trackingUrl: deliveryData.trackingUrl,
-                        driverName: deliveryData.driverName,
-                        brandId: order.brandId || undefined
-                    });
+                    const { WhatsAppService } = await import('@/lib/services/WhatsAppService');
+                    await WhatsAppService.sendStatusUpdate(
+                        {
+                            invoiceNo: order.invoiceNo,
+                            customerName: order.customerName,
+                            customerPhone: order.customerPhone,
+                            brandId: order.brandId
+                        },
+                        'DIKIRIM'
+                    );
                 } catch (waErr) {
                     console.error('Failed to send WhatsApp notification:', waErr);
                 }
@@ -327,24 +326,19 @@ export async function updateOrderStatus(
         // 💬 SEND WHATSAPP NOTIFICATION (Non-blocking)
         if (order.customerPhone) {
             try {
-                const { quikWAService } = await import('@/lib/services/QuikWAService');
+                const { WhatsAppService } = await import('@/lib/services/WhatsAppService');
 
                 // Send appropriate notification based on status
-                if (status === 'DIBAYAR') {
-                    await quikWAService.sendPaymentConfirmation({
-                        invoiceNo: order.invoiceNo,
-                        customerName: order.customerName,
-                        customerPhone: order.customerPhone,
-                        totalAmount: Number(order.totalAmount || order.total),
-                        brandId: order.brandId || undefined
-                    });
-                } else if (status === 'SELESAI') {
-                    await quikWAService.sendDeliveryCompleted({
-                        invoiceNo: order.invoiceNo,
-                        customerName: order.customerName,
-                        customerPhone: order.customerPhone,
-                        brandId: order.brandId || undefined
-                    });
+                if (status === 'DIBAYAR' || status === 'SELESAI') {
+                    await WhatsAppService.sendStatusUpdate(
+                        {
+                            invoiceNo: order.invoiceNo,
+                            customerName: order.customerName,
+                            customerPhone: order.customerPhone,
+                            brandId: order.brandId || undefined
+                        },
+                        status
+                    );
                 }
             } catch (waErr) {
                 console.error('Failed to send WhatsApp notification:', waErr);
