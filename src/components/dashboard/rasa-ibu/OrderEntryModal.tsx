@@ -22,6 +22,8 @@ export default function OrderEntryModal({ brandId, products, onClose }: { brandI
     const [isAutofilling, setIsAutofilling] = useState(false);
     const [loyaltyInfo, setLoyaltyInfo] = useState<any>(null);
     const [pointValue, setPointValue] = useState<number>(100);
+    const [deliveryOption, setDeliveryOption] = useState('Ambil di Dapur');
+    const [courierType, setCourierType] = useState('');
 
     // Cart state
     const [cart, setCart] = useState<any[]>([]);
@@ -150,7 +152,9 @@ export default function OrderEntryModal({ brandId, products, onClose }: { brandI
             totalAmount: finalTotal,
             existingOrderId: selectedSkeletonId || undefined,
             // @ts-ignore
-            redeemedPoints: usePoints ? availableToUse : 0
+            redeemedPoints: usePoints ? availableToUse : 0,
+            deliveryOption,
+            courierType: deliveryOption !== 'Ambil di Dapur' ? courierType : undefined
         });
 
         if (res.success) {
@@ -259,6 +263,75 @@ export default function OrderEntryModal({ brandId, products, onClose }: { brandI
                                         <option value="QRIS">QRIS Direct</option>
                                     </select>
                                 </div>
+                            </div>
+
+                            {/* Delivery System Section */}
+                            <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100 space-y-6">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-indigo-600">Sistem Pengiriman</label>
+                                    <div className="flex gap-2">
+                                        {['Ambil di Dapur', 'Kurir Instan', 'Ekspedisi'].map((pref) => (
+                                            <button
+                                                key={pref}
+                                                type="button"
+                                                onClick={() => {
+                                                    setDeliveryOption(pref);
+                                                    if (pref === 'Kurir Instan') setCourierType('GrabExpress');
+                                                    if (pref === 'Ekspedisi') setCourierType('JNE');
+                                                    if (pref === 'Ambil di Dapur') setCourierType('');
+                                                }}
+                                                className={`flex-1 px-3 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest border transition-all ${deliveryOption === pref
+                                                    ? 'bg-indigo-600 text-white border-indigo-600 shadow-lg shadow-indigo-200'
+                                                    : 'bg-white text-slate-400 border-slate-200 hover:border-indigo-300'
+                                                    }`}
+                                            >
+                                                {pref === 'Ekspedisi' ? '📦 Ekspedisi' : pref === 'Kurir Instan' ? '🚀 Instan' : '🏠 Ambil'}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {deliveryOption === 'Kurir Instan' && (
+                                    <div className="space-y-3 animate-in fade-in slide-in-from-top-2">
+                                        <label className="text-[9px] font-black uppercase tracking-widest text-[#B2BCA2]">Pilih Kurir Instan</label>
+                                        <div className="flex flex-wrap gap-2">
+                                            {['GrabExpress', 'GoSend', 'Shopee Express'].map((c) => (
+                                                <button
+                                                    key={c}
+                                                    type="button"
+                                                    onClick={() => setCourierType(c)}
+                                                    className={`px-3 py-2 rounded-xl text-[9px] font-black uppercase border transition-all ${courierType === c
+                                                        ? 'bg-amber-500 text-white border-amber-500 shadow-md'
+                                                        : 'bg-white text-slate-400 border-slate-200 hover:border-amber-300'
+                                                        }`}
+                                                >
+                                                    {c}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {deliveryOption === 'Ekspedisi' && (
+                                    <div className="space-y-3 animate-in fade-in slide-in-from-top-2">
+                                        <label className="text-[9px] font-black uppercase tracking-widest text-[#B2BCA2]">Pilih Jasa Ekspedisi</label>
+                                        <div className="flex flex-wrap gap-2">
+                                            {['JNE', 'J&T', 'SiCepat'].map((c) => (
+                                                <button
+                                                    key={c}
+                                                    type="button"
+                                                    onClick={() => setCourierType(c)}
+                                                    className={`px-3 py-2 rounded-xl text-[9px] font-black uppercase border transition-all ${courierType === c
+                                                        ? 'bg-blue-600 text-white border-blue-600 shadow-md'
+                                                        : 'bg-white text-slate-400 border-slate-200 hover:border-blue-300'
+                                                        }`}
+                                                >
+                                                    {c}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                         <div className="space-y-2">

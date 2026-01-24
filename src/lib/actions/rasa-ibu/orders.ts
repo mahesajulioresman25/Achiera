@@ -21,6 +21,8 @@ export async function createManualOrder(data: {
     warehouseId?: string;
     existingOrderId?: string;
     redeemedPoints?: number;
+    deliveryOption?: string;
+    courierType?: string;
 }) {
     try {
         // Validate stock availability
@@ -132,7 +134,7 @@ export async function createManualOrder(data: {
                 data: {
                     brandId: data.brandId,
                     brand: { connect: { id: data.brandId } },
-                    invoiceNo: `INV-${Date.now()}`,
+                    invoiceNo: `INV-MAN-${Date.now()}`,
                     quantity: data.items.reduce((sum: number, item: any) => sum + item.quantity, 0),
                     subtotal: data.totalAmount + discountValue, // Gross amount before discount
                     total: data.totalAmount, // Net amount after discount
@@ -142,8 +144,10 @@ export async function createManualOrder(data: {
                     channel: data.channel || 'WHATSAPP',
                     internalNotes: fullNotes,
                     status: ['SHOPEE', 'GRABFOOD', 'GOFOOD'].includes(data.channel) ? 'COMPLETED' : 'DIPESAN',
-                    manualRef: data.manualRef || `RI-${Math.floor(1000 + Math.random() * 9000)}`,
+                    manualRef: data.manualRef || `RI-M-${Math.floor(1000 + Math.random() * 9000)}`,
                     warehouse: { connect: { id: warehouseId } },
+                    courierName: data.courierType || data.deliveryOption,
+                    customerNote: `[${data.deliveryOption || 'PENGAMBILAN'}${data.courierType ? ` - ${data.courierType}` : ''}]`.trim(),
                     orderItems: {
                         create: data.items.map(item => ({
                             name: item.name,
