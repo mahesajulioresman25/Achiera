@@ -99,7 +99,7 @@ export default function KitchenDisplay({ brandId, orders, onClose }: KitchenDisp
                                         <div className="flex items-center gap-2 mt-1">
                                             {(() => {
                                                 const SOURCE_LOGOS: Record<string, string> = {
-                                                    'WHATSAPP': '/images/platforms/whatsapp.png',
+                                                    'WHATSAPP': '/images/platforms/shopee.png',
                                                     'WEBSITE': '/globe.svg',
                                                     'SHOPEE': '/images/platforms/shopee-ecomerce.png',
                                                     'SHOPEE_FOOD': '/images/platforms/shopee.png',

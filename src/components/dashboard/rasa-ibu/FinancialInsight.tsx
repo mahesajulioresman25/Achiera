@@ -76,7 +76,7 @@ export default function FinancialInsight({ pulse, onOpenLedger, onOpenReports, o
                                         <div className="flex items-center gap-3">
                                             {(() => {
                                                 const SOURCE_LOGOS: Record<string, string> = {
-                                                    'WHATSAPP': '/images/platforms/whatsapp.png',
+                                                    'WHATSAPP': '/images/platforms/shopee.png',
                                                     'WEBSITE': '/globe.svg',
                                                     'SHOPEE': '/images/platforms/shopee-ecomerce.png',
                                                     'SHOPEE_FOOD': '/images/platforms/shopee.png',

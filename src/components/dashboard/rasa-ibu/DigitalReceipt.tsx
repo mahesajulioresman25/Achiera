@@ -74,7 +74,7 @@ export default function DigitalReceipt({ order, onClose }: DigitalReceiptProps) 
                         <div className="flex items-center gap-1.5 font-bold uppercase tracking-wider">
                             {(() => {
                                 const SOURCE_LOGOS: Record<string, string> = {
-                                    'WHATSAPP': '/images/platforms/whatsapp.png',
+                                    'WHATSAPP': '/images/platforms/shopee.png',
                                     'WEBSITE': '/globe.svg',
                                     'SHOPEE': '/images/platforms/shopee-ecomerce.png',
                                     'SHOPEE_FOOD': '/images/platforms/shopee.png',

@@ -196,7 +196,7 @@ export default function PlatformSettingsModal({ brandId, onClose }: PlatformSett
                                     <h4 className="text-[11px] font-black text-[#2D3A2D] uppercase tracking-wider flex items-center gap-2">
                                         {(() => {
                                             const SOURCE_LOGOS: Record<string, string> = {
-                                                'WHATSAPP': '/images/platforms/whatsapp.png',
+                                                'WHATSAPP': '/images/platforms/shopee.png',
                                                 'WEBSITE': '/globe.svg',
                                                 'SHOPEE': '/images/platforms/shopee-ecomerce.png',
                                                 'SHOPEE_FOOD': '/images/platforms/shopee.png',

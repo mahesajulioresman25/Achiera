@@ -21,7 +21,7 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 const SOURCE_LOGOS: Record<string, string> = {
-    'WHATSAPP': '/images/platforms/whatsapp.png',
+    'WHATSAPP': '/images/platforms/shopee.png', // Fallback for now or use a dedicated WA logo if found
     'WEBSITE': '/globe.svg',
     'SHOPEE': '/images/platforms/shopee-ecomerce.png',
     'SHOPEE_FOOD': '/images/platforms/shopee.png',
