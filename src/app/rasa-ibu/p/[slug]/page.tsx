@@ -63,7 +63,7 @@ async function CampaignContent({ slug }: { slug: string }) {
                         <span className="text-xs font-black text-amber-500 uppercase tracking-[0.3em]">Campaign Terpilih</span>
                     </div>
 
-                    <h1 className="text-5xl md:text-8xl font-black text-white leading-tight tracking-tighter mb-8 max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-1000">
+                    <h1 className="text-3xl md:text-8xl font-black text-white leading-tight tracking-tighter mb-8 max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-1000">
                         {campaign.title}
                     </h1>
 

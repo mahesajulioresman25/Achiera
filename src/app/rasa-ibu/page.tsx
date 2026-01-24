@@ -217,7 +217,7 @@ export default async function RasaIbuHomePage() {
                         <HeroSlider slides={heroSlides} autoPlayInterval={5000} />
                     ) : (
                         // Fallback to static hero if no slides
-                        <div className="relative h-[600px] sm:h-[650px] md:h-[600px] flex items-center overflow-hidden bg-gradient-to-br from-[#2D3A2D] via-[#1A241A] to-[#2D3A2D] rounded-[2rem] sm:rounded-[3rem] md:rounded-[3rem] shadow-2xl">
+                        <div className="relative min-h-[500px] md:h-[600px] flex items-center overflow-hidden bg-gradient-to-br from-[#2D3A2D] via-[#1A241A] to-[#2D3A2D] rounded-[1.5rem] md:rounded-[3rem] shadow-2xl">
                             <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent z-10"></div>
                             {/* Decorative overlay pattern */}
                             <div className="absolute inset-0 opacity-5 z-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '40px 40px' }}></div>
@@ -226,16 +226,16 @@ export default async function RasaIbuHomePage() {
                                     <Image src={heroImage} alt="Hero" fill className="object-cover" priority />
                                 </div>
                             )}
-                            <div className="relative z-20 max-w-7xl mx-auto px-6 w-full">
-                                <div className="max-w-2xl space-y-8">
-                                    <span className="inline-block text-xs font-black uppercase tracking-[0.3em] text-amber-400 bg-amber-400/10 px-4 py-2 rounded-full border border-amber-400/20">{heroTagline}</span>
+                            <div className="relative z-20 max-w-7xl mx-auto px-6 w-full py-12">
+                                <div className="max-w-2xl space-y-6 md:space-y-8">
+                                    <span className="inline-block text-[10px] md:text-xs font-black uppercase tracking-[0.3em] text-amber-400 bg-amber-400/10 px-3 py-1.5 md:px-4 md:py-2 rounded-full border border-amber-400/20">{heroTagline}</span>
                                     <h1 className="text-3xl sm:text-4xl md:text-7xl font-black leading-[1.2] md:leading-[1.1] text-white whitespace-pre-line drop-shadow-2xl">
                                         {heroTitle}
                                     </h1>
                                     <p className="text-sm sm:text-base md:text-xl text-white/90 leading-relaxed font-medium whitespace-pre-line max-w-xl">
                                         {heroSubtitle}
                                     </p>
-                                    <div className="flex flex-col sm:flex-row gap-4 pt-6">
+                                    <div className="flex flex-col sm:flex-row gap-4 pt-4 md:pt-6">
                                         <Link
                                             href={heroCtaPrimaryLink}
                                             className="group inline-block px-8 sm:px-10 py-4 sm:py-5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-black text-[10px] sm:text-sm uppercase tracking-widest rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 text-center relative overflow-hidden"
@@ -267,17 +267,17 @@ export default async function RasaIbuHomePage() {
                             <div className="w-20 h-1 bg-[#8B7E66] mx-auto rounded-full"></div>
                         </div>
                     )}
-                    <div className="flex flex-wrap justify-center gap-12">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-12">
                         {trustBadges.map((badge, idx) => (
-                            <div key={idx} className="group flex flex-col items-center text-center space-y-5 p-6 rounded-3xl hover:bg-white hover:shadow-lg transition-all duration-300 w-full md:w-[calc(50%-1.5rem)] lg:w-[calc(25%-2.25rem)]">
-                                <div className="h-20 w-20 bg-gradient-to-br from-[#F9F7F2] to-[#E5E1D8] rounded-2xl flex items-center justify-center text-[#8B7E66] shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <div key={idx} className="group flex flex-col items-center text-center space-y-3 md:space-y-5 p-4 md:p-6 rounded-2xl md:rounded-3xl hover:bg-white hover:shadow-lg transition-all duration-300">
+                                <div className="h-14 w-14 md:h-20 md:w-20 bg-gradient-to-br from-[#F9F7F2] to-[#E5E1D8] rounded-2xl flex items-center justify-center text-[#8B7E66] shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 md:h-10 md:w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                                     </svg>
                                 </div>
-                                <div className="space-y-3">
-                                    <h4 className="text-xs font-black uppercase tracking-widest text-[#2D3A2D]">{badge.title}</h4>
-                                    <p className="text-sm text-gray-600 font-medium whitespace-pre-line leading-relaxed">{badge.desc}</p>
+                                <div className="space-y-2 md:space-y-3">
+                                    <h4 className="text-[10px] md:text-xs font-black uppercase tracking-widest text-[#2D3A2D]">{badge.title}</h4>
+                                    <p className="text-xs md:text-sm text-gray-600 font-medium whitespace-pre-line leading-relaxed hidden sm:block">{badge.desc}</p>
                                 </div>
                             </div>
                         ))}
@@ -300,7 +300,7 @@ export default async function RasaIbuHomePage() {
                     </Link>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-8">
                     {featuredProducts.map((product: any) => (
                         <div key={product.id} className="group cursor-pointer">
                             <Link href={`/rasa-ibu/products/${product.slug}`} className="aspect-[4/5] bg-gradient-to-br from-[#F9F7F2] to-[#E5E1D8] rounded-3xl mb-6 overflow-hidden relative shadow-sm group-hover:shadow-xl transition-all duration-500 block">
