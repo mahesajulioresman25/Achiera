@@ -120,8 +120,9 @@ export async function updateBrandConfigAction(brandId: string, data: UpdateBrand
             }
         });
 
-        // Revalidate the public page
-        revalidatePath('/rasa-ibu'); // TODO: Make this dynamic for other brands if needed
+        // Revalidate the public pages
+        revalidatePath('/rasa-ibu');
+        revalidatePath('/rasa-ibu/products/[slug]');
         return { success: true };
     } catch (error: any) {
         console.error('Failed to update brand config:', error);

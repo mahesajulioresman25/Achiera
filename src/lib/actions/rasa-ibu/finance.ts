@@ -374,6 +374,8 @@ export async function updatePlatformSettingsAction(brandId: string, settings: an
         }
 
         revalidatePath('/dashboard/rasa-ibu');
+        revalidatePath('/rasa-ibu');
+        revalidatePath('/rasa-ibu/products/[slug]');
         return { success: true };
     } catch (error: any) {
         return { success: false, error: error.message };

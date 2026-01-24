@@ -268,22 +268,26 @@ export default async function RasaIbuProductDetailPage({
                                     />
                                 </div>
 
-                                {settings?.links && (
-                                    <div className="pt-8 border-t border-[#E5E1D8]">
-                                        <PlatformLinks
-                                            links={{
-                                                shopeeFood: settings.links.shopeeFood,
-                                                grabFood: settings.links.grabFood,
-                                                goFood: settings.links.goFood,
-                                                shopee: settings.links.shopee,
-                                                tokopedia: settings.links.tokopedia,
-                                                tiktok: settings.links.tiktok,
-                                                grabMart: settings.links.grabMart
-                                            }}
-                                            compact={true}
-                                        />
-                                    </div>
-                                )}
+                                <div className="pt-8 border-t border-[#E5E1D8]">
+                                    {(() => {
+                                        const cmsLinks = brand.brandConfig?.platformLinks as any || {};
+                                        const dynamicLinks = { ...cmsLinks, ...(settings?.links || {}) };
+                                        return (
+                                            <PlatformLinks
+                                                links={{
+                                                    shopeeFood: dynamicLinks.shopeeFood,
+                                                    grabFood: dynamicLinks.grabFood,
+                                                    goFood: dynamicLinks.goFood,
+                                                    shopee: dynamicLinks.shopee,
+                                                    tokopedia: dynamicLinks.tokopedia,
+                                                    tiktok: dynamicLinks.tiktok,
+                                                    grabMart: dynamicLinks.grabMart
+                                                }}
+                                                compact={true}
+                                            />
+                                        );
+                                    })()}
+                                </div>
                             </div>
                         </div>
                     </div>

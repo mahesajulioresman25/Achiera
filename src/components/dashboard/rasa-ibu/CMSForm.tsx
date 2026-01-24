@@ -359,9 +359,17 @@ export default function CMSForm({ brandId, initialData }: CMSFormProps) {
                                 </div>
                                 {/* Links loop */}
                                 <div className="space-y-3 pt-4 border-t border-gray-100">
-                                    {['shopeeFood', 'grabFood', 'goFood', 'tokopedia'].map((platform) => (
+                                    {['shopeeFood', 'grabFood', 'goFood', 'tokopedia', 'shopee', 'tiktok', 'grabMart'].map((platform) => (
                                         <div key={platform}>
-                                            <label className="block text-xs font-bold uppercase text-gray-400 mb-1">{platform} URL</label>
+                                            <label className="block text-xs font-bold uppercase text-gray-400 mb-1">
+                                                {platform === 'shopeeFood' ? 'Shopee Food' :
+                                                    platform === 'grabFood' ? 'GrabFood' :
+                                                        platform === 'goFood' ? 'GoFood' :
+                                                            platform === 'tokopedia' ? 'Tokopedia' :
+                                                                platform === 'shopee' ? 'Shopee (Ecommerce)' :
+                                                                    platform === 'tiktok' ? 'TikTok Shop' :
+                                                                        platform === 'grabMart' ? 'GrabMart' : platform} URL
+                                            </label>
                                             <input
                                                 type="text"
                                                 value={(formData.platformLinks as any)?.[platform] || ''}

@@ -54,6 +54,16 @@ export default async function RasaIbuLayout({
         }
     }
 
+    // Merge platform links for nav and footer
+    const paymentSettings = brand.paymentSettings as any;
+    const mergedConfig = {
+        ...config,
+        platformLinks: {
+            ...(config?.platformLinks as any || {}),
+            ...(paymentSettings?.links || {})
+        }
+    };
+
     return (
         <div className="bg-[#FDFBF7]">
             <FlashSaleBanner activeFlashSale={activeFlashSale} />
@@ -64,12 +74,12 @@ export default async function RasaIbuLayout({
                 whatsapp={config?.whatsapp}
                 instagramHandle={config?.instagramHandle}
                 socialLinks={config?.socialLinks}
-                config={config}
+                config={mergedConfig}
             />
             <main className="min-h-screen">
                 {children}
             </main>
-            <RasaIbuFooter config={config} paymentSettings={brand?.paymentSettings} />
+            <RasaIbuFooter config={mergedConfig} paymentSettings={paymentSettings} />
         </div>
     );
 }

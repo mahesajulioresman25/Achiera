@@ -49,10 +49,10 @@ export default function PublicNav({ navLinks, whatsapp, instagramHandle = '@rasa
         { key: 'shopeeFood', label: 'Shopee Food', image: '/images/platforms/shopee.png', icon: '🛍️' },
         { key: 'grabFood', label: 'Grab Food', image: '/images/platforms/grabfood.png', icon: '🛵' },
         { key: 'goFood', label: 'GoFood', image: '/images/platforms/gofood.webp', icon: '❤️' },
-        { key: 'shopee', label: 'Shopee', image: '/images/platforms/shopee-bag.png', icon: '🔶' },
+        { key: 'shopee', label: 'Shopee', image: '/images/platforms/shopee-ecomerce.png', icon: '🛍️' },
         { key: 'tokopedia', label: 'Tokopedia', image: '/images/platforms/tokopedia.png', icon: '💚' },
-        { key: 'tiktok', label: 'TikTok Shop', image: '/images/platforms/tiktok.png', icon: '🎵' },
-        { key: 'grabMart', label: 'GrabMart', image: '/images/platforms/grabmart.png', icon: '🏪' },
+        { key: 'tiktok', label: 'TikTok Shop', image: '/images/platforms/TikTok.png', icon: '🎵' },
+        { key: 'grabMart', label: 'GrabMart', image: '/images/platforms/grabamart.png', icon: '🏪' },
     ].filter(p => platformLinks[p.key]);
 
     return (

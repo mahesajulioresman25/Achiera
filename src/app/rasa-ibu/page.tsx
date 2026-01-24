@@ -89,7 +89,8 @@ export default async function RasaIbuHomePage() {
 
     // Merge static and dynamic links
     const paymentSettings = brand?.paymentSettings as any;
-    const dynamicLinks = paymentSettings?.links || {};
+    const cmsLinks = config?.platformLinks as any || {};
+    const dynamicLinks = { ...cmsLinks, ...(paymentSettings?.links || {}) };
     const platformLinks = {
         shopeeFood: dynamicLinks.shopeeFood,
         grabFood: dynamicLinks.grabFood,
