@@ -65,7 +65,8 @@ export default function BrandSettingsPage({ params }: { params: Promise<{ brandS
                     </div>
                 </div>
 
-                <div className="space-y-6">
+                <div className="space-y-8">
+                    {/* Down Payment Section */}
                     <div>
                         <label className="block text-sm font-bold text-stone-900 mb-2">
                             Down Payment Percentage (%)
@@ -84,6 +85,38 @@ export default function BrandSettingsPage({ params }: { params: Promise<{ brandS
                         <p className="text-sm text-stone-500 mt-2">
                             Example: If 30%, customer pays 30% first, then 70% later.
                         </p>
+                    </div>
+
+                    {/* Platform Links Section */}
+                    <div className="pt-6 border-t border-stone-100">
+                        <h3 className="text-lg font-bold text-stone-900 mb-4">Platform Integrations</h3>
+                        <div className="grid gap-4">
+                            {[
+                                { key: 'shopeeFood', label: 'Shopee Food URL', placeholder: 'https://shopee.co.id/...' },
+                                { key: 'grabFood', label: 'GrabFood URL', placeholder: 'https://grab.com/...' },
+                                { key: 'goFood', label: 'GoFood URL', placeholder: 'https://gofood.link/...' },
+                                { key: 'shopee', label: 'Shopee Ecommerce URL', placeholder: 'https://shopee.co.id/shop/...' },
+                                { key: 'tokopedia', label: 'Tokopedia URL', placeholder: 'https://tokopedia.com/...' },
+                                { key: 'tiktok', label: 'TikTok Shop URL', placeholder: 'https://tiktok.com/...' },
+                                { key: 'grabMart', label: 'GrabMart URL', placeholder: 'https://grab.com/...' },
+                            ].map((platform) => (
+                                <div key={platform.key}>
+                                    <label className="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-1">
+                                        {platform.label}
+                                    </label>
+                                    <input
+                                        type="url"
+                                        placeholder={platform.placeholder}
+                                        value={settings.links?.[platform.key] || ''}
+                                        onChange={(e) => setSettings({
+                                            ...settings,
+                                            links: { ...settings.links, [platform.key]: e.target.value }
+                                        })}
+                                        className="w-full p-3 bg-stone-50 border border-stone-200 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 outline-none"
+                                    />
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
 

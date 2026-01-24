@@ -17,6 +17,11 @@ export default function PlatformLinks({ links, compact = false }: { links: Exter
         { key: 'shopeeFood', label: 'Shopee Food', logoSrc: '/images/platforms/shopee.png', color: 'hover:bg-[#EE4D2D]/5 hover:border-[#EE4D2D]/20', textColor: 'text-[#EE4D2D]' },
         { key: 'grabFood', label: 'GrabFood', logoSrc: '/images/platforms/grabfood.png', color: 'hover:bg-[#00B14F]/5 hover:border-[#00B14F]/20', textColor: 'text-[#00B14F]' },
         { key: 'goFood', label: 'GoFood', logoSrc: '/images/platforms/gofood.webp', color: 'hover:bg-[#E21F26]/5 hover:border-[#E21F26]/20', textColor: 'text-[#E21F26]' },
+        // New Platforms
+        { key: 'shopee', label: 'Shopee', logoSrc: '/images/platforms/shopee-bag.png', icon: '🛍️', color: 'hover:bg-[#EE4D2D]/5 hover:border-[#EE4D2D]/20', textColor: 'text-[#EE4D2D]' },
+        { key: 'tokopedia', label: 'Tokopedia', logoSrc: '/images/platforms/tokopedia.png', icon: '💚', color: 'hover:bg-[#42B549]/5 hover:border-[#42B549]/20', textColor: 'text-[#42B549]' },
+        { key: 'tiktok', label: 'TikTok Shop', logoSrc: '/images/platforms/tiktok.png', icon: '🎵', color: 'hover:bg-black/5 hover:border-black/20', textColor: 'text-black' },
+        { key: 'grabMart', label: 'GrabMart', logoSrc: '/images/platforms/grabmart.png', icon: '🏪', color: 'hover:bg-[#00B14F]/5 hover:border-[#00B14F]/20', textColor: 'text-[#00B14F]' },
     ];
 
     return (

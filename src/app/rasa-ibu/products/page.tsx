@@ -343,7 +343,7 @@ export default async function RasaIbuProductListPage({
 
                     {/* If Specific Category Selected -> Show Standard Grid */}
                     {selectedCategory ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-10">
                             {mappedProducts.map((product: any, idx: number) => (
                                 <AnimatedSection key={product.id} delay={idx * 0.05}>
                                     <ProductCard product={product} />
@@ -366,7 +366,7 @@ export default async function RasaIbuProductListPage({
                                             <p className="text-xs font-black text-amber-600 uppercase tracking-widest">Pilihan cerdas untuk stok mingguan.</p>
                                         </div>
                                     </AnimatedSection>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
                                         {activeBundles.map((bundle: any, idx: number) => (
                                             <AnimatedSection key={bundle.id} delay={idx * 0.1}>
                                                 <BundleCard bundle={bundle} />
@@ -390,7 +390,7 @@ export default async function RasaIbuProductListPage({
                                             </h2>
                                             <div className="h-px flex-grow bg-gradient-to-l from-transparent to-[#E5E1D8]"></div>
                                         </AnimatedSection>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                                        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-10">
                                             {categoryProducts.map((product: any, idx: number) => (
                                                 <AnimatedSection key={product.id} delay={idx * 0.05}>
                                                     <ProductCard product={product} />

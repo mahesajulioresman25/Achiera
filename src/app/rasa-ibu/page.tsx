@@ -91,10 +91,13 @@ export default async function RasaIbuHomePage() {
     const paymentSettings = brand?.paymentSettings as any;
     const dynamicLinks = paymentSettings?.links || {};
     const platformLinks = {
-        shopeeFood: dynamicLinks.shopeeFood || 'https://shopee.co.id/universal-link/now-food/shop/12345',
-        grabFood: dynamicLinks.grabFood || 'https://r.grab.com/g/fb/12345',
-        goFood: dynamicLinks.goFood || 'https://gofood.link/a/12345',
-        tokopedia: dynamicLinks.tokopedia || 'https://www.tokopedia.com/rasaibu'
+        shopeeFood: dynamicLinks.shopeeFood,
+        grabFood: dynamicLinks.grabFood,
+        goFood: dynamicLinks.goFood,
+        shopee: dynamicLinks.shopee,
+        tokopedia: dynamicLinks.tokopedia,
+        tiktok: dynamicLinks.tiktok,
+        grabMart: dynamicLinks.grabMart
     };
 
     // 5. CTA
