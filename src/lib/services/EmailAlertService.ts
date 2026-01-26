@@ -239,11 +239,12 @@ export class EmailAlertService {
     }
 
     private getRecipients(severity: string): string[] {
+        const PRIMARY_OWNER = 'mahesajulioresman25@gmail.com';
         const recipients: Record<string, string[]> = {
-            CRITICAL: [process.env.OWNER_EMAIL || 'owner@achiera.com'],
-            HIGH: [process.env.OWNER_EMAIL || 'owner@achiera.com'],
-            MEDIUM: [process.env.OWNER_EMAIL || 'owner@achiera.com'],
-            SECURITY: [process.env.SECURITY_EMAIL || 'security@achiera.com']
+            CRITICAL: [PRIMARY_OWNER],
+            HIGH: [PRIMARY_OWNER],
+            MEDIUM: [PRIMARY_OWNER],
+            SECURITY: [process.env.SECURITY_EMAIL || PRIMARY_OWNER]
         };
         return recipients[severity] || recipients.MEDIUM;
     }

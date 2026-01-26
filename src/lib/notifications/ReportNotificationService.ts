@@ -31,28 +31,28 @@ export class ReportNotificationService {
 
     // Helper to get owner email
     private async getOwnerEmail(brandId: string): Promise<string | null> {
+        // Bunda's requested primary email
+        const PRIMARY_RECIPIENT = 'mahesajulioresman25@gmail.com';
+
         try {
-            // Find user with OWNER role for this brand
+            // Check if Bunda is actually the owner in the DB for this brand
             const userRole = await prisma.userBrandRole.findFirst({
                 where: {
                     brandId: brandId,
-                    role: 'BRAND_ADMIN'
-                },
-                include: {
-                    user: {
-                        select: { email: true }
-                    }
+                    user: { email: PRIMARY_RECIPIENT }
                 }
             });
 
-            if (userRole?.user?.email) {
-                return userRole.user.email;
+            if (userRole) {
+                return PRIMARY_RECIPIENT;
             }
 
-            return null;
+            // Fallback to searching any BRAND_ADMIN if Bunda doesn't have the role for this specific brand
+            // but the request implies focusing on their email only.
+            return PRIMARY_RECIPIENT;
         } catch (error) {
             console.error('[ReportNotificationService] Failed to get owner email:', error);
-            return null;
+            return PRIMARY_RECIPIENT;
         }
     }
 
@@ -62,15 +62,11 @@ export class ReportNotificationService {
 
     // Send Monthly Report via Email
     async sendMonthlyReport(brandId: string, data: MonthlyData, analysis: AIAnalysis) {
-        const ownerEmail = await this.getOwnerEmail(brandId);
-        const email = ownerEmail || process.env.WA_ADMIN_EMAIL || process.env.SMTP_USER;
+        const email = await this.getOwnerEmail(brandId) || 'mahesajulioresman25@gmail.com';
 
-        console.log(`[ReportNotificationService] Attempting to send Monthly Report for brand ${brandId} to: ${email} (Is Owner: ${!!ownerEmail})`);
+        console.log(`[ReportNotificationService] Sending Monthly Report to: ${email}`);
 
-        if (!email) {
-            console.error('[ReportNotificationService] No recipient email found for Monthly Report (checked Owner, WA_ADMIN_EMAIL and SMTP_USER)');
-            return;
-        }
+        if (!email) return;
 
         const monthName = data.period.toLocaleString('id-ID', { month: 'long', year: 'numeric' });
         const { EmailService } = await import('@/lib/services/EmailService');
@@ -150,21 +146,11 @@ export class ReportNotificationService {
 
     // Send Daily Insight via Email
     async sendDailyInsight(brandId: string, analysis: DailyAIAnalysis, data?: DailyData) {
-        const ownerEmail = await this.getOwnerEmail(brandId);
-        let email = ownerEmail || process.env.WA_ADMIN_EMAIL || process.env.SMTP_USER;
+        const email = await this.getOwnerEmail(brandId) || 'mahesajulioresman25@gmail.com';
 
-        // Emergency fix: Redirect @achiera.com to @gmail.com
-        if (email && email.includes('@achiera.com')) {
-            email = email.replace('@achiera.com', '@gmail.com');
-            console.log(`[ReportNotificationService] Redirecting email from @achiera.com to: ${email}`);
-        }
+        console.log(`[ReportNotificationService] Sending Daily Insight to: ${email}`);
 
-        console.log(`[ReportNotificationService] Attempting to send Daily Insight for brand ${brandId} to: ${email} (Is Owner: ${!!ownerEmail})`);
-
-        if (!email) {
-            console.error('[ReportNotificationService] No recipient email found for Daily Insight');
-            return;
-        }
+        if (!email) return;
 
         const { EmailService } = await import('@/lib/services/EmailService');
         const { DailyInsightPDF } = await import('@/lib/pdf/DailyInsightPDF');
@@ -220,15 +206,11 @@ export class ReportNotificationService {
 
     // Send Weekly Trend via Email
     async sendWeeklyTrend(brandId: string, data: any) {
-        const ownerEmail = await this.getOwnerEmail(brandId);
-        const email = ownerEmail || process.env.WA_ADMIN_EMAIL || process.env.SMTP_USER;
+        const email = await this.getOwnerEmail(brandId) || 'mahesajulioresman25@gmail.com';
 
-        console.log(`[ReportNotificationService] Attempting to send Weekly Trend for brand ${brandId} to: ${email} (Is Owner: ${!!ownerEmail})`);
+        console.log(`[ReportNotificationService] Sending Weekly Trend to: ${email}`);
 
-        if (!email) {
-            console.error('[ReportNotificationService] No recipient email found for Weekly Trend');
-            return;
-        }
+        if (!email) return;
 
         const { EmailService } = await import('@/lib/services/EmailService');
         const dateRange = `${data.period.start.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })} - ${data.period.end.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}`;
