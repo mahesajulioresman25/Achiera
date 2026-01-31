@@ -24,6 +24,7 @@ export default function OrderEntryModal({ brandId, products, onClose }: { brandI
     const [pointValue, setPointValue] = useState<number>(100);
     const [deliveryOption, setDeliveryOption] = useState('Ambil di Dapur');
     const [courierType, setCourierType] = useState('');
+    const [paymentMethod, setPaymentMethod] = useState('TUNAI');
 
     // Cart state
     const [cart, setCart] = useState<any[]>([]);
@@ -154,7 +155,8 @@ export default function OrderEntryModal({ brandId, products, onClose }: { brandI
             // @ts-ignore
             redeemedPoints: usePoints ? availableToUse : 0,
             deliveryOption,
-            courierType: deliveryOption !== 'Ambil di Dapur' ? courierType : undefined
+            courierType: deliveryOption !== 'Ambil di Dapur' ? courierType : undefined,
+            paymentMethod
         });
 
         if (res.success) {
@@ -332,6 +334,30 @@ export default function OrderEntryModal({ brandId, products, onClose }: { brandI
                                         </div>
                                     </div>
                                 )}
+                            </div>
+
+                            {/* Payment Method Section */}
+                            <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100 space-y-4">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-[#B2BCA2]">Metode Pembayaran</label>
+                                <div className="flex gap-2">
+                                    {[
+                                        { id: 'TUNAI', label: '💵 Tunai', color: 'bg-emerald-600', shadow: 'shadow-emerald-200' },
+                                        { id: 'TRANSFER_BANK', label: '🏦 Transfer', color: 'bg-blue-600', shadow: 'shadow-blue-200' },
+                                        { id: 'QRIS', label: '📱 QRIS', color: 'bg-purple-600', shadow: 'shadow-purple-200' }
+                                    ].map((m) => (
+                                        <button
+                                            key={m.id}
+                                            type="button"
+                                            onClick={() => setPaymentMethod(m.id)}
+                                            className={`flex-1 px-3 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest border transition-all ${paymentMethod === m.id
+                                                ? `${m.color} text-white border-transparent shadow-lg ${m.shadow}`
+                                                : 'bg-white text-slate-400 border-slate-200 hover:border-slate-300'
+                                                }`}
+                                        >
+                                            {m.label}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                         <div className="space-y-2">

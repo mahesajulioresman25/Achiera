@@ -23,6 +23,7 @@ export async function createManualOrder(data: {
     redeemedPoints?: number;
     deliveryOption?: string;
     courierType?: string;
+    paymentMethod?: string;
 }) {
     try {
         // Validate stock availability
@@ -115,6 +116,7 @@ export async function createManualOrder(data: {
                     quantity: data.items.reduce((sum: number, item: any) => sum + item.quantity, 0),
                     subtotal: data.totalAmount + discountValue, // Gross amount before discount
                     total: data.totalAmount, // Net amount after discount
+                    paymentMethod: data.paymentMethod || 'TUNAI',
 
                     // Link items
                     orderItems: {
@@ -142,6 +144,7 @@ export async function createManualOrder(data: {
                     customerPhone: data.customerPhone,
                     customerEmail: data.customerEmail,
                     channel: data.channel || 'WHATSAPP',
+                    paymentMethod: data.paymentMethod || 'TUNAI',
                     internalNotes: fullNotes,
                     status: ['SHOPEE', 'GRABFOOD', 'GOFOOD'].includes(data.channel) ? 'COMPLETED' : 'DIPESAN',
                     manualRef: data.manualRef || `RI-M-${Math.floor(1000 + Math.random() * 9000)}`,
