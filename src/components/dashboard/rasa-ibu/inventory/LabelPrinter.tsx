@@ -28,6 +28,7 @@ export default function LabelPrinter({ brandId, products = [] }: LabelPrinterPro
         layout: 'A4' as SheetSize,
         qrType: 'SKU' as 'SKU' | 'LINK'
     });
+    const [productionDate, setProductionDate] = useState(new Date().toISOString().split('T')[0]);
     const [isGenerating, setIsGenerating] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -186,6 +187,16 @@ export default function LabelPrinter({ brandId, products = [] }: LabelPrinterPro
                                 Link
                             </button>
                         </div>
+
+                        <div className="flex items-center gap-2 bg-[#F9F7F2] p-1 px-3 rounded-xl">
+                            <span className="text-[9px] font-black text-[#8B7E66] uppercase whitespace-nowrap">Tgl Produksi:</span>
+                            <input
+                                type="date"
+                                value={productionDate}
+                                onChange={(e) => setProductionDate(e.target.value)}
+                                className="bg-transparent text-[10px] font-bold border-none focus:ring-0 p-0 text-[#2D3A2D]"
+                            />
+                        </div>
                     </div>
 
                     <div className="flex items-center gap-3">
@@ -222,11 +233,11 @@ export default function LabelPrinter({ brandId, products = [] }: LabelPrinterPro
                                 {userMode.layout === 'STICKER_50x15' ? (
                                     <div className="flex flex-col gap-2 p-2">
                                         {selectedProducts.map(p => (
-                                            <SingleSticker key={p.id} product={p} mode={userMode.qrType} />
+                                            <SingleSticker key={p.id} product={p} mode={userMode.qrType} productionDate={productionDate} />
                                         ))}
                                     </div>
                                 ) : (
-                                    <MultiSheet products={selectedProducts} mode={userMode.qrType} size={userMode.layout} />
+                                    <MultiSheet products={selectedProducts} mode={userMode.qrType} size={userMode.layout} productionDate={productionDate} />
                                 )}
                             </div>
                         </div>
@@ -249,20 +260,33 @@ export default function LabelPrinter({ brandId, products = [] }: LabelPrinterPro
 
 const BASE_URL = typeof window !== 'undefined' ? window.location.origin : 'https://achiera.com';
 
-function SingleSticker({ product, mode }: { product: any, mode: 'SKU' | 'LINK' }) {
+function calculateExpiry(prodDate: string, months: number) {
+    if (!prodDate || months === 0) return null;
+    const date = new Date(prodDate);
+    date.setMonth(date.getMonth() + months);
+    return date.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+function SingleSticker({ product, mode, productionDate }: { product: any, mode: 'SKU' | 'LINK', productionDate: string }) {
     const qrValue = mode === 'LINK'
         ? `${BASE_URL}/rasa-ibu/products/${product.slug || product.id}`
         : product.sku || 'NO-SKU';
 
+    const expiryDate = calculateExpiry(productionDate, product.shelfLife || 0);
+
     return (
         <div style={{ width: '50mm', height: '15mm', padding: '1.5mm 2.5mm', display: 'flex', flexDirection: 'row', alignItems: 'center', boxSizing: 'border-box', border: '1px dashed #ddd', marginBottom: '2mm' }} className="print:border-0 print:mb-0 relative bg-white">
             <div style={{ flex: 1, overflow: 'hidden', paddingRight: '2mm' }}>
-                <p style={{ fontSize: '6.5pt', fontWeight: '900', lineHeight: 1, marginBottom: '0.5mm', color: '#2D3A2D', textTransform: 'uppercase', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{product.name}</p>
-                <p style={{ fontSize: '4.5pt', fontFamily: 'monospace', color: '#8B7E66' }}>{product.sku}</p>
+                <p style={{ fontSize: '6pt', fontWeight: '900', lineHeight: 1, marginBottom: '0.3mm', color: '#2D3A2D', textTransform: 'uppercase', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{product.name}</p>
+                <p style={{ fontSize: '4pt', fontFamily: 'monospace', color: '#8B7E66', marginBottom: '0.5mm' }}>{product.sku}</p>
+                <div style={{ display: 'flex', gap: '3mm', alignItems: 'center' }}>
+                    <p style={{ fontSize: '5pt', fontWeight: '800', color: '#6B7280' }}>Netto: {product.weight}g</p>
+                    {expiryDate && <p style={{ fontSize: '5pt', fontWeight: '800', color: '#BE185D' }}>Exp: {expiryDate}</p>}
+                </div>
                 {mode === 'SKU' ? (
-                    <p style={{ fontSize: '5.5pt', marginTop: '1mm', fontWeight: '900', color: '#2D3A2D' }}>Rp {Number(product.price || 0).toLocaleString('id-ID')}</p>
+                    <p style={{ fontSize: '5.5pt', marginTop: '0.5mm', fontWeight: '900', color: '#2D3A2D' }}>Rp {Number(product.price || 0).toLocaleString('id-ID')}</p>
                 ) : (
-                    <p style={{ fontSize: '4.5pt', marginTop: '2mm', fontWeight: 'bold', color: '#EE4D2D', fontStyle: 'italic' }}>Mangga di-scan, Bunda! 🍲</p>
+                    <p style={{ fontSize: '4pt', marginTop: '1mm', fontWeight: 'bold', color: '#EE4D2D', fontStyle: 'italic' }}>Mangga di-scan, Bunda! 🍲</p>
                 )}
             </div>
             <div style={{ width: '12mm', height: '12mm', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -276,7 +300,7 @@ function SingleSticker({ product, mode }: { product: any, mode: 'SKU' | 'LINK' }
     );
 }
 
-function MultiSheet({ products, mode, size }: { products: any[], mode: 'SKU' | 'LINK', size: any }) {
+function MultiSheet({ products, mode, size, productionDate }: { products: any[], mode: 'SKU' | 'LINK', size: any, productionDate: string }) {
     // Determine sheet dimensions
     const dimensions = {
         'A4': { w: '210mm', h: '297mm', cols: 3, rows: 14 },
@@ -313,19 +337,25 @@ function MultiSheet({ products, mode, size }: { products: any[], mode: 'SKU' | '
                             ? `${BASE_URL}/rasa-ibu/products/${p.slug || p.id}`
                             : p.sku || 'NO-SKU';
 
+                        const expiryDate = calculateExpiry(productionDate, p.shelfLife || 0);
+
                         return (
                             <div key={slotIdx} style={{ border: '1px dashed #ccc', display: 'flex', alignItems: 'center', padding: '2mm', boxSizing: 'border-box' }} className="print:border-0 overflow-hidden">
                                 <div style={{ flex: 1, minWidth: 0, paddingRight: '1mm' }}>
-                                    <p style={{ fontSize: '7pt', fontWeight: '900', color: '#2D3A2D', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', lineHeight: 1 }}>
+                                    <p style={{ fontSize: '6.5pt', fontWeight: '900', color: '#2D3A2D', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', lineHeight: 1 }}>
                                         {p.name}
                                     </p>
-                                    <p style={{ fontSize: '5pt', fontFamily: 'monospace', marginTop: '0.5mm', color: '#8B7E66' }}>{p.sku}</p>
+                                    <p style={{ fontSize: '4pt', fontFamily: 'monospace', marginTop: '0.3mm', color: '#8B7E66' }}>{p.sku}</p>
+                                    <div style={{ display: 'flex', gap: '2mm', marginTop: '0.5mm' }}>
+                                        <span style={{ fontSize: '5pt', fontWeight: '800', color: '#6B7280' }}>N: {p.weight}g</span>
+                                        {expiryDate && <span style={{ fontSize: '5pt', fontWeight: '800', color: '#BE185D' }}>E: {expiryDate}</span>}
+                                    </div>
                                     {mode === 'SKU' ? (
-                                        <p style={{ fontSize: '6pt', fontWeight: '900', marginTop: '1mm', color: '#2D3A2D' }}>
+                                        <p style={{ fontSize: '5.5pt', fontWeight: '900', marginTop: '0.5mm', color: '#2D3A2D' }}>
                                             Rp {Number(p.price || 0).toLocaleString('id-ID')}
                                         </p>
                                     ) : (
-                                        <p style={{ fontSize: '5pt', marginTop: '2mm', fontWeight: 'bold', color: '#EE4D2D', fontStyle: 'italic' }}>
+                                        <p style={{ fontSize: '4pt', marginTop: '1.5mm', fontWeight: 'bold', color: '#EE4D2D', fontStyle: 'italic' }}>
                                             Mangga di-scan, Bunda! 🍲
                                         </p>
                                     )}

@@ -54,7 +54,9 @@ export default async function LabelPrintingPage({ searchParams }: { searchParams
             name: `${v.template.displayName} - ${v.name}`,
             sku: v.sku || `MERCH-${v.id.slice(-6)}`,
             price: Number(v.price),
-            slug: v.template.slug, // Added Slug
+            slug: v.template.slug,
+            weight: v.weight || 0,
+            shelfLife: 0,
             type: 'MERCH' as const
         })),
         ...frozenVariants.map((v: any) => ({
@@ -62,7 +64,9 @@ export default async function LabelPrintingPage({ searchParams }: { searchParams
             name: `${v.product.name} - ${v.name}`,
             sku: v.sku,
             price: Number(v.price),
-            slug: v.product.slug, // Added Slug
+            slug: v.product.slug,
+            weight: v.weight || 0,
+            shelfLife: v.product.shelfLife || 6, // Default 6 months
             type: 'FROZEN' as const
         }))
     ];
