@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { OwnerService } from '@/lib/services/OwnerService';
-import { DollarSign, ShieldAlert, TrendingUp, Activity, Building2, Users } from 'lucide-react';
+import { DollarSign, ShieldAlert, TrendingUp, Activity, Building2, Users, ChevronLeft, MessageSquare } from 'lucide-react';
 import { InterCompanyHub } from '@/components/dashboard/owner/InterCompanyHub';
 import { BudgetManagementHub } from '@/components/dashboard/owner/BudgetManagementHub';
 import { CashFlowForecastPanel } from '@/components/dashboard/owner/CashFlowForecastPanel';
@@ -75,6 +75,13 @@ export default async function OwnerDashboardPage() {
 
                     <div className="flex flex-wrap gap-4">
                         <Link
+                            href="/dashboard/owner/brands/new"
+                            className="group flex items-center gap-2 px-6 py-3.5 bg-emerald-600 hover:bg-emerald-500 rounded-2xl font-black text-sm uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)]"
+                        >
+                            <Building2 size={18} className="text-white group-hover:scale-110 transition-transform" />
+                            Register New Brand
+                        </Link>
+                        <Link
                             href="/dashboard/owner/users"
                             className="group flex items-center gap-2 px-6 py-3.5 bg-white/5 hover:bg-white/10 backdrop-blur-md rounded-2xl font-bold text-sm uppercase tracking-wider transition-all border border-white/10 hover:border-white/20"
                         >
@@ -87,6 +94,13 @@ export default async function OwnerDashboardPage() {
                         >
                             <ShieldAlert size={18} className="text-purple-400 group-hover:scale-110 transition-transform" />
                             Audit & Compliance
+                        </Link>
+                        <Link
+                            href="/dashboard/owner/whatsapp"
+                            className="group flex items-center gap-2 px-6 py-3.5 bg-emerald-600/10 hover:bg-emerald-600/20 backdrop-blur-md rounded-2xl font-bold text-sm uppercase tracking-wider transition-all border border-emerald-500/20 hover:border-emerald-500/40"
+                        >
+                            <MessageSquare size={18} className="text-emerald-400 group-hover:scale-110 transition-transform" />
+                            WA Command
                         </Link>
                         <Link
                             href="/autonomous/overview?brandId=rasa-ibu"
@@ -259,11 +273,14 @@ export default async function OwnerDashboardPage() {
                 {/* Brand Performance Leaderboard */}
                 <div className="lg:col-span-2 space-y-6">
                     <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                        <div className="p-6 border-b border-slate-100">
+                        <div className="p-6 border-b border-slate-100 flex justify-between items-center">
                             <h3 className="font-semibold text-lg flex items-center gap-2">
                                 <TrendingUp size={20} className="text-blue-500" />
                                 Brand Performance Leaderboard
                             </h3>
+                            <Link href="/dashboard/owner/brands" className="text-xs font-bold text-indigo-600 hover:text-indigo-700 uppercase tracking-widest flex items-center gap-1">
+                                Manage All <ChevronLeft size={14} className="rotate-180" />
+                            </Link>
                         </div>
                         <div className="p-0 overflow-x-auto">
                             <table className="w-full text-sm text-left min-w-[600px]">

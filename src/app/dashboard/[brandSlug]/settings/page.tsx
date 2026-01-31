@@ -3,6 +3,7 @@
 import { useState, useEffect, use } from 'react';
 import { Save, Loader2, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { WhatsAppSettings } from '@/components/dashboard/settings/WhatsAppSettings';
 
 export default function BrandSettingsPage({ params }: { params: Promise<{ brandSlug: string }> }) {
     const resolvedParams = use(params);
@@ -54,7 +55,10 @@ export default function BrandSettingsPage({ params }: { params: Promise<{ brandS
 
     return (
         <div className="max-w-2xl mx-auto space-y-6">
-            <h1 className="text-2xl font-bold text-stone-900">Payment Settings</h1>
+            <h1 className="text-2xl font-bold text-stone-900">Brand Settings</h1>
+
+            {/* WhatsApp Integration Section */}
+            <WhatsAppSettings brandSlug={brandSlug} />
 
             <div className="bg-white rounded-xl border border-stone-200 p-6 shadow-sm">
                 <div className="flex items-center gap-2 mb-6 p-4 bg-amber-50 text-amber-800 rounded-lg text-sm">

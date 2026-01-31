@@ -203,9 +203,22 @@ export async function createWebsiteOrderAction(data: {
             console.error('Loyalty sync error (non-critical):', loyaltyError);
         }
 
-        // 5. Send Email Notification (Server-side)
+        // 5. Send Notifications (Email & WhatsApp)
         try {
             const { EmailService } = await import('@/lib/services/EmailService');
+            const { WhatsAppService } = await import('@/lib/services/WhatsAppService');
+
+            // WhatsApp Notification (Non-blocking)
+            if (data.customerPhone) {
+                // Fetch loyalty info if any to include in message
+                let loyaltyInfo = undefined;
+                if (data.redeemedPoints) {
+                    // This is just a simple check, actual points earned might need loyaltyEngine calculation
+                    // But for the confirmation message, we can just say "Pesanan diterima"
+                }
+
+                await WhatsAppService.sendOrderCreated(order);
+            }
 
             if (data.customerEmail) {
                 await EmailService.sendOrderConfirmation({
@@ -226,8 +239,8 @@ export async function createWebsiteOrderAction(data: {
                     } as any);
                 }
             }
-        } catch (emailError) {
-            console.error('Email notification error (non-critical):', emailError);
+        } catch (notifError) {
+            console.error('Notification error (non-critical):', notifError);
         }
 
         revalidatePath('/dashboard/rasa-ibu');

@@ -46,7 +46,14 @@ class WhatsAppEngine extends EventEmitter {
         };
     }
 
-    async sendMessage(phone: string, text: string, priority?: number) {
+    /**
+     * Send message via Local Engine or QuikWA SaaS
+     */
+    async sendMessage(phone: string, text: string, priority?: number, saasConfig?: { token: string; deviceId: string }) {
+        if (saasConfig?.token && saasConfig?.deviceId) {
+            return this.sendViaQuikWA(phone, text, saasConfig);
+        }
+
         try {
             const res = await fetch(`${WA_SERVICE_URL}/send`, {
                 method: 'POST',
@@ -65,6 +72,36 @@ class WhatsAppEngine extends EventEmitter {
             throw error;
         }
     }
+
+    /**
+     * Driver for QuikWA SaaS API
+     */
+    private async sendViaQuikWA(phone: string, message: string, config: { token: string; deviceId: string }) {
+        try {
+            console.log(`[WA Engine] Sending via QuikWA SaaS for device ${config.deviceId}...`);
+            const res = await fetch('https://quikwa.com/api/v1/send-message', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    token: config.token,
+                    device_id: config.deviceId,
+                    phone: phone,
+                    message: message
+                })
+            });
+
+            if (!res.ok) {
+                const error = await res.json().catch(() => ({ error: 'Unknown Error' }));
+                throw new Error(error.error || `QuikWA API responded with ${res.status}`);
+            }
+
+            return true;
+        } catch (error: any) {
+            console.error('[WA Engine Client] QuikWA Error:', error.message);
+            throw error;
+        }
+    }
+
 
     async sendDocument(phone: string, document: Buffer, fileName: string, caption?: string, priority?: number) {
         try {

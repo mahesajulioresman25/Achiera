@@ -58,8 +58,18 @@ export class WhatsAppProcessor {
             console.log(`[WhatsAppProcessor] Processing message for ${queueItem.phone} (Pri: ${queueItem.priority})`);
 
             try {
+                // Fetch Brand Config
+                const config = await (prisma as any).brandConfig.findUnique({
+                    where: { brandId: queueItem.brandId }
+                });
+
+                const saasConfig = config?.whatsappProvider === 'QUIKWA' ? {
+                    token: config.whatsappQuikwaToken,
+                    deviceId: config.whatsappQuikwaDeviceId
+                } : undefined;
+
                 // Send via engine
-                await waEngine.sendMessage(queueItem.phone, queueItem.text, queueItem.priority);
+                await waEngine.sendMessage(queueItem.phone, queueItem.text, queueItem.priority, saasConfig);
 
                 // Success
                 await (prisma as any).whatsAppQueue.update({
@@ -137,7 +147,17 @@ export class WhatsAppProcessor {
 
                 try {
                     console.log(`[WhatsAppProcessor] Sending to ${queueItem.phone}...`);
-                    await waEngine.sendMessage(queueItem.phone, queueItem.text, queueItem.priority);
+
+                    const config = await (prisma as any).brandConfig.findUnique({
+                        where: { brandId: queueItem.brandId }
+                    });
+
+                    const saasConfig = config?.whatsappProvider === 'QUIKWA' ? {
+                        token: config.whatsappQuikwaToken,
+                        deviceId: config.whatsappQuikwaDeviceId
+                    } : undefined;
+
+                    await waEngine.sendMessage(queueItem.phone, queueItem.text, queueItem.priority, saasConfig);
 
                     // 3. Mark Sent
                     await (prisma as any).whatsAppQueue.update({

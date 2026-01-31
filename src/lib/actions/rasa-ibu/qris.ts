@@ -171,6 +171,15 @@ export async function uploadPaymentProofAction(orderId: string, formData: FormDa
         });
 
         revalidatePath('/dashboard/rasa-ibu');
+
+        // 💬 NOTIFY ADMIN via WhatsApp
+        try {
+            const { WhatsAppService } = await import('@/lib/services/WhatsAppService');
+            await WhatsAppService.notifyAdminPaymentUploaded(order);
+        } catch (waError) {
+            console.error('[PROOF_UPLOAD] Admin WhatsApp notification failed:', waError);
+        }
+
         return { success: true };
     } catch (error: any) {
         console.error('[PROOF_UPLOAD_ERROR]', error);

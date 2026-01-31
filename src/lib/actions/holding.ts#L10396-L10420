@@ -1,0 +1,23 @@
+'use server';
+
+import { prisma } from '@/lib/prisma';
+import { revalidatePath } from 'next/cache';
+
+/**
+ * Update Brand Configuration (Features)
+ */
+export async function updateBrandConfigAction(brandId: string, features: { loyalty: boolean, ads: boolean, subscriptions: boolean }) {
+    try {
+        await prisma.brandConfig.update({
+            where: { brandId },
+            data: {
+                features: features as any
+            }
+        });
+
+        revalidatePath('/dashboard/owner/brands');
+        return { success: true };
+    } catch (error: any) {
+        return { success: false, error: error.message };
+    }
+}

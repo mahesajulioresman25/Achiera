@@ -200,6 +200,14 @@ export async function createManualOrder(data: {
                             status: 'OPEN'
                         }
                     });
+                    // WhatsApp Alert
+                    try {
+                        const { WhatsAppService } = await import('@/lib/services/WhatsAppService');
+                        await WhatsAppService.notifyLowStock(data.brandId, updatedVariant);
+                    } catch (waErr) {
+                        console.error('Failed to send low stock WA alert:', waErr);
+                    }
+
                     console.log(`📡 Low stock alert sent for ${updatedVariant.product.name}`);
                 } catch (alertErr) {
                     console.error('Failed to send low stock alert:', alertErr);
@@ -207,14 +215,38 @@ export async function createManualOrder(data: {
             }
         }
 
-        // 📱 SEND EMAIL NOTIFICATION
-        if (order.customerEmail) {
-            try {
-                const { EmailService } = await import('@/lib/services/EmailService');
-                await EmailService.sendOrderConfirmation(order as any);
-            } catch (emailError) {
-                console.error('Email notification error (non-critical):', emailError);
+        // 📱 SEND NOTIFICATIONS (Email & WhatsApp)
+        try {
+            const { EmailService } = await import('@/lib/services/EmailService');
+            const { WhatsAppService } = await import('@/lib/services/WhatsAppService');
+
+            // 1. WhatsApp
+            if (order.customerPhone) {
+                // Determine points earned for this order to show in WA
+                let loyaltyInfo = undefined;
+                try {
+                    const { loyaltyEngine } = await import('@/lib/intelligence/loyaltyEngine');
+                    const earned = loyaltyEngine.calculatePoints(data.totalAmount);
+                    const member = await loyaltyEngine.getMemberByPhone(data.brandId, order.customerPhone);
+                    if (member) {
+                        loyaltyInfo = {
+                            pointsEarned: earned,
+                            currentBalance: member.availablePoints + earned
+                        };
+                    }
+                } catch (e) {
+                    console.warn('[ManualOrder] Failed to calculate loyalty for WA:', e);
+                }
+
+                await WhatsAppService.sendOrderCreated(order as any, loyaltyInfo);
             }
+
+            // 2. Email
+            if (order.customerEmail) {
+                await EmailService.sendOrderConfirmation(order as any);
+            }
+        } catch (notifError) {
+            console.error('Notification error (non-critical):', notifError);
         }
 
         revalidatePath(`/dashboard/rasa-ibu`);
@@ -342,6 +374,16 @@ export async function updateOrderStatus(
                             brandId: order.brandId || undefined
                         },
                         status
+                    );
+                } else if (status === 'BATAL') {
+                    await WhatsAppService.sendOrderCancelled(
+                        {
+                            invoiceNo: order.invoiceNo,
+                            customerName: order.customerName,
+                            customerPhone: order.customerPhone,
+                            brandId: order.brandId || undefined
+                        },
+                        'Dibatalkan oleh tim kami.'
                     );
                 }
             } catch (waErr) {

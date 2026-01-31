@@ -1298,6 +1298,11 @@ model ManualOverride {
   @@map("manual_overrides")
 }
 
+enum WhatsAppProvider {
+  LOCAL
+  QUIKWA
+}
+
 model BrandConfig {
   id              String  @id @default(cuid())
   brandId         String  @unique @map("brand_id")
@@ -1305,6 +1310,11 @@ model BrandConfig {
   level2Enabled   Boolean @default(true) @map("level_2_enabled")
   level3Enabled   Boolean @default(false) @map("level_3_enabled")
   emergencyPaused Boolean @default(false) @map("emergency_paused")
+
+  // WhatsApp SaaS Integration
+  whatsappProvider       WhatsAppProvider @default(LOCAL) @map("whatsapp_provider")
+  whatsappQuikwaToken    String?          @map("whatsapp_quikwa_token") @db.Text
+  whatsappQuikwaDeviceId String?          @map("whatsapp_quikwa_device_id") @db.Text
 
   // CMS Content (Public View)
   publicTitle          String? @db.Text // Hero Title

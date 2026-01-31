@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { getConsolidatedFinancePulse } from '@/lib/intelligence/financeEngine';
+import { revalidatePath } from 'next/cache';
 
 /**
  * Get consolidated financial data for the holding dashboard.
@@ -199,7 +200,7 @@ export async function getGlobalLoyaltyStatsAction() {
             include: { brand: { select: { name: true } } }
         });
 
-        const totalPointsAcrossHolding = members.reduce((sum, m) => sum + (m.availablePoints || 0), 0);
+        const totalPointsAcrossHolding = members.reduce((sum: number, m: any) => sum + (m.availablePoints || 0), 0);
         const totalMembers = members.length;
 
         // Group by brand
@@ -207,13 +208,13 @@ export async function getGlobalLoyaltyStatsAction() {
             select: { id: true, name: true }
         });
 
-        const brandStats = brands.map(b => {
-            const brandMembers = members.filter(m => m.brandId === b.id);
+        const brandStats = brands.map((b: any) => {
+            const brandMembers = members.filter((m: any) => m.brandId === b.id);
             return {
                 brandName: b.name,
                 memberCount: brandMembers.length,
-                pointsIssued: brandMembers.reduce((sum, m) => sum + (m.lifetimePoints || 0), 0),
-                pointsAvailable: brandMembers.reduce((sum, m) => sum + (m.availablePoints || 0), 0)
+                pointsIssued: brandMembers.reduce((sum: number, m: any) => sum + (m.lifetimePoints || 0), 0),
+                pointsAvailable: brandMembers.reduce((sum: number, m: any) => sum + (m.availablePoints || 0), 0)
             };
         });
 
@@ -238,7 +239,7 @@ export async function getGlobalLoyaltyStatsAction() {
                 totalPointsAcrossHolding,
                 totalMembers,
                 brandStats,
-                recentRedemptions: recentRedemptions.map(r => ({
+                recentRedemptions: recentRedemptions.map((r: any) => ({
                     id: r.id,
                     customerName: r.member.customerName,
                     brandName: r.member.brand.name,
@@ -303,3 +304,31 @@ export async function getHoldingTalentMetricsAction() {
         return { success: false, error: error.message };
     }
 }
+
+/**
+ * Update Brand Configuration (Features)
+ * Used by SaaS owner to enable/disable modules for tenants.
+ */
+export async function updateBrandConfigAction(brandId: string, features: { loyalty: boolean, ads: boolean, subscriptions: boolean }) {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session) return { success: false, error: 'Unauthorized' };
+
+        const user = session.user as any;
+        if (user.globalRole !== 'OWNER') return { success: false, error: 'Forbidden: Owner only' };
+
+        await prisma.brandConfig.update({
+            where: { brandId },
+            data: {
+                features: features as any
+            }
+        });
+
+        revalidatePath('/dashboard/owner/brands');
+        return { success: true };
+    } catch (error: any) {
+        console.error('Update Brand Config Error:', error);
+        return { success: false, error: error.message };
+    }
+}
+
