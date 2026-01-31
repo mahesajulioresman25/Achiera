@@ -269,7 +269,7 @@ function calculateExpiry(prodDate: string, months: number) {
 
 function SingleSticker({ product, mode, productionDate }: { product: any, mode: 'SKU' | 'LINK', productionDate: string }) {
     const qrValue = mode === 'LINK'
-        ? `${BASE_URL}/rasa-ibu/products/${product.slug || product.id}`
+        ? `${BASE_URL}/rasa-ibu/products/${product.slug || product.id}?pd=${productionDate}`
         : product.sku || 'NO-SKU';
 
     const expiryDate = calculateExpiry(productionDate, product.shelfLife || 0);
@@ -281,7 +281,6 @@ function SingleSticker({ product, mode, productionDate }: { product: any, mode: 
                 <p style={{ fontSize: '4pt', fontFamily: 'monospace', color: '#8B7E66', marginBottom: '0.5mm' }}>{product.sku}</p>
                 <div style={{ display: 'flex', gap: '3mm', alignItems: 'center' }}>
                     <p style={{ fontSize: '5pt', fontWeight: '800', color: '#6B7280' }}>Netto: {product.weight}g</p>
-                    {expiryDate && <p style={{ fontSize: '5pt', fontWeight: '800', color: '#BE185D' }}>Exp: {expiryDate}</p>}
                 </div>
                 {mode === 'SKU' ? (
                     <p style={{ fontSize: '5.5pt', marginTop: '0.5mm', fontWeight: '900', color: '#2D3A2D' }}>Rp {Number(product.price || 0).toLocaleString('id-ID')}</p>
@@ -334,7 +333,7 @@ function MultiSheet({ products, mode, size, productionDate }: { products: any[],
                         // Cyclically pick product to ensure sheet is always full
                         const p = products[globalIdx % products.length];
                         const qrValue = mode === 'LINK'
-                            ? `${BASE_URL}/rasa-ibu/products/${p.slug || p.id}`
+                            ? `${BASE_URL}/rasa-ibu/products/${p.slug || p.id}?pd=${productionDate}`
                             : p.sku || 'NO-SKU';
 
                         const expiryDate = calculateExpiry(productionDate, p.shelfLife || 0);
@@ -348,7 +347,6 @@ function MultiSheet({ products, mode, size, productionDate }: { products: any[],
                                     <p style={{ fontSize: '4pt', fontFamily: 'monospace', marginTop: '0.3mm', color: '#8B7E66' }}>{p.sku}</p>
                                     <div style={{ display: 'flex', gap: '2mm', marginTop: '0.5mm' }}>
                                         <span style={{ fontSize: '5pt', fontWeight: '800', color: '#6B7280' }}>N: {p.weight}g</span>
-                                        {expiryDate && <span style={{ fontSize: '5pt', fontWeight: '800', color: '#BE185D' }}>E: {expiryDate}</span>}
                                     </div>
                                     {mode === 'SKU' ? (
                                         <p style={{ fontSize: '5.5pt', fontWeight: '900', marginTop: '0.5mm', color: '#2D3A2D' }}>

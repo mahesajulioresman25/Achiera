@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { Star, MessageCircle, Share2, ArrowLeft } from 'lucide-react';
+import { Star, MessageCircle, Share2, ArrowLeft, Calendar, ShieldCheck, Clock } from 'lucide-react';
 import AddToCartButton from '@/components/commerce/AddToCartButton';
 import PlatformLinks from '@/components/commerce/PlatformLinks';
 import ProductRecommendations from '@/components/commerce/ProductRecommendations';
@@ -16,9 +16,13 @@ import ProductGallery from '@/components/commerce/ProductGallery';
 import ShareButton from '@/components/commerce/ShareButton';
 
 export async function generateMetadata(
-    { params }: { params: Promise<{ slug: string }> }
+    { params, searchParams }: {
+        params: Promise<{ slug: string }>,
+        searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+    }
 ): Promise<Metadata> {
     const { slug } = await params;
+    const { pd } = await searchParams;
 
     const brand = await unisolatedPrisma.brand.findUnique({
         where: { slug: 'rasa-ibu' },
@@ -44,12 +48,16 @@ export async function generateMetadata(
 export const revalidate = 60;
 
 export default async function RasaIbuProductDetailPage({
-    params
+    params,
+    searchParams
 }: {
-    params: Promise<{ slug: string }>
+    params: Promise<{ slug: string }>,
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
     try {
         const { slug } = await params;
+        const { pd } = await searchParams;
+        const productionDateStr = typeof pd === 'string' ? pd : undefined;
 
         const brand = await unisolatedPrisma.brand.findUnique({
             where: { slug: 'rasa-ibu' },
@@ -134,6 +142,29 @@ export default async function RasaIbuProductDetailPage({
             } catch (e) { }
         }
         productImages = Array.from(new Set(productImages));
+
+        // Freshness Calculation
+        let productionDate: Date | null = null;
+        let calculatedExpiry: Date | null = null;
+
+        if (productionDateStr) {
+            productionDate = new Date(productionDateStr);
+            if (!isNaN(productionDate.getTime())) {
+                const shelfLifeMonths = product.shelfLife || 6;
+                calculatedExpiry = new Date(productionDate);
+                calculatedExpiry.setMonth(calculatedExpiry.getMonth() + shelfLifeMonths);
+            } else {
+                productionDate = null;
+            }
+        }
+
+        const formatDateIndo = (date: Date) => {
+            return date.toLocaleDateString('id-ID', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        };
 
         return (
             <div className="min-h-screen bg-[#FDFBF7]">
@@ -220,6 +251,37 @@ export default async function RasaIbuProductDetailPage({
                                     )}
                                 </div>
                             </div>
+
+                            {/* Freshness Section (Only shown if QR date is present) */}
+                            {productionDate && calculatedExpiry && (
+                                <div className="bg-gradient-to-br from-[#E8F5E9] to-[#F1F8E9] p-6 rounded-3xl border border-[#C8E6C9] space-y-4 shadow-sm animate-in fade-in slide-in-from-top-4">
+                                    <div className="flex items-center justify-between">
+                                        <h3 className="text-xs font-black uppercase tracking-[0.2em] text-[#2E7D32] flex items-center gap-2">
+                                            <ShieldCheck className="w-4 h-4 text-[#4CAF50]" />
+                                            Jaminan Kesegaran
+                                        </h3>
+                                        <span className="px-2 py-0.5 bg-white/50 text-[#2E7D32] text-[8px] font-black uppercase tracking-widest rounded-full border border-[#C8E6C9]">
+                                            Terverifikasi QR
+                                        </span>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-1">
+                                            <p className="text-[9px] font-black uppercase tracking-widest text-[#689F38]">Dimasak Pada</p>
+                                            <p className="text-xs font-black text-[#1B5E20] flex items-center gap-1.5">
+                                                <Calendar className="w-3 h-3 h-3 opacity-60" />
+                                                {formatDateIndo(productionDate)}
+                                            </p>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="text-[9px] font-black uppercase tracking-widest text-[#C62828]">Baik Digunakan Sebelum</p>
+                                            <p className="text-xs font-black text-[#B71C1C] flex items-center gap-1.5">
+                                                <Clock className="w-3 h-3 opacity-60" />
+                                                {formatDateIndo(calculatedExpiry)}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
 
                             {/* Nutrition Card */}
                             {product.nutrition && typeof product.nutrition === 'object' && (
