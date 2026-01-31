@@ -564,7 +564,9 @@ export class EmailService {
     }
 
     static async sendAdminAlert(subject: string, message: string, attachments?: any[], toEmail?: string) {
-        const recipient = toEmail || process.env.WA_ADMIN_EMAIL || process.env.SMTP_USER;
+        // Bunda's requested primary recipient for all alerts and reports
+        const PRIMARY_RECIPIENT = 'mahesajulioresman25@gmail.com';
+        const recipient = toEmail || PRIMARY_RECIPIENT;
         if (!recipient) return false;
 
         try {

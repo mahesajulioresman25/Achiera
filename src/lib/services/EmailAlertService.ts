@@ -244,7 +244,7 @@ export class EmailAlertService {
             CRITICAL: [PRIMARY_OWNER],
             HIGH: [PRIMARY_OWNER],
             MEDIUM: [PRIMARY_OWNER],
-            SECURITY: [process.env.SECURITY_EMAIL || PRIMARY_OWNER]
+            SECURITY: [PRIMARY_OWNER]
         };
         return recipients[severity] || recipients.MEDIUM;
     }
