@@ -268,7 +268,7 @@ export default async function RasaIbuProductDetailPage({
                                         <div className="space-y-1">
                                             <p className="text-[9px] font-black uppercase tracking-widest text-[#689F38]">Dimasak Pada</p>
                                             <p className="text-xs font-black text-[#1B5E20] flex items-center gap-1.5">
-                                                <Calendar className="w-3 h-3 h-3 opacity-60" />
+                                                <Calendar className="w-3 h-3 opacity-60" />
                                                 {formatDateIndo(productionDate)}
                                             </p>
                                         </div>
@@ -304,9 +304,10 @@ export default async function RasaIbuProductDetailPage({
                             <div className="space-y-4 pt-6">
                                 <AddToCartButton
                                     product={{
-                                        ...product,
-                                        image: product.image || undefined,
+                                        id: product.id,
+                                        name: product.name,
                                         price,
+                                        image: product.image || undefined,
                                         variantId: primaryVariant?.id,
                                         variantName: primaryVariant?.name || 'Porsi Keluarga'
                                     }}
