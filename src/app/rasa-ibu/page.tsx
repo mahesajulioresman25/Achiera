@@ -374,7 +374,14 @@ export default async function RasaIbuHomePage() {
                                     </span>
                                 )}
                                 <AddToCartButton
-                                    product={product}
+                                    product={{
+                                        id: product.id,
+                                        name: product.name,
+                                        price: product.price,
+                                        image: product.image,
+                                        variantId: product.variantId,
+                                        variantName: 'Porsi Keluarga'
+                                    }}
                                     label="Sajikan"
                                     className="px-4 py-2.5 text-[7px] md:text-[9px] w-full shadow-sm hover:shadow-md"
                                 />
