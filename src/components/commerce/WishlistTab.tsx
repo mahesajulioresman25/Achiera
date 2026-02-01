@@ -112,7 +112,14 @@ export default function WishlistTab({ brandId }: { brandId: string }) {
 
                         <div className="mt-auto pt-4 border-t border-[#F3F1ED]">
                             <AddToCartButton
-                                product={product}
+                                product={{
+                                    id: product.id,
+                                    name: product.name,
+                                    price: product.price,
+                                    image: product.image,
+                                    variantId: product.variantId,
+                                    variantName: product.variantName
+                                }}
                                 className="w-full bg-[#2D3A2D] hover:bg-[#1A241A] text-[#FDFBF7] py-3 rounded-xl font-black shadow-md transition-all flex items-center justify-center gap-2"
                                 label="Pesan Ulang"
                             />

@@ -123,6 +123,8 @@ export async function getWishlistProductsAction(brandId: string) {
                     category: p.category?.name || 'Menu',
                     price: Number(firstVariant?.price || 0),
                     image: p.image,
+                    variantId: firstVariant?.id,
+                    variantName: firstVariant?.name || 'Porsi Keluarga',
                     rating: ratingMap[p.name]?.avg || 5.0,
                     reviewCount: ratingMap[p.name]?.count || 0
                 };
