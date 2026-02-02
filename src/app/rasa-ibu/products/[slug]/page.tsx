@@ -247,17 +247,26 @@ export default async function RasaIbuProductDetailPage({
                                         </p>
                                     </div>
 
-                                    {product.storageType !== 'READY_TO_EAT' && product.shelfLife && (
-                                        <div className="pt-4 border-t border-dashed border-[#E5E1D8]">
-                                            <h4 className="text-[10px] font-black uppercase tracking-widest text-[#8B7E66] mb-1.5 flex items-center gap-1.5">
-                                                <Clock className="w-3 h-3" /> Masa Simpan
-                                            </h4>
-                                            <p className="text-lg font-black text-[#2D3A2D]">
-                                                {product.shelfLife} Bulan
-                                            </p>
-                                            <p className="text-[10px] text-[#8B7E66] italic mt-0.5">
-                                                sejak tanggal produksi
-                                            </p>
+                                    {/* Production & Expiry Date Fields */}
+                                    {(product.storageType !== 'READY_TO_EAT') && (
+                                        <div className="pt-4 border-t border-dashed border-[#E5E1D8] grid grid-cols-1 gap-4">
+                                            <div className="space-y-1">
+                                                <h4 className="text-[10px] font-black uppercase tracking-widest text-[#8B7E66] flex items-center gap-1.5">
+                                                    <Calendar className="w-3 h-3" /> Tanggal Produksi
+                                                </h4>
+                                                <p className="text-sm font-black text-[#2D3A2D]">
+                                                    {productionDate ? formatDateIndo(productionDate) : "Lihat pada kemasan"}
+                                                </p>
+                                            </div>
+
+                                            <div className="space-y-1">
+                                                <h4 className="text-[10px] font-black uppercase tracking-widest text-[#8B7E66] flex items-center gap-1.5">
+                                                    <Clock className="w-3 h-3" /> Tanggal Kadaluwarsa
+                                                </h4>
+                                                <p className="text-sm font-black text-[#2D3A2D]">
+                                                    {calculatedExpiry ? formatDateIndo(calculatedExpiry) : `${product.shelfLife || 6} Bulan (dari produksi)`}
+                                                </p>
+                                            </div>
                                         </div>
                                     )}
                                 </div>
