@@ -231,23 +231,34 @@ export default async function RasaIbuProductDetailPage({
                                     <h4 className="text-[10px] font-black uppercase tracking-widest text-[#8B7E66]">Komposisi</h4>
                                     <p className="text-sm text-[#2D3A2D] font-medium leading-relaxed">{product.ingredients || "Rempah Nusantara Pilihan"}</p>
                                 </div>
-                                <div className="space-y-2">
-                                    <h4 className="text-[10px] font-black uppercase tracking-widest text-[#8B7E66]">Penyimpanan</h4>
-                                    <p className="text-sm text-[#2D3A2D] font-medium">
-                                        {(() => {
-                                            const storageLabels: Record<string, string> = {
-                                                'FROZEN': 'Beku (-18°C)',
-                                                'CHILLED': 'Dingin (2-8°C)',
-                                                'AMBIENT': 'Suhu Ruang',
-                                                'READY_TO_EAT': 'Siap Saji'
-                                            };
-                                            return storageLabels[product.storageType as string] || 'Frozen (-18°C)';
-                                        })()}
-                                    </p>
-                                    {product.storageType !== 'READY_TO_EAT' && product.shelfLife && (
-                                        <p className="text-[10px] text-[#8B7E66] font-bold">
-                                            Tahan hingga {product.shelfLife} Bulan
+                                <div className="space-y-4">
+                                    <div className="space-y-2">
+                                        <h4 className="text-[10px] font-black uppercase tracking-widest text-[#8B7E66]">Penyimpanan</h4>
+                                        <p className="text-sm text-[#2D3A2D] font-medium">
+                                            {(() => {
+                                                const storageLabels: Record<string, string> = {
+                                                    'FROZEN': 'Beku (-18°C)',
+                                                    'CHILLED': 'Dingin (2-8°C)',
+                                                    'AMBIENT': 'Suhu Ruang',
+                                                    'READY_TO_EAT': 'Siap Saji'
+                                                };
+                                                return storageLabels[product.storageType as string] || 'Frozen (-18°C)';
+                                            })()}
                                         </p>
+                                    </div>
+
+                                    {product.storageType !== 'READY_TO_EAT' && product.shelfLife && (
+                                        <div className="pt-4 border-t border-dashed border-[#E5E1D8]">
+                                            <h4 className="text-[10px] font-black uppercase tracking-widest text-[#8B7E66] mb-1.5 flex items-center gap-1.5">
+                                                <Clock className="w-3 h-3" /> Masa Simpan
+                                            </h4>
+                                            <p className="text-lg font-black text-[#2D3A2D]">
+                                                {product.shelfLife} Bulan
+                                            </p>
+                                            <p className="text-[10px] text-[#8B7E66] italic mt-0.5">
+                                                sejak tanggal produksi
+                                            </p>
+                                        </div>
                                     )}
                                 </div>
                             </div>
