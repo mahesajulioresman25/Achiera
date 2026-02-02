@@ -263,33 +263,19 @@ export default async function RasaIbuProductDetailPage({
                                 </div>
                             </div>
 
-                            {/* Freshness Section (Only shown if QR date is present) */}
+                            {/* Freshness Section (Only showing the verification badge part if QR active) */}
                             {productionDate && calculatedExpiry && (
-                                <div className="bg-gradient-to-br from-[#E8F5E9] to-[#F1F8E9] p-6 rounded-3xl border border-[#C8E6C9] space-y-4 shadow-sm animate-in fade-in slide-in-from-top-4">
-                                    <div className="flex items-center justify-between">
-                                        <h3 className="text-xs font-black uppercase tracking-[0.2em] text-[#2E7D32] flex items-center gap-2">
-                                            <ShieldCheck className="w-4 h-4 text-[#4CAF50]" />
-                                            Jaminan Kesegaran
-                                        </h3>
-                                        <span className="px-2 py-0.5 bg-white/50 text-[#2E7D32] text-[8px] font-black uppercase tracking-widest rounded-full border border-[#C8E6C9]">
-                                            Terverifikasi QR
-                                        </span>
+                                <div className="bg-[#E8F5E9] p-4 rounded-xl border border-[#C8E6C9] flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+                                    <div className="bg-white p-2 rounded-full border border-[#C8E6C9]">
+                                        <ShieldCheck className="w-5 h-5 text-[#2E7D32]" />
                                     </div>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-1">
-                                            <p className="text-[9px] font-black uppercase tracking-widest text-[#689F38]">Dimasak Pada</p>
-                                            <p className="text-xs font-black text-[#1B5E20] flex items-center gap-1.5">
-                                                <Calendar className="w-3 h-3 opacity-60" />
-                                                {formatDateIndo(productionDate)}
-                                            </p>
-                                        </div>
-                                        <div className="space-y-1">
-                                            <p className="text-[9px] font-black uppercase tracking-widest text-[#C62828]">Baik Digunakan Sebelum</p>
-                                            <p className="text-xs font-black text-[#B71C1C] flex items-center gap-1.5">
-                                                <Clock className="w-3 h-3 opacity-60" />
-                                                {formatDateIndo(calculatedExpiry)}
-                                            </p>
-                                        </div>
+                                    <div>
+                                        <h3 className="text-xs font-black uppercase tracking-wider text-[#2E7D32]">
+                                            Terverifikasi QR
+                                        </h3>
+                                        <p className="text-[10px] text-[#1B5E20] leading-tight mt-0.5">
+                                            Produk ini terjamin keaslian dan kesegarannya dari dapur kami.
+                                        </p>
                                     </div>
                                 </div>
                             )}
