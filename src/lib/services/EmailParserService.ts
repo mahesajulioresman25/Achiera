@@ -37,11 +37,12 @@ export class EmailParserService {
 
         const lock = await this.client.getMailboxLock('INBOX');
         try {
-            const yesterday = new Date();
-            yesterday.setDate(yesterday.getDate() - 1);
+            const lookbackDate = new Date();
+            lookbackDate.setDate(lookbackDate.getDate() - 7); // Look back 7 days to catch missed reports
 
             const messages = await this.client.search({
-                since: yesterday,
+                since: lookbackDate,
+                seen: false,
                 or: [
                     { from: 'noreply@shopee.co.id' },
                     { from: 'noreply@tokopedia.com' },
@@ -223,364 +224,379 @@ export class EmailParserService {
         }
     }
 
+} catch (e) {
+    console.error(`[EmailParser] DB Error saving GrabFood sales:`, e);
+    await logSystemActivity('EMAIL_PARSE', 'ERROR', `DB Error saving GrabFood PDF`, { error: String(e) }, brandId);
+}
+    }
+
     async handleGrabFoodPDFSales(text: string, brandId: string) {
-        const dateMatch = text.match(/(\d{1,2})\s+(Januari|Februari|Maret|April|Mei|Juni|Juli|Agustus|September|Oktober|November|Desember)\s+(\d{4})/i);
-        let reportDate = new Date();
-        if (dateMatch) {
-            const months: any = {
-                'januari': 0, 'februari': 1, 'maret': 2, 'april': 3, 'mei': 4, 'juni': 5,
-                'juli': 6, 'agustus': 7, 'september': 8, 'oktober': 9, 'november': 10, 'desember': 11
-            };
-            reportDate = new Date(parseInt(dateMatch[3]), months[dateMatch[2].toLowerCase()], parseInt(dateMatch[1]));
+    // Debug: Log text sample to debug regex
+    // await logSystemActivity('EMAIL_PARSE', 'INFO', `PDF Content Sample`, { text: text.substring(0, 200) }, brandId);
+
+    const dateMatch = text.match(/(\d{1,2})\s+(Januari|Februari|Maret|April|Mei|Juni|Juli|Agustus|September|Oktober|November|Desember)\s+(\d{4})/i);
+    let reportDate = new Date();
+    if (dateMatch) {
+        const months: any = {
+            'januari': 0, 'februari': 1, 'maret': 2, 'april': 3, 'mei': 4, 'juni': 5,
+            'juli': 6, 'agustus': 7, 'september': 8, 'oktober': 9, 'november': 10, 'desember': 11
+        };
+        reportDate = new Date(parseInt(dateMatch[3]), months[dateMatch[2].toLowerCase()], parseInt(dateMatch[1]));
+    } else {
+        await logSystemActivity('EMAIL_PARSE', 'ERROR', `Grab PDF Date Regex Failed`, { textSnippet: text.substring(0, 300) }, brandId);
+    }
+
+    // Refined regex for Grab PDF summary line
+    // IDR[TAB]0,00IDR[TAB]0,000[TAB]pesanan
+    const summaryMatch = text.match(/IDR\s*([\d\.,]+)\s*IDR\s*([\d\.,]+)\s*(\d+)\s*pesanan/i);
+
+    let revenue = 0;
+    let orders = 0;
+
+    if (summaryMatch) {
+        revenue = parseFloat(summaryMatch[1].replace(/\./g, '').replace(',', '.')) || 0;
+        orders = parseInt(summaryMatch[3]) || 0;
+    } else {
+        // Try fallback simpler regex (using [\s\S] instead of . with s flag)
+        const revMatch = text.match(/Total\s+Pendapatan[\s\S]*?IDR\s+([\d\.,]+)/i);
+        const ordMatch = text.match(/Total\s+Pesanan[\s\S]*?(\d+)\s+pesanan/i);
+
+        if (revMatch) revenue = parseFloat(revMatch[1].replace(/\./g, '').replace(',', '.')) || 0;
+        if (ordMatch) orders = parseInt(ordMatch[1]) || 0;
+
+        if (!revMatch && !summaryMatch) {
+            await logSystemActivity('EMAIL_PARSE', 'ERROR', `Grab PDF Revenue Regex Failed`, { textSnippet: text.substring(0, 500) }, brandId);
         }
+    }
 
-        // Refined regex for Grab PDF summary line
-        // IDR[TAB]0,00IDR[TAB]0,000[TAB]pesanan
-        const summaryMatch = text.match(/IDR\s*([\d\.,]+)\s*IDR\s*([\d\.,]+)\s*(\d+)\s*pesanan/i);
+    if (isNaN(reportDate.getTime())) return;
 
-        let revenue = 0;
-        let orders = 0;
-
-        if (summaryMatch) {
-            revenue = parseFloat(summaryMatch[1].replace(/\./g, '').replace(',', '.')) || 0;
-            orders = parseInt(summaryMatch[3]) || 0;
-        } else {
-            // Try fallback simpler regex (using [\s\S] instead of . with s flag)
-            const revMatch = text.match(/Total\s+Pendapatan[\s\S]*?IDR\s+([\d\.,]+)/i);
-            const ordMatch = text.match(/Total\s+Pesanan[\s\S]*?(\d+)\s+pesanan/i);
-
-            if (revMatch) revenue = parseFloat(revMatch[1].replace(/\./g, '').replace(',', '.')) || 0;
-            if (ordMatch) orders = parseInt(ordMatch[1]) || 0;
-        }
-
-        if (isNaN(reportDate.getTime())) return;
-
-        try {
-            const result = await prisma.marketplaceDailySales.upsert({
-                where: {
-                    brandId_platform_reportDate: {
-                        brandId,
-                        platform: 'GRABFOOD',
-                        reportDate
-                    }
-                },
-                create: {
+    try {
+        const result = await prisma.marketplaceDailySales.upsert({
+            where: {
+                brandId_platform_reportDate: {
                     brandId,
                     platform: 'GRABFOOD',
-                    reportDate,
-                    totalOrders: orders,
-                    totalRevenue: revenue,
-                    totalItems: orders,
-                    completedOrders: orders,
-                    canceledOrders: 0,
-                    returnedOrders: 0,
-                    emailSubject: 'GrabFood PDF Report'
-                },
-                update: {
-                    totalOrders: orders,
-                    totalRevenue: revenue,
-                    totalItems: orders,
-                    completedOrders: orders
+                    reportDate
                 }
-            });
-            console.log(`[EmailParser] GrabFood sales processed from PDF: ${reportDate.toDateString()} - Revenue: ${revenue}`);
-            try {
-                await logSystemActivity('EMAIL_PARSE', 'INFO', `GrabFood PDF Sales Parsed`, { date: reportDate, revenue }, brandId);
-            } catch (e) { }
-        } catch (e) {
-            console.error(`[EmailParser] DB Error saving GrabFood sales:`, e);
-        }
+            },
+            create: {
+                brandId,
+                platform: 'GRABFOOD',
+                reportDate,
+                totalOrders: orders,
+                totalRevenue: revenue,
+                totalItems: orders,
+                completedOrders: orders,
+                canceledOrders: 0,
+                returnedOrders: 0,
+                emailSubject: 'GrabFood PDF Report'
+            },
+            update: {
+                totalOrders: orders,
+                totalRevenue: revenue,
+                totalItems: orders,
+                completedOrders: orders
+            }
+        });
+        console.log(`[EmailParser] GrabFood sales processed from PDF: ${reportDate.toDateString()} - Revenue: ${revenue}`);
+        try {
+            await logSystemActivity('EMAIL_PARSE', 'INFO', `GrabFood PDF Sales Parsed`, { date: reportDate, revenue }, brandId);
+        } catch (e) { }
+    } catch (e) {
+        console.error(`[EmailParser] DB Error saving GrabFood sales:`, e);
+    }
+}
+
+detectPlatform(from: string, subject: string, html: string): 'SHOPEE' | 'TOKOPEDIA' | 'GRABFOOD' | null {
+    const lowerFrom = from.toLowerCase();
+    const lowerSubject = subject.toLowerCase();
+    const lowerHtml = html.toLowerCase();
+
+    // Direct from platform
+    if (lowerFrom.includes('shopee')) return 'SHOPEE';
+    if (lowerFrom.includes('tokopedia')) return 'TOKOPEDIA';
+    if (lowerFrom.includes('grab')) return 'GRABFOOD';
+
+    // Check if forwarded from personal email
+    if (lowerFrom.includes('mahesajulioresman25@gmail.com')) {
+        if (lowerSubject.includes('shopee') || lowerHtml.includes('shopee')) return 'SHOPEE';
+        if (lowerSubject.includes('tokopedia') || lowerHtml.includes('tokopedia')) return 'TOKOPEDIA';
+        if (lowerSubject.includes('grab') || lowerHtml.includes('grab')) return 'GRABFOOD';
     }
 
-    detectPlatform(from: string, subject: string, html: string): 'SHOPEE' | 'TOKOPEDIA' | 'GRABFOOD' | null {
-        const lowerFrom = from.toLowerCase();
-        const lowerSubject = subject.toLowerCase();
-        const lowerHtml = html.toLowerCase();
+    return null;
+}
 
-        // Direct from platform
-        if (lowerFrom.includes('shopee')) return 'SHOPEE';
-        if (lowerFrom.includes('tokopedia')) return 'TOKOPEDIA';
-        if (lowerFrom.includes('grab')) return 'GRABFOOD';
+detectEmailType(subject: string, html: string): EmailType {
+    const subjectLower = subject.toLowerCase();
+    const htmlLower = html.toLowerCase();
 
-        // Check if forwarded from personal email
-        if (lowerFrom.includes('mahesajulioresman25@gmail.com')) {
-            if (lowerSubject.includes('shopee') || lowerHtml.includes('shopee')) return 'SHOPEE';
-            if (lowerSubject.includes('tokopedia') || lowerHtml.includes('tokopedia')) return 'TOKOPEDIA';
-            if (lowerSubject.includes('grab') || lowerHtml.includes('grab')) return 'GRABFOOD';
-        }
-
-        return null;
+    if (subjectLower.includes('pesanan baru') || subjectLower.includes('new order') ||
+        htmlLower.includes('no. pesanan') || htmlLower.includes('order id')) {
+        return 'ORDER';
     }
 
-    detectEmailType(subject: string, html: string): EmailType {
-        const subjectLower = subject.toLowerCase();
-        const htmlLower = html.toLowerCase();
-
-        if (subjectLower.includes('pesanan baru') || subjectLower.includes('new order') ||
-            htmlLower.includes('no. pesanan') || htmlLower.includes('order id')) {
-            return 'ORDER';
-        }
-
-        if (subjectLower.includes('laporan penjualan') || subjectLower.includes('sales report') ||
-            subjectLower.includes('ringkasan harian') || subjectLower.includes('daily summary')) {
-            return 'DAILY_SALES';
-        }
-
-        if (subjectLower.includes('hasil kampanye') || subjectLower.includes('campaign performance') ||
-            subjectLower.includes('flash sale') || subjectLower.includes('promo report')) {
-            return 'CAMPAIGN_REPORT';
-        }
-
-        if (subjectLower.includes('ulasan baru') || subjectLower.includes('new review') ||
-            subjectLower.includes('rating') || htmlLower.includes('bintang')) {
-            return 'REVIEW';
-        }
-
-        if (subjectLower.includes('tips') || subjectLower.includes('insight') ||
-            subjectLower.includes('rekomendasi') || subjectLower.includes('saran')) {
-            return 'INSIGHT';
-        }
-
-        return 'UNKNOWN';
+    if (subjectLower.includes('laporan penjualan') || subjectLower.includes('sales report') ||
+        subjectLower.includes('ringkasan harian') || subjectLower.includes('daily summary')) {
+        return 'DAILY_SALES';
     }
+
+    if (subjectLower.includes('hasil kampanye') || subjectLower.includes('campaign performance') ||
+        subjectLower.includes('flash sale') || subjectLower.includes('promo report')) {
+        return 'CAMPAIGN_REPORT';
+    }
+
+    if (subjectLower.includes('ulasan baru') || subjectLower.includes('new review') ||
+        subjectLower.includes('rating') || htmlLower.includes('bintang')) {
+        return 'REVIEW';
+    }
+
+    if (subjectLower.includes('tips') || subjectLower.includes('insight') ||
+        subjectLower.includes('rekomendasi') || subjectLower.includes('saran')) {
+        return 'INSIGHT';
+    }
+
+    return 'UNKNOWN';
+}
 
     // ===== ORDER HANDLING =====
     async handleOrderEmail(html: string, brandId: string, platform: string) {
-        const orderData = platform === 'SHOPEE'
-            ? this.parseShopeeEmail(html)
-            : this.parseTokopediaEmail(html);
+    const orderData = platform === 'SHOPEE'
+        ? this.parseShopeeEmail(html)
+        : this.parseTokopediaEmail(html);
 
-        if (!orderData.externalOrderId) return;
+    if (!orderData.externalOrderId) return;
 
-        const { processAutonomousOrder } = await import('@/lib/intelligence/automationEngine');
-        await processAutonomousOrder({
-            brandId,
-            platform,
-            externalOrderId: orderData.externalOrderId,
-            customerName: orderData.customerName,
-            customerPhone: orderData.customerPhone,
-            items: [{
-                externalName: orderData.itemName || 'Unknown Item',
-                quantity: orderData.quantity || 1,
-                price: orderData.grandTotal / (orderData.quantity || 1)
-            }],
-            grandTotal: orderData.grandTotal
-        });
+    const { processAutonomousOrder } = await import('@/lib/intelligence/automationEngine');
+    await processAutonomousOrder({
+        brandId,
+        platform,
+        externalOrderId: orderData.externalOrderId,
+        customerName: orderData.customerName,
+        customerPhone: orderData.customerPhone,
+        items: [{
+            externalName: orderData.itemName || 'Unknown Item',
+            quantity: orderData.quantity || 1,
+            price: orderData.grandTotal / (orderData.quantity || 1)
+        }],
+        grandTotal: orderData.grandTotal
+    });
 
-        try {
-            await logSystemActivity('EMAIL_PARSE', 'INFO', `Order Processed: ${orderData.externalOrderId}`, { platform, total: orderData.grandTotal }, brandId);
-        } catch (e) { }
-    }
+    try {
+        await logSystemActivity('EMAIL_PARSE', 'INFO', `Order Processed: ${orderData.externalOrderId}`, { platform, total: orderData.grandTotal }, brandId);
+    } catch (e) { }
+}
 
-    parseShopeeEmail(html: string) {
-        const orderIdMatch = html.match(/(?:No\. Pesanan|Order ID)[:\s]+([\w\d]+)/i);
-        const nameMatch = html.match(/(?:Nama|Penerima)[:\s]+([^<\n]+)/i);
-        const phoneMatch = html.match(/(?:No\. HP|Telepon)[:\s]+([\d\+]+)/i);
-        const totalMatch = html.match(/Total(?: Pembayaran)?[:\s]+Rp\s*([\d\.,]+)/i);
-        const itemMatch = html.match(/(?:Produk|Nama Produk)[:\s]+([^<\n]+)/i);
-        const qtyMatch = html.match(/(?:Jumlah|Qty)[:\s]+(\d+)/i);
+parseShopeeEmail(html: string) {
+    const orderIdMatch = html.match(/(?:No\. Pesanan|Order ID)[:\s]+([\w\d]+)/i);
+    const nameMatch = html.match(/(?:Nama|Penerima)[:\s]+([^<\n]+)/i);
+    const phoneMatch = html.match(/(?:No\. HP|Telepon)[:\s]+([\d\+]+)/i);
+    const totalMatch = html.match(/Total(?: Pembayaran)?[:\s]+Rp\s*([\d\.,]+)/i);
+    const itemMatch = html.match(/(?:Produk|Nama Produk)[:\s]+([^<\n]+)/i);
+    const qtyMatch = html.match(/(?:Jumlah|Qty)[:\s]+(\d+)/i);
 
-        return {
-            externalOrderId: orderIdMatch?.[1]?.trim(),
-            customerName: nameMatch?.[1]?.trim() || 'Shopee Customer',
-            customerPhone: phoneMatch?.[1]?.trim(),
-            grandTotal: totalMatch ? parseFloat(totalMatch[1].replace(/\./g, '').replace(',', '.')) : 0,
-            itemName: itemMatch?.[1]?.trim(),
-            quantity: qtyMatch ? parseInt(qtyMatch[1]) : 1
-        };
-    }
+    return {
+        externalOrderId: orderIdMatch?.[1]?.trim(),
+        customerName: nameMatch?.[1]?.trim() || 'Shopee Customer',
+        customerPhone: phoneMatch?.[1]?.trim(),
+        grandTotal: totalMatch ? parseFloat(totalMatch[1].replace(/\./g, '').replace(',', '.')) : 0,
+        itemName: itemMatch?.[1]?.trim(),
+        quantity: qtyMatch ? parseInt(qtyMatch[1]) : 1
+    };
+}
 
-    parseTokopediaEmail(html: string) {
-        const invoiceMatch = html.match(/(?:INV\/[\w\/]+)/i);
-        const nameMatch = html.match(/Penerima[:\s]+([^<\n]+)/i);
-        const phoneMatch = html.match(/No\. HP[:\s]+([\d\+]+)/i);
-        const totalMatch = html.match(/Total Tagihan[:\s]+Rp\s*([\d\.,]+)/i);
-        const itemMatch = html.match(/(?:Produk|Nama Barang)[:\s]+([^<\n]+)/i);
-        const qtyMatch = html.match(/(?:Jumlah|Quantity)[:\s]+(\d+)/i);
+parseTokopediaEmail(html: string) {
+    const invoiceMatch = html.match(/(?:INV\/[\w\/]+)/i);
+    const nameMatch = html.match(/Penerima[:\s]+([^<\n]+)/i);
+    const phoneMatch = html.match(/No\. HP[:\s]+([\d\+]+)/i);
+    const totalMatch = html.match(/Total Tagihan[:\s]+Rp\s*([\d\.,]+)/i);
+    const itemMatch = html.match(/(?:Produk|Nama Barang)[:\s]+([^<\n]+)/i);
+    const qtyMatch = html.match(/(?:Jumlah|Quantity)[:\s]+(\d+)/i);
 
-        return {
-            externalOrderId: invoiceMatch?.[0]?.trim(),
-            customerName: nameMatch?.[1]?.trim() || 'Tokopedia Customer',
-            customerPhone: phoneMatch?.[1]?.trim(),
-            grandTotal: totalMatch ? parseFloat(totalMatch[1].replace(/\./g, '').replace(',', '.')) : 0,
-            itemName: itemMatch?.[1]?.trim(),
-            quantity: qtyMatch ? parseInt(qtyMatch[1]) : 1
-        };
-    }
+    return {
+        externalOrderId: invoiceMatch?.[0]?.trim(),
+        customerName: nameMatch?.[1]?.trim() || 'Tokopedia Customer',
+        customerPhone: phoneMatch?.[1]?.trim(),
+        grandTotal: totalMatch ? parseFloat(totalMatch[1].replace(/\./g, '').replace(',', '.')) : 0,
+        itemName: itemMatch?.[1]?.trim(),
+        quantity: qtyMatch ? parseInt(qtyMatch[1]) : 1
+    };
+}
 
     async handleDailySalesEmail(html: string, subject: string, brandId: string, platform: string) {
-        const salesData = this.parseDailySalesEmail(html, platform);
-        if (!salesData.reportDate) return;
+    const salesData = this.parseDailySalesEmail(html, platform);
+    if (!salesData.reportDate) return;
 
-        try {
-            await prisma.marketplaceDailySales.upsert({
-                where: {
-                    brandId_platform_reportDate: {
-                        brandId,
-                        platform,
-                        reportDate: salesData.reportDate
-                    }
-                },
-                create: {
+    try {
+        await prisma.marketplaceDailySales.upsert({
+            where: {
+                brandId_platform_reportDate: {
                     brandId,
                     platform,
-                    ...salesData,
-                    emailSubject: subject
-                },
-                update: {
-                    ...salesData,
-                    emailSubject: subject
+                    reportDate: salesData.reportDate
                 }
-            });
-            console.log(`[EmailParser] Daily sales saved for ${platform} on ${salesData.reportDate}`);
-            try {
-                await logSystemActivity('EMAIL_PARSE', 'INFO', `Daily Sales Saved: ${platform}`, { date: salesData.reportDate, revenue: salesData.totalRevenue }, brandId);
-            } catch (e) { }
-        } catch (error) {
-            console.error('[EmailParser] Failed to save daily sales:', error);
-        }
+            },
+            create: {
+                brandId,
+                platform,
+                ...salesData,
+                emailSubject: subject
+            },
+            update: {
+                ...salesData,
+                emailSubject: subject
+            }
+        });
+        console.log(`[EmailParser] Daily sales saved for ${platform} on ${salesData.reportDate}`);
+        try {
+            await logSystemActivity('EMAIL_PARSE', 'INFO', `Daily Sales Saved: ${platform}`, { date: salesData.reportDate, revenue: salesData.totalRevenue }, brandId);
+        } catch (e) { }
+    } catch (error) {
+        console.error('[EmailParser] Failed to save daily sales:', error);
     }
+}
 
-    parseDailySalesEmail(html: string, platform: string) {
-        const dateMatch = html.match(/(\d{1,2})\s+(Januari|Februari|Maret|April|Mei|Juni|Juli|Agustus|September|Oktober|November|Desember)\s+(\d{4})/i);
-        let reportDate = new Date();
-        if (dateMatch) {
-            const months: any = {
-                'januari': 0, 'februari': 1, 'maret': 2, 'april': 3, 'mei': 4, 'juni': 5,
-                'juli': 6, 'agustus': 7, 'september': 8, 'oktober': 9, 'november': 10, 'desember': 11
-            };
-            reportDate = new Date(parseInt(dateMatch[3]), months[dateMatch[2].toLowerCase()], parseInt(dateMatch[1]));
-        }
-
-        const ordersMatch = html.match(/(?:Total Pesanan|Jumlah Order)[:\s]+(\d+)/i);
-        const revenueMatch = html.match(/(?:Total Pendapatan|Revenue)[:\s]+Rp\s*([\d\.,]+)/i);
-        const itemsMatch = html.match(/(?:Total Item|Barang Terjual)[:\s]+(\d+)/i);
-        const completedMatch = html.match(/(?:Selesai|Completed)[:\s]+(\d+)/i);
-        const canceledMatch = html.match(/(?:Dibatalkan|Canceled)[:\s]+(\d+)/i);
-
-        return {
-            reportDate,
-            totalOrders: ordersMatch ? parseInt(ordersMatch[1]) : 0,
-            totalRevenue: revenueMatch ? parseFloat(revenueMatch[1].replace(/\./g, '').replace(',', '.')) : 0,
-            totalItems: itemsMatch ? parseInt(itemsMatch[1]) : 0,
-            completedOrders: completedMatch ? parseInt(completedMatch[1]) : 0,
-            canceledOrders: canceledMatch ? parseInt(canceledMatch[1]) : 0,
-            returnedOrders: 0,
-            rawData: { html }
+parseDailySalesEmail(html: string, platform: string) {
+    const dateMatch = html.match(/(\d{1,2})\s+(Januari|Februari|Maret|April|Mei|Juni|Juli|Agustus|September|Oktober|November|Desember)\s+(\d{4})/i);
+    let reportDate = new Date();
+    if (dateMatch) {
+        const months: any = {
+            'januari': 0, 'februari': 1, 'maret': 2, 'april': 3, 'mei': 4, 'juni': 5,
+            'juli': 6, 'agustus': 7, 'september': 8, 'oktober': 9, 'november': 10, 'desember': 11
         };
+        reportDate = new Date(parseInt(dateMatch[3]), months[dateMatch[2].toLowerCase()], parseInt(dateMatch[1]));
     }
+
+    const ordersMatch = html.match(/(?:Total Pesanan|Jumlah Order)[:\s]+(\d+)/i);
+    const revenueMatch = html.match(/(?:Total Pendapatan|Revenue)[:\s]+Rp\s*([\d\.,]+)/i);
+    const itemsMatch = html.match(/(?:Total Item|Barang Terjual)[:\s]+(\d+)/i);
+    const completedMatch = html.match(/(?:Selesai|Completed)[:\s]+(\d+)/i);
+    const canceledMatch = html.match(/(?:Dibatalkan|Canceled)[:\s]+(\d+)/i);
+
+    return {
+        reportDate,
+        totalOrders: ordersMatch ? parseInt(ordersMatch[1]) : 0,
+        totalRevenue: revenueMatch ? parseFloat(revenueMatch[1].replace(/\./g, '').replace(',', '.')) : 0,
+        totalItems: itemsMatch ? parseInt(itemsMatch[1]) : 0,
+        completedOrders: completedMatch ? parseInt(completedMatch[1]) : 0,
+        canceledOrders: canceledMatch ? parseInt(canceledMatch[1]) : 0,
+        returnedOrders: 0,
+        rawData: { html }
+    };
+}
 
     async handleCampaignReportEmail(html: string, subject: string, brandId: string, platform: string) {
-        const campaignData = this.parseCampaignReportEmail(html, subject);
-        if (!campaignData.campaignName) return;
+    const campaignData = this.parseCampaignReportEmail(html, subject);
+    if (!campaignData.campaignName) return;
 
+    try {
+        await prisma.marketplaceCampaignReport.create({
+            data: {
+                brandId,
+                platform,
+                ...campaignData,
+                emailSubject: subject
+            }
+        });
+        console.log(`[EmailParser] Campaign report saved: ${campaignData.campaignName}`);
         try {
-            await prisma.marketplaceCampaignReport.create({
-                data: {
-                    brandId,
-                    platform,
-                    ...campaignData,
-                    emailSubject: subject
-                }
-            });
-            console.log(`[EmailParser] Campaign report saved: ${campaignData.campaignName}`);
-            try {
-                await logSystemActivity('EMAIL_PARSE', 'INFO', `Campaign Report Saved`, { name: campaignData.campaignName, revenue: campaignData.totalRevenue }, brandId);
-            } catch (e) { }
-        } catch (error) {
-            console.error('[EmailParser] Failed to save campaign report:', error);
-        }
+            await logSystemActivity('EMAIL_PARSE', 'INFO', `Campaign Report Saved`, { name: campaignData.campaignName, revenue: campaignData.totalRevenue }, brandId);
+        } catch (e) { }
+    } catch (error) {
+        console.error('[EmailParser] Failed to save campaign report:', error);
     }
+}
 
-    parseCampaignReportEmail(html: string, subject: string) {
-        const campaignNameMatch = subject.match(/(?:Kampanye|Campaign)[:"]\s*([^"\n]+)/i) ||
-            html.match(/(?:Nama Kampanye|Campaign Name)[:\s]+([^<\n]+)/i);
+parseCampaignReportEmail(html: string, subject: string) {
+    const campaignNameMatch = subject.match(/(?:Kampanye|Campaign)[:"]\s*([^"\n]+)/i) ||
+        html.match(/(?:Nama Kampanye|Campaign Name)[:\s]+([^<\n]+)/i);
 
-        const viewsMatch = html.match(/(?:Views|Dilihat)[:\s]+(\d+)/i);
-        const clicksMatch = html.match(/(?:Clicks|Klik)[:\s]+(\d+)/i);
-        const ordersMatch = html.match(/(?:Orders|Pesanan)[:\s]+(\d+)/i);
-        const revenueMatch = html.match(/(?:Revenue|Pendapatan)[:\s]+Rp\s*([\d\.,]+)/i);
+    const viewsMatch = html.match(/(?:Views|Dilihat)[:\s]+(\d+)/i);
+    const clicksMatch = html.match(/(?:Clicks|Klik)[:\s]+(\d+)/i);
+    const ordersMatch = html.match(/(?:Orders|Pesanan)[:\s]+(\d+)/i);
+    const revenueMatch = html.match(/(?:Revenue|Pendapatan)[:\s]+Rp\s*([\d\.,]+)/i);
 
-        return {
-            campaignName: campaignNameMatch?.[1]?.trim() || 'Unknown Campaign',
-            campaignType: 'FLASH_SALE',
-            startDate: new Date(),
-            endDate: new Date(),
-            totalViews: viewsMatch ? parseInt(viewsMatch[1]) : 0,
-            totalClicks: clicksMatch ? parseInt(clicksMatch[1]) : 0,
-            totalOrders: ordersMatch ? parseInt(ordersMatch[1]) : 0,
-            totalRevenue: revenueMatch ? parseFloat(revenueMatch[1].replace(/\./g, '').replace(',', '.')) : 0,
-            rawData: { html }
-        };
-    }
+    return {
+        campaignName: campaignNameMatch?.[1]?.trim() || 'Unknown Campaign',
+        campaignType: 'FLASH_SALE',
+        startDate: new Date(),
+        endDate: new Date(),
+        totalViews: viewsMatch ? parseInt(viewsMatch[1]) : 0,
+        totalClicks: clicksMatch ? parseInt(clicksMatch[1]) : 0,
+        totalOrders: ordersMatch ? parseInt(ordersMatch[1]) : 0,
+        totalRevenue: revenueMatch ? parseFloat(revenueMatch[1].replace(/\./g, '').replace(',', '.')) : 0,
+        rawData: { html }
+    };
+}
 
     async handleReviewEmail(html: string, subject: string, brandId: string, platform: string) {
-        const reviewData = this.parseReviewEmail(html);
-        if (!reviewData.productName) return;
+    const reviewData = this.parseReviewEmail(html);
+    if (!reviewData.productName) return;
 
+    try {
+        await prisma.customerReview.create({
+            data: {
+                brandId,
+                platform,
+                ...reviewData
+            }
+        });
+        console.log(`[EmailParser] Review saved: ${reviewData.rating}⭐ for ${reviewData.productName}`);
         try {
-            await prisma.customerReview.create({
-                data: {
-                    brandId,
-                    platform,
-                    ...reviewData
-                }
-            });
-            console.log(`[EmailParser] Review saved: ${reviewData.rating}⭐ for ${reviewData.productName}`);
-            try {
-                await logSystemActivity('EMAIL_PARSE', 'INFO', `Review Saved: ${reviewData.rating}⭐`, { product: reviewData.productName }, brandId);
-            } catch (e) { }
-        } catch (error) {
-            console.error('[EmailParser] Failed to save review:', error);
-        }
+            await logSystemActivity('EMAIL_PARSE', 'INFO', `Review Saved: ${reviewData.rating}⭐`, { product: reviewData.productName }, brandId);
+        } catch (e) { }
+    } catch (error) {
+        console.error('[EmailParser] Failed to save review:', error);
     }
+}
 
-    parseReviewEmail(html: string) {
-        const productMatch = html.match(/(?:Produk|Product)[:\s]+([^<\n]+)/i);
-        const ratingMatch = html.match(/(\d)\s*(?:bintang|star)/i);
-        const reviewMatch = html.match(/(?:Ulasan|Review)[:\s]+([^<]+)/i);
-        const customerMatch = html.match(/(?:Dari|From)[:\s]+([^<\n]+)/i);
+parseReviewEmail(html: string) {
+    const productMatch = html.match(/(?:Produk|Product)[:\s]+([^<\n]+)/i);
+    const ratingMatch = html.match(/(\d)\s*(?:bintang|star)/i);
+    const reviewMatch = html.match(/(?:Ulasan|Review)[:\s]+([^<]+)/i);
+    const customerMatch = html.match(/(?:Dari|From)[:\s]+([^<\n]+)/i);
 
-        return {
-            productName: productMatch?.[1]?.trim() || 'Unknown Product',
-            rating: ratingMatch ? parseInt(ratingMatch[1]) : 5,
-            reviewText: reviewMatch?.[1]?.trim(),
-            customerName: customerMatch?.[1]?.trim(),
-            reviewDate: new Date()
-        };
-    }
+    return {
+        productName: productMatch?.[1]?.trim() || 'Unknown Product',
+        rating: ratingMatch ? parseInt(ratingMatch[1]) : 5,
+        reviewText: reviewMatch?.[1]?.trim(),
+        customerName: customerMatch?.[1]?.trim(),
+        reviewDate: new Date()
+    };
+}
 
     async handleInsightEmail(html: string, subject: string, brandId: string, platform: string) {
-        const insightData = this.parseInsightEmail(html, subject);
+    const insightData = this.parseInsightEmail(html, subject);
 
+    try {
+        await prisma.marketplaceInsight.create({
+            data: {
+                brandId,
+                platform,
+                ...insightData
+            }
+        });
+        console.log(`[EmailParser] Insight saved: ${insightData.title}`);
         try {
-            await prisma.marketplaceInsight.create({
-                data: {
-                    brandId,
-                    platform,
-                    ...insightData
-                }
-            });
-            console.log(`[EmailParser] Insight saved: ${insightData.title}`);
-            try {
-                await logSystemActivity('EMAIL_PARSE', 'INFO', `Insight Saved`, { title: insightData.title }, brandId);
-            } catch (e) { }
-        } catch (error) {
-            console.error('[EmailParser] Failed to save insight:', error);
-        }
+            await logSystemActivity('EMAIL_PARSE', 'INFO', `Insight Saved`, { title: insightData.title }, brandId);
+        } catch (e) { }
+    } catch (error) {
+        console.error('[EmailParser] Failed to save insight:', error);
     }
+}
 
-    parseInsightEmail(html: string, subject: string) {
-        const title = subject.replace(/^(Re:|Fwd:)/i, '').trim();
-        const description = html.replace(/<[^>]*>/g, '').substring(0, 500);
+parseInsightEmail(html: string, subject: string) {
+    const title = subject.replace(/^(Re:|Fwd:)/i, '').trim();
+    const description = html.replace(/<[^>]*>/g, '').substring(0, 500);
 
-        return {
-            insightType: 'PERFORMANCE_TIP',
-            title,
-            description,
-            actionable: html.toLowerCase().includes('action') || html.toLowerCase().includes('lakukan'),
-            priority: 'MEDIUM',
-            metadata: { html }
-        };
-    }
+    return {
+        insightType: 'PERFORMANCE_TIP',
+        title,
+        description,
+        actionable: html.toLowerCase().includes('action') || html.toLowerCase().includes('lakukan'),
+        priority: 'MEDIUM',
+        metadata: { html }
+    };
+}
 }
