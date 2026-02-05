@@ -89,7 +89,10 @@ export async function GET(req: NextRequest) {
             }
 
             // TASK 4: Daily Insights & Anomalies (Daily window)
-            if (isDailyWindow) {
+            // DISABLED via User Request (2026-02-05): "report harian di nonaktifkan"
+            const ENABLE_DAILY_INSIGHTS = false;
+
+            if (isDailyWindow && ENABLE_DAILY_INSIGHTS) {
                 try {
                     // Check if already generated today to prevent duplicates
                     const startOfToday = new Date();

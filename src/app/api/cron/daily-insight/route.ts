@@ -9,6 +9,9 @@ import { logSystemActivity } from '@/lib/logger';
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
+    // DISABLED: User requested to stop daily reports (2026-02-05) until further notice.
+    return NextResponse.json({ success: true, message: 'Daily reports are temporarily disabled by user request.' });
+
     try {
         const brands = await prisma.brand.findMany({ where: { isActive: true } });
         const dataService = new DailyInsightsService();
