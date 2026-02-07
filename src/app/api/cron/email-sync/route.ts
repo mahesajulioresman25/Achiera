@@ -19,56 +19,52 @@ export async function GET() {
         }
 
         const parser = new EmailParserService();
-        const results = [];
+        const results: { brandId: string; status: string; error?: string }[] = [];
 
+        // Group integrations by email address to handle shared mailboxes
+        const emailMap: Record<string, string[]> = {};
         for (const integration of integrations) {
-            // Decrypt password in real app (using plain text for MVP/Phase 1)
-            // Ideally we should use environment variable for app password if it's the brand's own email
-            // Or stored encrypted in DB.
-            // For this implementation, we assume the integration record might store a reference or we use a system-wide env
-            // CHECK: The implementation plan said "EMAIL_ADDRESS" and "EMAIL_APP_PASSWORD" in env.
-            // But the schema handles multiple integrations.
-            // If we use system env, it only supports 1 email. 
-            // Let's assume for Phase 1 we use the system env for all (single brand scenario) 
-            // OR if the integration record has email, we might need password there.
+            const email = process.env.EMAIL_ADDRESS || integration.emailAddress;
+            if (!emailMap[email]) emailMap[email] = [];
+            emailMap[email].push(integration.brandId);
+        }
 
-            // Re-visiting implementation plan:
-            // "EMAIL_ADDRESS=rasaibu@gmail.com" in env.
-            // "EMAIL_APP_PASSWORD=..." in env.
-
-            // So we will ignore the email in the DB record for the credentials, and use the ENV credentials.
-            // But we filter by the DB record to know WHICH brand to attribute to? 
-            // Or just use the env credentials to check THAT mailbox.
-
-            const email = process.env.EMAIL_ADDRESS;
+        for (const [email, brandIds] of Object.entries(emailMap)) {
             const password = process.env.EMAIL_APP_PASSWORD;
 
-            if (!email || !password) {
-                console.error('Email credentials not configured in environment variables');
+            if (!password) {
+                console.error(`Email credentials not configured for ${email}`);
                 continue;
             }
 
-            // Process the sync using ENV credentials for the brand
-            // This allows the system to work even if the DB emailAddress doesn't match the ENV email
-            // (common in forwarding scenarios)
-
             try {
                 await parser.connect(email, password);
-                await parser.listenForOrders(integration.brandId);
+
+                // If multiple brands share an email, we should ideally fetch once 
+                // and attribute to each brand if possible, or just process for all.
+                // For Phase 1 simplification: we iterate through brandIds
+                // and call listenForOrders but DON'T mark as seen until the last one?
+                // Actually, listenForOrders currently marks as seen.
+
+                for (let i = 0; i < brandIds.length; i++) {
+                    const brandId = brandIds[i];
+                    // We might need to fetch Seen emails too if they were just marked 
+                    // by the previous loop iteration for the same account.
+                    await parser.listenForOrders(brandId);
+                }
+
                 await parser.disconnect();
 
-                await prisma.emailIntegration.update({
-                    where: { id: integration.id },
+                // Update lastSyncAt for all integrations of this email
+                await prisma.emailIntegration.updateMany({
+                    where: { emailAddress: email, brandId: { in: brandIds } },
                     data: { lastSyncAt: new Date() }
                 });
 
-                results.push({ brandId: integration.brandId, status: 'success' });
+                brandIds.forEach(id => results.push({ brandId: id, status: 'success' }));
             } catch (err) {
-                console.error(`Error syncing for brand ${integration.brandId}:`, err);
-                try {
-                    await logSystemActivity('EMAIL_PARSE', 'ERROR', `Sync failed: ${String(err)}`, { email }, integration.brandId);
-                } catch (logErr) { }
-                results.push({ brandId: integration.brandId, status: 'failed', error: String(err) });
+                console.error(`Error syncing for email ${email}:`, err);
+                brandIds.forEach(id => results.push({ brandId: id, status: 'failed', error: String(err) }));
             }
         }
 

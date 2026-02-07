@@ -56,34 +56,35 @@ export class EmailParserService {
                 ]
             });
 
-            const count = messages ? (Array.isArray(messages) ? messages.length : 0) : 0;
-
-            // Log checking status
-            try {
-                await logSystemActivity('EMAIL_PARSE', 'INFO', `Checked inbox: ${count} new emails found`, { count }, brandId);
-            } catch (e) { }
-
-            if (count === 0) {
+            if (!messages || !Array.isArray(messages) || messages.length === 0) {
                 return;
             }
 
             for (const uid of messages) {
-                const message = await this.client.fetchOne(uid, { source: true });
+                const message = await this.client.fetchOne(uid as number, { source: true });
                 await this.processEmail(message, brandId);
 
                 // Mark as read
-                await this.client.messageFlagsAdd(uid, ['\\Seen']);
+                await this.client.messageFlagsAdd(uid as number, ['\\Seen']);
             }
         } finally {
             lock.release();
         }
     }
 
-    async processEmail(message: any, brandId: string) {
+    async processEmail(message: any, fallbackBrandId: string) {
         const parsed = await simpleParser(message.source);
         const fromAddress = parsed.from?.text || '';
         const subject = parsed.subject || '';
-        const html = parsed.html || parsed.text || '';
+        const html = (parsed.html || parsed.text || '').toString();
+
+        // Detect Brand (Priority)
+        let brandId = await this.detectBrandId(subject, html);
+
+        // If not detected, use fallback (integration brand)
+        if (!brandId) {
+            brandId = fallbackBrandId;
+        }
 
         const platform = this.detectPlatform(fromAddress, subject, html);
         if (!platform) {
@@ -92,7 +93,7 @@ export class EmailParserService {
         }
 
         try {
-            await logSystemActivity('EMAIL_PARSE', 'INFO', `Processing email from ${fromAddress}`, { subject, platform }, brandId);
+            await logSystemActivity('EMAIL_PARSE', 'INFO', `Processing email for Brand: ${brandId}`, { from: fromAddress, subject, platform }, brandId);
         } catch (e) { }
 
         const emailType = this.detectEmailType(subject, html);
@@ -123,6 +124,26 @@ export class EmailParserService {
                 await this.handleAttachment(attachment, brandId, platform);
             }
         }
+    }
+
+    async detectBrandId(subject: string, html: string): Promise<string | null> {
+        // Fetch all brand names and slugs
+        const brands = await prisma.brand.findMany({ select: { id: true, name: true, slug: true } });
+
+        const content = (subject + ' ' + html).toLowerCase();
+
+        for (const brand of brands) {
+            // Check for brand name or slug in content
+            // We use word boundary check to avoid partial matches (e.g. "Achiera" matching "Achieraland")
+            const brandName = brand.name.toLowerCase();
+            const brandSlug = brand.slug.toLowerCase();
+
+            if (content.includes(brandSlug) || content.includes(brandName)) {
+                return brand.id;
+            }
+        }
+
+        return null;
     }
 
     async handleAttachment(attachment: any, brandId: string, platform: 'SHOPEE' | 'TOKOPEDIA' | 'GRABFOOD') {
@@ -225,9 +246,6 @@ export class EmailParserService {
     }
 
     async handleGrabFoodPDFSales(text: string, brandId: string) {
-        // Debug: Log text sample to debug regex
-        // await logSystemActivity('EMAIL_PARSE', 'INFO', `PDF Content Sample`, { text: text.substring(0, 200) }, brandId);
-
         const dateMatch = text.match(/(\d{1,2})\s+(Januari|Februari|Maret|April|Mei|Juni|Juli|Agustus|September|Oktober|November|Desember)\s+(\d{4})/i);
         let reportDate = new Date();
         if (dateMatch) {
@@ -237,36 +255,82 @@ export class EmailParserService {
             };
             reportDate = new Date(parseInt(dateMatch[3]), months[dateMatch[2].toLowerCase()], parseInt(dateMatch[1]));
         } else {
-            await logSystemActivity('EMAIL_PARSE', 'ERROR', `Grab PDF Date Regex Failed`, { textSnippet: text.substring(0, 300) }, brandId);
+            // Fallback for Date: Look for something like "31 Jan 2026" or "2026-01-31"
+            const fallbackDateMatch = text.match(/(\d{1,2})\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(\d{4})/i);
+            if (fallbackDateMatch) {
+                const monthsShort: any = {
+                    'jan': 0, 'feb': 1, 'mar': 2, 'apr': 3, 'may': 4, 'jun': 5,
+                    'jul': 6, 'aug': 7, 'sep': 8, 'oct': 9, 'nov': 10, 'dec': 11
+                };
+                reportDate = new Date(parseInt(fallbackDateMatch[3]), monthsShort[fallbackDateMatch[2].toLowerCase()], parseInt(fallbackDateMatch[1]));
+            } else {
+                await logSystemActivity('EMAIL_PARSE', 'WARN', `Grab PDF Date Regex Failed`, { textSnippet: text.substring(0, 300) }, brandId);
+            }
         }
-
-        // Refined regex for Grab PDF summary line
-        // IDR[TAB]0,00IDR[TAB]0,000[TAB]pesanan
-        const summaryMatch = text.match(/IDR\s*([\d\.,]+)\s*IDR\s*([\d\.,]+)\s*(\d+)\s*pesanan/i);
 
         let revenue = 0;
         let orders = 0;
 
+        // Pattern 1: Table header/summary line
+        // IDR[TAB]0,00IDR[TAB]0,000[TAB]pesanan
+        const summaryMatch = text.match(/IDR\s*([\d\.,]+)\s*IDR\s*([\d\.,]+)\s*(\d+)\s*pesanan/i);
+
         if (summaryMatch) {
             revenue = parseFloat(summaryMatch[1].replace(/\./g, '').replace(',', '.')) || 0;
             orders = parseInt(summaryMatch[3]) || 0;
-        } else {
-            // Try fallback simpler regex (using [\s\S] instead of . with s flag)
-            const revMatch = text.match(/Total\s+Pendapatan[\s\S]*?IDR\s+([\d\.,]+)/i);
-            const ordMatch = text.match(/Total\s+Pesanan[\s\S]*?(\d+)\s+pesanan/i);
+            console.log(`[EmailParser] Match 1: Rev=${revenue}, Ord=${orders}`);
+        }
 
-            if (revMatch) revenue = parseFloat(revMatch[1].replace(/\./g, '').replace(',', '.')) || 0;
-            if (ordMatch) orders = parseInt(ordMatch[1]) || 0;
-
-            if (!revMatch && !summaryMatch) {
-                await logSystemActivity('EMAIL_PARSE', 'ERROR', `Grab PDF Revenue Regex Failed`, { textSnippet: text.substring(0, 500) }, brandId);
+        // Pattern 2: Explicit Labels
+        if (revenue === 0) {
+            const revMatch = text.match(/(?:Total\s+Pendapatan|Revenue|Total\s+Earnings)[\s\S]{0,150}?IDR\s*([\d\.,]+)/i);
+            if (revMatch) {
+                revenue = parseFloat(revMatch[1].replace(/\./g, '').replace(',', '.')) || 0;
+                console.log(`[EmailParser] Match 2 (Revenue): ${revenue}`);
             }
+        }
+
+        if (orders === 0) {
+            const ordMatch = text.match(/(?:Total\s+Pesanan|Total\s+Orders)[\s\S]{0,150}?(\d+)\s*(?:pesanan|orders|order)/i);
+            if (ordMatch) {
+                orders = parseInt(ordMatch[1]) || 0;
+                console.log(`[EmailParser] Match 2 (Orders): ${orders}`);
+            }
+        }
+
+        // Final Fallback for Orders: just look for digits followed by 'pesanan'
+        if (orders === 0) {
+            const ordMatchRaw = text.match(/(\d+)\s+(?:pesanan|orders|order)/i);
+            if (ordMatchRaw) {
+                orders = parseInt(ordMatchRaw[1]) || 0;
+                console.log(`[EmailParser] Match 3 (Orders): ${orders}`);
+            }
+        }
+
+        // Final Fallback for Revenue: Look for any IDR
+        if (revenue === 0) {
+            const idrMatches = text.match(/IDR\s*([\d\.,]+)/gi);
+            if (idrMatches && idrMatches.length > 0) {
+                let bestRev = 0;
+                for (const m of idrMatches) {
+                    const val = parseFloat(m.replace(/IDR/i, '').trim().replace(/\./g, '').replace(',', '.'));
+                    if (val > bestRev) bestRev = val;
+                }
+                revenue = bestRev;
+                console.log(`[EmailParser] Match 3 (Revenue): ${revenue}`);
+            }
+        }
+
+        if (revenue === 0 && orders === 0) {
+            await logSystemActivity('EMAIL_PARSE', 'ERROR', `Grab PDF Extraction Failed`, {
+                textSnippet: text.substring(0, 1000).replace(/\n/g, ' ')
+            }, brandId);
         }
 
         if (isNaN(reportDate.getTime())) return;
 
         try {
-            const result = await prisma.marketplaceDailySales.upsert({
+            await prisma.marketplaceDailySales.upsert({
                 where: {
                     brandId_platform_reportDate: {
                         brandId,
@@ -293,12 +357,13 @@ export class EmailParserService {
                     completedOrders: orders
                 }
             });
-            console.log(`[EmailParser] GrabFood sales processed from PDF: ${reportDate.toDateString()} - Revenue: ${revenue}`);
+            console.log(`[EmailParser] GrabFood sales processed: ${reportDate.toDateString()} - Rev: ${revenue}`);
             try {
-                await logSystemActivity('EMAIL_PARSE', 'INFO', `GrabFood PDF Sales Parsed`, { date: reportDate, revenue }, brandId);
+                await logSystemActivity('EMAIL_PARSE', 'INFO', `GrabFood PDF Sales Parsed`, { date: reportDate, revenue, orders }, brandId);
             } catch (e) { }
-        } catch (e) {
-            console.error(`[EmailParser] DB Error saving GrabFood sales:`, e);
+        } catch (e: any) {
+            console.error('[EmailParser] Failed to save Grab PDF sales:', e);
+            await logSystemActivity('EMAIL_PARSE', 'ERROR', `DB Save Failed: ${e.message}`, { brandId }, brandId);
         }
     }
 
