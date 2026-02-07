@@ -7,7 +7,8 @@ import { getPublicBrandConfigAction } from '@/lib/actions/rasa-ibu/intelligence'
 import { createWebsiteOrderAction } from '@/lib/actions/commerce/orders';
 import { getMemberInfoAction } from '@/lib/actions/commerce/loyalty';
 import { getCustomerProfileByPhoneAction } from '@/lib/actions/commerce/customers';
-import { Check, Coins, Loader2, Sparkles, UserCheck } from 'lucide-react';
+import { validateVoucherAction } from '@/lib/actions/rasa-ibu/voucher';
+import { Check, Coins, Loader2, Sparkles, UserCheck, TicketPercent, X } from 'lucide-react';
 
 import { toast } from 'sonner';
 
@@ -34,6 +35,13 @@ export default function IntentCheckoutForm() {
     const [recipientEmail, setRecipientEmail] = useState('');
     const [brandConfig, setBrandConfig] = useState<any>(null);
     const [isMarketingAllowed, setIsMarketingAllowed] = useState(true);
+
+    // Voucher State
+    const [voucherCode, setVoucherCode] = useState('');
+    const [voucherDiscount, setVoucherDiscount] = useState(0);
+    const [voucherMessage, setVoucherMessage] = useState('');
+    const [isValidVoucher, setIsValidVoucher] = useState(false);
+    const [isCheckingVoucher, setIsCheckingVoucher] = useState(false);
 
     // ---------------------------------------------------------
     // Note: Bundle logic is now handled by Cart Sidebar flow
@@ -94,6 +102,38 @@ export default function IntentCheckoutForm() {
         }
     };
 
+    const handleApplyVoucher = async () => {
+        // If already valid, this button acts as "Remove"
+        if (isValidVoucher) {
+            setVoucherCode('');
+            setVoucherDiscount(0);
+            setIsValidVoucher(false);
+            setVoucherMessage('');
+            return;
+        }
+
+        if (!voucherCode) return;
+
+        setIsCheckingVoucher(true);
+        setVoucherMessage('');
+
+        const res = await validateVoucherAction(brandConfig?.id || 'rasa-ibu', voucherCode, cartTotal);
+
+        setIsCheckingVoucher(false);
+
+        if (res.success) {
+            setVoucherDiscount(res.discount);
+            setIsValidVoucher(true);
+            setVoucherMessage(res.message);
+            toast.success('Voucher berhasil dipasang!');
+        } else {
+            setVoucherDiscount(0);
+            setIsValidVoucher(false);
+            setVoucherMessage(res.message);
+            toast.error(res.message);
+        }
+    };
+
     if (items.length === 0) return null;
 
     // Calculate points to use (Strictly Brand Specific)
@@ -102,7 +142,7 @@ export default function IntentCheckoutForm() {
 
     const pointMultiplier = brandConfig?.loyalty?.pointValueInRupiah || 100;
     const discountValue = usePoints && memberInfo ? availableToUse * pointMultiplier : 0;
-    const finalTotal = Math.max(0, cartTotal - discountValue);
+    const finalTotal = Math.max(0, cartTotal - discountValue - voucherDiscount);
 
     const handleHandoff = async () => {
         setError(null);
@@ -132,7 +172,8 @@ export default function IntentCheckoutForm() {
             giftMessage,
             recipientName,
             recipientEmail,
-            isMarketingAllowed
+            isMarketingAllowed,
+            voucherCode: isValidVoucher ? voucherCode : undefined
         });
 
         if (!orderResult.success) {
@@ -436,8 +477,49 @@ export default function IntentCheckoutForm() {
                     </div>
                 </div>
 
-                {/* Loyalty & Summary Section */}
+                {/* Loyalty & Voucher & Summary Section */}
                 <div className="space-y-6 pt-6 border-t border-[#F0EEE9]">
+
+                    {/* Voucher Input */}
+                    <div className={`p-4 rounded-2xl border transition-all duration-300 ${isValidVoucher ? 'bg-emerald-50 border-emerald-100' : 'bg-[#FDFBF7] border-[#E5E1D8]'}`}>
+                        <div className="flex items-center gap-2 mb-3">
+                            <div className={`p-1.5 rounded-lg ${isValidVoucher ? 'bg-emerald-500 text-white' : 'bg-[#E5E1D8] text-[#8B7E66]'}`}>
+                                <TicketPercent className="w-3.5 h-3.5" />
+                            </div>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-[#2D3A2D]">
+                                {isValidVoucher ? 'Voucher Terpasang!' : 'Punya Kode Voucher?'}
+                            </p>
+                        </div>
+                        <div className="flex gap-2">
+                            <div className="relative flex-1">
+                                <input
+                                    value={voucherCode}
+                                    onChange={(e) => setVoucherCode(e.target.value.toUpperCase())}
+                                    placeholder="Masukkan kode..."
+                                    disabled={isValidVoucher || isCheckingVoucher}
+                                    className="w-full bg-white border border-[#E5E1D8] rounded-xl px-4 py-2.5 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-[#B2BCA2] disabled:opacity-70 disabled:bg-slate-50 uppercase placeholder:normal-case"
+                                />
+                            </div>
+                            <button
+                                onClick={handleApplyVoucher}
+                                disabled={isCheckingVoucher || (!voucherCode && !isValidVoucher)}
+                                className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all flex items-center gap-2 ${isValidVoucher
+                                        ? 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-100'
+                                        : 'bg-[#2D3A2D] text-[#FDFBF7] hover:bg-[#3d4d3d] disabled:opacity-50'
+                                    }`}
+                            >
+                                {isCheckingVoucher ? <Loader2 className="w-3 h-3 animate-spin" /> : isValidVoucher ? <X className="w-3 h-3" /> : 'Pakai'}
+                                {isValidVoucher && 'Hapus'}
+                            </button>
+                        </div>
+                        {voucherMessage && (
+                            <p className={`text-[10px] mt-2 font-medium ${isValidVoucher ? 'text-emerald-600' : 'text-red-500'}`}>
+                                {voucherMessage}
+                            </p>
+                        )}
+                    </div>
+
+                    {/* Points Section */}
                     {memberInfo && (
                         <div className={`p-4 rounded-2xl border transition-all duration-300 ${usePoints ? 'bg-indigo-50 border-indigo-100' : 'bg-slate-50 border-slate-100'}`}>
                             <div className="flex items-center justify-between">
@@ -470,6 +552,13 @@ export default function IntentCheckoutForm() {
                             <div className="flex justify-between items-baseline text-indigo-600">
                                 <p className="text-[10px] font-black uppercase">Potongan Poin</p>
                                 <p className="text-lg font-black">- Rp {discountValue.toLocaleString('id-ID')}</p>
+                            </div>
+                        )}
+
+                        {isValidVoucher && voucherDiscount > 0 && (
+                            <div className="flex justify-between items-baseline text-emerald-600 animate-in slide-in-from-right-2">
+                                <p className="text-[10px] font-black uppercase flex items-center gap-1"><TicketPercent className="w-3 h-3" /> Diskon Voucher</p>
+                                <p className="text-lg font-black">- Rp {voucherDiscount.toLocaleString('id-ID')}</p>
                             </div>
                         )}
 

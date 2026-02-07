@@ -49,6 +49,7 @@ import CampaignForm from '@/components/marketing/CampaignForm'; // Added import
 import BundleManager from '@/components/marketing/BundleManager'; // Added import
 import SubscriptionPlanManager from '@/components/marketing/SubscriptionPlanManager'; // Added import
 import SubscriptionDataManager from '@/components/marketing/SubscriptionDataManager'; // Added import
+import VoucherManager from '@/components/marketing/VoucherManager'; // Added import
 import DynamicPricingManager from './intelligence/DynamicPricingManager';
 import IncomeEntryModal from './IncomeEntryModal';
 import PaymentHistoryModal from './PaymentHistoryModal';
@@ -666,6 +667,21 @@ export default function DashboardClientWrapper({
                             </button>
 
                             <button
+                                onClick={() => setViewMode('MARKETING_VOUCHERS')}
+                                className="group p-8 bg-white border border-[#E5E1D8] rounded-[2.5rem] hover:border-teal-200 hover:shadow-2xl hover:shadow-teal-500/5 transition-all text-left flex flex-col gap-5 relative overflow-hidden"
+                            >
+                                <div className="absolute top-0 right-0 w-24 h-24 bg-teal-50 rounded-full -mr-12 -mt-12 group-hover:bg-teal-100 transition-colors"></div>
+                                <div className="w-14 h-14 bg-teal-50 rounded-2xl flex items-center justify-center group-hover:bg-teal-500 group-hover:text-white transition-colors relative z-10">
+                                    <TicketPercent className="w-6 h-6" />
+                                </div>
+                                <div className="relative z-10">
+                                    <p className="text-[10px] font-black text-teal-900 uppercase tracking-widest mb-1">Kode Promo</p>
+                                    <p className="text-xl font-black text-[#1A241A] font-serif">Vouchers</p>
+                                    <p className="text-xs text-[#8B7E66] mt-2 leading-relaxed italic">Buat voucher diskon dan atur pemakaiannya.</p>
+                                </div>
+                            </button>
+
+                            <button
                                 onClick={() => setViewMode('MARKETING_SUBSCRIPTION_DATA')}
                                 className="group p-8 bg-white border border-[#E5E1D8] rounded-[2.5rem] hover:border-purple-200 hover:shadow-2xl hover:shadow-purple-500/5 transition-all text-left flex flex-col gap-5 relative overflow-hidden"
                             >
@@ -751,6 +767,11 @@ export default function DashboardClientWrapper({
                         />
                     ) : viewMode === 'MARKETING_SUBSCRIPTIONS' ? (
                         <SubscriptionPlanManager
+                            brandId={brandId}
+                            onClose={() => setViewMode('MARKETING')}
+                        />
+                    ) : viewMode === 'MARKETING_VOUCHERS' ? (
+                        <VoucherManager
                             brandId={brandId}
                             onClose={() => setViewMode('MARKETING')}
                         />

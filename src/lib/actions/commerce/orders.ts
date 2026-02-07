@@ -22,6 +22,7 @@ export async function createWebsiteOrderAction(data: {
     recipientName?: string;
     recipientEmail?: string;
     isMarketingAllowed?: boolean;
+    voucherCode?: string;
 }) {
     try {
         let brandId = data.brandId;
@@ -173,7 +174,8 @@ export async function createWebsiteOrderAction(data: {
             giftMessage: data.giftMessage,
             recipientName: data.recipientName,
             recipientEmail: data.recipientEmail,
-            internalNotes: combinedInternalNote
+            internalNotes: combinedInternalNote,
+            voucherCode: data.voucherCode
         });
 
         // 4.5 Sync Marketing Preference (LoyaltyAccount)

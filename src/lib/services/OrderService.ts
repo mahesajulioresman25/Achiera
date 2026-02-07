@@ -35,6 +35,7 @@ export type CreateOrderInput = {
     recipientName?: string;
     recipientEmail?: string;
     internalNotes?: string;
+    voucherCode?: string;
 };
 
 export type ProcessPaymentInput = {
@@ -71,9 +72,27 @@ export class OrderService {
                 loyaltyDiscount = input.loyaltyPointsUsed * pointValue;
             }
 
+            // Handle Voucher
+            let voucherDiscount = 0;
+            if (input.voucherCode) {
+                const { VoucherService } = await import('./VoucherService');
+                const voucherService = new VoucherService();
+
+                const validation = await voucherService.validateVoucher(input.brandId, input.voucherCode, subtotal);
+
+                if (!validation.isValid) {
+                    throw new Error(validation.error || 'Invalid Voucher');
+                }
+
+                voucherDiscount = validation.discountAmount || 0;
+
+                // Increment Usage (Transactional)
+                await voucherService.incrementUsage(input.voucherCode, input.brandId, tx);
+            }
+
             // Handle Flash Sale (Optional - can be passed via internalNotes/total if already calculated)
             // For now, we assume the total passed or calculated is final.
-            const total = Math.max(0, subtotal - loyaltyDiscount);
+            const total = Math.max(0, subtotal - loyaltyDiscount - voucherDiscount);
 
             // 2. Generate unique identifiers
             const invoiceNo = `INV-${input.channel === 'WEBSITE' ? 'WEB' : 'MAN'}-${Date.now()}`;
@@ -95,6 +114,8 @@ export class OrderService {
                     tax: 0,
                     total: total,
                     totalAmount: total,
+                    discountAmount: voucherDiscount,
+                    voucherCode: input.voucherCode,
                     status: 'DIPESAN',
                     channel: input.channel || 'WEBSITE',
                     paymentMethod: input.paymentMethod,
