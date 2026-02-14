@@ -9,7 +9,15 @@ class WhatsAppEngine extends EventEmitter {
 
     constructor() {
         super();
-        this.startSync();
+
+        const isBuild = process.env.IS_BUILD === 'true' ||
+            process.env.NEXT_PHASE === 'phase-production-build';
+
+        if (!isBuild) {
+            this.startSync();
+        } else {
+            console.log('[WA Engine Client] Build phase detected. Skipping status sync.');
+        }
     }
 
     // Periodically sync status from the external service
@@ -174,10 +182,19 @@ const globalStore = global as any;
 if (!globalStore[GLOBAL_KEY]) {
     globalStore[GLOBAL_KEY] = new WhatsAppEngine();
 
-    // Start background queue processor
-    import('../whatsapp/processor').then(({ WhatsAppProcessor }) => {
-        WhatsAppProcessor.start();
-    }).catch(err => console.error('[WhatsAppEngine] Failed to start processor:', err));
+    // Only start processor if NOT in build phase
+    // Vercel build environment doesn't have a direct flag, but we can detect build context
+    const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build' ||
+        process.env.IS_BUILD === 'true';
+
+    if (!isBuildPhase) {
+        // Start background queue processor
+        import('../whatsapp/processor').then(({ WhatsAppProcessor }) => {
+            WhatsAppProcessor.start();
+        }).catch(err => console.error('[WhatsAppEngine] Failed to start processor:', err));
+    } else {
+        console.log('[WhatsAppEngine] Build phase detected. Skipping background processor.');
+    }
 }
 
 export const waEngine = globalStore[GLOBAL_KEY] as WhatsAppEngine;

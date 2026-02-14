@@ -1,3 +1,5 @@
+import { PHASE_PRODUCTION_BUILD } from 'next/constants.js';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     typescript: {
@@ -35,4 +37,9 @@ const nextConfig = {
     },
 };
 
-export default nextConfig;
+export default (phase) => {
+    if (phase === PHASE_PRODUCTION_BUILD) {
+        process.env.IS_BUILD = 'true';
+    }
+    return nextConfig;
+};
