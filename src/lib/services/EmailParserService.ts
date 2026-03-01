@@ -117,6 +117,11 @@ export class EmailParserService {
         const emailType = this.detectEmailType(subject, html);
 
         switch (emailType) {
+            case 'SETTLEMENT':
+                await this.handleSettlementEmail(html, subject, brandId, platform);
+                break;
+            /* 
+            // Disabled other types as per user request (Settlement Only mode)
             case 'ORDER':
                 await this.handleOrderEmail(html, brandId, platform);
                 break;
@@ -132,11 +137,9 @@ export class EmailParserService {
             case 'INSIGHT':
                 await this.handleInsightEmail(html, subject, brandId, platform);
                 break;
-            case 'SETTLEMENT':
-                await this.handleSettlementEmail(html, subject, brandId, platform);
-                break;
+            */
             default:
-                console.log(`[EmailParser] Processing potential attachments for: ${subject}`);
+                console.log(`[EmailParser] Skipping or processing potential attachments for: ${subject}`);
         }
 
         // Process Attachments regardless of email type detection
