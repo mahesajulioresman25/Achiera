@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ChefHat, Plus, Minus, Image as ImageIcon, Send, CheckCircle2, ShieldCheck, Gift } from 'lucide-react';
+import { ChefHat, Plus, Minus, Image as ImageIcon, Send, CheckCircle2, ShieldCheck, Gift, Clipboard } from 'lucide-react';
 import { createRecipePost } from '@/lib/actions/rasa-ibu/recipes';
 import { toast } from 'sonner';
 
@@ -12,6 +12,8 @@ interface RecipeSubmissionFormProps {
 export default function RecipeSubmissionForm({ brandId }: RecipeSubmissionFormProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [hasSubmitted, setHasSubmitted] = useState(false);
+    const [showBulkPaste, setShowBulkPaste] = useState(false);
+    const [bulkText, setBulkText] = useState('');
 
     const [formData, setFormData] = useState({
         title: '',
@@ -27,6 +29,23 @@ export default function RecipeSubmissionForm({ brandId }: RecipeSubmissionFormPr
         steps: [''],
         tips: ''
     });
+
+    const handleBulkPaste = () => {
+        const parsed = bulkText
+            .split('\n')
+            .map(s => s.trim())
+            .filter(Boolean);
+
+        if (parsed.length === 0) {
+            toast.error('Gunakan format satu bahan per baris');
+            return;
+        }
+
+        setFormData({ ...formData, ingredients: parsed });
+        setShowBulkPaste(false);
+        setBulkText('');
+        toast.success(`Berhasil menambahkan ${parsed.length} bahan!`);
+    };
 
     const handleIngredientChange = (index: number, value: string) => {
         const newIngredients = [...formData.ingredients];
@@ -216,14 +235,44 @@ export default function RecipeSubmissionForm({ brandId }: RecipeSubmissionFormPr
             <div className="space-y-6">
                 <div className="flex justify-between items-center">
                     <h3 className="text-xl font-bold text-[#2D3A2D] border-l-4 border-[#B2BCA2] pl-4">2. Bahan-bahan</h3>
-                    <button
-                        type="button"
-                        onClick={addIngredient}
-                        className="p-2 bg-[#F9F7F2] text-[#8B7E66] rounded-lg hover:bg-[#B2BCA2] hover:text-white transition-all shadow-sm"
-                    >
-                        <Plus className="w-4 h-4" />
-                    </button>
+                    <div className="flex gap-2">
+                        <button
+                            type="button"
+                            onClick={() => setShowBulkPaste(!showBulkPaste)}
+                            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all shadow-sm ${showBulkPaste ? 'bg-[#2D3A2D] text-white' : 'bg-[#F9F7F2] text-[#8B7E66] hover:bg-[#B2BCA2] hover:text-white'}`}
+                        >
+                            <Clipboard className="w-4 h-4" />
+                            {showBulkPaste ? 'Tutup Panel' : 'Paste Sekaligus'}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={addIngredient}
+                            className="p-2 bg-[#F9F7F2] text-[#8B7E66] rounded-lg hover:bg-[#B2BCA2] hover:text-white transition-all shadow-sm"
+                        >
+                            <Plus className="w-4 h-4" />
+                        </button>
+                    </div>
                 </div>
+
+                {showBulkPaste && (
+                    <div className="p-6 bg-stone-50 rounded-2xl border-2 border-dashed border-stone-200 animate-in fade-in slide-in-from-top-4 duration-300">
+                        <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-4">Paste daftar bahan di bawah (Satu bahan per baris)</p>
+                        <textarea
+                            value={bulkText}
+                            onChange={(e) => setBulkText(e.target.value)}
+                            placeholder="Contoh:&#10;1 ekor Ayam&#10;5 siung Bawang Merah&#10;Cabai rawit secukupnya"
+                            className="w-full h-32 p-4 rounded-xl border border-stone-200 focus:ring-2 focus:ring-[#B2BCA2] focus:outline-none text-sm mb-4"
+                        />
+                        <button
+                            type="button"
+                            onClick={handleBulkPaste}
+                            className="w-full py-3 bg-[#B2BCA2] text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-[#2D3A2D] transition-all"
+                        >
+                            Proses & Masukkan ke Form
+                        </button>
+                    </div>
+                )}
+
                 <div className="space-y-3">
                     {formData.ingredients.map((ingredient, idx) => (
                         <div key={idx} className="flex gap-2">

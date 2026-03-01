@@ -12,6 +12,7 @@ import AnimatedSection from '@/components/commerce/AnimatedSection';
 import { prisma } from '@/lib/prisma';
 import { getRecipeBySlug, getRelatedRecipes } from '@/lib/actions/rasa-ibu/recipes';
 import PrintRecipeButton from '@/components/content/PrintRecipeButton';
+import CopyIngredientsButton from '@/components/content/CopyIngredientsButton';
 
 // Enable ISR for recipes
 export const revalidate = 60;
@@ -189,7 +190,10 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ s
                                         <span className="w-12 h-12 rounded-3xl bg-[#F9F7F2] flex items-center justify-center text-[#8B7E66] border border-[#E5E1D8]">📝</span>
                                         Bahan-bahan Spesial
                                     </h2>
-                                    <PrintRecipeButton />
+                                    <div className="flex items-center gap-3">
+                                        <CopyIngredientsButton ingredients={recipe.ingredients} />
+                                        <PrintRecipeButton />
+                                    </div>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     {Array.isArray(recipe.ingredients) && recipe.ingredients.map((item: string, idx: number) => (
