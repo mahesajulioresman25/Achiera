@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, Save, Search, Book, Info, ChevronRight, Calculator, Pencil, X } from 'lucide-react';
+import { Plus, Trash2, Save, Search, Book, Info, ChevronRight, Calculator, Pencil, X, Copy, ClipboardPaste } from 'lucide-react';
 import { upsertRecipeAction } from '@/lib/actions/rasa-ibu/production';
 import { getStockAction, updateIngredientAction } from '@/lib/actions/rasa-ibu/stock';
 import { toast } from 'sonner';
@@ -23,6 +23,9 @@ export default function RecipeManager({ brandId, recipes, onRefresh }: RecipeMan
         outputQuantity: 1,
         items: [] as { ingredientId: string; quantity: number; unit: string; note: string }[]
     });
+
+    const [showBulkPaste, setShowBulkPaste] = useState(false);
+    const [bulkText, setBulkText] = useState('');
 
     // Helper: Unit Conversion
     const convertToMatchStockUnit = (qty: number, fromUnit: string, toUnit: string): number => {
@@ -175,6 +178,93 @@ export default function RecipeManager({ brandId, recipes, onRefresh }: RecipeMan
         setFormData({ ...formData, items: newItems });
     };
 
+    const handleCopyIngredients = (recipe: any) => {
+        const text = recipe.items.map((i: any) =>
+            `${i.ingredient.product.name}: ${i.quantity} ${i.unit || 'gram'}`
+        ).join('\n');
+
+        navigator.clipboard.writeText(text);
+        toast.success('Bahan resep disalin!');
+    };
+
+    const handleBulkPaste = () => {
+        if (!bulkText.trim()) return;
+
+        const lines = bulkText.split('\n').filter(line => line.trim());
+        const newItems = [...formData.items];
+        let matchCount = 0;
+
+        lines.forEach(line => {
+            // Heuristic Parsing: "Bahan: 100 gram" or "100 gram Bahan"
+            // Let's assume "Name: Qty Unit" or "Name Qty Unit"
+            let namePart = '';
+            let qtyPart = 0;
+            let unitPart = 'gram';
+
+            if (line.includes(':')) {
+                const [n, v] = line.split(':');
+                namePart = n.trim();
+                const vParts = v.trim().split(/\s+/);
+                qtyPart = parseFloat(vParts[0]) || 0;
+                unitPart = vParts[1] || 'gram';
+            } else {
+                // Try to split by first number found
+                const match = line.match(/^(.*?)\s*(\d+(?:\.\d+)?)\s*(\w+)?$/);
+                if (match) {
+                    namePart = match[1].trim();
+                    qtyPart = parseFloat(match[2]);
+                    unitPart = match[3] || 'gram';
+                } else {
+                    namePart = line.trim();
+                }
+            }
+
+            // Heuristic Matching with Inventory
+            const variants = inventory.filter(inv =>
+                ['RAW_MATERIAL', 'PACKAGING', 'SUPPLY'].includes(inv.product.inventoryType)
+            );
+
+            // Sort by name length desc to find best match
+            const sortedVariants = [...variants].sort((a, b) => b.product.name.length - a.product.name.length);
+
+            let bestMatch = null;
+            const searchName = namePart.toLowerCase();
+
+            for (const v of sortedVariants) {
+                const vName = v.product.name.toLowerCase();
+                const subName = v.name !== 'Default' ? v.name.toLowerCase() : '';
+
+                if (searchName.includes(vName) || (subName && searchName.includes(subName))) {
+                    bestMatch = v;
+                    break;
+                }
+            }
+
+            if (bestMatch) {
+                newItems.push({
+                    ingredientId: bestMatch.id,
+                    quantity: qtyPart || 0,
+                    unit: unitPart,
+                    note: ''
+                });
+                matchCount++;
+            } else {
+                // Add empty row with name in note for manual fix
+                newItems.push({
+                    ingredientId: '',
+                    quantity: qtyPart || 0,
+                    unit: unitPart,
+                    note: namePart
+                });
+            }
+        });
+
+        setFormData({ ...formData, items: newItems });
+        setShowBulkPaste(false);
+        setBulkText('');
+        toast.success(`Berhasil memproses ${lines.length} baris. ${matchCount} bahan teridentifikasi otomatis.`);
+    };
+
     const filteredRecipes = recipes.filter(r =>
         r.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -259,14 +349,51 @@ export default function RecipeManager({ brandId, recipes, onRefresh }: RecipeMan
                     {/* Ingredients List */}
                     <div className="space-y-6">
                         <div className="flex items-center justify-between">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-[#8B7E66]">Bahan-bahan & Takaran</label>
+                            <div className="flex items-center gap-4">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-[#8B7E66]">Bahan-bahan & Takaran</label>
+                                <button
+                                    onClick={() => setShowBulkPaste(!showBulkPaste)}
+                                    className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-[#2D3A2D] bg-[#F9F7F2] px-3 py-1 rounded-full border border-[#E5E1D8] hover:bg-white transition-colors"
+                                >
+                                    <ClipboardPaste className="w-3 h-3" /> Paste Sekaligus
+                                </button>
+                            </div>
                             <button
                                 onClick={addIngredient}
-                                className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-emerald-600 hover:text-emerald-700"
+                                className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-emerald-600 hover:text-emerald-700 font-bold"
                             >
-                                <Plus className="w-3 h-3" /> Tambah Bahan
+                                <Plus className="w-3 h-3" /> Tambah Bahan Baru
                             </button>
                         </div>
+
+                        {showBulkPaste && (
+                            <div className="p-6 bg-emerald-50 rounded-[2rem] border border-emerald-100 space-y-4 animate-in slide-in-from-top-4">
+                                <div className="space-y-1">
+                                    <h4 className="text-xs font-black text-emerald-900 uppercase">Input Bahan Sekaligus</h4>
+                                    <p className="text-[10px] text-emerald-600 font-medium italic">Format: "Nama Bahan: 100 gram" (Satu per baris)</p>
+                                </div>
+                                <textarea
+                                    value={bulkText}
+                                    onChange={e => setBulkText(e.target.value)}
+                                    placeholder="Contoh:&#10;Gula Pasir: 50 gram&#10;Tepung Terigu: 200 gram&#10;Telur: 1 pcs"
+                                    className="w-full h-32 bg-white border border-emerald-100 rounded-xl p-4 text-[11px] font-bold text-[#2D3A2D] outline-none focus:ring-2 focus:ring-emerald-500"
+                                />
+                                <div className="flex justify-end gap-2">
+                                    <button
+                                        onClick={() => setShowBulkPaste(false)}
+                                        className="px-4 py-2 text-[10px] font-black uppercase text-slate-400"
+                                    >
+                                        Batal
+                                    </button>
+                                    <button
+                                        onClick={handleBulkPaste}
+                                        className="bg-emerald-600 text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/10"
+                                    >
+                                        Proses & Tambahkan
+                                    </button>
+                                </div>
+                            </div>
+                        )}
 
                         <div className="space-y-3">
                             {formData.items.map((item, idx) => (
@@ -476,26 +603,35 @@ export default function RecipeManager({ brandId, recipes, onRefresh }: RecipeMan
                                     </div>
                                 </div>
                             </div>
-                            <button
-                                onClick={() => {
-                                    setEditingRecipe(recipe);
-                                    setFormData({
-                                        name: recipe.name,
-                                        description: recipe.description || '',
-                                        frozenVariantId: recipe.frozenVariantId,
-                                        outputQuantity: recipe.outputQuantity,
-                                        items: recipe.items.map((i: any) => ({
-                                            ingredientId: i.ingredientId,
-                                            quantity: Number(i.quantity),
-                                            unit: i.unit || 'gram',
-                                            note: i.note || ''
-                                        }))
-                                    });
-                                }}
-                                className="p-3 bg-slate-50 rounded-xl text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-all"
-                            >
-                                <ChevronRight className="w-5 h-5" />
-                            </button>
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => handleCopyIngredients(recipe)}
+                                    className="p-3 bg-amber-50 rounded-xl text-amber-600 hover:text-amber-700 hover:bg-amber-100 transition-all"
+                                    title="Salin Bahan Resep"
+                                >
+                                    <Copy className="w-4 h-4" />
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setEditingRecipe(recipe);
+                                        setFormData({
+                                            name: recipe.name,
+                                            description: recipe.description || '',
+                                            frozenVariantId: recipe.frozenVariantId,
+                                            outputQuantity: recipe.outputQuantity,
+                                            items: recipe.items.map((i: any) => ({
+                                                ingredientId: i.ingredientId,
+                                                quantity: Number(i.quantity),
+                                                unit: i.unit || 'gram',
+                                                note: i.note || ''
+                                            }))
+                                        });
+                                    }}
+                                    className="p-3 bg-slate-50 rounded-xl text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-all"
+                                >
+                                    <ChevronRight className="w-5 h-5" />
+                                </button>
+                            </div>
                         </div>
 
                         <div className="space-y-2 pt-4 border-t border-slate-50">
