@@ -32,7 +32,7 @@ export class EmailParserService {
         }
     }
 
-    async listenForOrders(brandId: string) {
+    async syncEmails(brandIds: string[]) {
         if (!this.client) throw new Error("Client not connected");
 
         const lock = await this.client.getMailboxLock('INBOX');
@@ -40,6 +40,7 @@ export class EmailParserService {
             const lookbackDate = new Date();
             lookbackDate.setDate(lookbackDate.getDate() - 7); // Look back 7 days to catch missed reports
 
+            // Search for UNSEEN messages
             const messages = await this.client.search({
                 since: lookbackDate,
                 seen: false,
@@ -57,14 +58,17 @@ export class EmailParserService {
             });
 
             if (!messages || !Array.isArray(messages) || messages.length === 0) {
+                console.log(`[EmailParser] No new messages found.`);
                 return;
             }
 
+            console.log(`[EmailParser] Found ${messages.length} new messages. Processing for brands: ${brandIds.join(', ')}`);
+
             for (const uid of messages) {
                 const message = await this.client.fetchOne(uid as number, { source: true });
-                await this.processEmail(message, brandId);
+                await this.processEmail(message, brandIds);
 
-                // Mark as read
+                // Mark as read ONLY after processing for all brands
                 await this.client.messageFlagsAdd(uid as number, ['\\Seen']);
             }
         } finally {
@@ -72,23 +76,37 @@ export class EmailParserService {
         }
     }
 
-    async processEmail(message: any, fallbackBrandId: string) {
+    async processEmail(message: any, brandIds: string[]) {
         const parsed = await simpleParser(message.source);
         const fromAddress = parsed.from?.text || '';
         const subject = parsed.subject || '';
         const html = (parsed.html || parsed.text || '').toString();
 
-        // Detect Brand (Priority)
-        let brandId = await this.detectBrandId(subject, html);
+        // Detect Brand
+        const detectedBrandId = await this.detectBrandId(subject, html, brandIds);
 
-        // If not detected, use fallback (integration brand)
-        if (!brandId) {
-            brandId = fallbackBrandId;
+        // If a brand is explicitly detected, process only for that brand
+        if (detectedBrandId) {
+            await this.processEmailForBrand(parsed, detectedBrandId);
+        } else {
+            // Fallback: If no specific brand detected, we might need to process for ALL brands 
+            // if it's a generic email, OR skip if it's definitely brand-specific but unknown.
+            // For now, if it's not detected, we log a warning and skip to avoid misattribution.
+            console.log(`[EmailParser] Brand not detected for subject: ${subject}. Skipping.`);
+            try {
+                await logSystemActivity('EMAIL_PARSE', 'WARN', `Brand not detected for email`, { from: fromAddress, subject }, brandIds[0]);
+            } catch (e) { }
         }
+    }
+
+    private async processEmailForBrand(parsed: any, brandId: string) {
+        const fromAddress = parsed.from?.text || '';
+        const subject = parsed.subject || '';
+        const html = (parsed.html || parsed.text || '').toString();
 
         const platform = this.detectPlatform(fromAddress, subject, html);
         if (!platform) {
-            console.log(`[EmailParser] Skipped: Unknown platform (${fromAddress})`);
+            console.log(`[EmailParser] Skipped for Brand ${brandId}: Unknown platform (${fromAddress})`);
             return;
         }
 
@@ -126,21 +144,99 @@ export class EmailParserService {
         }
     }
 
-    async detectBrandId(subject: string, html: string): Promise<string | null> {
-        // Fetch all brand names and slugs
-        const brands = await prisma.brand.findMany({ select: { id: true, name: true, slug: true } });
+    async detectBrandId(subject: string, html: string, restrictedBrandIds?: string[]): Promise<string | null> {
+        // Fetch brands with their platform links for better detection
+        const brands = await prisma.brand.findMany({
+            where: restrictedBrandIds ? { id: { in: restrictedBrandIds } } : {},
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                brandConfig: {
+                    select: { platformLinks: true }
+                }
+            }
+        });
 
         const content = (subject + ' ' + html).toLowerCase();
 
         for (const brand of brands) {
-            // Check for brand name or slug in content
-            // We use word boundary check to avoid partial matches (e.g. "Achiera" matching "Achieraland")
             const brandName = brand.name.toLowerCase();
             const brandSlug = brand.slug.toLowerCase();
 
+            // 1. Check for specific Platform Links / Merchant IDs if configured
+            const platformLinks = brand.brandConfig?.platformLinks as any;
+            if (platformLinks) {
+                for (const [platform, link] of Object.entries(platformLinks)) {
+                    if (link && typeof link === 'string' && content.includes(link.toLowerCase())) {
+                        console.log(`[EmailParser] Brand detected via platform link (${platform}): ${brand.id}`);
+                        return brand.id;
+                    }
+                }
+            }
+
+            // 2. Check for brand name or slug
             if (content.includes(brandSlug) || content.includes(brandName)) {
                 return brand.id;
             }
+        }
+
+        return null;
+    }
+
+    private extractDate(text: string): string | null {
+        if (!text) return null;
+
+        // Support various Indonesian and English formats
+        const indonesianMonths: any = {
+            'januari': 0, 'februari': 1, 'maret': 2, 'april': 3, 'mei': 4, 'juni': 5,
+            'juli': 6, 'agustus': 7, 'september': 8, 'oktober': 9, 'november': 10, 'desember': 11
+        };
+        const englishMonths: any = {
+            'jan': 0, 'feb': 1, 'mar': 2, 'apr': 3, 'may': 4, 'jun': 5,
+            'jul': 6, 'aug': 7, 'sep': 8, 'oct': 9, 'nov': 10, 'dec': 11,
+            'january': 0, 'february': 1, 'march': 2, 'april': 3, 'june': 5,
+            'july': 6, 'august': 7, 'september': 8, 'october': 9, 'november': 10, 'december': 11
+        };
+
+        const cleanText = text.replace(/,/g, ' ').replace(/\s+/g, ' ').trim();
+
+        const formatDate = (y: number, m: number, d: number) => {
+            return `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        };
+
+        // DD Month YYYY (Indonesian or Full English)
+        const longMatch = cleanText.match(/(\d{1,2})\s+([a-zA-Z]+)\s+(\d{4})/);
+        if (longMatch) {
+            const day = parseInt(longMatch[1]);
+            const monthStr = longMatch[2].toLowerCase();
+            const year = parseInt(longMatch[3]);
+
+            const m = indonesianMonths[monthStr] ?? englishMonths[monthStr];
+            if (m !== undefined) return formatDate(year, m, day);
+        }
+
+        // Month D YYYY (English)
+        const altMatch = cleanText.match(/([a-zA-Z]+)\s+(\d{1,2})\s+(\d{4})/);
+        if (altMatch) {
+            const monthStr = altMatch[1].toLowerCase();
+            const day = parseInt(altMatch[2]);
+            const year = parseInt(altMatch[3]);
+
+            const m = englishMonths[monthStr] ?? indonesianMonths[monthStr];
+            if (m !== undefined) return formatDate(year, m, day);
+        }
+
+        // YYYY-MM-DD
+        const isoMatch = cleanText.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+        if (isoMatch) {
+            return formatDate(parseInt(isoMatch[1]), parseInt(isoMatch[2]) - 1, parseInt(isoMatch[3]));
+        }
+
+        // DD/MM/YYYY
+        const slashMatch = cleanText.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+        if (slashMatch) {
+            return formatDate(parseInt(slashMatch[3]), parseInt(slashMatch[2]) - 1, parseInt(slashMatch[1]));
         }
 
         return null;
@@ -168,7 +264,105 @@ export class EmailParserService {
 
         if (platform === 'GRABFOOD') {
             await this.handleGrabFoodCSVSales(content, brandId);
+        } else if (platform === 'SHOPEE') {
+            await this.handleShopeeCSVSales(content, brandId);
+        } else if (platform === 'TOKOPEDIA') {
+            await this.handleTokopediaCSVSales(content, brandId);
         }
+    }
+
+    async handleShopeeCSVSales(csvContent: string, brandId: string) {
+        const lines = csvContent.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+        if (lines.length < 2) return;
+
+        const headers = lines[0].toLowerCase();
+        const dataRows = lines.slice(1);
+
+        // Shopee Dynamic Column Detection
+        // Common headers: "Tanggal", "Total Pesanan", "Total Penjualan", "Pesanan", "Pendapatan"
+        let dateIdx = -1, revenueIdx = -1, ordersIdx = -1;
+        const cols = lines[0].split(/[,;]/);
+        cols.forEach((h, i) => {
+            const head = h.trim().toLowerCase();
+            if (head.includes('tanggal') || head.includes('date')) dateIdx = i;
+            if (head.includes('penjualan') || head.includes('revenue') || head.includes('pendapatan')) revenueIdx = i;
+            if (head.includes('pesanan') || head.includes('orders')) ordersIdx = i;
+        });
+
+        if (dateIdx === -1) {
+            console.log('[EmailParser] Shopee CSV: Date column not found');
+            return;
+        }
+
+        for (const row of dataRows) {
+            const rowCols = row.split(/[,;]/);
+            const dateStr = this.extractDate(rowCols[dateIdx]);
+            if (!dateStr) continue;
+
+            const reportDate = new Date(dateStr);
+            const revenue = revenueIdx !== -1 ? parseFloat(rowCols[revenueIdx].replace(/[^\d\.]/g, '')) || 0 : 0;
+            const orders = ordersIdx !== -1 ? parseInt(rowCols[ordersIdx]) || 0 : 0;
+
+            await this.upsertDailySales(brandId, 'SHOPEE', reportDate, revenue, orders);
+        }
+    }
+
+    async handleTokopediaCSVSales(csvContent: string, brandId: string) {
+        const lines = csvContent.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+        if (lines.length < 2) return;
+
+        const dataRows = lines.slice(1);
+        let dateIdx = -1, revenueIdx = -1, ordersIdx = -1;
+        const cols = lines[0].split(/[,;]/);
+
+        cols.forEach((h, i) => {
+            const head = h.trim().toLowerCase();
+            if (head.includes('tanggal') || head.includes('date')) dateIdx = i;
+            if (head.includes('harga') || head.includes('total') || head.includes('revenue')) revenueIdx = i;
+            if (head.includes('jumlah') || head.includes('orders')) ordersIdx = i;
+        });
+
+        for (const row of dataRows) {
+            const rowCols = row.split(/[,;]/);
+            const dateStr = this.extractDate(rowCols[dateIdx]);
+            if (!dateStr) continue;
+
+            const reportDate = new Date(dateStr);
+            const revenue = revenueIdx !== -1 ? parseFloat(rowCols[revenueIdx].replace(/[^\d\.]/g, '')) || 0 : 0;
+            const orders = ordersIdx !== -1 ? parseInt(rowCols[ordersIdx]) || 0 : 0;
+
+            await this.upsertDailySales(brandId, 'TOKOPEDIA', reportDate, revenue, orders);
+        }
+    }
+
+    private async upsertDailySales(brandId: string, platform: string, reportDate: Date, revenue: number, orders: number) {
+        await prisma.marketplaceDailySales.upsert({
+            where: {
+                brandId_platform_reportDate: {
+                    brandId,
+                    platform,
+                    reportDate
+                }
+            },
+            create: {
+                brandId,
+                platform,
+                reportDate,
+                totalOrders: orders,
+                totalRevenue: revenue,
+                totalItems: orders,
+                completedOrders: orders,
+                canceledOrders: 0,
+                returnedOrders: 0,
+                emailSubject: `${platform} Attachment Report`
+            },
+            update: {
+                totalOrders: orders,
+                totalRevenue: revenue,
+                totalItems: orders,
+                completedOrders: orders
+            }
+        });
     }
 
     async handleGrabFoodCSVSales(csvContent: string, brandId: string) {
@@ -179,40 +373,14 @@ export class EmailParserService {
 
         for (const row of dataRows) {
             const cols = row.split(',');
-            // Example mapping (Highly dependent on Grab's current format)
-            const reportDate = new Date(cols[1]);
+            const dateStr = this.extractDate(cols[1]);
+            if (!dateStr) continue;
+
+            const reportDate = new Date(dateStr);
             const revenue = parseFloat(cols[3]) || 0;
             const orders = parseInt(cols[5]) || 0;
 
-            if (isNaN(reportDate.getTime())) continue;
-
-            await prisma.marketplaceDailySales.upsert({
-                where: {
-                    brandId_platform_reportDate: {
-                        brandId,
-                        platform: 'GRABFOOD',
-                        reportDate
-                    }
-                },
-                create: {
-                    brandId,
-                    platform: 'GRABFOOD',
-                    reportDate,
-                    totalOrders: orders,
-                    totalRevenue: revenue,
-                    totalItems: orders,
-                    completedOrders: orders,
-                    canceledOrders: 0,
-                    returnedOrders: 0,
-                    emailSubject: 'GrabFood Attachment Report'
-                },
-                update: {
-                    totalOrders: orders,
-                    totalRevenue: revenue,
-                    totalItems: orders,
-                    completedOrders: orders
-                }
-            });
+            await this.upsertDailySales(brandId, 'GRABFOOD', reportDate, revenue, orders);
         }
         console.log(`[EmailParser] GrabFood sales data processed from CSV`);
         try {
@@ -246,27 +414,12 @@ export class EmailParserService {
     }
 
     async handleGrabFoodPDFSales(text: string, brandId: string) {
-        const dateMatch = text.match(/(\d{1,2})\s+(Januari|Februari|Maret|April|Mei|Juni|Juli|Agustus|September|Oktober|November|Desember)\s+(\d{4})/i);
-        let reportDate = new Date();
-        if (dateMatch) {
-            const months: any = {
-                'januari': 0, 'februari': 1, 'maret': 2, 'april': 3, 'mei': 4, 'juni': 5,
-                'juli': 6, 'agustus': 7, 'september': 8, 'oktober': 9, 'november': 10, 'desember': 11
-            };
-            reportDate = new Date(parseInt(dateMatch[3]), months[dateMatch[2].toLowerCase()], parseInt(dateMatch[1]));
-        } else {
-            // Fallback for Date: Look for something like "31 Jan 2026" or "2026-01-31"
-            const fallbackDateMatch = text.match(/(\d{1,2})\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(\d{4})/i);
-            if (fallbackDateMatch) {
-                const monthsShort: any = {
-                    'jan': 0, 'feb': 1, 'mar': 2, 'apr': 3, 'may': 4, 'jun': 5,
-                    'jul': 6, 'aug': 7, 'sep': 8, 'oct': 9, 'nov': 10, 'dec': 11
-                };
-                reportDate = new Date(parseInt(fallbackDateMatch[3]), monthsShort[fallbackDateMatch[2].toLowerCase()], parseInt(fallbackDateMatch[1]));
-            } else {
-                await logSystemActivity('EMAIL_PARSE', 'WARN', `Grab PDF Date Regex Failed`, { textSnippet: text.substring(0, 300) }, brandId);
-            }
+        const dateStr = this.extractDate(text);
+        if (!dateStr) {
+            await logSystemActivity('EMAIL_PARSE', 'WARN', `Grab PDF Date Extraction Failed`, { textSnippet: text.substring(0, 300) }, brandId);
+            return;
         }
+        const reportDate = new Date(dateStr);
 
         let revenue = 0;
         let orders = 0;
@@ -327,37 +480,9 @@ export class EmailParserService {
             }, brandId);
         }
 
-        if (isNaN(reportDate.getTime())) return;
-
         try {
-            await prisma.marketplaceDailySales.upsert({
-                where: {
-                    brandId_platform_reportDate: {
-                        brandId,
-                        platform: 'GRABFOOD',
-                        reportDate
-                    }
-                },
-                create: {
-                    brandId,
-                    platform: 'GRABFOOD',
-                    reportDate,
-                    totalOrders: orders,
-                    totalRevenue: revenue,
-                    totalItems: orders,
-                    completedOrders: orders,
-                    canceledOrders: 0,
-                    returnedOrders: 0,
-                    emailSubject: 'GrabFood PDF Report'
-                },
-                update: {
-                    totalOrders: orders,
-                    totalRevenue: revenue,
-                    totalItems: orders,
-                    completedOrders: orders
-                }
-            });
-            console.log(`[EmailParser] GrabFood sales processed: ${reportDate.toDateString()} - Rev: ${revenue}`);
+            await this.upsertDailySales(brandId, 'GRABFOOD', reportDate, revenue, orders);
+            console.log(`[EmailParser] GrabFood sales processed: ${dateStr} - Rev: ${revenue}`);
             try {
                 await logSystemActivity('EMAIL_PARSE', 'INFO', `GrabFood PDF Sales Parsed`, { date: reportDate, revenue, orders }, brandId);
             } catch (e) { }
@@ -485,7 +610,7 @@ export class EmailParserService {
 
     async handleDailySalesEmail(html: string, subject: string, brandId: string, platform: string) {
         const salesData = this.parseDailySalesEmail(html, platform);
-        if (!salesData.reportDate) return;
+        if (!salesData) return;
 
         try {
             await prisma.marketplaceDailySales.upsert({
@@ -517,15 +642,9 @@ export class EmailParserService {
     }
 
     parseDailySalesEmail(html: string, platform: string) {
-        const dateMatch = html.match(/(\d{1,2})\s+(Januari|Februari|Maret|April|Mei|Juni|Juli|Agustus|September|Oktober|November|Desember)\s+(\d{4})/i);
-        let reportDate = new Date();
-        if (dateMatch) {
-            const months: any = {
-                'januari': 0, 'februari': 1, 'maret': 2, 'april': 3, 'mei': 4, 'juni': 5,
-                'juli': 6, 'agustus': 7, 'september': 8, 'oktober': 9, 'november': 10, 'desember': 11
-            };
-            reportDate = new Date(parseInt(dateMatch[3]), months[dateMatch[2].toLowerCase()], parseInt(dateMatch[1]));
-        }
+        const dateStr = this.extractDate(html);
+        if (!dateStr) return null;
+        const reportDate = new Date(dateStr);
 
         const ordersMatch = html.match(/(?:Total Pesanan|Jumlah Order)[:\s]+(\d+)/i);
         const revenueMatch = html.match(/(?:Total Pendapatan|Revenue)[:\s]+Rp\s*([\d\.,]+)/i);

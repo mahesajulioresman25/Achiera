@@ -40,18 +40,9 @@ export async function GET() {
             try {
                 await parser.connect(email, password);
 
-                // If multiple brands share an email, we should ideally fetch once 
-                // and attribute to each brand if possible, or just process for all.
-                // For Phase 1 simplification: we iterate through brandIds
-                // and call listenForOrders but DON'T mark as seen until the last one?
-                // Actually, listenForOrders currently marks as seen.
-
-                for (let i = 0; i < brandIds.length; i++) {
-                    const brandId = brandIds[i];
-                    // We might need to fetch Seen emails too if they were just marked 
-                    // by the previous loop iteration for the same account.
-                    await parser.listenForOrders(brandId);
-                }
+                // Refactored: Sync once for all brands sharing the same account
+                // The service will detect the brand for each email internally.
+                await parser.syncEmails(brandIds);
 
                 await parser.disconnect();
 
