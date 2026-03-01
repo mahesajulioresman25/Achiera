@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
+    "@google/generative-ai": "^0.24.1",
     "@prisma/client": "^5.22.0",
     "@react-pdf/renderer": "^4.3.2",
     "@supabase/supabase-js": "^2.90.1",

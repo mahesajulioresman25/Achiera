@@ -5,7 +5,7 @@ import * as xlsx from 'xlsx';
 import { logSystemActivity } from '@/lib/logger';
 // pdf-parse will be dynamically imported when needed to avoid build-time issues
 
-type EmailType = 'ORDER' | 'DAILY_SALES' | 'CAMPAIGN_REPORT' | 'REVIEW' | 'INSIGHT' | 'UNKNOWN';
+type EmailType = 'ORDER' | 'DAILY_SALES' | 'CAMPAIGN_REPORT' | 'REVIEW' | 'INSIGHT' | 'SETTLEMENT' | 'UNKNOWN';
 
 export class EmailParserService {
     private client: ImapFlow | null = null;
@@ -131,6 +131,9 @@ export class EmailParserService {
                 break;
             case 'INSIGHT':
                 await this.handleInsightEmail(html, subject, brandId, platform);
+                break;
+            case 'SETTLEMENT':
+                await this.handleSettlementEmail(html, subject, brandId, platform);
                 break;
             default:
                 console.log(`[EmailParser] Processing potential attachments for: ${subject}`);
@@ -541,6 +544,11 @@ export class EmailParserService {
             return 'INSIGHT';
         }
 
+        if (subjectLower.includes('pencairan') || subjectLower.includes('settlement') ||
+            subjectLower.includes('dana') || subjectLower.includes('pembayaran berkala')) {
+            return 'SETTLEMENT';
+        }
+
         return 'UNKNOWN';
     }
 
@@ -776,5 +784,49 @@ export class EmailParserService {
             priority: 'MEDIUM',
             metadata: { html }
         };
+    }
+
+    // ===== SETTLEMENT HANDLING (Skeleton Orders) =====
+    async handleSettlementEmail(html: string, subject: string, brandId: string, platform: string) {
+        const amountMatch = html.match(/(?:Total|Jumlah|Settlement)[:\s]+Rp\s*([\d\.,]+)/i);
+        const orderIdMatch = html.match(/(?:ID Pesanan|No\. Pesanan|Order ID)[:\s]+([\w\d]+)/i);
+
+        if (!amountMatch) return;
+
+        const total = parseFloat(amountMatch[1].replace(/\./g, '').replace(',', '.')) || 0;
+        const externalOrderId = orderIdMatch?.[1]?.trim() || `SETT-${Date.now()}`;
+
+        // Check if order already exists
+        const existing = await prisma.order.findFirst({
+            where: {
+                brandId,
+                externalOrderId
+            }
+        });
+
+        if (existing) return;
+
+        const count = await prisma.order.count({ where: { brandId } });
+        const invoiceNo = `SKELETON/${new Date().getFullYear()}/${count + 1}`;
+
+        await prisma.order.create({
+            data: {
+                brandId,
+                channel: platform,
+                externalOrderId,
+                invoiceNo,
+                customerName: 'Marketplace Settlement',
+                status: 'DIPESAN',
+                totalAmount: total,
+                quantity: 0, // 0 items initially
+                subtotal: total,
+                total: total,
+                internalNotes: `[SETTLEMENT] Skeleton Order Created. Items missing from email.\nSubject: ${subject}`,
+                syncedFromEmail: true,
+                emailSyncedAt: new Date(),
+            } as any
+        });
+
+        console.log(`[EmailParser] Skeleton Order created for ${platform}: ${externalOrderId} - Rp ${total}`);
     }
 }

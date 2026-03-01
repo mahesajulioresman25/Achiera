@@ -5,7 +5,8 @@ import { createManualOrder, getUnlinkedAutoOrdersAction } from '@/lib/actions/ra
 import { getWarehousesAction } from '@/lib/actions/rasa-ibu/warehouse';
 import { getCustomerProfileByPhoneAction } from '@/lib/actions/commerce/customers';
 import { getPlatformSettingsAction } from '@/lib/actions/rasa-ibu/finance';
-import { X, Loader2, UserCheck, Sparkles } from 'lucide-react';
+import { X, Loader2, UserCheck, Sparkles, ClipboardPaste, Image as ImageIcon } from 'lucide-react';
+import { parseOrderFromTextAction, processOrderScreenshotAction } from '@/lib/actions/rasa-ibu/orderParsing';
 import { toast } from 'sonner';
 
 export default function OrderEntryModal({ brandId, products, onClose }: { brandId: string; products: any[]; onClose: () => void }) {
@@ -35,6 +36,11 @@ export default function OrderEntryModal({ brandId, products, onClose }: { brandI
     // Linking state
     const [unlinkedOrders, setUnlinkedOrders] = useState<any[]>([]);
     const [selectedSkeletonId, setSelectedSkeletonId] = useState('');
+
+    // Smart Input state
+    const [smartInputText, setSmartInputText] = useState('');
+    const [isProcessingSmart, setIsProcessingSmart] = useState(false);
+    const [isProcessingImage, setIsProcessingImage] = useState(false);
 
     useEffect(() => {
         async function fetchWarehouses() {
@@ -131,6 +137,46 @@ export default function OrderEntryModal({ brandId, products, onClose }: { brandI
     const availableToUse = loyaltyInfo?.availablePoints || 0;
     const discountValue = usePoints ? availableToUse * pointValue : 0;
     const finalTotal = Math.max(0, cartTotal - discountValue);
+
+    const handleSmartPaste = async () => {
+        if (!smartInputText.trim()) return;
+        setIsProcessingSmart(true);
+        const res = await parseOrderFromTextAction(brandId, smartInputText);
+        setIsProcessingSmart(false);
+
+        if (res.success && res.data) {
+            setCart([...cart, ...res.data]);
+            setSmartInputText('');
+            toast.success(`Berhasil memproses ${res.data.length} item!`);
+        } else {
+            toast.error('Gagal memproses teks. Pastikan formatnya jelas (misal: 2x Nasi Goreng)');
+        }
+    };
+
+    const handleScreenshotUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setIsProcessingImage(true);
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+            const base64 = reader.result as string;
+            const res = await processOrderScreenshotAction(brandId, base64);
+            setIsProcessingImage(false);
+
+            if (res.success && res.data) {
+                if (res.data.items.length > 0) {
+                    setCart([...cart, ...res.data.items]);
+                }
+                if (res.data.customerName) setCustomerName(res.data.customerName);
+                if (res.data.orderId) setManualRef(res.data.orderId);
+                toast.success('Pintar! Data berhasil diekstrak dari gambar.');
+            } else {
+                toast.error(res.error || 'Gagal membaca gambar.');
+            }
+        };
+        reader.readAsDataURL(file);
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -432,6 +478,44 @@ export default function OrderEntryModal({ brandId, products, onClose }: { brandI
                                 Items
                                 <span className="text-[10px] font-normal text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{cart.length} item</span>
                             </h4>
+
+                            {/* Smart Input Controls */}
+                            <div className="space-y-3">
+                                <div className="flex gap-2">
+                                    <div className="relative flex-1">
+                                        <textarea
+                                            value={smartInputText}
+                                            onChange={(e) => setSmartInputText(e.target.value)}
+                                            placeholder="Tempel teks pesanan di sini (Contoh: 2x Rendang, 1x Es Teh)..."
+                                            className="w-full bg-white border border-[#E5E1D8] rounded-xl px-4 py-3 text-xs focus:outline-none focus:ring-2 focus:ring-[#B2BCA2] h-16 resize-none"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={handleSmartPaste}
+                                            disabled={isProcessingSmart || !smartInputText}
+                                            className="absolute right-2 bottom-2 p-1.5 bg-[#2D3A2D] text-white rounded-lg hover:bg-black disabled:opacity-30 transition-all shadow-sm"
+                                            title="Proses Teks"
+                                        >
+                                            {isProcessingSmart ? <Loader2 className="w-4 h-4 animate-spin" /> : <ClipboardPaste className="w-4 h-4" />}
+                                        </button>
+                                    </div>
+                                    <div className="w-1/3">
+                                        <label className="flex flex-col items-center justify-center h-16 w-full border-2 border-dashed border-[#E5E1D8] rounded-xl cursor-pointer hover:bg-slate-50 transition-all group">
+                                            <div className="flex flex-col items-center justify-center pt-1">
+                                                {isProcessingImage ? (
+                                                    <Loader2 className="w-5 h-5 animate-spin text-indigo-600" />
+                                                ) : (
+                                                    <>
+                                                        <ImageIcon className="w-5 h-5 text-slate-400 group-hover:text-indigo-600 mb-1" />
+                                                        <span className="text-[8px] font-black uppercase text-slate-400">Scan Gambar</span>
+                                                    </>
+                                                )}
+                                            </div>
+                                            <input type="file" className="hidden" accept="image/*" onChange={handleScreenshotUpload} disabled={isProcessingImage} />
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
 
                             <div className="flex gap-2 items-end bg-gray-50 p-4 rounded-2xl border border-gray-100">
                                 <div className="flex-1 space-y-1">

@@ -179,6 +179,11 @@ export default function ManualOrderLedger({
                                         <div className="space-y-1">
                                             <div className="flex items-center gap-2">
                                                 <p className="text-xs font-black text-[#1A241A] whitespace-nowrap">{order.customerName}</p>
+                                                {orderItems.length === 0 && order.syncedFromEmail && (
+                                                    <span className="px-2 py-0.5 bg-rose-100 text-rose-700 border border-rose-200 rounded-md text-[8px] font-black uppercase tracking-wider animate-pulse">
+                                                        ⚠️ Butuh Detail
+                                                    </span>
+                                                )}
                                                 {order.subscriptionId && (
                                                     <span className="px-2 py-0.5 bg-purple-100 text-purple-700 border border-purple-200 rounded-md text-[8px] font-black uppercase tracking-wider">
                                                         🔄 Langganan
