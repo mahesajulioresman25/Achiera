@@ -87,10 +87,29 @@ export default function OrderEntryModal({ brandId, products, onClose }: { brandI
     // Fetch unlinked skeleton orders when channel changes
     useEffect(() => {
         async function fetchUnlinked() {
-            if (['SHOPEE', 'GRABFOOD', 'GOFOOD'].includes(source)) {
+            const marketplaceChannels = ['SHOPEE', 'GRABFOOD', 'GOFOOD', 'SHOPEE_FOOD', 'TOKOPEDIA', 'GRAB_MART', 'TIKTOK_SHOP'];
+            if (marketplaceChannels.includes(source)) {
+                // Set Smart Defaults
+                setDeliveryOption('Kurir Instan');
+                setPaymentMethod('TRANSFER_BANK');
+
+                // Auto-set Courier based on platform
+                if (source.includes('SHOPEE')) setCourierType('Shopee Express');
+                else if (source.includes('GRAB')) setCourierType('GrabExpress');
+                else if (source.includes('GO')) setCourierType('GoSend');
+                else if (source === 'TOKOPEDIA') setCourierType('Kurir Rekomendasi');
+
                 const res = await getUnlinkedAutoOrdersAction(brandId, source);
                 if (res.success && res.data) {
                     setUnlinkedOrders(res.data);
+
+                    // Auto-select if exactly one skeleton is found
+                    if (res.data.length === 1) {
+                        const skeleton = res.data[0];
+                        setSelectedSkeletonId(skeleton.id);
+                        setManualRef(skeleton.externalOrderId);
+                        toast.success(`Ditemukan detail pencairan ${source}! No. Ref otomatis terisi.`);
+                    }
                 } else {
                     setUnlinkedOrders([]);
                 }
@@ -137,6 +156,10 @@ export default function OrderEntryModal({ brandId, products, onClose }: { brandI
     const availableToUse = loyaltyInfo?.availablePoints || 0;
     const discountValue = usePoints ? availableToUse * pointValue : 0;
     const finalTotal = Math.max(0, cartTotal - discountValue);
+
+    const selectedSkeleton = unlinkedOrders.find(o => o.id === selectedSkeletonId);
+    const targetSettlement = selectedSkeleton ? Number(selectedSkeleton.total) : 0;
+    const settlementDiff = targetSettlement > 0 ? finalTotal - targetSettlement : 0;
 
     const handleSmartPaste = async () => {
         if (!smartInputText.trim()) return;
@@ -310,6 +333,12 @@ export default function OrderEntryModal({ brandId, products, onClose }: { brandI
                                         <option value="TIKTOK_SHOP">TikTok Shop</option>
                                         <option value="QRIS">QRIS Direct</option>
                                     </select>
+                                    {['SHOPEE_FOOD', 'GRAB_FOOD', 'GO_FOOD', 'TOKOPEDIA', 'GRAB_MART', 'TIKTOK_SHOP'].includes(source) && (
+                                        <div className="mt-2 flex items-center gap-2 px-3 py-1 bg-amber-50 border border-amber-200 rounded-lg animate-pulse">
+                                            <div className="w-1.5 h-1.5 bg-amber-500 rounded-full" />
+                                            <span className="text-[9px] font-black text-amber-700 uppercase tracking-widest">Mode Marketplace Aktif</span>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 
@@ -584,6 +613,20 @@ export default function OrderEntryModal({ brandId, products, onClose }: { brandI
                                         <div className="flex justify-between items-center text-indigo-600">
                                             <span className="text-xs font-medium italic">Diskon Poin ({availableToUse} Poin)</span>
                                             <span className="text-sm font-bold">- Rp {discountValue.toLocaleString('id-ID')}</span>
+                                        </div>
+                                    )}
+                                    {targetSettlement > 0 && (
+                                        <div className="flex justify-between items-center p-3 bg-[#2D3A2D]/5 border border-[#2D3A2D]/10 rounded-xl mb-2 animate-in slide-in-from-top-1">
+                                            <div className="flex flex-col">
+                                                <span className="text-[8px] font-black text-[#8B7E66] uppercase tracking-widest">Target Settlement</span>
+                                                <span className="text-xs font-bold text-[#2D3A2D]">Rp {targetSettlement.toLocaleString('id-ID')}</span>
+                                            </div>
+                                            <div className="flex flex-col items-end">
+                                                <span className="text-[8px] font-black text-[#8B7E66] uppercase tracking-widest">Selisih</span>
+                                                <span className={`text-xs font-black ${settlementDiff === 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                                                    {settlementDiff > 0 ? '+' : ''}Rp {settlementDiff.toLocaleString('id-ID')}
+                                                </span>
+                                            </div>
                                         </div>
                                     )}
                                     <div className="flex justify-between items-center pt-2 border-t border-[#2D3A2D]/10">

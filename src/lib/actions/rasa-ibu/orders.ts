@@ -229,7 +229,7 @@ export async function createManualOrder(data: {
                 let loyaltyInfo = undefined;
                 try {
                     const { loyaltyEngine } = await import('@/lib/intelligence/loyaltyEngine');
-                    const earned = loyaltyEngine.calculatePoints(data.totalAmount);
+                    const earned = await loyaltyEngine.calculatePoints(data.brandId, data.totalAmount);
                     const member = await loyaltyEngine.getMemberByPhone(data.brandId, order.customerPhone);
                     if (member) {
                         loyaltyInfo = {
@@ -411,10 +411,11 @@ export async function getUnlinkedAutoOrdersAction(brandId: string, channel: stri
             where: {
                 brandId,
                 channel,
-                internalNotes: {
-                    contains: '[AUTO_GENERATED]'
-                },
-                status: 'SELESAI' // Only fetch completed skeleton orders (reconciled ones)
+                OR: [
+                    { internalNotes: { contains: '[AUTO_GENERATED]' } },
+                    { internalNotes: { contains: '[SETTLEMENT]' } }
+                ],
+                status: { in: ['DIPESAN', 'SELESAI'] as any }
             },
             select: {
                 id: true,

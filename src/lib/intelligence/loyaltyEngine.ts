@@ -210,6 +210,14 @@ export class LoyaltyEngine {
     }
 
     /**
+     * Calculate points for an amount without awarded
+     */
+    async calculatePoints(brandId: string, amount: number): Promise<number> {
+        const config = await this.getConfig(brandId);
+        return Math.floor(amount * config.pointsPerRupiah);
+    }
+
+    /**
      * Award a manual bonus (e.g., for Recipe Contribution)
      */
     async awardManualBonus(
