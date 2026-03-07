@@ -11,9 +11,14 @@ export type ServiceContext = {
 };
 
 export class InsufficientStockError extends Error {
-    constructor(message: string) {
+    variantId?: string;
+    missingQuantity?: number;
+
+    constructor(message: string, variantId?: string, missingQuantity?: number) {
         super(message);
         this.name = 'InsufficientStockError';
+        this.variantId = variantId;
+        this.missingQuantity = missingQuantity;
     }
 }
 
@@ -134,7 +139,9 @@ export class WarehouseService {
                 // Final Check: If still missing after substitute attempt, throw error
                 if (remaining > 0) {
                     throw new InsufficientStockError(
-                        `Insufficient stock. Missing: ${remaining} units`
+                        `Insufficient stock. Missing: ${remaining} units`,
+                        variantId,
+                        remaining
                     );
                 }
             }

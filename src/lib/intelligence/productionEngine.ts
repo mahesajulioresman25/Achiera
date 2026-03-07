@@ -254,14 +254,28 @@ export class ProductionEngine {
             for (const ingredient of item.recipe.items) {
                 const deduction = Math.ceil(Number(ingredient.quantity) * multiplier);
 
-                await warehouseService.deductStock(
-                    ctx,
-                    defaultWarehouse.id,
-                    ingredient.ingredientId,
-                    deduction,
-                    `PRODUCTION-${item.id}`, // Reference ID
-                    tx
-                );
+                try {
+                    await warehouseService.deductStock(
+                        ctx,
+                        defaultWarehouse.id,
+                        ingredient.ingredientId,
+                        deduction,
+                        `PRODUCTION-${item.id}`, // Reference ID
+                        tx
+                    );
+                } catch (error: any) {
+                    if (error.name === 'InsufficientStockError') {
+                        // Fetch the ingredient name for a better message
+                        const variant = await tx.frozenVariant.findUnique({
+                            where: { id: ingredient.ingredientId },
+                            include: { product: true }
+                        });
+                        const ingredientName = variant?.product?.name || 'Bahan baku';
+                        const missingQty = error.missingQuantity || deduction;
+                        throw new Error(`Gagal: Stok '${ingredientName}' tidak cukup. Kurang ${missingQty} unit.`);
+                    }
+                    throw error;
+                }
             }
 
             // 3. Mark item as completed
