@@ -267,7 +267,7 @@ export class ProductionEngine {
                     if (error.name === 'InsufficientStockError') {
                         // Fetch the ingredient name for a better message
                         const variant = await tx.frozenVariant.findUnique({
-                            where: { id: ingredient.ingredientId },
+                            where: { id: ingredient.ingredientId, brandId: item.plan.brandId },
                             include: { product: true }
                         });
                         const ingredientName = variant?.product?.name || 'Bahan baku';
