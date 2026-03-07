@@ -52,6 +52,12 @@ export default function OrderEntryModal({
     // Smart Input state
     const [smartInputText, setSmartInputText] = useState('');
     const [isProcessingSmart, setIsProcessingSmart] = useState(false);
+    const [isProcessingImage, setIsProcessingImage] = useState(false);
+
+    useEffect(() => {
+        if (initialSource) setSource(initialSource);
+        if (initialOrderId) setSelectedSkeletonId(initialOrderId);
+    }, [initialSource, initialOrderId]);
 
     useEffect(() => {
         async function fetchWarehouses() {
