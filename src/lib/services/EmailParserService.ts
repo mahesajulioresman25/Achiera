@@ -413,6 +413,9 @@ export class EmailParserService {
 
             if (platform === 'GRABFOOD') {
                 await this.handleGrabFoodPDFSales(data.text, brandId);
+                await this.handleGrabFoodPDFSettlement(data.text, brandId);
+            } else if (platform === 'SHOPEE') {
+                await this.handleShopeePDFSettlement(data.text, brandId);
             }
         } catch (err) {
             console.error('[EmailParser] Failed to parse PDF:', err);
@@ -793,10 +796,14 @@ export class EmailParserService {
     async handleSettlementEmail(html: string, subject: string, brandId: string, platform: string) {
         const amountMatch = html.match(/(?:Total|Jumlah|Settlement)[:\s]+Rp\s*([\d\.,]+)/i);
         const orderIdMatch = html.match(/(?:ID Pesanan|No\. Pesanan|Order ID)[:\s]+([\w\d]+)/i);
+        const feeMatch = html.match(/(?:Potongan|Biaya Admin|Komisi|Fee)[:\s]+(?:Rp\s*)?([\d\.,]+)/i);
 
         if (!amountMatch) return;
 
         const total = parseFloat(amountMatch[1].replace(/\./g, '').replace(',', '.')) || 0;
+        const fee = feeMatch ? parseFloat(feeMatch[1].replace(/\./g, '').replace(',', '.')) : 0;
+        const netAmount = total - fee;
+
         const externalOrderId = orderIdMatch?.[1]?.trim() || `SETT-${Date.now()}`;
 
         // Check if order already exists
@@ -820,16 +827,74 @@ export class EmailParserService {
                 invoiceNo,
                 customerName: 'Marketplace Settlement',
                 status: 'DIPESAN',
-                totalAmount: total,
+                totalAmount: netAmount,
                 quantity: 0, // 0 items initially
                 subtotal: total,
                 total: total,
-                internalNotes: `[SETTLEMENT] Skeleton Order Created. Items missing from email.\nSubject: ${subject}`,
+                internalNotes: `[SETTLEMENT] Skeleton Order Created. Items missing from email.\nSubject: ${subject}${fee > 0 ? `\nBiaya Admin: Rp ${fee.toLocaleString('id-ID')}` : ''}`,
                 syncedFromEmail: true,
                 emailSyncedAt: new Date(),
             } as any
         });
 
         console.log(`[EmailParser] Skeleton Order created for ${platform}: ${externalOrderId} - Rp ${total}`);
+    }
+
+    async handleGrabFoodPDFSettlement(text: string, brandId: string) {
+        // Sample match: IDR 100.000 (Total Order) -> IDR 20.000 (Commission) -> IDR 80.000 (Net)
+        const netMatch = text.match(/(?:Net\s+Settlement|Pembayaran\s+Bersih|Net\s+Payment)[\s\S]{0,100}?IDR\s*([\d\.,]+)/i);
+        const feeMatch = text.match(/(?:Commission|Komisi|Biaya\s+Layanan)[\s\S]{0,100}?IDR\s*([\d\.,]+)/i);
+        const orderIdMatch = text.match(/(?:Order\s+ID|ID\s+Pesanan)[:\s]+([\w\d-]+)/i);
+
+        if (!netMatch) return;
+
+        const netAmount = parseFloat(netMatch[1].replace(/\./g, '').replace(',', '.')) || 0;
+        const fee = feeMatch ? parseFloat(feeMatch[1].replace(/\./g, '').replace(',', '.')) : 0;
+        const externalOrderId = orderIdMatch?.[1]?.trim() || `GRAB-SETT-${Date.now()}`;
+
+        await this.createSkeletonOrder(brandId, 'GRABFOOD', externalOrderId, netAmount, fee, 'PDF Attachment');
+    }
+
+    async handleShopeePDFSettlement(text: string, brandId: string) {
+        // Sample match: Total Pelepasan Dana: Rp 100.000
+        const netMatch = text.match(/(?:Total\s+Pelepasan\s+Dana|Net\s+Proceeds|Total\s+Settlement)[:\s]+(?:Rp\s*)?([\d\.,]+)/i);
+        const feeMatch = text.match(/(?:Biaya\s+Admin|Admin\s+Fee|Commission)[:\s]+(?:Rp\s*)?([\d\.,]+)/i);
+        const orderIdMatch = text.match(/(?:No\.\s+Pesanan|Order\s+SN|Order\s+ID)[:\s]+([\w\d]+)/i);
+
+        if (!netMatch) return;
+
+        const netAmount = parseFloat(netMatch[1].replace(/\./g, '').replace(',', '.')) || 0;
+        const fee = feeMatch ? parseFloat(feeMatch[1].replace(/\./g, '').replace(',', '.')) : 0;
+        const externalOrderId = orderIdMatch?.[1]?.trim() || `SHOPEE-SETT-${Date.now()}`;
+
+        await this.createSkeletonOrder(brandId, 'SHOPEE', externalOrderId, netAmount, fee, 'PDF Attachment');
+    }
+
+    private async createSkeletonOrder(brandId: string, platform: string, externalOrderId: string, netAmount: number, fee: number, source: string) {
+        const existing = await prisma.order.findFirst({ where: { brandId, externalOrderId } });
+        if (existing) return;
+
+        const count = await prisma.order.count({ where: { brandId } });
+        const invoiceNo = `SKELETON/${new Date().getFullYear()}/${count + 1}`;
+
+        await prisma.order.create({
+            data: {
+                brandId,
+                channel: platform,
+                externalOrderId,
+                invoiceNo,
+                customerName: 'Marketplace Settlement',
+                status: 'DIPESAN',
+                totalAmount: netAmount,
+                quantity: 0,
+                subtotal: netAmount + fee,
+                total: netAmount + fee,
+                internalNotes: `[SETTLEMENT] Skeleton Order Created via ${source}.\nBiaya Admin: Rp ${fee.toLocaleString('id-ID')}`,
+                syncedFromEmail: true,
+                emailSyncedAt: new Date(),
+            } as any
+        });
+
+        console.log(`[EmailParser] Skeleton Order created for ${platform}: ${externalOrderId} - Net: ${netAmount}`);
     }
 }
