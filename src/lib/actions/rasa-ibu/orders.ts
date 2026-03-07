@@ -107,16 +107,19 @@ export async function createManualOrder(data: {
         if (existingOrderId) {
             // MERGE Logic
             order = await unisolatedPrisma.order.update({
-                where: { id: existingOrderId },
+                where: { id: existingOrderId, brandId: data.brandId },
                 data: {
                     customerName: data.customerName,
                     customerPhone: data.customerPhone,
                     customerEmail: data.customerEmail,
                     internalNotes: fullNotes, // Overwrites [AUTO_GENERATED] note
                     quantity: data.items.reduce((sum: number, item: any) => sum + item.quantity, 0),
-                    subtotal: data.totalAmount + discountValue, // Gross amount before discount
-                    total: data.totalAmount, // Net amount after discount
+                    subtotal: Number(data.totalAmount) + discountValue,
+                    total: Number(data.totalAmount),
                     paymentMethod: data.paymentMethod || 'TUNAI',
+                    status: 'SELESAI',
+                    channel: data.channel,
+                    manualRef: data.manualRef,
 
                     // Link items
                     orderItems: {

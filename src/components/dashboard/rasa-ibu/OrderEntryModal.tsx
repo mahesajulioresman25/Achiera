@@ -446,39 +446,42 @@ export default function OrderEntryModal({ brandId, products, onClose }: { brandI
                         </div>
 
                         {unlinkedOrders.length > 0 && (
-                            <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 space-y-2 animate-in slide-in-from-top-2">
-                                <div className="flex items-start gap-3">
-                                    <div className="p-2 bg-amber-100 rounded-full text-amber-600">
-                                        <Loader2 className="w-4 h-4" />
+                            <div className="bg-[#EEF2FF] border border-indigo-200 rounded-[2rem] p-8 space-y-4 animate-in slide-in-from-top-4 duration-500 shadow-sm">
+                                <div className="flex items-center gap-4">
+                                    <div className="p-3 bg-white rounded-2xl text-indigo-600 shadow-sm">
+                                        <Sparkles className="w-5 h-5" />
                                     </div>
-                                    <div className="flex-1 space-y-2">
-                                        <div>
-                                            <h4 className="text-xs font-black text-amber-800 uppercase tracking-wide">Hubungkan dengan Pending Order?</h4>
-                                            <p className="text-[10px] text-amber-700 leading-relaxed">
-                                                Ditemukan {unlinkedOrders.length} order dari Settlement {source} yang belum memiliki detail item.
-                                                Pilih salah satu jika Anda sedang menginput detail untuk order tersebut.
-                                            </p>
-                                        </div>
-
-                                        <select
-                                            value={selectedSkeletonId}
-                                            onChange={(e) => {
-                                                setSelectedSkeletonId(e.target.value);
-                                                const sel = unlinkedOrders.find(o => o.id === e.target.value);
-                                                if (sel) {
-                                                    setManualRef(sel.externalOrderId || '');
-                                                }
-                                            }}
-                                            className="w-full bg-white border border-amber-300 text-amber-900 text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400"
-                                        >
-                                            <option value="">-- Buat Order Baru (Jangan Hubungkan) --</option>
-                                            {unlinkedOrders.map(Order => (
-                                                <option key={Order.id} value={Order.id}>
-                                                    {Order.externalOrderId} — Rp {Order.total.toLocaleString()} — {new Date(Order.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                                </option>
-                                            ))}
-                                        </select>
+                                    <div>
+                                        <h4 className="text-sm font-black text-indigo-900 uppercase tracking-widest">Hubungkan Laporan Dana?</h4>
+                                        <p className="text-[10px] text-indigo-700 font-bold uppercase tracking-tight opacity-70">
+                                            Ditemukan {unlinkedOrders.length} laporan {source} yang masuk.
+                                        </p>
                                     </div>
+                                </div>
+                                <div className="space-y-3">
+                                    <p className="text-xs text-indigo-800 leading-relaxed font-medium bg-white/50 p-3 rounded-xl border border-indigo-100">
+                                        Pilih laporan di bawah untuk menghubungkan barang yang keluar dengan dana yang masuk. Ini akan otomatis **memotong stok** dan mencatat **HPP**.
+                                    </p>
+                                    <select
+                                        value={selectedSkeletonId}
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            setSelectedSkeletonId(val);
+                                            const sel = unlinkedOrders.find(o => o.id === val);
+                                            if (sel) {
+                                                setManualRef(sel.externalOrderId || '');
+                                                toast.success('Laporan dana terhubung! Masukkan barang di bawah.');
+                                            }
+                                        }}
+                                        className="w-full bg-white border-2 border-indigo-200 text-indigo-900 text-sm font-bold rounded-2xl px-5 py-4 focus:outline-none focus:ring-4 focus:ring-indigo-100 transition-all appearance-none cursor-pointer"
+                                    >
+                                        <option value="">-- Buat Pesanan Baru Saja --</option>
+                                        {unlinkedOrders.map(Order => (
+                                            <option key={Order.id} value={Order.id}>
+                                                💰 {Order.externalOrderId} — Rp {Order.total.toLocaleString()}
+                                            </option>
+                                        ))}
+                                    </select>
                                 </div>
                             </div>
                         )}
