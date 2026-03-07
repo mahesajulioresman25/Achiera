@@ -103,30 +103,79 @@ export async function parseSettlementCSVAction(brandId: string, formData: FormDa
             const cols = parseCSVLine(line, delimiter);
             if (cols.length < headers.length) continue;
 
-            // Map columns based on headers
-            // Shopee usually has: "No. Pesanan", "Penghasilan Bersih (Total Potongan)"
-            const orderIdIdx = headers.findIndex(h => h.includes('No. Pesanan') || h.includes('Order ID'));
-            const netAmountIdx = headers.findIndex(h => h.includes('Penghasilan Bersih') || h.includes('Total Amount'));
+            // Map columns based on headers with prioritization
+            // Order ID Detection
+            const orderIdIdx = headers.findIndex(h =>
+                h.includes('No. Pesanan') ||
+                h.includes('Order ID') ||
+                h.includes('Order SN') ||
+                h.includes('Reference')
+            );
+
+            // Net Amount Detection (What you actually get)
+            const netAmountIdx = headers.findIndex(h =>
+                h.includes('Net Income') ||
+                h.includes('Net Payout') ||
+                h.includes('Penghasilan Bersih') ||
+                h.includes('Payout Amount') ||
+                h.includes('Net Amount')
+            );
+
+            // Gross Amount Detection (Customer pays)
+            const grossAmountIdx = headers.findIndex(h =>
+                h.includes('Order Amount') ||
+                h.includes('Subtotal') ||
+                h.includes('Total') ||
+                h.includes('Original Amount')
+            );
+
+            // Fees Detection
+            const feesIdx = headers.findIndex(h =>
+                h.includes('Commission') ||
+                h.includes('Biaya Admin') ||
+                h.includes('Service Charge') ||
+                h.includes('Merchant Service Charge') ||
+                h.includes('Merchant Fee')
+            );
 
             if (orderIdIdx === -1 || netAmountIdx === -1) continue;
 
             const orderId = cols[orderIdIdx].replace(/['"]/g, '');
-            // Parse amount: remove "Rp", ".", replace "," with "." if needed (Indonesian format)
-            // Shopee CSV export details: usually "15.000" or "15000.00"
-            let netStr = cols[netAmountIdx];
 
-            // Remove currency symbol and dots (thousand separators)
-            // Assume format: 15.000,00 -> 15000.00
-            netStr = netStr.replace(/[Rp\.]/g, '').replace(',', '.').trim();
-            const netAmount = parseFloat(netStr);
+            const parseAmount = (val: string) => {
+                if (!val) return 0;
+                // Remove currency symbol, whitespace, and thousands separators
+                // Indonesian: 15.000,00 -> 15000.00
+                // International: 15,000.00 -> 15000.00
+                const clean = val.replace(/[Rp\s]/g, '');
+                if (clean.includes(',') && clean.includes('.')) {
+                    // Hybrid format, check which is decimal
+                    return clean.indexOf(',') > clean.indexOf('.') ?
+                        parseFloat(clean.replace(/\./g, '').replace(',', '.')) :
+                        parseFloat(clean.replace(/,/g, ''));
+                }
+                // Single separator format
+                if (clean.includes(',')) {
+                    // Check if it's 1.000 (thousand) or 1,00 (decimal)
+                    // If it has 2 digits after comma, likely decimal
+                    const parts = clean.split(',');
+                    if (parts[parts.length - 1].length === 2) return parseFloat(clean.replace(',', '.'));
+                    return parseFloat(clean.replace(',', ''));
+                }
+                return parseFloat(clean) || 0;
+            };
+
+            const netAmount = parseAmount(cols[netAmountIdx]);
+            const grossAmount = grossAmountIdx !== -1 ? parseAmount(cols[grossAmountIdx]) : netAmount;
+            const fees = feesIdx !== -1 ? parseAmount(cols[feesIdx]) : (grossAmount - netAmount);
 
             if (!isNaN(netAmount)) {
                 orders.push({
                     externalOrderId: orderId,
-                    grossAmount: 0, // CSV simple parsing might miss gross, focuses on payout
-                    fees: 0,
+                    grossAmount: grossAmount,
+                    fees: Math.max(0, fees),
                     netAmount: netAmount,
-                    description: 'Shopee Settlement CSV'
+                    description: `Shopee Settlement CSV (${headers[netAmountIdx]})`
                 });
                 totalNet += netAmount;
             }

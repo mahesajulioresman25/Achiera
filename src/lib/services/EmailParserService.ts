@@ -291,7 +291,7 @@ export class EmailParserService {
         cols.forEach((h, i) => {
             const head = h.trim().toLowerCase();
             if (head.includes('tanggal') || head.includes('date')) dateIdx = i;
-            if (head.includes('penjualan') || head.includes('revenue') || head.includes('pendapatan')) revenueIdx = i;
+            if (head.includes('penjualan') || head.includes('revenue') || head.includes('pendapatan') || head.includes('net income')) revenueIdx = i;
             if (head.includes('pesanan') || head.includes('orders')) ordersIdx = i;
         });
 
