@@ -382,7 +382,7 @@ export async function executeSettlementReconciliationAction(
                     const feeStr = breakdown.length > 0 ? `Fees: ${fees} (${breakdown.join(', ')})` : `Fees: ${fees}`;
 
                     await prisma.order.update({
-                        where: { id: internalOrder.id },
+                        where: { id: internalOrder.id, brandId },
                         data: {
                             internalNotes: `${internalOrder.internalNotes || ''}\n[FINANCE] Reconciled via AI Settlement Parser on ${new Date().toLocaleDateString('id-ID')}. Net: ${order.netAmount}, ${feeStr}`
                         }
