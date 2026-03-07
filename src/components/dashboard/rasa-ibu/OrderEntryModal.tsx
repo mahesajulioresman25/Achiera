@@ -9,12 +9,24 @@ import { X, Loader2, UserCheck, Sparkles, ClipboardPaste, Image as ImageIcon } f
 import { parseOrderFromTextAction, processOrderScreenshotAction } from '@/lib/actions/rasa-ibu/orderParsing';
 import { toast } from 'sonner';
 
-export default function OrderEntryModal({ brandId, products, onClose }: { brandId: string; products: any[]; onClose: () => void }) {
+export default function OrderEntryModal({
+    brandId,
+    products,
+    onClose,
+    initialOrderId,
+    initialSource
+}: {
+    brandId: string;
+    products: any[];
+    onClose: () => void;
+    initialOrderId?: string;
+    initialSource?: string;
+}) {
     const [customerName, setCustomerName] = useState('');
     const [customerPhone, setCustomerPhone] = useState('');
     const [customerAddress, setCustomerAddress] = useState('');
     const [customerEmail, setCustomerEmail] = useState('');
-    const [source, setSource] = useState('WHATSAPP');
+    const [source, setSource] = useState(initialSource || 'WHATSAPP');
     const [manualRef, setManualRef] = useState('');
     const [internalNotes, setInternalNotes] = useState('');
     const [selectedWarehouseId, setSelectedWarehouseId] = useState('');
@@ -40,7 +52,6 @@ export default function OrderEntryModal({ brandId, products, onClose }: { brandI
     // Smart Input state
     const [smartInputText, setSmartInputText] = useState('');
     const [isProcessingSmart, setIsProcessingSmart] = useState(false);
-    const [isProcessingImage, setIsProcessingImage] = useState(false);
 
     useEffect(() => {
         async function fetchWarehouses() {

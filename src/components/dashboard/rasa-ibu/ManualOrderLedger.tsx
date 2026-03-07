@@ -42,6 +42,7 @@ interface ManualOrderLedgerProps {
     onOpenPaymentVerification: () => void;
     onOpenPaymentHistory?: () => void;
     onToggleFullscreen?: () => void;
+    onOpenOrderEntryWithSkeleton?: (orderId: string, source: string) => void;
     isFullscreen?: boolean;
 }
 
@@ -54,6 +55,7 @@ export default function ManualOrderLedger({
     onOpenPaymentVerification,
     onOpenPaymentHistory,
     onToggleFullscreen,
+    onOpenOrderEntryWithSkeleton,
     isFullscreen = false
 }: ManualOrderLedgerProps) {
     const [searchQuery, setSearchQuery] = React.useState('');
@@ -255,6 +257,14 @@ export default function ManualOrderLedger({
                                             >
                                                 Nota
                                             </button>
+                                            {orderItems.length === 0 && (order.internalNotes?.includes('[AUTO_GENERATED]') || order.internalNotes?.includes('[SETTLEMENT]')) && (
+                                                <button
+                                                    onClick={() => onOpenOrderEntryWithSkeleton?.(order.id, order.channel || 'SHOPEE_FOOD')}
+                                                    className="text-[9px] font-black uppercase text-white border border-indigo-600 px-3 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 flex items-center gap-1 animate-bounce"
+                                                >
+                                                    ✨ Isi Barang
+                                                </button>
+                                            )}
                                             {order.status === 'DIPESAN' && (
                                                 <div className="flex gap-2">
                                                     <button

@@ -317,7 +317,7 @@ export async function executeSettlementReconciliationAction(
                             invoiceNo: generatedInvoice,
                             externalOrderId: order.externalOrderId,
                             customerName: 'Shopee Customer (Auto)',
-                            channel: 'SHOPEE',
+                            channel: order.platform === 'SHOPEE_FOOD' ? 'SHOPEE_FOOD' : 'SHOPEE',
                             status: 'SELESAI', // Auto-completed
                             quantity: 1,
                             total: order.grossAmount,

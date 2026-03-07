@@ -112,6 +112,7 @@ export default function DashboardClientWrapper({
     const [showQRISPayment, setShowQRISPayment] = React.useState<any>(null);
     const [showPaymentVerification, setShowPaymentVerification] = React.useState(false);
     const [showPaymentHistory, setShowPaymentHistory] = React.useState(false);
+    const [initialOrderEntryStore, setInitialOrderEntryStore] = React.useState<{ orderId?: string; source?: string }>({});
     const [viewMode, setViewMode] = React.useState<'OPERATIONAL' | 'FINANCE' | 'INTELLIGENCE' | 'PRODUCTION' | 'CATALOG' | 'RAW_MATERIAL' | 'RECIPES' | 'MARKETING' | 'MARKETING_CAMPAIGNS' | 'MARKETING_CAMPAIGN_FORM' | 'MARKETING_FLASHSALE' | 'MARKETING_SUBSCRIPTIONS' | 'MARKETING_SUBSCRIPTION_DATA' | 'MARKETING_BUNDLE_MANAGER' | 'MARKETING_SEASONAL' | 'ORDER_LEDGER'>('OPERATIONAL');
 
     const [pulseActivities, setPulseActivities] = React.useState<any[]>(activities || []);
@@ -155,6 +156,7 @@ export default function DashboardClientWrapper({
         setShowPaymentVerification(false);
         setShowPaymentHistory(false);
         setSelectedReceiptOrder(null);
+        setInitialOrderEntryStore({});
     }, []);
 
     const openOperationalHub = (mode: 'PRODUCTION' | 'CATALOG' | 'RAW_MATERIAL' | 'RECIPES') => {
@@ -292,7 +294,15 @@ export default function DashboardClientWrapper({
             {showWarehouse && <WarehouseManager brandId={brandId} onClose={() => setShowWarehouse(false)} />}
             {showAudit && <StockAuditHub brandId={brandId} products={initialProducts} onClose={() => setShowAudit(false)} />}
             {showIngestion && <SmartIngestionPanel brandId={brandId} onClose={() => setShowIngestion(false)} />}
-            {showOrderEntry && <OrderEntryModal brandId={brandId} products={initialProducts} onClose={() => setShowOrderEntry(false)} />}
+            {showOrderEntry && (
+                <OrderEntryModal
+                    brandId={brandId}
+                    products={initialProducts}
+                    onClose={() => { setShowOrderEntry(false); setInitialOrderEntryStore({}); }}
+                    initialOrderId={initialOrderEntryStore.orderId}
+                    initialSource={initialOrderEntryStore.source}
+                />
+            )}
             {showExpenseEntry && <ExpenseEntryModal brandId={brandId} onClose={() => setShowExpenseEntry(false)} />}
             {showPlatformSettings && <PlatformSettingsModal brandId={brandId} onClose={() => setShowPlatformSettings(false)} />}
             {showProcurement && <ProcurementAdvisor brandId={brandId} onClose={() => setShowProcurement(false)} />}
@@ -1098,6 +1108,11 @@ export default function DashboardClientWrapper({
                                         orders={initialOrders}
                                         onOpenIngestion={() => { closeAllModals(); setShowIngestion(true); }}
                                         onOpenOrderEntry={() => { closeAllModals(); setShowOrderEntry(true); }}
+                                        onOpenOrderEntryWithSkeleton={(orderId, source) => {
+                                            closeAllModals();
+                                            setInitialOrderEntryStore({ orderId, source });
+                                            setShowOrderEntry(true);
+                                        }}
                                         onOpenReceipt={(order) => { closeAllModals(); setSelectedReceiptOrder(order); }}
                                         onOpenQRISPayment={(order) => { closeAllModals(); setShowQRISPayment(order); }}
                                         onOpenPaymentVerification={() => { closeAllModals(); setShowPaymentVerification(true); }}
