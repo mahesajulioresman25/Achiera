@@ -97,6 +97,7 @@ export default function RecipeManager({ brandId, recipes, onRefresh }: RecipeMan
         setIsUpdatingCost(true);
         try {
             const res = await updateIngredientAction({
+                brandId,
                 variantId: editingCostItem.id,
                 productName: editingCostItem.product.name,
                 inventoryCategoryId: editingCostItem.product.inventoryCategoryId,
@@ -104,7 +105,7 @@ export default function RecipeManager({ brandId, recipes, onRefresh }: RecipeMan
                 shelfLife: editingCostItem.product.shelfLife || 0,
                 unitName: editingCostItem.unit,
                 costPrice: newUnitCost,
-                inventoryType: editingCostItem.product.inventoryType
+                inventoryType: editingCostItem.product.inventoryType as any
             });
 
             if (res.success) {
