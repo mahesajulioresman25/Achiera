@@ -313,7 +313,7 @@ export default function RecipeManager({ brandId, recipes, onRefresh }: RecipeMan
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-[#8B7E66]">Jumlah PCS per Masak</label>
+                            <label className="text-[10px] font-black uppercase tracking-widest text-[#8B7E66]">Jumlah Pack per Masak</label>
                             <input
                                 type="number"
                                 value={formData.outputQuantity}
@@ -341,7 +341,7 @@ export default function RecipeManager({ brandId, recipes, onRefresh }: RecipeMan
                             </p>
                             <p className="text-[9px] font-bold text-rose-600">Total Modal Masak: Rp {estimatedHPP.total.toLocaleString('id-ID')}</p>
                             <p className="text-[8px] text-rose-400 font-medium italic mt-1">
-                                (Total Modal ÷ {formData.outputQuantity} pcs)
+                                (Total Modal ÷ {formData.outputQuantity} pack)
                             </p>
                         </div>
                     </div>
@@ -375,7 +375,7 @@ export default function RecipeManager({ brandId, recipes, onRefresh }: RecipeMan
                                 <textarea
                                     value={bulkText}
                                     onChange={e => setBulkText(e.target.value)}
-                                    placeholder="Contoh:&#10;Gula Pasir: 50 gram&#10;Tepung Terigu: 200 gram&#10;Telur: 1 pcs"
+                                    placeholder="Contoh:&#10;Gula Pasir: 50 gram&#10;Tepung Terigu: 200 gram&#10;Telur: 2 butir"
                                     className="w-full h-32 bg-white border border-emerald-100 rounded-xl p-4 text-[11px] font-bold text-[#2D3A2D] outline-none focus:ring-2 focus:ring-emerald-500"
                                 />
                                 <div className="flex justify-end gap-2">

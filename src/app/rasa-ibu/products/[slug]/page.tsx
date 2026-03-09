@@ -215,7 +215,14 @@ export default async function RasaIbuProductDetailPage({
                                     <span className="text-3xl font-black text-[#8B7E66]">
                                         Rp {price.toLocaleString('id-ID')}
                                     </span>
-                                    <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">/ {primaryVariant?.name || 'Porsi'}</span>
+                                    <div className="flex flex-col">
+                                        <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">/ {primaryVariant?.name || 'Porsi'}</span>
+                                        {primaryVariant && (primaryVariant as any).additionalConfig && (primaryVariant as any).additionalConfig.pcsPerPack && (
+                                            <span className="text-[10px] font-black text-emerald-600 uppercase tracking-tight bg-emerald-50 px-2 py-0.5 rounded-md mt-1">
+                                                Isi: {(primaryVariant as any).additionalConfig.pcsPerPack} pcs
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
 
@@ -247,7 +254,6 @@ export default async function RasaIbuProductDetailPage({
                                         </p>
                                     </div>
 
-                                    {/* Production & Expiry Date Fields */}
                                     {(product.storageType !== 'READY_TO_EAT') && (
                                         <div className="pt-4 border-t border-dashed border-[#E5E1D8] grid grid-cols-1 gap-4">
                                             <div className="space-y-1">
@@ -272,7 +278,6 @@ export default async function RasaIbuProductDetailPage({
                                 </div>
                             </div>
 
-                            {/* Freshness Section (Only showing the verification badge part if QR active) */}
                             {productionDate && calculatedExpiry && (
                                 <div className="bg-[#E8F5E9] p-4 rounded-xl border border-[#C8E6C9] flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
                                     <div className="bg-white p-2 rounded-full border border-[#C8E6C9]">
@@ -289,7 +294,6 @@ export default async function RasaIbuProductDetailPage({
                                 </div>
                             )}
 
-                            {/* Nutrition Card */}
                             {product.nutrition && typeof product.nutrition === 'object' && (
                                 <div className="bg-[#f9f7f2] p-6 rounded-3xl border border-[#E5E1D8] space-y-4">
                                     <h3 className="text-xs font-black uppercase tracking-[0.2em] text-[#2D3A2D] flex items-center gap-2">
@@ -362,7 +366,6 @@ export default async function RasaIbuProductDetailPage({
                     </div>
                 </div>
 
-                {/* Recommendations */}
                 <section className="bg-white py-24 border-y border-[#E5E1D8]">
                     <div className="max-w-7xl mx-auto px-6">
                         <div className="flex items-center justify-between mb-16">

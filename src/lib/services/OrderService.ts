@@ -97,6 +97,7 @@ export class OrderService {
             // 2. Generate unique identifiers
             const invoiceNo = `INV-${input.channel === 'WEBSITE' ? 'WEB' : 'MAN'}-${Date.now()}`;
             const manualRef = `RI-${input.channel === 'WEBSITE' ? 'W' : 'M'}-${Math.floor(1000 + Math.random() * 9000)}`;
+            const totalQuantity = input.items.reduce((acc, item) => acc + Number(item.quantity), 0);
 
             // 3. Create order record
             const order = await tx.order.create({
@@ -105,6 +106,7 @@ export class OrderService {
                     userId: input.userId,
                     invoiceNo,
                     manualRef,
+                    quantity: totalQuantity,
                     customerName: input.customerName,
                     customerEmail: input.customerEmail,
                     customerPhone: input.customerPhone,

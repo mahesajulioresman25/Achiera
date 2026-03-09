@@ -24,9 +24,10 @@ export async function createProduct(data: {
     storageType?: string;
     shelfLife?: number;
     unit?: string;
-    inventoryCategoryId?: string; // New field for internal category
+    inventoryCategoryId?: string;
     isFeatured?: boolean;
     featuredOrder?: number;
+    pcsPerPack?: number;
 }) {
     try {
         const product = await (prisma.frozenProduct.create as any)({
@@ -54,6 +55,7 @@ export async function createProduct(data: {
                         weight: data.weight,
                         unit: data.unit || 'pcs',
                         stockOnHand: 0,
+                        additionalConfig: data.pcsPerPack ? { pcsPerPack: data.pcsPerPack } : undefined,
                         ...({ costPrice: data.costPrice || 0 } as any)
                     }
                 }
@@ -90,6 +92,7 @@ export async function updateProduct(data: {
     inventoryCategoryId?: string;
     isFeatured?: boolean;
     featuredOrder?: number;
+    pcsPerPack?: number;
 }) {
     try {
         // First update the product
@@ -118,6 +121,7 @@ export async function updateProduct(data: {
                 price: data.price,
                 weight: data.weight,
                 unit: data.unit,
+                additionalConfig: data.pcsPerPack ? { pcsPerPack: data.pcsPerPack } : undefined,
                 ...({ costPrice: data.costPrice || 0 } as any)
             }
         });

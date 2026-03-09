@@ -57,6 +57,7 @@ export default function CatalogManager({ brandId, products, categories, onClose 
         storageType: 'FROZEN',
         shelfLife: '6',
         unit: 'pcs',
+        pcsPerPack: '',
         isFeatured: false,
         featuredOrder: 0
     });
@@ -88,6 +89,7 @@ export default function CatalogManager({ brandId, products, categories, onClose 
             storageType: product.storageType || 'FROZEN',
             shelfLife: product.shelfLife?.toString() || '6',
             unit: variant.unit || 'pcs',
+            pcsPerPack: variant.additionalConfig?.pcsPerPack?.toString() || '',
             isFeatured: product.isFeatured || false,
             featuredOrder: product.featuredOrder || 0
         });
@@ -167,6 +169,7 @@ export default function CatalogManager({ brandId, products, categories, onClose 
             storageType: 'FROZEN',
             shelfLife: '6',
             unit: 'pcs',
+            pcsPerPack: '',
             isFeatured: false,
             featuredOrder: 0
         });
@@ -316,6 +319,7 @@ export default function CatalogManager({ brandId, products, categories, onClose 
                 storageType: formData.storageType,
                 shelfLife: parseInt(formData.shelfLife),
                 unit: formData.unit,
+                pcsPerPack: formData.pcsPerPack ? parseInt(formData.pcsPerPack) : undefined,
                 isFeatured: formData.isFeatured,
                 featuredOrder: parseInt(formData.featuredOrder.toString()) || 0
             };
@@ -725,6 +729,18 @@ export default function CatalogManager({ brandId, products, categories, onClose 
                                         <option value="ml">Mililiter (ml)</option>
                                         <option value="pack">Pack</option>
                                     </select>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-[#8B7E66]">Isi per Pack (pcs)</label>
+                                    <input
+                                        type="number"
+                                        value={formData.pcsPerPack}
+                                        onChange={(e) => setFormData({ ...formData, pcsPerPack: e.target.value })}
+                                        placeholder="Contoh: 10"
+                                        className="w-full px-4 py-3 bg-[#FDFBF7] rounded-xl text-sm font-bold text-[#2D3A2D] focus:outline-none focus:ring-2 focus:ring-[#2D3A2D]/20"
+                                    />
+                                    <p className="text-[8px] text-slate-400 font-medium italic">Kosongkan jika bukan sistem pack</p>
                                 </div>
 
                                 <div className="space-y-2">
