@@ -230,8 +230,9 @@ export default function OrderTrackingResultClient({ id }: OrderTrackingClientPro
         paymentLabel = 'Sisa Pembayaran';
     }
 
-    const qrisEnabled = order.paymentSettings?.qrisEnabled;
-    const qrisImageUrl = order.paymentSettings?.qrisImageUrl;
+    // Read from top-level fields first (guaranteed by API), then fallback to paymentSettings
+    const qrisEnabled = order.qrisEnabled ?? order.paymentSettings?.qrisEnabled;
+    const qrisImageUrl = order.qrisImageUrl ?? order.paymentSettings?.qrisImageUrl;
 
     // Check for pending proof
     const pendingPayment = payments.find((p: any) => !p.isVerified && p.proofPath);
@@ -600,7 +601,10 @@ export default function OrderTrackingResultClient({ id }: OrderTrackingClientPro
                                                             {qrisImageUrl ? (
                                                                 <img src={qrisImageUrl} alt="QRIS" className="w-full max-w-[220px] aspect-square object-contain" />
                                                             ) : (
-                                                                <div className="w-48 h-48 bg-stone-50 flex items-center justify-center text-stone-300 italic text-[10px] font-black uppercase tracking-widest">QRIS Belum Tersedia</div>
+                                                                <div className="w-48 h-48 bg-stone-50 flex flex-col items-center justify-center text-stone-300 p-6 text-center border-2 border-stone-100 rounded-3xl">
+                                                                    <div className="text-2xl mb-2">💬</div>
+                                                                    <p className="text-[10px] font-black uppercase tracking-widest leading-tight">Hubungi Admin untuk QR Code Pembayaran</p>
+                                                                </div>
                                                             )}
                                                             <p className="mt-5 text-[9px] font-black text-stone-400 uppercase tracking-[0.2em] text-center px-4 leading-relaxed">Scan QR di atas dengan aplikasi mobile banking atau e-wallet (GoPay, OVO, ShopeePay) Anda</p>
                                                         </div>

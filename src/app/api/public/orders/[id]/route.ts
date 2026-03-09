@@ -8,8 +8,7 @@ export async function GET(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const resolvedParams = await params;
-        const { id } = resolvedParams;
+        const { id } = await params;
 
         if (!id) {
             return NextResponse.json({ error: 'Order ID or Invoice required' }, { status: 400 });
@@ -19,11 +18,12 @@ export async function GET(
         const includeConfig = {
             brand: {
                 select: {
+                    id: true,
                     name: true,
                     paymentSettings: true
                 }
             },
-            statusLogs: { orderBy: { createdAt: 'desc' } },
+            statusLogs: { orderBy: { createdAt: 'desc' }, take: 20 },
             payments: { orderBy: { createdAt: 'desc' } },
             orderItems: {
                 include: {
@@ -42,22 +42,37 @@ export async function GET(
             }
         } as const;
 
-        // Try finding by ID first
-        let order = await unisolatedPrisma.order.findUnique({
-            where: { id },
+        // Try finding by ID or Invoice
+        let order = await unisolatedPrisma.order.findFirst({
+            where: {
+                OR: [
+                    { id },
+                    { invoiceNo: id }
+                ]
+            },
             include: includeConfig
         });
 
         if (!order) {
-            // Fallback to Invoice lookup
-            order = await unisolatedPrisma.order.findUnique({
-                where: { invoiceNo: id },
-                include: includeConfig
-            });
+            return NextResponse.json({ error: 'Order not found' }, { status: 404 });
         }
 
-        if (!order) {
-            return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+        // --- SELF-HEALING LOGIC FOR MISSING BRAND ---
+        // Always fetch brand payment settings directly to guarantee QRIS data is available.
+        // This is resilient against null brandId associations.
+        let brandPaymentSettings: any = order.brand?.paymentSettings || {};
+
+        if (!order.brandId || !order.brand || !brandPaymentSettings?.qrisImageUrl) {
+            const fallbackBrand = await unisolatedPrisma.brand.findUnique({
+                where: { slug: 'rasa-ibu' },
+                select: { id: true, name: true, paymentSettings: true }
+            });
+
+            if (fallbackBrand) {
+                (order as any).brandId = fallbackBrand.id;
+                (order as any).brand = fallbackBrand;
+                brandPaymentSettings = fallbackBrand.paymentSettings as any || {};
+            }
         }
 
         const safeOrder = order as any;
@@ -116,7 +131,10 @@ export async function GET(
             logs: safeOrder.statusLogs,
             payments: safeOrder.payments,
             items: enrichedItems,
-            paymentSettings: safeOrder.brand?.paymentSettings || { downPaymentPercentage: 50 },
+            paymentSettings: brandPaymentSettings || { downPaymentPercentage: 50 },
+            // Top-level QRIS fields for guaranteed client access
+            qrisEnabled: brandPaymentSettings?.qrisEnabled || false,
+            qrisImageUrl: brandPaymentSettings?.qrisImageUrl || null,
             brandId: safeOrder.brandId,
             brandName: safeOrder.brand?.name || 'ACHIERA',
         });
